@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SECURECONTAINPROTECT | SITE-64</title>
+
+    <link rel="stylesheet" href="script.css">
+</head>
+
+<body>
+
+    <!-- SCP BACKGROUND -->
+    <div class="background-logo"></div>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <img
+                src="../assets/scp-logo.png"
+                alt="SCP Foundation Logo"
+            >
+
+            <div>
+
+                <h1>SECURECONTAINPROTECT</h1>
+
+                <span>
+                    [THIS SITE WAS PREPARED FOR SCP ARCHITECT X REQUESTS]
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="site-code">
+            SITE-64
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         NAVIGATION
+    ====================================================== -->
+
+    <nav class="navigation">
+
+        <a href="#home">HOME</a>
+
+        <a href="#sites">SITES</a>
+
+        <a href="#requests">REQUESTS</a>
+
+        <a href="#site51">SITE-51</a>
+
+        <a href="#site64">SITE-64</a>
+
+        <a href="#about">ABOUT</a>
+
+    </nav>
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="hero" id="home">
+
+        <div class="hero-content">
+
+            <div class="classification">
+                SECURE • CONTAIN • PROTECT
+            </div>
+
+
+            <h2>SITE-64</h2>
+
+
+            <p>
+                SCP FOUNDATION FACILITY
+            </p>
+
+
+            <div class="warning">
+                THIS SITE IS PROTECTED BY UNKNOWN PERSONNEL.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <main>
+
+
+        <!-- =================================================
+             SITES
+        ================================================== -->
+
+        <section class="sites-section" id="sites">
+
+            <div class="section-title">
+
+                <span></span>
+
+                <h2>FOUNDATION SITES</h2>
+
+                <span></span>
+
+            </div>
+
+
+            <div class="site-grid">
+
+
+                <!-- SITE 19 -->
+
+                <div class="site-card">
+
+                    <div class="site-number">
+                        SITE-19
+                    </div>
+
+                    <h3>
+                        MAIN CONTAINMENT FACILITY
+                    </h3>
+
+                    <p>
+                        One of the Foundation's largest known
+                        containment and research facilities.
+                    </p>
+
+                    <span class="status">
+                        STATUS: OPERATIONAL
+                    </span>
+
+                </div>
+
+
+                <!-- SITE 51 -->
+
+                <div class="site-card">
+
+                    <div class="site-number">
+                        SITE-51
+                    </div>
+
+                    <h3>
+                        CARLSON FACILITY
+                    </h3>
+
+                    <p>
+                        A classified facility connected to the
+                        early research of Eric and Sophia Carlson.
+                    </p>
+
+                    <span class="status">
+                        STATUS: CLASSIFIED
+                    </span>
+
+                </div>
+
+
+                <!-- SITE 64 -->
+
+                <div class="site-card active">
+
+                    <div class="site-number">
+                        SITE-64
+                    </div>
+
+                    <h3>
+                        UNKNOWN FACILITY
+                    </h3>
+
+                    <p>
+                        The exact location and operational purpose
+                        of this facility remain restricted.
+                    </p>
+
+                    <span class="status">
+                        STATUS: UNKNOWN
+                    </span>
+
+                </div>
+
+
+                <!-- REDACTED SITE -->
+
+                <div class="site-card">
+
+                    <div class="site-number">
+                        SITE-██
+                    </div>
+
+                    <h3>
+                        REDACTED FACILITY
+                    </h3>
+
+                    <p>
+                        Information regarding this facility has
+                        been removed from accessible Foundation records.
+                    </p>
+
+                    <span class="status redacted">
+                        STATUS: REDACTED
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             REQUEST SYSTEM
+        ================================================== -->
+
+        <section class="panel" id="requests">
+
+            <div class="panel-header">
+
+                <h2>
+                    FACILITY REQUEST SYSTEM
+                </h2>
+
+                <span>
+                    AUTHORIZED PERSONNEL ONLY
+                </span>
+
+            </div>
+
+
+            <form id="requestForm">
+
+
+                <!-- NAME -->
+
+                <div class="input-group">
+
+                    <label for="name">
+                        FULL NAME
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your name..."
+                        autocomplete="name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- REQUEST TYPE -->
+
+                <div class="input-group">
+
+                    <label for="type">
+                        REQUEST TYPE
+                    </label>
+
+                    <select
+                        id="type"
+                        name="type"
+                        required
+                    >
+
+                        <option value="">
+                            Select request type
+                        </option>
+
+                        <option value="SCP Test">
+                            SCP Test
+                        </option>
+
+                        <option value="Personnel Request">
+                            Personnel Request
+                        </option>
+
+                        <option value="Mission Request">
+                            Mission Request
+                        </option>
+
+                        <option value="Access Request">
+                            Access Request
+                        </option>
+
+                        <option value="Site Transfer">
+                            Site Transfer
+                        </option>
+
+                        <option value="Research Request">
+                            Research Request
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- DATE -->
+
+                <div class="input-group">
+
+                    <label for="date">
+                        PREFERRED DATE
+                    </label>
+
+                    <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- TIME -->
+
+                <div class="input-group">
+
+                    <label for="time">
+                        PREFERRED TIME
+                    </label>
+
+                    <input
+                        type="time"
+                        id="time"
+                        name="time"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- MESSAGE -->
+
+                <div class="input-group">
+
+                    <label for="message">
+                        REQUEST DETAILS
+                    </label>
+
+                    <textarea
+                        id="message"
+                        name="message"
+                        rows="6"
+                        placeholder="Describe your request..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <!-- SUBMIT -->
+
+                <button type="submit">
+                    SUBMIT REQUEST
+                </button>
+
+            </form>
+
+
+            <!-- RESULT -->
+
+            <div
+                id="result"
+                class="result hidden"
+            ></div>
+
+        </section>
+
+
+        <!-- =================================================
+             SITE 51
+        ================================================== -->
+
+        <section
+            class="about"
+            id="site51"
+        >
+
+            <div class="section-title">
+
+                <span></span>
+
+                <h2>SITE-51</h2>
+
+                <span></span>
+
+            </div>
+
+
+            <article>
+
+                <h3>
+                    THE CARLSON BROTHERS
+                </h3>
+
+
+                <p>
+                    Before Site-51 became known as a Foundation
+                    facility, its history began with two young
+                    researchers: Eric Carlson and his younger
+                    sister, Sophia Carlson.
+                </p>
+
+
+                <p>
+                    Their younger brother was suffering from
+                    cancer. Determined to help him, Eric and
+                    Sophia established a small laboratory in
+                    the basement of their mother's house.
+                </p>
+
+
+                <p>
+                    Their earliest experiments were relatively
+                    simple. They studied cancer cells, cellular
+                    destruction, atomic structures and other
+                    experiments that did not require human
+                    subjects.
+                </p>
+
+
+                <p>
+                    The laboratory was originally known as
+                    <strong>
+                        Carlson Brothers Cancer Research
+                    </strong>.
+                </p>
+
+
+                <p>
+                    Because they were too young to legally
+                    establish the laboratory themselves, the
+                    facility was registered under their mother's
+                    name.
+                </p>
+
+
+                <p>
+                    Their research progressed until their mother
+                    died unexpectedly. Without her support,
+                    Eric and Sophia faced severe financial
+                    difficulties.
+                </p>
+
+
+                <p>
+                    Three months later, their younger brother
+                    died. Eric and Sophia were left with almost
+                    nothing.
+                </p>
+
+
+                <p>
+                    One evening, while the two were resting on
+                    a bench, two men wearing black suits
+                    approached them.
+                </p>
+
+
+                <p class="classified-text">
+                    "ARE YOU SOPHIA CARLSON AND ERIC CARLSON?"
+                </p>
+
+
+                <p>
+                    The two men presented a classified document
+                    connected to an organization known only as
+                    the O5 Council.
+                </p>
+
+
+                <p>
+                    Eric and Sophia discovered that their work
+                    had been monitored for a considerable amount
+                    of time.
+                </p>
+
+
+                <p>
+                    They were offered access to a Foundation
+                    facility where their research could continue
+                    under the protection and resources of the
+                    SCP Foundation.
+                </p>
+
+
+                <p>
+                    This marked the beginning of what would
+                    eventually become known as
+                    <strong>SITE-51</strong>.
+                </p>
+
+            </article>
+
+        </section>
+
+
+        <!-- =================================================
+             SITE 64
+        ================================================== -->
+
+        <section
+            class="site64"
+            id="site64"
+        >
+
+            <div class="red-line"></div>
+
+
+            <h2>
+                SITE-64
+            </h2>
+
+
+            <p>
+                LOCATION UNKNOWN.
+            </p>
+
+
+            <p>
+                SITE-64 IS NOT LISTED IN PUBLIC FOUNDATION RECORDS.
+            </p>
+
+
+            <p>
+                ACCESS IS RESTRICTED TO AUTHORIZED PERSONNEL.
+            </p>
+
+
+            <div class="classified">
+                LOCATION STATUS: UNKNOWN
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ABOUT
+        ================================================== -->
+
+        <section
+            class="about"
+            id="about"
+        >
+
+            <div class="section-title">
+
+                <span></span>
+
+                <h2>
+                    ABOUT SECURECONTAINPROTECT
+                </h2>
+
+                <span></span>
+
+            </div>
+
+
+            <article>
+
+                <p>
+                    SecureContainProtect is an internal interface
+                    designed for Foundation personnel and
+                    authorized users.
+                </p>
+
+
+                <p>
+                    Through this system, personnel may submit
+                    facility requests, access classified site
+                    information and communicate with the
+                    appropriate administrative department.
+                </p>
+
+
+                <p>
+                    Unauthorized access, duplication or
+                    distribution of Foundation information is
+                    strictly prohibited.
+                </p>
+
+
+                <p class="classified-text">
+                    SECURITY LEVEL: CLASSIFIED
+                </p>
+
+            </article>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+        <span>
+            SECURECONTAINPROTECT
+        </span>
+
+        <span>
+            SITE-64
+        </span>
+
+        <span>
+            FOUNDATION DATABASE
+        </span>
+
+        <span>
+            © SCP FOUNDATION
+        </span>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="script.js"></script>
+
+</body>
+</html>
