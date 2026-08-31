@@ -7,9 +7,7 @@ const app =
     express();
 
 
-const PORT =
-    6464;
-
+const PORT = process.env.PORT || 6464;
 
 const DATA_FILE =
     path.join(
