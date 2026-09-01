@@ -1,1167 +1,1599 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>WARHEAD // CONTROL</title>
+<title>SITE-64 // WARHEAD CONTROL</title>
 
 <style>
-
 * {
     box-sizing: border-box;
 }
 
+html,
 body {
-
     margin: 0;
+    width: 100%;
+    min-height: 100%;
+    background: #030507;
+    color: #e8edf2;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+}
+
+body {
+    min-height: 100vh;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* =====================================================
+   START SCREEN
+===================================================== */
+
+#startScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     background:
         radial-gradient(
-            circle at top,
-            #111820 0%,
-            #05070a 65%
-        );
+            circle at center,
+            rgba(110, 0, 0, 0.18),
+            transparent 45%
+        ),
+        #030507;
 
-    color: #e8edf2;
+    transition:
+        opacity 0.8s ease,
+        transform 0.8s ease;
+}
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+#startScreen.hide {
+    opacity: 0;
+    transform: scale(1.08);
+    pointer-events: none;
+}
+
+.warning-box {
+    width: min(760px, 90%);
+    padding: 45px;
+
+    border: 1px solid #5d1717;
+    background: rgba(8, 10, 13, 0.96);
+
+    box-shadow:
+        0 0 40px rgba(130, 0, 0, 0.16);
+
+    text-align: center;
+
+    animation: warningAppear 1s ease;
+}
+
+@keyframes warningAppear {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.warning-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.warning-box h1 {
+    margin: 0 0 12px;
+    font-size: 30px;
+    letter-spacing: 5px;
+}
+
+.warning-box .classification {
+    color: #b73a3a;
+    font-size: 12px;
+    letter-spacing: 3px;
+    margin-bottom: 28px;
+}
+
+.warning-box p {
+    color: #87919a;
+    line-height: 1.7;
+    font-size: 13px;
+}
+
+.warning-box button {
+    margin-top: 25px;
+}
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.control-button {
+    padding: 13px 25px;
+
+    background: #0b1015;
+    color: #dfe6eb;
+
+    border: 1px solid #39444e;
+
+    cursor: pointer;
+
+    letter-spacing: 2px;
+    font-size: 12px;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.control-button:hover {
+    background: #151c23;
+    border-color: #697782;
+
+    box-shadow:
+        0 0 20px rgba(130, 150, 165, 0.08);
+
+    transform: translateY(-1px);
+}
+
+.danger-button {
+    border-color: #721d1d;
+    color: #d85a5a;
+}
+
+.danger-button:hover {
+    background: #240b0b;
+    border-color: #c03c3c;
+
+    box-shadow:
+        0 0 25px rgba(180, 20, 20, 0.15);
+}
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+#mainSystem {
+    min-height: 100vh;
+
+    opacity: 0;
+    transform: translateY(20px);
+
+    transition:
+        opacity 0.8s ease,
+        transform 0.8s ease;
+}
+
+#mainSystem.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+header {
+    border-bottom: 1px solid #1d252d;
+    padding: 25px 5%;
+
+    background: #06090d;
+}
+
+.header-title {
+    font-size: 22px;
+    letter-spacing: 4px;
+}
+
+.header-subtitle {
+    margin-top: 7px;
+
+    color: #697681;
+    font-size: 11px;
+    letter-spacing: 2px;
 }
 
 main {
-
-    width:
-        min(1000px, 92%);
-
-    margin:
-        auto;
-
-    padding:
-        70px 0 100px;
+    width: min(1100px, 90%);
+    margin: auto;
+    padding: 55px 0 80px;
 }
 
+.system-status {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
 
-/* =====================================================
-   HEADER
-===================================================== */
-
-.header {
-
-    margin-bottom:
-        35px;
+    margin-bottom: 40px;
 }
 
-.header-label {
-
-    color:
-        #667887;
-
-    font-size:
-        10px;
-
-    letter-spacing:
-        3px;
+.status-item {
+    border-left: 2px solid #35404a;
+    padding-left: 12px;
 }
 
-h1 {
+.status-item span {
+    display: block;
 
-    margin:
-        10px 0;
-
-    font-size:
-        42px;
-
-    letter-spacing:
-        4px;
+    color: #66737e;
+    font-size: 10px;
+    letter-spacing: 2px;
 }
 
-.header-description {
+.status-item strong {
+    display: block;
 
-    color:
-        #74838e;
+    margin-top: 5px;
 
-    font-size:
-        13px;
+    font-size: 12px;
+    letter-spacing: 1px;
 }
-
-
-/* =====================================================
-   STATUS
-===================================================== */
-
-.status-panel {
-
-    background:
-        #090e13;
-
-    border:
-        1px solid #202b34;
-
-    padding:
-        25px;
-
-    margin-bottom:
-        20px;
-}
-
-.status-title {
-
-    color:
-        #647684;
-
-    font-size:
-        10px;
-
-    letter-spacing:
-        2px;
-
-    margin-bottom:
-        18px;
-}
-
-.status-grid {
-
-    display:
-        grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap:
-        15px;
-}
-
-.status-box {
-
-    background:
-        #070b0f;
-
-    border:
-        1px solid #1b252d;
-
-    padding:
-        18px;
-}
-
-.status-box span {
-
-    display:
-        block;
-
-    color:
-        #5d6d78;
-
-    font-size:
-        9px;
-
-    letter-spacing:
-        2px;
-
-    margin-bottom:
-        8px;
-}
-
-.status-box strong {
-
-    font-family:
-        monospace;
-
-    font-size:
-        15px;
-}
-
 
 /* =====================================================
    WARHEAD CARDS
 ===================================================== */
 
-.warhead-grid {
+.section-title {
+    margin-bottom: 20px;
 
-    display:
-        grid;
+    font-size: 13px;
+    letter-spacing: 3px;
+
+    color: #9da8b0;
+}
+
+.warheads {
+    display: grid;
 
     grid-template-columns:
-        repeat(2, 1fr);
+        repeat(2, minmax(0, 1fr));
 
-    gap:
-        15px;
+    gap: 15px;
 }
 
 .warhead-card {
+    position: relative;
 
-    background:
-        #090e13;
+    padding: 30px;
 
-    border:
-        1px solid #202b34;
+    background: #080c10;
 
-    padding:
-        25px;
+    border: 1px solid #202a33;
+
+    cursor: pointer;
 
     transition:
-        0.2s;
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
 .warhead-card:hover {
+    transform: translateY(-4px);
 
-    border-color:
-        #46535d;
+    background: #0b1015;
 
-    transform:
-        translateY(-2px);
-}
-
-.warhead-card.active {
-
-    border-color:
-        #733838;
+    border-color: #5c6871;
 
     box-shadow:
-        0 0 25px
-        rgba(130, 30, 30, 0.15);
+        0 10px 35px rgba(0, 0, 0, 0.35);
+}
+
+.warhead-code {
+    color: #6d7983;
+
+    font-size: 10px;
+    letter-spacing: 3px;
 }
 
 .warhead-name {
+    margin-top: 10px;
 
-    font-family:
-        monospace;
-
-    font-size:
-        24px;
-
-    letter-spacing:
-        2px;
-
-    margin-bottom:
-        15px;
+    font-size: 28px;
+    letter-spacing: 5px;
 }
 
 .warhead-effect {
+    margin-top: 15px;
 
-    color:
-        #b5c0c8;
+    color: #b63a3a;
 
-    font-size:
-        11px;
-
-    letter-spacing:
-        1px;
-
-    margin-bottom:
-        10px;
+    font-size: 11px;
+    letter-spacing: 2px;
 }
 
 .warhead-description {
+    margin-top: 12px;
 
-    color:
-        #687782;
+    color: #68747e;
 
-    font-size:
-        12px;
-
-    line-height:
-        1.6;
-
-    min-height:
-        40px;
+    font-size: 12px;
+    line-height: 1.6;
 }
 
-.activate-button {
+.card-status {
+    margin-top: 22px;
 
-    width:
-        100%;
+    color: #65717b;
 
-    margin-top:
-        20px;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
 
-    padding:
-        13px;
+/* =====================================================
+   CURRENT STATUS
+===================================================== */
 
-    background:
-        transparent;
+.current-status {
+    margin-top: 35px;
 
-    border:
-        1px solid #663838;
+    padding: 25px;
 
-    color:
-        #d68c8c;
+    background: #080c10;
 
-    cursor:
-        pointer;
+    border: 1px solid #202a33;
+}
 
-    font-weight:
-        bold;
+.current-status-title {
+    color: #697680;
 
-    letter-spacing:
-        1px;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.current-status-value {
+    margin-top: 10px;
+
+    font-size: 18px;
+    letter-spacing: 3px;
+}
+
+/* =====================================================
+   CODE MODAL
+===================================================== */
+
+#codeOverlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: 500;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.78);
+
+    backdrop-filter: blur(7px);
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition: opacity 0.35s ease;
+}
+
+#codeOverlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.code-panel {
+    width: min(560px, 90%);
+
+    padding: 38px;
+
+    background: #080b0f;
+
+    border: 1px solid #4a555e;
+
+    box-shadow:
+        0 0 60px rgba(0, 0, 0, 0.8);
+
+    transform: translateY(35px) scale(0.96);
 
     transition:
-        0.2s;
+        transform 0.4s ease;
 }
 
-.activate-button:hover {
-
-    background:
-        #210d0d;
-
-    border-color:
-        #a05050;
-
-    color:
-        #ffaaaa;
+#codeOverlay.open .code-panel {
+    transform: translateY(0) scale(1);
 }
 
-.activate-button:disabled {
+.code-panel h2 {
+    margin: 0;
 
-    opacity:
-        0.4;
-
-    cursor:
-        not-allowed;
+    font-size: 19px;
+    letter-spacing: 4px;
 }
 
+.code-panel .target {
+    margin-top: 8px;
+
+    color: #a73737;
+
+    font-size: 11px;
+    letter-spacing: 3px;
+}
+
+.code-panel p {
+    color: #6f7b84;
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.code-input {
+    width: 100%;
+
+    margin-top: 18px;
+    padding: 16px;
+
+    background: #030507;
+
+    border: 1px solid #313b43;
+
+    color: #e8edf2;
+
+    outline: none;
+
+    text-align: center;
+
+    letter-spacing: 5px;
+    text-transform: uppercase;
+}
+
+.code-input:focus {
+    border-color: #78858f;
+
+    box-shadow:
+        0 0 20px rgba(100, 120, 140, 0.08);
+}
+
+.code-error {
+    min-height: 18px;
+
+    margin-top: 10px;
+
+    color: #c34848;
+
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+.code-actions {
+    display: flex;
+    gap: 10px;
+
+    margin-top: 18px;
+}
 
 /* =====================================================
-   DEACTIVATE
+   SEQUENCE SCREEN
 ===================================================== */
 
-.deactivate-button {
+#sequenceOverlay {
+    position: fixed;
+    inset: 0;
 
-    display:
-        none;
+    z-index: 800;
 
-    width:
-        100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    margin-top:
-        20px;
+    background: #020304;
 
-    padding:
-        15px;
+    opacity: 0;
+    pointer-events: none;
 
-    background:
-        transparent;
-
-    border:
-        1px solid #315d48;
-
-    color:
-        #8dccaa;
-
-    cursor:
-        pointer;
-
-    font-weight:
-        bold;
-
-    letter-spacing:
-        2px;
+    transition: opacity 0.5s ease;
 }
 
-.deactivate-button:hover {
-
-    background:
-        #102219;
-
-    border-color:
-        #4b8b69;
+#sequenceOverlay.open {
+    opacity: 1;
+    pointer-events: auto;
 }
 
+.sequence-box {
+    width: min(850px, 90%);
 
-/* =====================================================
-   MESSAGE
-===================================================== */
+    padding: 45px;
 
-.system-message {
+    background: #05080b;
 
-    display:
-        none;
+    border: 1px solid #3c1717;
 
-    margin-top:
-        20px;
+    box-shadow:
+        0 0 70px rgba(130, 0, 0, 0.1);
+}
 
-    padding:
-        14px;
+.sequence-header {
+    color: #b83b3b;
 
-    border:
-        1px solid #202b34;
+    font-size: 12px;
+    letter-spacing: 4px;
+}
 
-    background:
-        #070b0f;
+.sequence-title {
+    margin-top: 15px;
 
-    color:
-        #8998a3;
+    font-size: 28px;
+    letter-spacing: 5px;
+}
+
+.sequence-output {
+    margin-top: 35px;
+
+    min-height: 220px;
+    max-height: 300px;
+
+    padding: 20px;
+
+    background: #020304;
+
+    border: 1px solid #171d22;
+
+    overflow-y: auto;
 
     font-family:
+        Consolas,
+        "Courier New",
         monospace;
 
-    font-size:
-        11px;
+    font-size: 13px;
 
-    line-height:
-        1.5;
+    line-height: 1.7;
+
+    white-space: pre-wrap;
 }
 
-
-/* =====================================================
-   BACK
-===================================================== */
-
-.back {
-
-    display:
-        inline-block;
-
-    margin-top:
-        35px;
-
-    color:
-        #8da0b2;
-
-    text-decoration:
-        none;
-
-    font-size:
-        12px;
-
-    letter-spacing:
-        1px;
+.sequence-line {
+    animation: lineAppear 0.25s ease;
 }
 
-.back:hover {
-
-    color:
-        #ffffff;
-}
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
-@media (
-    max-width: 700px
-) {
-
-    .warhead-grid,
-    .status-grid {
-
-        grid-template-columns:
-            1fr;
+@keyframes lineAppear {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
     }
 
-    h1 {
-
-        font-size:
-            31px;
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
 
+.progress {
+    margin-top: 20px;
+
+    height: 5px;
+
+    background: #11171c;
+
+    overflow: hidden;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+
+    background: #9e3030;
+
+    transition:
+        width 0.2s linear;
+}
+
+.sequence-actions {
+    margin-top: 25px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sequence-target {
+    color: #5f6a73;
+
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 700px) {
+
+    .warheads {
+        grid-template-columns: 1fr;
+    }
+
+    .warning-box {
+        padding: 28px;
+    }
+
+    .code-panel {
+        padding: 25px;
+    }
+
+    .sequence-box {
+        padding: 25px;
+    }
+
+    .sequence-title {
+        font-size: 21px;
+    }
+}
 </style>
-
 </head>
-
 
 <body>
 
+<!-- =====================================================
+     START WARNING
+===================================================== -->
+
+<section id="startScreen">
+
+    <div class="warning-box">
+
+        <div class="warning-icon">
+            ☢
+        </div>
+
+        <h1>
+            WARHEAD CONTROL
+        </h1>
+
+        <div class="classification">
+            O5 AUTHORIZATION REQUIRED
+        </div>
+
+        <p>
+            YOU ARE ABOUT TO ACCESS THE SITE-64
+            STRATEGIC WARHEAD CONTROL SYSTEM.
+            ALL ACTIONS ARE LOGGED AND CLASSIFIED.
+        </p>
+
+        <p>
+            UNAUTHORIZED ACTIVATION MAY RESULT IN
+            CATASTROPHIC FACILITY OR GLOBAL CONSEQUENCES.
+        </p>
+
+        <button
+            class="control-button"
+            id="continueButton"
+        >
+            CONTINUE
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     MAIN SYSTEM
+===================================================== -->
+
+<div id="mainSystem">
+
+<header>
+
+    <div class="header-title">
+        SECURE CONTAIN PROTECT // WARHEAD CONTROL
+    </div>
+
+    <div class="header-subtitle">
+        SITE-64 // STRATEGIC WEAPONS MANAGEMENT SYSTEM
+    </div>
+
+</header>
+
+
 <main>
 
+    <div class="system-status">
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
+        <div class="status-item">
 
-<section class="header">
+            <span>
+                SYSTEM
+            </span>
 
-<div class="header-label">
+            <strong id="systemStatus">
+                ONLINE
+            </strong>
 
-SECURE CONTAIN PROTECT // O5 AUTHORIZATION
+        </div>
 
-</div>
+        <div class="status-item">
 
-<h1>
-WARHEAD CONTROL
-</h1>
+            <span>
+                AUTHORIZATION
+            </span>
 
-<div class="header-description">
+            <strong>
+                O5
+            </strong>
 
-STRATEGIC FACILITY TERMINATION SYSTEM
+        </div>
 
-</div>
+        <div class="status-item">
 
-</section>
+            <span>
+                WARHEAD STATUS
+            </span>
 
+            <strong id="warheadStatus">
+                STANDBY
+            </strong>
 
-<!-- =====================================================
-     STATUS
-===================================================== -->
+        </div>
 
-<section class="status-panel">
-
-<div class="status-title">
-
-CURRENT WARHEAD STATUS
-
-</div>
-
-
-<div class="status-grid">
-
-
-<div class="status-box">
-
-<span>
-STATUS
-</span>
-
-<strong id="status">
-LOADING...
-</strong>
-
-</div>
+    </div>
 
 
-<div class="status-box">
-
-<span>
-WARHEAD TYPE
-</span>
-
-<strong id="type">
-NONE
-</strong>
-
-</div>
+    <div class="section-title">
+        SELECT WARHEAD SYSTEM
+    </div>
 
 
-<div class="status-box">
+    <div class="warheads">
 
-<span>
-ACTIVATED
-</span>
+        <article
+            class="warhead-card"
+            data-type="GAMMA"
+        >
 
-<strong id="activated">
-N/A
-</strong>
+            <div class="warhead-code">
+                SYSTEM 01
+            </div>
 
-</div>
+            <div class="warhead-name">
+                GAMMA
+            </div>
 
+            <div class="warhead-effect">
+                GLOBAL TERMINATION
+            </div>
 
-</div>
+            <div class="warhead-description">
+                TOTAL GLOBAL DESTRUCTION.
+                EXTREME AUTHORIZATION REQUIRED.
+            </div>
 
+            <div class="card-status">
+                READY // STANDBY
+            </div>
 
-<div
-    id="systemMessage"
-    class="system-message"
-></div>
-
-
-<button
-    id="deactivateButton"
-    class="deactivate-button"
-    onclick="deactivateWarhead()"
->
-DEACTIVATE WARHEAD
-</button>
-
-</section>
+        </article>
 
 
-<!-- =====================================================
-     WARHEADS
-===================================================== -->
+        <article
+            class="warhead-card"
+            data-type="DELTA"
+        >
 
-<section
-    id="warheadGrid"
-    class="warhead-grid"
->
-</section>
+            <div class="warhead-code">
+                SYSTEM 02
+            </div>
+
+            <div class="warhead-name">
+                DELTA
+            </div>
+
+            <div class="warhead-effect">
+                FACILITY TERMINATION
+            </div>
+
+            <div class="warhead-description">
+                DESTRUCTION OF THE SELECTED FACILITY.
+            </div>
+
+            <div class="card-status">
+                READY // STANDBY
+            </div>
+
+        </article>
 
 
-<a
-    class="back"
-    href="/"
->
-RETURN TO HOME
-</a>
+        <article
+            class="warhead-card"
+            data-type="ALPHA"
+        >
 
+            <div class="warhead-code">
+                SYSTEM 03
+            </div>
+
+            <div class="warhead-name">
+                ALPHA
+            </div>
+
+            <div class="warhead-effect">
+                FACILITY TERMINATION
+            </div>
+
+            <div class="warhead-description">
+                DESTRUCTION OF THE SELECTED FACILITY.
+            </div>
+
+            <div class="card-status">
+                READY // STANDBY
+            </div>
+
+        </article>
+
+
+        <article
+            class="warhead-card"
+            data-type="BETA"
+        >
+
+            <div class="warhead-code">
+                SYSTEM 04
+            </div>
+
+            <div class="warhead-name">
+                BETA
+            </div>
+
+            <div class="warhead-effect">
+                FACILITY TERMINATION
+            </div>
+
+            <div class="warhead-description">
+                DESTRUCTION OF THE SELECTED FACILITY.
+            </div>
+
+            <div class="card-status">
+                READY // STANDBY
+            </div>
+
+        </article>
+
+    </div>
+
+
+    <div class="current-status">
+
+        <div class="current-status-title">
+            CURRENT WARHEAD SYSTEM
+        </div>
+
+        <div
+            class="current-status-value"
+            id="currentWarhead"
+        >
+            NONE // STANDBY
+        </div>
+
+    </div>
 
 </main>
+
+</div>
+
+
+<!-- =====================================================
+     CODE MODAL
+===================================================== -->
+
+<div id="codeOverlay">
+
+    <div class="code-panel">
+
+        <h2>
+            AUTHORIZATION REQUIRED
+        </h2>
+
+        <div
+            class="target"
+            id="selectedTarget"
+        >
+            WARHEAD
+        </div>
+
+        <p>
+            ENTER THE AUTHORIZATION CODE TO
+            CONTINUE THE FIRING SEQUENCE.
+        </p>
+
+        <input
+            id="codeInput"
+            class="code-input"
+            type="password"
+            autocomplete="off"
+            placeholder="ENTER CODE"
+        >
+
+        <div
+            class="code-error"
+            id="codeError"
+        ></div>
+
+        <div class="code-actions">
+
+            <button
+                class="control-button"
+                id="cancelCode"
+            >
+                CANCEL
+            </button>
+
+            <button
+                class="control-button danger-button"
+                id="authorizeButton"
+            >
+                AUTHORIZE
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SEQUENCE
+===================================================== -->
+
+<div id="sequenceOverlay">
+
+    <div class="sequence-box">
+
+        <div class="sequence-header">
+            SITE-64 // FIRING CONTROL
+        </div>
+
+        <div
+            class="sequence-title"
+            id="sequenceTitle"
+        >
+            WARHEAD SEQUENCE
+        </div>
+
+        <div
+            class="sequence-output"
+            id="sequenceOutput"
+        ></div>
+
+        <div class="progress">
+            <div
+                class="progress-bar"
+                id="progressBar"
+            ></div>
+        </div>
+
+        <div class="sequence-actions">
+
+            <div
+                class="sequence-target"
+                id="sequenceTarget"
+            >
+                TARGET: SITE-64
+            </div>
+
+            <button
+                class="control-button danger-button"
+                id="cancelSequence"
+            >
+                CANCEL FIRING SEQUENCE
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
 
 <script>
 
 /* =====================================================
-   GLOBAL DATA
+   ELEMENTS
 ===================================================== */
 
-let warheadData = null;
+const startScreen =
+    document.getElementById("startScreen");
+
+const mainSystem =
+    document.getElementById("mainSystem");
+
+const continueButton =
+    document.getElementById("continueButton");
+
+const codeOverlay =
+    document.getElementById("codeOverlay");
+
+const codeInput =
+    document.getElementById("codeInput");
+
+const codeError =
+    document.getElementById("codeError");
+
+const authorizeButton =
+    document.getElementById("authorizeButton");
+
+const cancelCode =
+    document.getElementById("cancelCode");
+
+const selectedTarget =
+    document.getElementById("selectedTarget");
+
+const warheadStatus =
+    document.getElementById("warheadStatus");
+
+const currentWarhead =
+    document.getElementById("currentWarhead");
+
+const sequenceOverlay =
+    document.getElementById("sequenceOverlay");
+
+const sequenceTitle =
+    document.getElementById("sequenceTitle");
+
+const sequenceOutput =
+    document.getElementById("sequenceOutput");
+
+const sequenceTarget =
+    document.getElementById("sequenceTarget");
+
+const progressBar =
+    document.getElementById("progressBar");
+
+const cancelSequence =
+    document.getElementById("cancelSequence");
+
+
+let selectedType = null;
+let sequenceCancelled = false;
+let activeTimers = [];
 
 
 /* =====================================================
-   LOAD WARHEAD
+   START
 ===================================================== */
 
-async function loadWarhead() {
+continueButton.addEventListener(
+    "click",
+    () => {
 
-    try {
+        startScreen.classList.add("hide");
 
-        const response =
-            await fetch(
-                "/api/warhead",
-                {
-                    cache: "no-store"
-                }
-            );
+        setTimeout(() => {
 
+            mainSystem.classList.add("show");
 
-        const data =
-            await response.json();
-
-
-        if (!response.ok || !data.success) {
-
-            throw new Error(
-                "WARHEAD SYSTEM ERROR."
-            );
-        }
-
-
-        warheadData =
-            data;
-
-
-        updateStatus();
-
-        renderWarheads();
-
-
-    } catch (error) {
-
-        document.getElementById(
-            "status"
-        ).textContent =
-            "OFFLINE";
-
-
-        document.getElementById(
-            "type"
-        ).textContent =
-            "UNKNOWN";
-
-
-        showMessage(
-            "WARHEAD SYSTEM CONNECTION ERROR."
-        );
+        }, 250);
     }
-}
-
-
-/* =====================================================
-   UPDATE STATUS
-===================================================== */
-
-function updateStatus() {
-
-    if (!warheadData) {
-        return;
-    }
-
-
-    const warhead =
-        warheadData.warhead;
-
-
-    document.getElementById(
-        "status"
-    ).textContent =
-        warhead.status ||
-        "STANDBY";
-
-
-    document.getElementById(
-        "type"
-    ).textContent =
-        warhead.type ||
-        "NONE";
-
-
-    document.getElementById(
-        "activated"
-    ).textContent =
-        warhead.activatedAt
-            ? new Date(
-                warhead.activatedAt
-              ).toLocaleString()
-            : "N/A";
-
-
-    const deactivateButton =
-        document.getElementById(
-            "deactivateButton"
-        );
-
-
-    deactivateButton.style.display =
-        warhead.active
-            ? "block"
-            : "none";
-
-
-    if (warhead.message) {
-
-        showMessage(
-            warhead.message
-        );
-
-    } else {
-
-        hideMessage();
-    }
-}
-
-
-/* =====================================================
-   RENDER WARHEADS
-===================================================== */
-
-function renderWarheads() {
-
-    const container =
-        document.getElementById(
-            "warheadGrid"
-        );
-
-
-    if (
-        !warheadData ||
-        !warheadData.types
-    ) {
-
-        container.innerHTML =
-            "";
-
-        return;
-    }
-
-
-    const activeType =
-        warheadData.warhead.type;
-
-
-    container.innerHTML =
-        Object.values(
-            warheadData.types
-        )
-        .map(
-            warhead => {
-
-                const isActive =
-                    activeType ===
-                    warhead.name;
-
-
-                return `
-
-                <article
-                    class="warhead-card
-                    ${isActive ? "active" : ""}"
-                >
-
-                    <div class="warhead-name">
-
-                        ${escapeHtml(
-                            warhead.name
-                        )}
-
-                    </div>
-
-
-                    <div class="warhead-effect">
-
-                        EFFECT:
-                        ${escapeHtml(
-                            warhead.effect
-                        )}
-
-                    </div>
-
-
-                    <div class="warhead-description">
-
-                        ${escapeHtml(
-                            warhead.description
-                        )}
-
-                    </div>
-
-
-                    <button
-                        class="activate-button"
-                        onclick="activateWarhead(
-                            '${escapeJs(
-                                warhead.name
-                            )}'
-                        )"
-                        ${
-                            warheadData.warhead.active
-                                ? "disabled"
-                                : ""
-                        }
-                    >
-
-                        ACTIVATE
-                        ${escapeHtml(
-                            warhead.name
-                        )}
-
-                    </button>
-
-                </article>
-
-                `;
-            }
-        )
-        .join("");
-}
-
-
-/* =====================================================
-   ACTIVATE WARHEAD
-===================================================== */
-
-async function activateWarhead(type) {
-
-
-    /* -------------------------------------------------
-       AUTHORIZATION CODE
-    ------------------------------------------------- */
-
-    const code =
-        prompt(
-            "WARHEAD AUTHORIZATION REQUIRED\n\n" +
-            "ENTER AUTHORIZATION CODE:"
-        );
-
-
-    if (code === null) {
-        return;
-    }
-
-
-    if (
-        code.trim().toUpperCase() !==
-        "WARHEAD"
-    ) {
-
-        alert(
-            "AUTHORIZATION DENIED.\n\n" +
-            "INVALID WARHEAD CODE."
-        );
-
-        return;
-    }
-
-
-    /* -------------------------------------------------
-       FINAL CONFIRMATION
-    ------------------------------------------------- */
-
-    const confirmed =
-        confirm(
-            "⚠ WARHEAD ACTIVATION WARNING ⚠\n\n" +
-
-            "WARHEAD: " +
-            type +
-            "\n\n" +
-
-            "AUTHORIZATION ACCEPTED.\n\n" +
-
-            "CONFIRM ACTIVATION?"
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    /* -------------------------------------------------
-       API
-    ------------------------------------------------- */
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/warhead/activate",
-                {
-                    method:
-                        "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify({
-                            type:
-                                type
-                        })
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            alert(
-                data.message ||
-                "WARHEAD ACTIVATION FAILED."
-            );
-
-            return;
-        }
-
-
-        alert(
-            "AUTHORIZATION ACCEPTED.\n\n" +
-
-            type +
-
-            " WARHEAD IS NOW ARMED."
-        );
-
-
-        await loadWarhead();
-
-
-    } catch (error) {
-
-        alert(
-            "WARHEAD SYSTEM CONNECTION ERROR."
-        );
-    }
-}
-
-
-/* =====================================================
-   DEACTIVATE WARHEAD
-===================================================== */
-
-async function deactivateWarhead() {
-
-
-    const confirmed =
-        confirm(
-            "DEACTIVATE ACTIVE WARHEAD?\n\n" +
-            "This will return the system to STANDBY."
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    /* -------------------------------------------------
-       REQUIRE CODE AGAIN
-    ------------------------------------------------- */
-
-    const code =
-        prompt(
-            "WARHEAD AUTHORIZATION REQUIRED\n\n" +
-            "ENTER AUTHORIZATION CODE:"
-        );
-
-
-    if (code === null) {
-        return;
-    }
-
-
-    if (
-        code.trim().toUpperCase() !==
-        "WARHEAD"
-    ) {
-
-        alert(
-            "AUTHORIZATION DENIED.\n\n" +
-            "INVALID WARHEAD CODE."
-        );
-
-        return;
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/warhead/deactivate",
-                {
-                    method:
-                        "POST"
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            alert(
-                data.message ||
-                "WARHEAD DEACTIVATION FAILED."
-            );
-
-            return;
-        }
-
-
-        alert(
-            "WARHEAD DEACTIVATED.\n\n" +
-            "SYSTEM STATUS: STANDBY"
-        );
-
-
-        await loadWarhead();
-
-
-    } catch (error) {
-
-        alert(
-            "WARHEAD SYSTEM CONNECTION ERROR."
-        );
-    }
-}
-
-
-/* =====================================================
-   MESSAGE
-===================================================== */
-
-function showMessage(text) {
-
-    const element =
-        document.getElementById(
-            "systemMessage"
-        );
-
-
-    element.style.display =
-        "block";
-
-
-    element.textContent =
-        text;
-}
-
-
-function hideMessage() {
-
-    const element =
-        document.getElementById(
-            "systemMessage"
-        );
-
-
-    element.style.display =
-        "none";
-
-
-    element.textContent =
-        "";
-}
-
-
-/* =====================================================
-   HTML ESCAPE
-===================================================== */
-
-function escapeHtml(value) {
-
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    )
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-    .replace(
-        /'/g,
-        "&#039;"
-    );
-}
-
-
-/* =====================================================
-   JAVASCRIPT STRING ESCAPE
-===================================================== */
-
-function escapeJs(value) {
-
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /\\/g,
-        "\\\\"
-    )
-    .replace(
-        /'/g,
-        "\\'"
-    );
-}
-
-
-/* =====================================================
-   INITIAL LOAD
-===================================================== */
-
-loadWarhead();
-
-
-/* =====================================================
-   AUTO REFRESH
-===================================================== */
-
-setInterval(
-    loadWarhead,
-    5000
 );
+
+
+/* =====================================================
+   WARHEAD SELECTION
+===================================================== */
+
+document
+    .querySelectorAll(".warhead-card")
+    .forEach(card => {
+
+        card.addEventListener(
+            "click",
+            () => {
+
+                selectedType =
+                    card.dataset.type;
+
+                selectedTarget.textContent =
+                    selectedType +
+                    " // AUTHORIZATION";
+
+                codeInput.value = "";
+
+                codeError.textContent = "";
+
+                codeOverlay.classList.add("open");
+
+                setTimeout(() => {
+                    codeInput.focus();
+                }, 350);
+            }
+        );
+    });
+
+
+/* =====================================================
+   CLOSE CODE
+===================================================== */
+
+cancelCode.addEventListener(
+    "click",
+    closeCodePanel
+);
+
+function closeCodePanel() {
+
+    codeOverlay.classList.remove("open");
+
+    codeInput.value = "";
+
+    codeError.textContent = "";
+}
+
+
+/* =====================================================
+   AUTHORIZE
+===================================================== */
+
+authorizeButton.addEventListener(
+    "click",
+    authorize
+);
+
+codeInput.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key === "Enter") {
+            authorize();
+        }
+    }
+);
+
+
+async function authorize() {
+
+    const code =
+        codeInput.value
+            .trim()
+            .toUpperCase();
+
+    if (code !== "WARHEAD") {
+
+        codeError.textContent =
+            "INVALID AUTHORIZATION CODE.";
+
+        codeInput.value = "";
+
+        codeInput.focus();
+
+        return;
+    }
+
+    codeError.textContent =
+        "AUTHORIZATION ACCEPTED.";
+
+    authorizeButton.disabled = true;
+
+    setTimeout(() => {
+
+        closeCodePanel();
+
+        authorizeButton.disabled = false;
+
+        startSequence();
+
+    }, 500);
+}
+
+
+/* =====================================================
+   SEQUENCE HELPERS
+===================================================== */
+
+function clearTimers() {
+
+    activeTimers.forEach(
+        timer =>
+            clearTimeout(timer)
+    );
+
+    activeTimers = [];
+}
+
+
+function wait(ms) {
+
+    return new Promise(resolve => {
+
+        const timer =
+            setTimeout(
+                resolve,
+                ms
+            );
+
+        activeTimers.push(timer);
+
+    });
+}
+
+
+function addLine(text) {
+
+    const line =
+        document.createElement("div");
+
+    line.className =
+        "sequence-line";
+
+    line.textContent =
+        text;
+
+    sequenceOutput.appendChild(
+        line
+    );
+
+    sequenceOutput.scrollTop =
+        sequenceOutput.scrollHeight;
+}
+
+
+function setProgress(value) {
+
+    progressBar.style.width =
+        value + "%";
+}
+
+
+/* =====================================================
+   START SEQUENCE
+===================================================== */
+
+async function startSequence() {
+
+    sequenceCancelled = false;
+
+    clearTimers();
+
+    sequenceOutput.innerHTML = "";
+
+    setProgress(0);
+
+    sequenceTitle.textContent =
+        selectedType +
+        " WARHEAD FIRING SEQUENCE";
+
+    sequenceTarget.textContent =
+        selectedType === "GAMMA"
+            ? "TARGET: GLOBAL"
+            : "TARGET: SITE-64";
+
+    sequenceOverlay.classList.add("open");
+
+    warheadStatus.textContent =
+        "INITIALIZING";
+
+    currentWarhead.textContent =
+        selectedType +
+        " // INITIALIZING";
+
+
+    addLine(
+        "WARHEAD SYSTEM INITIALIZING..."
+    );
+
+    addLine(
+        "[ 2 SECONDS ]"
+    );
+
+
+    for (
+        let i = 0;
+        i < 20;
+        i++
+    ) {
+
+        if (sequenceCancelled) {
+            return;
+        }
+
+        await wait(100);
+
+        setProgress(
+            (i + 1) * 2
+        );
+    }
+
+
+    if (sequenceCancelled) {
+        return;
+    }
+
+
+    addLine(
+        "SYSTEM SUCCESSFULLY LOADED."
+    );
+
+    await wait(500);
+
+
+    if (sequenceCancelled) {
+        return;
+    }
+
+
+    addLine(
+        "WARHEAD FIRING SEQUENCE INITIATED..."
+    );
+
+    addLine(
+        "[ 5 SECONDS ]"
+    );
+
+
+    warheadStatus.textContent =
+        "ARMED";
+
+    currentWarhead.textContent =
+        selectedType +
+        " // ARMED";
+
+
+    for (
+        let i = 0;
+        i < 50;
+        i++
+    ) {
+
+        if (sequenceCancelled) {
+            return;
+        }
+
+        await wait(100);
+
+        setProgress(
+            40 + (i + 1)
+        );
+    }
+
+
+    if (sequenceCancelled) {
+        return;
+    }
+
+
+    addLine(
+        "WARHEAD DEPLOYING..."
+    );
+
+    addLine(
+        "[ 3 SECONDS ]"
+    );
+
+
+    warheadStatus.textContent =
+        "DEPLOYING";
+
+
+    for (
+        let i = 0;
+        i < 30;
+        i++
+    ) {
+
+        if (sequenceCancelled) {
+            return;
+        }
+
+        await wait(100);
+
+        setProgress(
+            90 + (i + 1) / 3
+        );
+    }
+
+
+    if (sequenceCancelled) {
+        return;
+    }
+
+
+    await finalSequence();
+}
+
+
+/* =====================================================
+   FINAL
+===================================================== */
+
+async function finalSequence() {
+
+    addLine(
+        "WARHEAD IN FLIGHT..."
+    );
+
+    await wait(700);
+
+    if (sequenceCancelled) {
+        return;
+    }
+
+    addLine(
+        "############################"
+    );
+
+    await wait(250);
+
+    addLine(
+        "############################"
+    );
+
+    await wait(250);
+
+    addLine(
+        "############################"
+    );
+
+    await wait(250);
+
+    addLine(
+        "############################"
+    );
+
+    await wait(250);
+
+    addLine(
+        "############################"
+    );
+
+    await wait(250);
+
+    if (sequenceCancelled) {
+        return;
+    }
+
+    addLine(
+        "WARHEAD IMPACT CONFIRMED."
+    );
+
+    addLine(
+        "FIRING SEQUENCE COMPLETE."
+    );
+
+    setProgress(100);
+
+    warheadStatus.textContent =
+        "COMPLETE";
+
+    currentWarhead.textContent =
+        selectedType +
+        " // COMPLETE";
+
+    cancelSequence.classList.add(
+        "hidden"
+    );
+}
+
+
+/* =====================================================
+   CANCEL SEQUENCE
+===================================================== */
+
+cancelSequence.addEventListener(
+    "click",
+    async () => {
+
+        sequenceCancelled = true;
+
+        clearTimers();
+
+        addLine(
+            "WARHEAD SYSTEM TERMINATED."
+        );
+
+        addLine(
+            "FIRING SEQUENCE CANCELLED."
+        );
+
+        warheadStatus.textContent =
+            "STANDBY";
+
+        currentWarhead.textContent =
+            "NONE // STANDBY";
+
+        setProgress(0);
+
+        cancelSequence.classList.add(
+            "hidden"
+        );
+
+        await wait(1800);
+
+        sequenceOverlay.classList.remove(
+            "open"
+        );
+
+        cancelSequence.classList.remove(
+            "hidden"
+        );
+    }
+);
+
+
+/* =====================================================
+   LOAD BACKEND STATUS
+===================================================== */
+
+async function loadWarheadStatus() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/warhead"
+            );
+
+        const data =
+            await response.json();
+
+        if (
+            !data.success
+        ) {
+            return;
+        }
+
+        const warhead =
+            data.warhead;
+
+        if (
+            warhead &&
+            warhead.active
+        ) {
+
+            warheadStatus.textContent =
+                warhead.status || "ARMED";
+
+            currentWarhead.textContent =
+                (
+                    warhead.type ||
+                    "UNKNOWN"
+                ) +
+                " // " +
+                (
+                    warhead.status ||
+                    "ARMED"
+                );
+
+        } else {
+
+            warheadStatus.textContent =
+                "STANDBY";
+
+            currentWarhead.textContent =
+                "NONE // STANDBY";
+        }
+
+    } catch (error) {
+
+        warheadStatus.textContent =
+            "OFFLINE";
+    }
+}
+
+
+loadWarheadStatus();
 
 </script>
 
 </body>
-
 </html>
-```
