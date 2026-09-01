@@ -1,72 +1,833 @@
-```javascript
-function createRequest(request) {
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>SITE-64 // ADMIN</title>
+
+<link
+    rel="stylesheet"
+    href="/script.css"
+>
+
+<style>
+
+body {
+    background:
+        radial-gradient(
+            circle at top,
+            #101820,
+            #05070a 60%
+        );
+}
+
+.admin-page {
+    max-width: 1200px;
+    margin: auto;
+    padding: 120px 6% 80px;
+}
+
+.admin-login {
+    max-width: 430px;
+    margin: 80px auto;
+    padding: 35px;
+    background: #090e13;
+    border: 1px solid #263440;
+}
+
+.admin-login h1 {
+    margin-bottom: 10px;
+}
+
+.admin-login p {
+    color: #71818d;
+    margin-bottom: 25px;
+}
+
+.admin-login input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+.admin-login button {
+    width: 100%;
+}
+
+.login-error {
+    color: #d98989;
+    margin-top: 15px;
+    display: none;
+}
+
+.dashboard {
+    display: none;
+}
+
+.admin-header {
+    margin-bottom: 30px;
+}
+
+.admin-header span {
+    color: #607684;
+    font-size: 10px;
+    letter-spacing: 3px;
+}
+
+.admin-header h1 {
+    margin-top: 10px;
+    font-size: 40px;
+}
+
+.admin-header p {
+    color: #71818d;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+.stat {
+    background: #090e13;
+    border: 1px solid #202d38;
+    padding: 20px;
+}
+
+.stat span {
+    display: block;
+    color: #607684;
+    font-size: 9px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.stat strong {
+    font-size: 28px;
+}
+
+.admin-result {
+    display: none;
+
+    padding: 13px;
+
+    margin-bottom: 20px;
+
+    font-size: 12px;
+}
+
+.request-card {
+    background: #090e13;
+
+    border: 1px solid #202d38;
+
+    padding: 24px;
+
+    margin-bottom: 18px;
+}
+
+.request-top {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+.request-id {
+    font-family: monospace;
+
+    font-size: 14px;
+
+    font-weight: bold;
+}
+
+.status {
+    padding: 6px 10px;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+
+    border: 1px solid #3b4c58;
+}
+
+.status.pending {
+    color: #d9bd79;
+    border-color: #66552c;
+}
+
+.status.approved {
+    color: #8dccaa;
+    border-color: #315d48;
+}
+
+.status.rejected {
+    color: #d98989;
+    border-color: #633838;
+}
+
+.request-info {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+}
+
+.info-box {
+    border: 1px solid #1e2a33;
+
+    padding: 13px;
+}
+
+.info-box span {
+    display: block;
+
+    color: #596b78;
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 6px;
+}
+
+.info-box strong {
+    font-size: 13px;
+}
+
+.time-control {
+    border-top: 1px solid #202d38;
+
+    padding-top: 20px;
+
+    margin-top: 5px;
+}
+
+.time-title {
+    color: #71818d;
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 10px;
+}
+
+.time-row {
+    display: flex;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+}
+
+.time-select {
+    flex: 1;
+
+    min-width: 190px;
+
+    background: #05080b;
+
+    color: #d5dfe5;
+
+    border: 1px solid #344652;
+
+    padding: 12px;
+
+    font-family: monospace;
+
+    font-size: 13px;
+}
+
+.action-button {
+    padding: 12px 18px;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    letter-spacing: 1px;
+}
+
+.change-time {
+    color: #8fb8d0;
+
+    border: 1px solid #3d6072;
+}
+
+.change-time:hover {
+    background: #0d1b24;
+}
+
+.approve {
+    color: #8dccaa;
+
+    border: 1px solid #315d48;
+}
+
+.approve:hover {
+    background: #102219;
+}
+
+.reject {
+    color: #d98989;
+
+    border: 1px solid #633838;
+}
+
+.reject:hover {
+    background: #210d0d;
+}
+
+.message-box {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    margin: 18px 0 12px;
+
+    min-height: 80px;
+
+    resize: vertical;
+}
+
+.actions {
+    display: flex;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+}
+
+.no-requests {
+    background: #090e13;
+
+    border: 1px solid #202d38;
+
+    padding: 30px;
+
+    color: #71818d;
+}
+
+@media (max-width: 800px) {
+
+    .stats {
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+    .request-info {
+        grid-template-columns:
+            1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-title">
+            SCP FOUNDATION
+        </div>
+
+        <div class="brand-subtitle">
+            SITE-64 ADMINISTRATION
+        </div>
+
+    </div>
+
+
+    <nav class="navigation">
+
+        <a href="/">
+            HOME
+        </a>
+
+        <a href="/sites">
+            SITES
+        </a>
+
+        <a href="/term">
+            TERMINAL
+        </a>
+
+    </nav>
+
+</header>
+
+
+<main class="admin-page">
+
+
+<section
+    id="loginBox"
+    class="admin-login"
+>
+
+    <h1>
+        ADMIN ACCESS
+    </h1>
+
+    <p>
+        SITE-64 restricted administration system.
+    </p>
+
+
+    <input
+        id="adminPassword"
+        type="password"
+        placeholder="ACCESS CODE"
+    >
+
+
+    <button
+        class="primary-button"
+        id="loginButton"
+    >
+        ACCESS SYSTEM
+    </button>
+
+
+    <div
+        id="loginError"
+        class="login-error"
+    >
+        ACCESS DENIED.
+    </div>
+
+</section>
+
+
+<section
+    id="dashboard"
+    class="dashboard"
+>
+
+
+<div class="admin-header">
+
+    <span>
+        SECURE CONTAIN PROTECT / O5
+    </span>
+
+    <h1>
+        SITE-64 CONTROL
+    </h1>
+
+    <p>
+        Request management system.
+    </p>
+
+</div>
+
+
+<div class="stats">
+
+    <div class="stat">
+
+        <span>
+            TOTAL
+        </span>
+
+        <strong id="total">
+            0
+        </strong>
+
+    </div>
+
+
+    <div class="stat">
+
+        <span>
+            PENDING
+        </span>
+
+        <strong id="pending">
+            0
+        </strong>
+
+    </div>
+
+
+    <div class="stat">
+
+        <span>
+            APPROVED
+        </span>
+
+        <strong id="approved">
+            0
+        </strong>
+
+    </div>
+
+
+    <div class="stat">
+
+        <span>
+            REJECTED
+        </span>
+
+        <strong id="rejected">
+            0
+        </strong>
+
+    </div>
+
+</div>
+
+
+<div
+    id="result"
+    class="admin-result"
+></div>
+
+
+<div
+    id="requests"
+></div>
+
+
+</section>
+
+
+</main>
+
+
+<script>
+
+
+/* =====================================================
+   ADMIN CODE
+===================================================== */
+
+const ADMIN_CODE =
+    "SITE64-O5";
+
+
+/* =====================================================
+   TIME OPTIONS
+===================================================== */
+
+const TIME_OPTIONS = [
+
+    "12:00 PM",
+    "12:30 PM",
+
+    "1:00 PM",
+    "1:30 PM",
+
+    "2:00 PM",
+    "2:30 PM",
+
+    "3:00 PM",
+    "3:30 PM",
+
+    "4:00 PM",
+    "4:30 PM",
+
+    "5:00 PM",
+    "5:30 PM",
+
+    "6:00 PM",
+    "6:30 PM",
+
+    "7:00 PM",
+    "7:30 PM",
+
+    "8:00 PM",
+    "8:30 PM",
+
+    "9:00 PM",
+    "9:30 PM",
+
+    "10:00 PM",
+    "10:30 PM",
+
+    "11:00 PM",
+    "11:30 PM",
+
+    "12:00 AM"
+
+];
+
+
+let requests = [];
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const loginBox =
+    document.getElementById(
+        "loginBox"
+    );
+
+const dashboard =
+    document.getElementById(
+        "dashboard"
+    );
+
+const passwordInput =
+    document.getElementById(
+        "adminPassword"
+    );
+
+const loginButton =
+    document.getElementById(
+        "loginButton"
+    );
+
+const loginError =
+    document.getElementById(
+        "loginError"
+    );
+
+const requestsContainer =
+    document.getElementById(
+        "requests"
+    );
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+function login() {
+
+    const password =
+        passwordInput.value;
+
+
+    if (password === ADMIN_CODE) {
+
+        loginBox.style.display =
+            "none";
+
+        dashboard.style.display =
+            "block";
+
+        loginError.style.display =
+            "none";
+
+        loadRequests();
+
+    } else {
+
+        loginError.style.display =
+            "block";
+    }
+}
+
+
+loginButton.addEventListener(
+    "click",
+    login
+);
+
+
+passwordInput.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key === "Enter") {
+            login();
+        }
+
+    }
+);
+
+
+/* =====================================================
+   LOAD REQUESTS
+===================================================== */
+
+async function loadRequests() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/requests"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "REQUEST DATABASE ERROR."
+            );
+        }
+
+
+        requests =
+            Array.isArray(
+                data.requests
+            )
+                ? data.requests
+                : [];
+
+
+        updateStats();
+
+        renderRequests();
+
+    } catch (error) {
+
+        showResult(
+            error.message,
+            true
+        );
+    }
+}
+
+
+/* =====================================================
+   STATS
+===================================================== */
+
+function updateStats() {
+
+    document.getElementById(
+        "total"
+    ).textContent =
+        requests.length;
+
+
+    document.getElementById(
+        "pending"
+    ).textContent =
+        requests.filter(
+            r =>
+                r.status ===
+                "PENDING"
+        ).length;
+
+
+    document.getElementById(
+        "approved"
+    ).textContent =
+        requests.filter(
+            r =>
+                r.status ===
+                "APPROVED"
+        ).length;
+
+
+    document.getElementById(
+        "rejected"
+    ).textContent =
+        requests.filter(
+            r =>
+                r.status ===
+                "REJECTED"
+        ).length;
+}
+
+
+/* =====================================================
+   RENDER REQUESTS
+===================================================== */
+
+function renderRequests() {
+
+    if (!requests.length) {
+
+        requestsContainer.innerHTML = `
+
+            <div class="no-requests">
+
+                NO REQUESTS FOUND.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    requestsContainer.innerHTML =
+        requests
+            .slice()
+            .reverse()
+            .map(
+                createRequestCard
+            )
+            .join("");
+}
+
+
+/* =====================================================
+   REQUEST CARD
+===================================================== */
+
+function createRequestCard(request) {
 
     const status =
         String(
-            request.status || "PENDING"
+            request.status ||
+            "PENDING"
         ).toLowerCase();
 
 
-    const times = [
-
-        "12:00 PM",
-        "12:30 PM",
-
-        "1:00 PM",
-        "1:30 PM",
-
-        "2:00 PM",
-        "2:30 PM",
-
-        "3:00 PM",
-        "3:30 PM",
-
-        "4:00 PM",
-        "4:30 PM",
-
-        "5:00 PM",
-        "5:30 PM",
-
-        "6:00 PM",
-        "6:30 PM",
-
-        "7:00 PM",
-        "7:30 PM",
-
-        "8:00 PM",
-        "8:30 PM",
-
-        "9:00 PM",
-        "9:30 PM",
-
-        "10:00 PM",
-        "10:30 PM",
-
-        "11:00 PM",
-        "11:30 PM",
-
-        "12:00 AM"
-    ];
-
-
-    const timeOptions =
-        times
+    const options =
+        TIME_OPTIONS
             .map(time => {
 
+                const selected =
+                    String(
+                        request.time ||
+                        ""
+                    ).toUpperCase() ===
+                    time;
+
                 return `
+
                     <option
                         value="${time}"
-                        ${
-                            String(
-                                request.time
-                            ).toUpperCase() ===
-                            time
-                                ? "selected"
-                                : ""
-                        }
+                        ${selected ? "selected" : ""}
                     >
                         ${time}
                     </option>
+
                 `;
 
             })
@@ -74,29 +835,39 @@ function createRequest(request) {
 
 
     return `
-        <article class="admin-card">
 
-            <div class="admin-card-top">
+        <article class="request-card">
 
-                <h3>
-                    ${escapeHtml(request.id)}
-                </h3>
 
-                <span
-                    class="request-status ${status}"
+            <div class="request-top">
+
+                <div class="request-id">
+
+                    ${escapeHtml(
+                        request.id
+                    )}
+
+                </div>
+
+
+                <div
+                    class="status ${status}"
                 >
+
                     ${escapeHtml(
                         request.status ||
                         "PENDING"
                     )}
-                </span>
+
+                </div>
 
             </div>
 
 
-            <div class="admin-info">
+            <div class="request-info">
 
-                <div>
+
+                <div class="info-box">
 
                     <span>
                         NAME
@@ -111,7 +882,7 @@ function createRequest(request) {
                 </div>
 
 
-                <div>
+                <div class="info-box">
 
                     <span>
                         REQUEST TYPE
@@ -127,7 +898,7 @@ function createRequest(request) {
                 </div>
 
 
-                <div>
+                <div class="info-box">
 
                     <span>
                         SCP
@@ -143,7 +914,7 @@ function createRequest(request) {
                 </div>
 
 
-                <div>
+                <div class="info-box">
 
                     <span>
                         CURRENT TIME
@@ -151,14 +922,15 @@ function createRequest(request) {
 
                     <strong>
                         ${escapeHtml(
-                            request.time
+                            request.time ||
+                            "N/A"
                         )}
                     </strong>
 
                 </div>
 
 
-                <div>
+                <div class="info-box">
 
                     <span>
                         PERIOD
@@ -174,7 +946,7 @@ function createRequest(request) {
                 </div>
 
 
-                <div>
+                <div class="info-box">
 
                     <span>
                         STATUS
@@ -182,117 +954,93 @@ function createRequest(request) {
 
                     <strong>
                         ${escapeHtml(
-                            request.status
+                            request.status ||
+                            "PENDING"
                         )}
                     </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="time-control">
+
+                <div class="time-title">
+                    CHANGE REQUEST TIME
+                </div>
+
+
+                <div class="time-row">
+
+                    <select
+                        class="time-select"
+                        id="time-${request.id}"
+                    >
+
+                        ${options}
+
+                    </select>
+
+
+                    <button
+                        class="action-button change-time"
+                        onclick="changeTime('${request.id}')"
+                    >
+
+                        CHANGE TIME
+
+                    </button>
 
                 </div>
 
             </div>
 
 
-            <div
-                style="
-                    color:#8796a2;
-                    font-size:13px;
-                    line-height:1.6;
-                    margin-bottom:20px;
-                "
-            >
-
-                ${escapeHtml(
-                    request.message ||
-                    "NO ADDITIONAL DETAILS."
-                )}
-
-            </div>
+            <textarea
+                id="message-${request.id}"
+                class="message-box"
+                placeholder="ADMIN MESSAGE..."
+            ></textarea>
 
 
-            <div
-                style="
-                    display:flex;
-                    gap:10px;
-                    flex-wrap:wrap;
-                    margin-bottom:20px;
-                "
-            >
-
-                <select
-                    id="time-${request.id}"
-                    style="
-                        flex:1;
-                        min-width:180px;
-                    "
-                >
-
-                    ${timeOptions}
-
-                </select>
+            <div class="actions">
 
 
-                <button
-                    class="approve-button"
-                    onclick="changeRequestTime('${request.id}')"
-                >
-                    CHANGE TIME
-                </button>
+                ${
+                    request.status ===
+                    "PENDING"
 
-            </div>
-
-
-            ${
-                request.status === "PENDING"
                     ? `
 
-                    <textarea
-                        id="message-${request.id}"
-                        class="admin-message-input"
-                        rows="3"
-                        placeholder="Admin message..."
-                    ></textarea>
-
-
-                    <div class="admin-actions">
-
-                        <button
-                            class="approve-button"
-                            onclick="approveRequest('${request.id}')"
-                        >
-                            APPROVE REQUEST
-                        </button>
-
-
-                        <button
-                            class="reject-button"
-                            onclick="rejectRequest('${request.id}')"
-                        >
-                            REJECT REQUEST
-                        </button>
-
-                    </div>
-
-                    `
-                    : `
-
-                    <div
-                        style="
-                            color:#647582;
-                            font-size:12px;
-                        "
+                    <button
+                        class="action-button approve"
+                        onclick="approveRequest('${request.id}')"
                     >
+                        APPROVE REQUEST
+                    </button>
 
-                        ADMIN MESSAGE:
-                        ${escapeHtml(
-                            request.adminMessage ||
-                            "NONE"
-                        )}
 
-                    </div>
+                    <button
+                        class="action-button reject"
+                        onclick="rejectRequest('${request.id}')"
+                    >
+                        REJECT REQUEST
+                    </button>
 
                     `
-            }
+
+                    : ""
+
+                }
+
+
+            </div>
+
 
         </article>
+
     `;
 }
 
@@ -301,7 +1049,7 @@ function createRequest(request) {
    CHANGE TIME
 ===================================================== */
 
-async function changeRequestTime(id) {
+async function changeTime(id) {
 
     const select =
         document.getElementById(
@@ -310,6 +1058,12 @@ async function changeRequestTime(id) {
 
 
     if (!select) {
+
+        showResult(
+            "TIME SELECTOR NOT FOUND.",
+            true
+        );
+
         return;
     }
 
@@ -318,11 +1072,22 @@ async function changeRequestTime(id) {
         select.value;
 
 
+    if (!time) {
+
+        showResult(
+            "PLEASE SELECT A TIME.",
+            true
+        );
+
+        return;
+    }
+
+
     try {
 
         const response =
             await fetch(
-                `/api/requests/${id}/time`,
+                `/api/requests/${encodeURIComponent(id)}/time`,
                 {
                     method: "POST",
 
@@ -345,13 +1110,10 @@ async function changeRequestTime(id) {
 
         if (!response.ok) {
 
-            showResult(
+            throw new Error(
                 data.message ||
-                "TIME CHANGE FAILED.",
-                true
+                "TIME CHANGE FAILED."
             );
-
-            return;
         }
 
 
@@ -361,14 +1123,216 @@ async function changeRequestTime(id) {
         );
 
 
-        loadRequests();
+        await loadRequests();
 
-    } catch {
+    } catch (error) {
 
         showResult(
-            "SERVER CONNECTION ERROR.",
+            error.message,
             true
         );
     }
 }
-```
+
+
+/* =====================================================
+   APPROVE
+===================================================== */
+
+async function approveRequest(id) {
+
+    const message =
+        document.getElementById(
+            `message-${id}`
+        ).value.trim();
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/requests/${encodeURIComponent(id)}/approve`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            message
+                        })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "APPROVAL FAILED."
+            );
+        }
+
+
+        showResult(
+            "REQUEST APPROVED.",
+            false
+        );
+
+
+        await loadRequests();
+
+    } catch (error) {
+
+        showResult(
+            error.message,
+            true
+        );
+    }
+}
+
+
+/* =====================================================
+   REJECT
+===================================================== */
+
+async function rejectRequest(id) {
+
+    const message =
+        document.getElementById(
+            `message-${id}`
+        ).value.trim();
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/requests/${encodeURIComponent(id)}/reject`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            message
+                        })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "REJECTION FAILED."
+            );
+        }
+
+
+        showResult(
+            "REQUEST REJECTED.",
+            false
+        );
+
+
+        await loadRequests();
+
+    } catch (error) {
+
+        showResult(
+            error.message,
+            true
+        );
+    }
+}
+
+
+/* =====================================================
+   RESULT
+===================================================== */
+
+function showResult(
+    message,
+    error
+) {
+
+    const result =
+        document.getElementById(
+            "result"
+        );
+
+
+    result.style.display =
+        "block";
+
+
+    result.textContent =
+        message;
+
+
+    result.style.color =
+        error
+            ? "#d98989"
+            : "#8dccaa";
+
+
+    result.style.border =
+        `1px solid ${
+            error
+                ? "#633838"
+                : "#315d48"
+        }`;
+}
+
+
+/* =====================================================
+   ESCAPE
+===================================================== */
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+}
+
+</script>
+
+
+</body>
+
+</html>
