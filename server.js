@@ -3,150 +3,73 @@ const fs = require("fs");
 const path = require("path");
 
 const app = express();
-
 const PORT = process.env.PORT || 6464;
 
 const PUBLIC_DIR = path.join(__dirname, "public");
 const DATA_FILE = path.join(__dirname, "data.json");
 
-/* =====================================================
-   MIDDLEWARE
-===================================================== */
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(express.static(PUBLIC_DIR));
 
-
-/* =====================================================
-   DATABASE
-===================================================== */
-
-function createEmptyDatabase() {
-    return {
-        requests: []
-    };
+function emptyDatabase() {
+    return { requests: [] };
 }
 
-function ensureDatabase() {
-
-    if (!fs.existsSync(DATA_FILE)) {
-
-        fs.writeFileSync(
-            DATA_FILE,
-            JSON.stringify(
-                createEmptyDatabase(),
-                null,
-                4
-            ),
-            "utf8"
-        );
-
-        return;
-    }
-
-    try {
-
-        const data = JSON.parse(
-            fs.readFileSync(
-                DATA_FILE,
-                "utf8"
-            )
-        );
-
-        let changed = false;
-
-        if (!Array.isArray(data.requests)) {
-            data.requests = [];
-            changed = true;
-        }
-
-        if (changed) {
-            saveDatabase(data);
-        }
-
-    } catch (error) {
-
-        console.error(
-            "DATABASE ERROR:",
-            error
-        );
-
-        fs.writeFileSync(
-            DATA_FILE,
-            JSON.stringify(
-                createEmptyDatabase(),
-                null,
-                4
-            ),
-            "utf8"
-        );
-    }
-}
-
-function readDatabase() {
-
-    ensureDatabase();
-
-    try {
-
-        return JSON.parse(
-            fs.readFileSync(
-                DATA_FILE,
-                "utf8"
-            )
-        );
-
-    } catch (error) {
-
-        console.error(
-            "DATABASE READ ERROR:",
-            error
-        );
-
-        return createEmptyDatabase();
-    }
-}
-
-function saveDatabase(database) {
-
+function saveDatabase(data) {
     fs.writeFileSync(
         DATA_FILE,
-        JSON.stringify(
-            database,
-            null,
-            4
-        ),
+        JSON.stringify(data, null, 4),
         "utf8"
     );
 }
 
+function readDatabase() {
+    try {
+        if (!fs.existsSync(DATA_FILE)) {
+            const data = emptyDatabase();
+            saveDatabase(data);
+            return data;
+        }
 
-/* =====================================================
-   ID
-===================================================== */
+        const data = JSON.parse(
+            fs.readFileSync(DATA_FILE, "utf8")
+        );
+
+        if (!Array.isArray(data.requests)) {
+            data.requests = [];
+            saveDatabase(data);
+        }
+
+        return data;
+
+    } catch (error) {
+        console.error("DATABASE ERROR:", error);
+
+        const data = emptyDatabase();
+        saveDatabase(data);
+
+        return data;
+    }
+}
 
 function generateId() {
+
+    const database = readDatabase();
 
     let id;
 
     do {
-
         id =
             "SITE64-" +
             Math.floor(
                 10000 +
                 Math.random() * 90000
             );
-
     } while (
-        readDatabase()
-            .requests
-            .some(
-                request =>
-                    request.id === id
-            )
+        database.requests.some(
+            request => request.id === id
+        )
     );
 
     return id;
@@ -155,24 +78,10 @@ function generateId() {
 
 /* =====================================================
    TIME
-   12:00 PM -> 12:00 AM
 ===================================================== */
 
-function validateTime(time) {
-
-    if (!time) {
-        return false;
-    }
-
-    const value =
-        String(time)
-            .trim()
-            .toUpperCase();
-
-    return /^(12|1[0-2]|[1-9]):(00|30) (AM|PM)$/.test(
-        value
-    );
-}
+const TIME_REGEX =
+    /^(12|[1-9]|1[0-1]):(00|30) (AM|PM)$/;
 
 
 function normalizeTime(time) {
@@ -186,7 +95,7 @@ function normalizeTime(time) {
             .trim()
             .toUpperCase();
 
-    if (!validateTime(value)) {
+    if (!TIME_REGEX.test(value)) {
         return null;
     }
 
@@ -196,34 +105,16 @@ function normalizeTime(time) {
 
 function getPeriod(time) {
 
-    const value =
+    const normalized =
         normalizeTime(time);
 
-    if (!value) {
+    if (!normalized) {
         return null;
     }
 
-    const parts =
-        value.split(" ");
-
-    const hour =
-        Number(
-            parts[0].split(":")[0]
-        );
-
-    const meridiem =
-        parts[1];
-
-    /*
-        12 AM - 11:30 AM = MORNING
-        12 PM - 11:30 PM = NIGHT
-    */
-
-    if (meridiem === "AM") {
-        return "MORNING";
-    }
-
-    return "NIGHT";
+    return normalized.endsWith("AM")
+        ? "MORNING"
+        : "NIGHT";
 }
 
 
@@ -241,7 +132,6 @@ app.get("/", (req, res) => {
     );
 });
 
-
 app.get("/admin", (req, res) => {
 
     res.sendFile(
@@ -252,7 +142,6 @@ app.get("/admin", (req, res) => {
     );
 });
 
-
 app.get("/sites", (req, res) => {
 
     res.sendFile(
@@ -262,7 +151,6 @@ app.get("/sites", (req, res) => {
         )
     );
 });
-
 
 app.get("/term", (req, res) => {
 
@@ -276,442 +164,191 @@ app.get("/term", (req, res) => {
 
 
 /* =====================================================
-   GET REQUESTS
+   REQUESTS
 ===================================================== */
 
-app.get(
-    "/api/requests",
-    (req, res) => {
+app.get("/api/requests", (req, res) => {
 
-        const database =
-            readDatabase();
+    const database =
+        readDatabase();
 
-        res.json({
-            success: true,
-            requests:
-                database.requests
-        });
-    }
-);
+    res.json({
+        success: true,
+        requests: database.requests
+    });
+});
 
 
 /* =====================================================
    CREATE REQUEST
 ===================================================== */
 
-app.post(
-    "/api/requests",
-    (req, res) => {
+app.post("/api/requests", (req, res) => {
 
-        try {
+    try {
 
-            const {
-                name,
-                type,
-                typeName,
-                scp,
-                time,
-                message
-            } = req.body;
+        const {
+            name,
+            type,
+            typeName,
+            scp,
+            time,
+            message
+        } = req.body;
 
 
-            if (
-                !name ||
-                !String(name).trim()
-            ) {
+        if (
+            !name ||
+            !String(name).trim()
+        ) {
 
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        message:
-                            "FULL NAME IS REQUIRED."
-                    });
-            }
-
-
-            if (!type) {
-
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        message:
-                            "REQUEST TYPE IS REQUIRED."
-                    });
-            }
-
-
-            const normalizedTime =
-                normalizeTime(time);
-
-
-            if (!normalizedTime) {
-
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        message:
-                            "INVALID TIME. USE AM/PM WITH 00 OR 30 MINUTES."
-                    });
-            }
-
-
-            if (
-                type === "scp" &&
-                (!scp ||
-                    !String(scp).trim())
-            ) {
-
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        message:
-                            "SCP MUST BE SELECTED."
-                    });
-            }
-
-
-            const now =
-                new Date().toISOString();
-
-
-            const request = {
-
-                id:
-                    generateId(),
-
-                name:
-                    String(name).trim(),
-
-                type:
-                    String(type),
-
-                typeName:
-                    typeName ||
-                    String(type).toUpperCase(),
-
-                scp:
-                    scp
-                        ? String(scp).trim()
-                        : null,
-
-                time:
-                    normalizedTime,
-
-                period:
-                    getPeriod(
-                        normalizedTime
-                    ),
-
+            return res.status(400).json({
+                success: false,
                 message:
-                    message
-                        ? String(message).trim()
-                        : "",
-
-                status:
-                    "PENDING",
-
-                adminMessage:
-                    "",
-
-                createdAt:
-                    now,
-
-                updatedAt:
-                    now
-            };
-
-
-            const database =
-                readDatabase();
-
-
-            database.requests.push(
-                request
-            );
-
-
-            saveDatabase(
-                database
-            );
-
-
-            console.log("");
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "       NEW SITE-64 REQUEST"
-            );
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "ID      :",
-                request.id
-            );
-            console.log(
-                "NAME    :",
-                request.name
-            );
-            console.log(
-                "TYPE    :",
-                request.typeName
-            );
-            console.log(
-                "SCP     :",
-                request.scp || "N/A"
-            );
-            console.log(
-                "TIME    :",
-                request.time
-            );
-            console.log(
-                "PERIOD  :",
-                request.period
-            );
-            console.log(
-                "STATUS  :",
-                request.status
-            );
-            console.log(
-                "========================================"
-            );
-            console.log("");
-
-
-            res
-                .status(201)
-                .json({
-                    success: true,
-                    request:
-                        request
-                });
-
-        } catch (error) {
-
-            console.error(
-                "REQUEST ERROR:",
-                error
-            );
-
-            res
-                .status(500)
-                .json({
-                    success: false,
-                    message:
-                        "SERVER ERROR."
-                });
+                    "FULL NAME IS REQUIRED."
+            });
         }
-    }
-);
 
 
-/* =====================================================
-   APPROVE REQUEST
-===================================================== */
+        if (!type) {
 
-app.post(
-    "/api/requests/:id/approve",
-    (req, res) => {
-
-        try {
-
-            const database =
-                readDatabase();
+            return res.status(400).json({
+                success: false,
+                message:
+                    "REQUEST TYPE IS REQUIRED."
+            });
+        }
 
 
-            const request =
-                database.requests.find(
-                    item =>
-                        item.id ===
-                        req.params.id
-                );
+        const normalizedTime =
+            normalizeTime(time);
 
 
-            if (!request) {
+        if (!normalizedTime) {
 
-                return res
-                    .status(404)
-                    .json({
-                        success: false,
-                        message:
-                            "REQUEST NOT FOUND."
-                    });
-            }
+            return res.status(400).json({
+                success: false,
+                message:
+                    "PLEASE SELECT A VALID TIME."
+            });
+        }
 
 
-            const {
-                message,
-                time
-            } = req.body;
+        if (
+            type === "scp" &&
+            (!scp ||
+                !String(scp).trim())
+        ) {
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    "SCP MUST BE SELECTED."
+            });
+        }
 
 
-            if (time !== undefined) {
-
-                const normalizedTime =
-                    normalizeTime(time);
-
-                if (!normalizedTime) {
-
-                    return res
-                        .status(400)
-                        .json({
-                            success: false,
-                            message:
-                                "INVALID TIME."
-                        });
-                }
-
-                request.time =
-                    normalizedTime;
-
-                request.period =
-                    getPeriod(
-                        normalizedTime
-                    );
-            }
+        const now =
+            new Date().toISOString();
 
 
-            request.status =
-                "APPROVED";
+        const request = {
 
+            id: generateId(),
 
-            request.adminMessage =
+            name:
+                String(name).trim(),
+
+            type:
+                String(type),
+
+            typeName:
+                typeName ||
+                String(type).toUpperCase(),
+
+            scp:
+                scp
+                    ? String(scp).trim()
+                    : null,
+
+            time:
+                normalizedTime,
+
+            period:
+                getPeriod(
+                    normalizedTime
+                ),
+
+            message:
                 message
                     ? String(message).trim()
-                    : "YOUR REQUEST HAS BEEN ACCEPTED.";
+                    : "",
+
+            status:
+                "PENDING",
+
+            adminMessage:
+                "",
+
+            createdAt:
+                now,
+
+            updatedAt:
+                now
+        };
 
 
-            request.updatedAt =
-                new Date().toISOString();
+        const database =
+            readDatabase();
 
 
-            saveDatabase(
-                database
-            );
+        database.requests.push(
+            request
+        );
 
 
-            console.log(
-                `[APPROVED] ${request.id} @ ${request.time}`
-            );
+        saveDatabase(
+            database
+        );
 
 
-            res.json({
-                success: true,
-                request:
-                    request
-            });
+        console.log(
+            `[NEW REQUEST] ${request.id} ${request.time}`
+        );
 
-        } catch (error) {
 
-            console.error(
-                "APPROVE ERROR:",
-                error
-            );
+        return res.status(201).json({
 
-            res
-                .status(500)
-                .json({
-                    success: false,
-                    message:
-                        "SERVER ERROR."
-                });
-        }
+            success: true,
+
+            message:
+                "REQUEST SUBMITTED SUCCESSFULLY.",
+
+            request:
+                request
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "CREATE REQUEST ERROR:",
+            error
+        );
+
+        return res.status(500).json({
+
+            success: false,
+
+            message:
+                "SERVER ERROR."
+        });
     }
-);
+});
 
 
 /* =====================================================
-   REJECT REQUEST
-===================================================== */
-
-app.post(
-    "/api/requests/:id/reject",
-    (req, res) => {
-
-        try {
-
-            const database =
-                readDatabase();
-
-
-            const request =
-                database.requests.find(
-                    item =>
-                        item.id ===
-                        req.params.id
-                );
-
-
-            if (!request) {
-
-                return res
-                    .status(404)
-                    .json({
-                        success: false,
-                        message:
-                            "REQUEST NOT FOUND."
-                    });
-            }
-
-
-            request.status =
-                "REJECTED";
-
-
-            request.adminMessage =
-                req.body.message
-                    ? String(
-                        req.body.message
-                    ).trim()
-                    : "YOUR REQUEST HAS BEEN REJECTED.";
-
-
-            request.updatedAt =
-                new Date().toISOString();
-
-
-            saveDatabase(
-                database
-            );
-
-
-            console.log(
-                `[REJECTED] ${request.id}`
-            );
-
-
-            res.json({
-                success: true,
-                request:
-                    request
-            });
-
-        } catch (error) {
-
-            console.error(
-                "REJECT ERROR:",
-                error
-            );
-
-            res
-                .status(500)
-                .json({
-                    success: false,
-                    message:
-                        "SERVER ERROR."
-                });
-        }
-    }
-);
-
-
-/* =====================================================
-   CHANGE REQUEST TIME
+   CHANGE TIME
 ===================================================== */
 
 app.post(
@@ -720,24 +357,21 @@ app.post(
 
         try {
 
-            const {
-                time
-            } = req.body;
-
-
             const normalizedTime =
-                normalizeTime(time);
+                normalizeTime(
+                    req.body.time
+                );
 
 
             if (!normalizedTime) {
 
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        message:
-                            "INVALID TIME."
-                    });
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "INVALID TIME."
+                });
             }
 
 
@@ -755,13 +389,13 @@ app.post(
 
             if (!request) {
 
-                return res
-                    .status(404)
-                    .json({
-                        success: false,
-                        message:
-                            "REQUEST NOT FOUND."
-                    });
+                return res.status(404).json({
+
+                    success: false,
+
+                    message:
+                        "REQUEST NOT FOUND."
+                });
             }
 
 
@@ -784,44 +418,43 @@ app.post(
             );
 
 
-            console.log(
-                `[TIME CHANGED] ${request.id} -> ${request.time}`
-            );
+            return res.json({
 
-
-            res.json({
                 success: true,
+
                 message:
-                    "REQUEST TIME UPDATED.",
+                    "TIME UPDATED.",
+
                 request:
                     request
             });
 
+
         } catch (error) {
 
             console.error(
-                "TIME CHANGE ERROR:",
+                "TIME ERROR:",
                 error
             );
 
-            res
-                .status(500)
-                .json({
-                    success: false,
-                    message:
-                        "SERVER ERROR."
-                });
+            return res.status(500).json({
+
+                success: false,
+
+                message:
+                    "SERVER ERROR."
+            });
         }
     }
 );
 
 
 /* =====================================================
-   SERVER STATUS
+   APPROVE
 ===================================================== */
 
-app.get(
-    "/api/status",
+app.post(
+    "/api/requests/:id/approve",
     (req, res) => {
 
         try {
@@ -830,92 +463,289 @@ app.get(
                 readDatabase();
 
 
-            const pending =
-                database.requests.filter(
-                    request =>
-                        request.status ===
-                        "PENDING"
-                ).length;
+            const request =
+                database.requests.find(
+                    item =>
+                        item.id ===
+                        req.params.id
+                );
 
 
-            res.json({
+            if (!request) {
 
-                success:
-                    true,
+                return res.status(404).json({
 
-                server:
-                    "ONLINE",
+                    success: false,
 
-                site:
-                    "SITE-64",
+                    message:
+                        "REQUEST NOT FOUND."
+                });
+            }
 
-                database:
-                    "ONLINE",
 
-                requestSystem:
-                    "ONLINE",
+            if (req.body.time) {
 
-                pendingRequests:
-                    pending,
+                const time =
+                    normalizeTime(
+                        req.body.time
+                    );
 
-                totalRequests:
-                    database.requests.length,
 
-                uptime:
-                    process.uptime()
+                if (!time) {
+
+                    return res.status(400).json({
+
+                        success: false,
+
+                        message:
+                            "INVALID TIME."
+                    });
+                }
+
+
+                request.time =
+                    time;
+
+                request.period =
+                    getPeriod(time);
+            }
+
+
+            request.status =
+                "APPROVED";
+
+
+            request.adminMessage =
+                req.body.message &&
+                String(req.body.message).trim()
+                    ? String(
+                        req.body.message
+                    ).trim()
+                    : "YOUR REQUEST HAS BEEN ACCEPTED.";
+
+
+            request.updatedAt =
+                new Date().toISOString();
+
+
+            saveDatabase(
+                database
+            );
+
+
+            return res.json({
+
+                success: true,
+
+                request:
+                    request
             });
+
 
         } catch (error) {
 
-            res
-                .status(500)
-                .json({
-                    success: false,
-                    server: "ONLINE",
-                    database: "ERROR"
-                });
+            console.error(
+                "APPROVE ERROR:",
+                error
+            );
+
+            return res.status(500).json({
+
+                success: false,
+
+                message:
+                    "SERVER ERROR."
+            });
         }
     }
 );
 
 
 /* =====================================================
-   TERMINAL
+   REJECT
 ===================================================== */
 
 app.post(
-    "/api/terminal",
+    "/api/requests/:id/reject",
     (req, res) => {
 
-        const command =
-            String(
-                req.body.command || ""
-            )
-                .trim()
-                .toLowerCase();
+        try {
+
+            const database =
+                readDatabase();
 
 
-        const database =
-            readDatabase();
+            const request =
+                database.requests.find(
+                    item =>
+                        item.id ===
+                        req.params.id
+                );
 
 
-        if (!command) {
+            if (!request) {
+
+                return res.status(404).json({
+
+                    success: false,
+
+                    message:
+                        "REQUEST NOT FOUND."
+                });
+            }
+
+
+            request.status =
+                "REJECTED";
+
+
+            request.adminMessage =
+                req.body.message &&
+                String(req.body.message).trim()
+                    ? String(
+                        req.body.message
+                    ).trim()
+                    : "YOUR REQUEST HAS BEEN REJECTED.";
+
+
+            request.updatedAt =
+                new Date().toISOString();
+
+
+            saveDatabase(
+                database
+            );
+
 
             return res.json({
-                output: ""
+
+                success: true,
+
+                request:
+                    request
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "REJECT ERROR:",
+                error
+            );
+
+            return res.status(500).json({
+
+                success: false,
+
+                message:
+                    "SERVER ERROR."
             });
         }
+    }
+);
 
 
-        if (command === "help") {
+/* =====================================================
+   STATUS
+===================================================== */
 
-            return res.json({
+app.get("/api/status", (req, res) => {
 
-                output:
+    const database =
+        readDatabase();
+
+
+    const pending =
+        database.requests.filter(
+            request =>
+                request.status ===
+                "PENDING"
+        ).length;
+
+
+    const approved =
+        database.requests.filter(
+            request =>
+                request.status ===
+                "APPROVED"
+        ).length;
+
+
+    const rejected =
+        database.requests.filter(
+            request =>
+                request.status ===
+                "REJECTED"
+        ).length;
+
+
+    res.json({
+
+        success: true,
+
+        server:
+            "ONLINE",
+
+        site:
+            "SITE-64",
+
+        database:
+            "ONLINE",
+
+        requestSystem:
+            "ONLINE",
+
+        totalRequests:
+            database.requests.length,
+
+        pendingRequests:
+            pending,
+
+        approvedRequests:
+            approved,
+
+        rejectedRequests:
+            rejected,
+
+        uptime:
+            process.uptime()
+    });
+});
+
+
+/* =====================================================
+   TERMINAL
+===================================================== */
+
+app.post("/api/terminal", (req, res) => {
+
+    const command =
+        String(
+            req.body.command || ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const database =
+        readDatabase();
+
+
+    if (!command) {
+
+        return res.json({
+            output: ""
+        });
+    }
+
+
+    if (command === "help") {
+
+        return res.json({
+
+            output:
 `SITE-64 TERMINAL
 ==============================
-
-AVAILABLE COMMANDS
 
 help       Show available commands
 status     Show system status
@@ -923,23 +753,23 @@ requests   Show request statistics
 sites      Show registered sites
 clear      Clear terminal
 about      Show SITE-64 information`
-            });
-        }
+        });
+    }
 
 
-        if (command === "status") {
+    if (command === "status") {
 
-            const pending =
-                database.requests.filter(
-                    r =>
-                        r.status ===
-                        "PENDING"
-                ).length;
+        const pending =
+            database.requests.filter(
+                r =>
+                    r.status ===
+                    "PENDING"
+            ).length;
 
 
-            return res.json({
+        return res.json({
 
-                output:
+            output:
 `SYSTEM STATUS
 ==============================
 SERVER       : ONLINE
@@ -947,122 +777,118 @@ DATABASE     : ONLINE
 SITE-64      : OPERATIONAL
 REQUESTS     : ${database.requests.length}
 PENDING      : ${pending}`
-            });
-        }
+        });
+    }
 
 
-        if (command === "requests") {
+    if (command === "requests") {
 
-            const pending =
-                database.requests.filter(
-                    r =>
-                        r.status ===
-                        "PENDING"
-                ).length;
-
-
-            const approved =
-                database.requests.filter(
-                    r =>
-                        r.status ===
-                        "APPROVED"
-                ).length;
+        const pending =
+            database.requests.filter(
+                r =>
+                    r.status ===
+                    "PENDING"
+            ).length;
 
 
-            const rejected =
-                database.requests.filter(
-                    r =>
-                        r.status ===
-                        "REJECTED"
-                ).length;
+        const approved =
+            database.requests.filter(
+                r =>
+                    r.status ===
+                    "APPROVED"
+            ).length;
 
 
-            return res.json({
+        const rejected =
+            database.requests.filter(
+                r =>
+                    r.status ===
+                    "REJECTED"
+            ).length;
 
-                output:
+
+        return res.json({
+
+            output:
 `REQUEST DATABASE
 ==============================
 TOTAL      : ${database.requests.length}
 PENDING    : ${pending}
 APPROVED   : ${approved}
 REJECTED   : ${rejected}`
-            });
-        }
+        });
+    }
 
 
-        if (command === "sites") {
+    if (command === "sites") {
 
-            return res.json({
+        return res.json({
 
-                output:
-`SITE-64
+            output:
+`SITE DATABASE
 ==============================
 SITE-19   | OPERATIONAL
 SITE-51   | CLASSIFIED
-SITE-64   | UNKNOWN
+SITE-64   | ACTIVE
 SITE-██   | REDACTED`
-            });
-        }
+        });
+    }
 
 
-        if (command === "about") {
+    if (command === "about") {
 
-            return res.json({
+        return res.json({
 
-                output:
-`SECURECONTAINPROTECT
+            output:
+`SECURE CONTAIN PROTECT
 SITE-64 ADMINISTRATION SYSTEM
 
 CLASSIFICATION: O5
 ACCESS LEVEL: ADMIN
 
 Unauthorized access is prohibited.`
-            });
-        }
-
-
-        if (command === "clear") {
-
-            return res.json({
-                output:
-                    "__CLEAR__"
-            });
-        }
-
-
-        return res.json({
-
-            output:
-                `COMMAND NOT FOUND: ${command}\nType "help" for available commands.`
         });
     }
-);
+
+
+    if (command === "clear") {
+
+        return res.json({
+            output:
+                "__CLEAR__"
+        });
+    }
+
+
+    return res.json({
+
+        output:
+            `COMMAND NOT FOUND: ${command}`
+    });
+});
 
 
 /* =====================================================
    API 404
 ===================================================== */
 
-app.use(
-    "/api",
-    (req, res) => {
+app.use("/api", (req, res) => {
 
-        res
-            .status(404)
-            .json({
-                success: false,
-                message:
-                    "API ENDPOINT NOT FOUND."
-            });
-    }
-);
+    res.status(404).json({
+
+        success: false,
+
+        message:
+            "API ENDPOINT NOT FOUND."
+    });
+});
 
 
 /* =====================================================
    START
 ===================================================== */
 
-ensureDatabase();
+readDatabase();
 
 
 app.listen(
@@ -1070,38 +896,24 @@ app.listen(
     "0.0.0.0",
     () => {
 
-        console.log("");
         console.log(
             "========================================"
         );
+
         console.log(
-            "     SECURECONTAINPROTECT // SITE-64"
+            "SECURE CONTAIN PROTECT // SITE-64"
         );
+
         console.log(
-            "========================================"
+            "SERVER ONLINE"
         );
+
         console.log(
-            "SERVER : ONLINE"
+            `PORT: ${PORT}`
         );
-        console.log(
-            "PORT   :",
-            PORT
-        );
-        console.log(
-            "PUBLIC : /"
-        );
-        console.log(
-            "ADMIN  : /admin"
-        );
-        console.log(
-            "SITES  : /sites"
-        );
-        console.log(
-            "TERM   : /term"
-        );
+
         console.log(
             "========================================"
         );
-        console.log("");
     }
 );

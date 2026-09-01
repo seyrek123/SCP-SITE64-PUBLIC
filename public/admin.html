@@ -19,337 +19,125 @@
 
 <style>
 
-body {
-    background:
-        radial-gradient(
-            circle at top,
-            #101820,
-            #05070a 60%
-        );
-}
-
-.admin-page {
+.admin-container {
     max-width: 1200px;
     margin: auto;
-    padding: 120px 6% 80px;
+    padding: 120px 5% 60px;
 }
 
-.admin-login {
-    max-width: 430px;
+.login {
+    max-width: 400px;
     margin: 80px auto;
-    padding: 35px;
-    background: #090e13;
-    border: 1px solid #263440;
 }
 
-.admin-login h1 {
-    margin-bottom: 10px;
-}
-
-.admin-login p {
-    color: #71818d;
-    margin-bottom: 25px;
-}
-
-.admin-login input {
+.login input,
+.login button {
     width: 100%;
     box-sizing: border-box;
-    margin-bottom: 15px;
-}
-
-.admin-login button {
-    width: 100%;
-}
-
-.login-error {
-    color: #d98989;
-    margin-top: 15px;
-    display: none;
+    margin-bottom: 12px;
 }
 
 .dashboard {
     display: none;
 }
 
-.admin-header {
-    margin-bottom: 30px;
-}
-
-.admin-header span {
-    color: #607684;
-    font-size: 10px;
-    letter-spacing: 3px;
-}
-
-.admin-header h1 {
-    margin-top: 10px;
-    font-size: 40px;
-}
-
-.admin-header p {
-    color: #71818d;
-}
-
 .stats {
     display: grid;
-
     grid-template-columns:
         repeat(4, 1fr);
-
-    gap: 15px;
-
-    margin-bottom: 25px;
+    gap: 12px;
+    margin: 25px 0;
 }
 
 .stat {
-    background: #090e13;
-    border: 1px solid #202d38;
     padding: 20px;
+    border: 1px solid #26343d;
 }
 
 .stat span {
     display: block;
-
-    color: #607684;
-
-    font-size: 9px;
-
+    font-size: 10px;
     letter-spacing: 2px;
-
-    margin-bottom: 8px;
 }
 
 .stat strong {
+    display: block;
     font-size: 28px;
+    margin-top: 8px;
 }
 
-.admin-result {
-    display: none;
-
-    padding: 13px;
-
-    margin-bottom: 20px;
-
-    font-size: 12px;
-}
-
-.request-card {
-    background: #090e13;
-
-    border: 1px solid #202d38;
-
-    padding: 24px;
-
+.request {
+    border: 1px solid #26343d;
+    padding: 22px;
     margin-bottom: 18px;
 }
 
-.request-top {
+.request-header {
     display: flex;
-
     justify-content: space-between;
-
-    align-items: center;
-
-    gap: 15px;
-
     margin-bottom: 20px;
-}
-
-.request-id {
-    font-family: monospace;
-
-    font-size: 14px;
-
-    font-weight: bold;
-}
-
-.status {
-    padding: 6px 10px;
-
-    font-size: 9px;
-
-    letter-spacing: 1px;
-
-    border: 1px solid #3b4c58;
-}
-
-.status.pending {
-    color: #d9bd79;
-
-    border-color: #66552c;
-}
-
-.status.approved {
-    color: #8dccaa;
-
-    border-color: #315d48;
-}
-
-.status.rejected {
-    color: #d98989;
-
-    border-color: #633838;
 }
 
 .request-info {
     display: grid;
-
     grid-template-columns:
         repeat(3, 1fr);
-
-    gap: 12px;
-
-    margin-bottom: 20px;
-}
-
-.info-box {
-    border: 1px solid #1e2a33;
-
-    padding: 13px;
-}
-
-.info-box span {
-    display: block;
-
-    color: #596b78;
-
-    font-size: 9px;
-
-    letter-spacing: 2px;
-
-    margin-bottom: 6px;
-}
-
-.info-box strong {
-    font-size: 13px;
-}
-
-.time-control {
-    border-top: 1px solid #202d38;
-
-    padding-top: 20px;
-
-    margin-top: 5px;
-}
-
-.time-title {
-    color: #71818d;
-
-    font-size: 10px;
-
-    letter-spacing: 2px;
-
-    margin-bottom: 10px;
-}
-
-.time-row {
-    display: flex;
-
     gap: 10px;
-
-    flex-wrap: wrap;
 }
 
-.time-select {
-    flex: 1;
-
-    min-width: 200px;
-
-    background: #05080b;
-
-    color: #d5dfe5;
-
-    border: 1px solid #344652;
-
+.info {
+    border: 1px solid #202b33;
     padding: 12px;
-
-    font-family: monospace;
-
-    font-size: 13px;
 }
 
-.action-button {
-    padding: 12px 18px;
-
-    background: transparent;
-
-    cursor: pointer;
-
-    font-weight: bold;
-
-    letter-spacing: 1px;
+.info small {
+    display: block;
+    opacity: .6;
+    font-size: 9px;
+    letter-spacing: 2px;
 }
 
-.change-time {
-    color: #8fb8d0;
-
-    border: 1px solid #3d6072;
+.time-area {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #26343d;
 }
 
-.change-time:hover {
-    background: #0d1b24;
+.time-area select {
+    min-width: 200px;
 }
 
-.approve {
-    color: #8dccaa;
-
-    border: 1px solid #315d48;
-}
-
-.approve:hover {
-    background: #102219;
-}
-
-.reject {
-    color: #d98989;
-
-    border: 1px solid #633838;
-}
-
-.reject:hover {
-    background: #210d0d;
-}
-
-.message-box {
+.message {
     width: 100%;
-
     box-sizing: border-box;
-
-    margin: 18px 0 12px;
-
     min-height: 80px;
-
-    resize: vertical;
+    margin-top: 15px;
 }
 
-.actions {
+.buttons {
     display: flex;
-
     gap: 10px;
-
-    flex-wrap: wrap;
+    margin-top: 12px;
 }
 
-.no-requests {
-    background: #090e13;
-
-    border: 1px solid #202d38;
-
-    padding: 30px;
-
-    color: #71818d;
+.buttons button {
+    padding: 12px 18px;
+    cursor: pointer;
 }
 
-@media (max-width: 800px) {
+.success {
+    color: #83cda4;
+}
 
-    .stats {
-        grid-template-columns:
-            1fr 1fr;
-    }
+.error {
+    color: #d88383;
+}
 
+@media(max-width:700px) {
+
+    .stats,
     .request-info {
-        grid-template-columns:
-            1fr;
+        grid-template-columns: 1fr;
     }
 
 }
@@ -357,7 +145,6 @@ body {
 </style>
 
 </head>
-
 
 <body>
 
@@ -376,32 +163,15 @@ body {
 
     </div>
 
-
-    <nav class="navigation">
-
-        <a href="/">
-            HOME
-        </a>
-
-        <a href="/sites">
-            SITES
-        </a>
-
-        <a href="/term">
-            TERMINAL
-        </a>
-
-    </nav>
-
 </header>
 
 
-<main class="admin-page">
+<main class="admin-container">
 
 
 <section
-    id="loginBox"
-    class="admin-login"
+    id="login"
+    class="login"
 >
 
     <h1>
@@ -409,31 +179,31 @@ body {
     </h1>
 
     <p>
-        SITE-64 restricted administration system.
+        Restricted SITE-64 administration system.
     </p>
 
 
     <input
-        id="adminPassword"
+        id="password"
         type="password"
         placeholder="ACCESS CODE"
     >
 
 
     <button
-        class="primary-button"
         id="loginButton"
     >
         ACCESS SYSTEM
     </button>
 
 
-    <div
+    <p
         id="loginError"
-        class="login-error"
+        class="error"
+        style="display:none;"
     >
         ACCESS DENIED.
-    </div>
+    </p>
 
 </section>
 
@@ -443,59 +213,40 @@ body {
     class="dashboard"
 >
 
-
-<div class="admin-header">
-
-    <span>
-        SECURE CONTAIN PROTECT / O5
-    </span>
-
     <h1>
         SITE-64 CONTROL
     </h1>
 
-    <p>
-        Request management system.
-    </p>
 
-</div>
+    <div class="stats">
 
+        <div class="stat">
+            <span>TOTAL</span>
+            <strong id="total">0</strong>
+        </div>
 
-<div class="stats">
+        <div class="stat">
+            <span>PENDING</span>
+            <strong id="pending">0</strong>
+        </div>
 
-    <div class="stat">
-        <span>TOTAL</span>
-        <strong id="total">0</strong>
+        <div class="stat">
+            <span>APPROVED</span>
+            <strong id="approved">0</strong>
+        </div>
+
+        <div class="stat">
+            <span>REJECTED</span>
+            <strong id="rejected">0</strong>
+        </div>
+
     </div>
 
-    <div class="stat">
-        <span>PENDING</span>
-        <strong id="pending">0</strong>
-    </div>
 
-    <div class="stat">
-        <span>APPROVED</span>
-        <strong id="approved">0</strong>
-    </div>
-
-    <div class="stat">
-        <span>REJECTED</span>
-        <strong id="rejected">0</strong>
-    </div>
-
-</div>
+    <div id="message"></div>
 
 
-<div
-    id="result"
-    class="admin-result"
-></div>
-
-
-<div
-    id="requests"
-></div>
-
+    <div id="requests"></div>
 
 </section>
 
@@ -505,19 +256,11 @@ body {
 
 <script>
 
-/* =====================================================
-   ADMIN ACCESS
-===================================================== */
-
-const ADMIN_CODE =
+const ADMIN_PASSWORD =
     "SITE64-O5";
 
 
-/* =====================================================
-   TIME OPTIONS
-===================================================== */
-
-const TIME_OPTIONS = [
+const TIMES = [
 
     "12:00 PM",
     "12:30 PM",
@@ -563,92 +306,76 @@ const TIME_OPTIONS = [
 let requests = [];
 
 
-/* =====================================================
-   ELEMENTS
-===================================================== */
-
-const loginBox =
-    document.getElementById(
-        "loginBox"
-    );
-
-const dashboard =
-    document.getElementById(
-        "dashboard"
-    );
-
-const passwordInput =
-    document.getElementById(
-        "adminPassword"
-    );
-
-const loginButton =
-    document.getElementById(
-        "loginButton"
-    );
-
-const loginError =
-    document.getElementById(
-        "loginError"
-    );
-
-const requestsContainer =
-    document.getElementById(
-        "requests"
+document
+    .getElementById("loginButton")
+    .addEventListener(
+        "click",
+        login
     );
 
 
-/* =====================================================
-   LOGIN
-===================================================== */
+document
+    .getElementById("password")
+    .addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key ===
+                "Enter"
+            ) {
+                login();
+            }
+
+        }
+    );
+
 
 function login() {
 
+    const password =
+        document
+            .getElementById(
+                "password"
+            )
+            .value;
+
+
     if (
-        passwordInput.value ===
-        ADMIN_CODE
+        password !==
+        ADMIN_PASSWORD
     ) {
 
-        loginBox.style.display =
-            "none";
+        document
+            .getElementById(
+                "loginError"
+            )
+            .style.display =
+                "block";
 
-        dashboard.style.display =
-            "block";
-
-        loginError.style.display =
-            "none";
-
-        loadRequests();
-
-    } else {
-
-        loginError.style.display =
-            "block";
+        return;
     }
+
+
+    document
+        .getElementById(
+            "login"
+        )
+        .style.display =
+            "none";
+
+
+    document
+        .getElementById(
+            "dashboard"
+        )
+        .style.display =
+            "block";
+
+
+    loadRequests();
 }
 
-
-loginButton.addEventListener(
-    "click",
-    login
-);
-
-
-passwordInput.addEventListener(
-    "keydown",
-    event => {
-
-        if (event.key === "Enter") {
-            login();
-        }
-
-    }
-);
-
-
-/* =====================================================
-   LOAD REQUESTS
-===================================================== */
 
 async function loadRequests() {
 
@@ -668,7 +395,7 @@ async function loadRequests() {
 
             throw new Error(
                 data.message ||
-                "REQUEST DATABASE ERROR."
+                "DATABASE ERROR."
             );
         }
 
@@ -683,11 +410,11 @@ async function loadRequests() {
 
         updateStats();
 
-        renderRequests();
+        render();
 
     } catch (error) {
 
-        showResult(
+        showMessage(
             error.message,
             true
         );
@@ -695,283 +422,207 @@ async function loadRequests() {
 }
 
 
-/* =====================================================
-   STATS
-===================================================== */
-
 function updateStats() {
 
-    document.getElementById(
-        "total"
-    ).textContent =
-        requests.length;
+    document
+        .getElementById(
+            "total"
+        )
+        .textContent =
+            requests.length;
 
 
-    document.getElementById(
-        "pending"
-    ).textContent =
-        requests.filter(
-            r =>
-                r.status ===
-                "PENDING"
-        ).length;
+    document
+        .getElementById(
+            "pending"
+        )
+        .textContent =
+            requests.filter(
+                r =>
+                    r.status ===
+                    "PENDING"
+            ).length;
 
 
-    document.getElementById(
-        "approved"
-    ).textContent =
-        requests.filter(
-            r =>
-                r.status ===
-                "APPROVED"
-        ).length;
+    document
+        .getElementById(
+            "approved"
+        )
+        .textContent =
+            requests.filter(
+                r =>
+                    r.status ===
+                    "APPROVED"
+            ).length;
 
 
-    document.getElementById(
-        "rejected"
-    ).textContent =
-        requests.filter(
-            r =>
-                r.status ===
-                "REJECTED"
-        ).length;
+    document
+        .getElementById(
+            "rejected"
+        )
+        .textContent =
+            requests.filter(
+                r =>
+                    r.status ===
+                    "REJECTED"
+            ).length;
 }
 
 
-/* =====================================================
-   RENDER
-===================================================== */
+function render() {
 
-function renderRequests() {
+    const container =
+        document.getElementById(
+            "requests"
+        );
+
 
     if (!requests.length) {
 
-        requestsContainer.innerHTML = `
-
-            <div class="no-requests">
-                NO REQUESTS FOUND.
-            </div>
-
-        `;
+        container.innerHTML =
+            "<p>NO REQUESTS FOUND.</p>";
 
         return;
     }
 
 
-    requestsContainer.innerHTML =
+    container.innerHTML =
         requests
             .slice()
             .reverse()
             .map(
-                createRequestCard
+                requestCard
             )
             .join("");
 }
 
 
-/* =====================================================
-   REQUEST CARD
-===================================================== */
-
-function createRequestCard(request) {
-
-    const status =
-        String(
-            request.status ||
-            "PENDING"
-        ).toLowerCase();
-
-
-    const currentTime =
-        String(
-            request.time ||
-            ""
-        )
-            .trim()
-            .toUpperCase();
-
+function requestCard(request) {
 
     const options =
-        TIME_OPTIONS
-            .map(time => {
+        TIMES.map(
+            time => {
 
                 const selected =
-                    currentTime === time;
+                    time ===
+                    request.time
+                        ? "selected"
+                        : "";
+
 
                 return `
-
                     <option
                         value="${time}"
-                        ${selected ? "selected" : ""}
+                        ${selected}
                     >
                         ${time}
                     </option>
-
                 `;
-
-            })
-            .join("");
+            }
+        )
+        .join("");
 
 
     return `
 
-        <article class="request-card">
+        <article class="request">
 
+            <div class="request-header">
 
-            <div class="request-top">
-
-                <div class="request-id">
+                <strong>
                     ${escapeHtml(
                         request.id
                     )}
-                </div>
+                </strong>
 
-
-                <div
-                    class="status ${status}"
-                >
+                <strong>
                     ${escapeHtml(
-                        request.status ||
-                        "PENDING"
+                        request.status
                     )}
-                </div>
+                </strong>
 
             </div>
 
 
             <div class="request-info">
 
-
-                <div class="info-box">
-
-                    <span>
-                        NAME
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            request.name
-                        )}
-                    </strong>
-
+                <div class="info">
+                    <small>NAME</small>
+                    ${escapeHtml(
+                        request.name
+                    )}
                 </div>
 
-
-                <div class="info-box">
-
-                    <span>
-                        REQUEST TYPE
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            request.typeName ||
-                            request.type ||
-                            "UNKNOWN"
-                        )}
-                    </strong>
-
+                <div class="info">
+                    <small>TYPE</small>
+                    ${escapeHtml(
+                        request.typeName ||
+                        request.type
+                    )}
                 </div>
 
-
-                <div class="info-box">
-
-                    <span>
-                        SCP
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            request.scp ||
-                            "N/A"
-                        )}
-                    </strong>
-
+                <div class="info">
+                    <small>SCP</small>
+                    ${escapeHtml(
+                        request.scp ||
+                        "N/A"
+                    )}
                 </div>
 
-
-                <div class="info-box">
-
-                    <span>
-                        CURRENT TIME
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            request.time ||
-                            "N/A"
-                        )}
-                    </strong>
-
+                <div class="info">
+                    <small>TIME</small>
+                    ${escapeHtml(
+                        request.time
+                    )}
                 </div>
 
-
-                <div class="info-box">
-
-                    <span>
-                        PERIOD
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            request.period ||
-                            "N/A"
-                        )}
-                    </strong>
-
+                <div class="info">
+                    <small>PERIOD</small>
+                    ${escapeHtml(
+                        request.period
+                    )}
                 </div>
 
-
-                <div class="info-box">
-
-                    <span>
-                        STATUS
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            request.status ||
-                            "PENDING"
-                        )}
-                    </strong>
-
+                <div class="info">
+                    <small>CREATED</small>
+                    ${escapeHtml(
+                        request.createdAt
+                    )}
                 </div>
-
 
             </div>
 
 
-            <div class="time-control">
+            <div class="time-area">
 
-                <div class="time-title">
+                <strong>
                     CHANGE REQUEST TIME
-                </div>
+                </strong>
 
 
-                <div class="time-row">
+                <br><br>
 
-                    <select
-                        class="time-select"
-                        id="time-${escapeHtml(
+
+                <select
+                    id="time-${escapeHtml(
+                        request.id
+                    )}"
+                >
+
+                    ${options}
+
+                </select>
+
+
+                <button
+                    onclick="changeTime(
+                        '${escapeJs(
                             request.id
-                        )}"
-                    >
-
-                        ${options}
-
-                    </select>
-
-
-                    <button
-                        class="action-button change-time"
-                        onclick="changeTime('${escapeJs(
-                            request.id
-                        )}')"
-                    >
-                        CHANGE TIME
-                    </button>
-
-                </div>
+                        )}'
+                    )"
+                >
+                    CHANGE TIME
+                </button>
 
             </div>
 
@@ -980,12 +631,12 @@ function createRequestCard(request) {
                 id="message-${escapeHtml(
                     request.id
                 )}"
-                class="message-box"
+                class="message"
                 placeholder="ADMIN MESSAGE..."
             ></textarea>
 
 
-            <div class="actions">
+            <div class="buttons">
 
                 ${
                     request.status ===
@@ -994,41 +645,36 @@ function createRequestCard(request) {
                     ? `
 
                     <button
-                        class="action-button approve"
-                        onclick="approveRequest('${escapeJs(
-                            request.id
-                        )}')"
+                        onclick="approve(
+                            '${escapeJs(
+                                request.id
+                            )}'
+                        )"
                     >
-                        APPROVE REQUEST
+                        APPROVE
                     </button>
 
-
                     <button
-                        class="action-button reject"
-                        onclick="rejectRequest('${escapeJs(
-                            request.id
-                        )}')"
+                        onclick="reject(
+                            '${escapeJs(
+                                request.id
+                            )}'
+                        )"
                     >
-                        REJECT REQUEST
+                        REJECT
                     </button>
 
                     `
-
                     : ""
                 }
 
             </div>
-
 
         </article>
 
     `;
 }
 
-
-/* =====================================================
-   CHANGE TIME
-===================================================== */
 
 async function changeTime(id) {
 
@@ -1038,30 +684,8 @@ async function changeTime(id) {
         );
 
 
-    if (!select) {
-
-        showResult(
-            "TIME SELECTOR NOT FOUND.",
-            true
-        );
-
-        return;
-    }
-
-
     const time =
         select.value;
-
-
-    if (!time) {
-
-        showResult(
-            "PLEASE SELECT A TIME.",
-            true
-        );
-
-        return;
-    }
 
 
     try {
@@ -1072,7 +696,8 @@ async function changeTime(id) {
                     id
                 )}/time`,
                 {
-                    method: "POST",
+                    method:
+                        "POST",
 
                     headers: {
                         "Content-Type":
@@ -1081,7 +706,7 @@ async function changeTime(id) {
 
                     body:
                         JSON.stringify({
-                            time: time
+                            time
                         })
                 }
             );
@@ -1100,17 +725,17 @@ async function changeTime(id) {
         }
 
 
-        showResult(
-            `REQUEST TIME UPDATED TO ${data.request.time}.`,
+        showMessage(
+            `TIME CHANGED TO ${data.request.time}.`,
             false
         );
 
 
-        await loadRequests();
+        loadRequests();
 
     } catch (error) {
 
-        showResult(
+        showMessage(
             error.message,
             true
         );
@@ -1118,11 +743,28 @@ async function changeTime(id) {
 }
 
 
-/* =====================================================
-   APPROVE
-===================================================== */
+async function approve(id) {
 
-async function approveRequest(id) {
+    await sendAction(
+        id,
+        "approve"
+    );
+}
+
+
+async function reject(id) {
+
+    await sendAction(
+        id,
+        "reject"
+    );
+}
+
+
+async function sendAction(
+    id,
+    action
+) {
 
     const messageElement =
         document.getElementById(
@@ -1142,9 +784,10 @@ async function approveRequest(id) {
             await fetch(
                 `/api/requests/${encodeURIComponent(
                     id
-                )}/approve`,
+                )}/${action}`,
                 {
-                    method: "POST",
+                    method:
+                        "POST",
 
                     headers: {
                         "Content-Type":
@@ -1167,22 +810,24 @@ async function approveRequest(id) {
 
             throw new Error(
                 data.message ||
-                "APPROVAL FAILED."
+                "ACTION FAILED."
             );
         }
 
 
-        showResult(
-            "REQUEST APPROVED.",
+        showMessage(
+            action === "approve"
+                ? "REQUEST APPROVED."
+                : "REQUEST REJECTED.",
             false
         );
 
 
-        await loadRequests();
+        loadRequests();
 
     } catch (error) {
 
-        showResult(
+        showMessage(
             error.message,
             true
         );
@@ -1190,121 +835,33 @@ async function approveRequest(id) {
 }
 
 
-/* =====================================================
-   REJECT
-===================================================== */
-
-async function rejectRequest(id) {
-
-    const messageElement =
-        document.getElementById(
-            `message-${id}`
-        );
-
-
-    const message =
-        messageElement
-            ? messageElement.value.trim()
-            : "";
-
-
-    try {
-
-        const response =
-            await fetch(
-                `/api/requests/${encodeURIComponent(
-                    id
-                )}/reject`,
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify({
-                            message
-                        })
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.message ||
-                "REJECTION FAILED."
-            );
-        }
-
-
-        showResult(
-            "REQUEST REJECTED.",
-            false
-        );
-
-
-        await loadRequests();
-
-    } catch (error) {
-
-        showResult(
-            error.message,
-            true
-        );
-    }
-}
-
-
-/* =====================================================
-   RESULT
-===================================================== */
-
-function showResult(
-    message,
+function showMessage(
+    text,
     error
 ) {
 
-    const result =
+    const element =
         document.getElementById(
-            "result"
+            "message"
         );
 
 
-    result.style.display =
-        "block";
+    element.textContent =
+        text;
 
 
-    result.textContent =
-        message;
-
-
-    result.style.color =
+    element.className =
         error
-            ? "#d98989"
-            : "#8dccaa";
-
-
-    result.style.border =
-        error
-            ? "1px solid #633838"
-            : "1px solid #315d48";
+            ? "error"
+            : "success";
 }
 
 
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
 function escapeHtml(value) {
 
-    return String(value ?? "")
+    return String(
+        value ?? ""
+    )
         .replace(
             /&/g,
             "&amp;"
@@ -1328,13 +885,11 @@ function escapeHtml(value) {
 }
 
 
-/* =====================================================
-   ESCAPE JS
-===================================================== */
-
 function escapeJs(value) {
 
-    return String(value ?? "")
+    return String(
+        value ?? ""
+    )
         .replace(
             /\\/g,
             "\\\\"
@@ -1346,7 +901,6 @@ function escapeJs(value) {
 }
 
 </script>
-
 
 </body>
 
