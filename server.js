@@ -37,6 +37,7 @@ function defaultDatabase() {
                 personnel: 1284,
                 containment: "STABLE",
                 incidents: 0,
+                satelliteMaterials: "INSUFFICIENT",
                 updatedAt: new Date().toISOString()
             },
 
@@ -50,6 +51,7 @@ function defaultDatabase() {
                 personnel: 436,
                 containment: "MONITORED",
                 incidents: 1,
+                satelliteMaterials: "INSUFFICIENT",
                 updatedAt: new Date().toISOString()
             },
 
@@ -63,12 +65,34 @@ function defaultDatabase() {
                 personnel: 64,
                 containment: "STABLE",
                 incidents: 0,
+                satelliteMaterials: "INSUFFICIENT",
                 updatedAt: new Date().toISOString()
             }
 
         },
 
         siteActivity: [],
+
+        councilRequests: [],
+
+        satellite: {
+
+            status: "NOT CONSTRUCTED",
+
+            progress: 8,
+
+            materials: "INSUFFICIENT",
+
+            deployment: "UNAVAILABLE",
+
+            location: "BEYOND EARTH",
+
+            purpose: "WARHEAD DEACTIVATION",
+
+            lastUpdated:
+                new Date().toISOString()
+
+        },
 
         warhead: {
 
@@ -91,6 +115,10 @@ function defaultDatabase() {
 }
 
 
+/* =====================================================
+   DATABASE READ
+===================================================== */
+
 function readDatabase() {
 
     try {
@@ -111,6 +139,7 @@ function readDatabase() {
             );
 
             return initial;
+
         }
 
 
@@ -121,6 +150,10 @@ function readDatabase() {
                     "utf8"
                 )
             );
+
+
+        const defaults =
+            defaultDatabase();
 
 
         if (!Array.isArray(data.requests)) {
@@ -135,7 +168,7 @@ function readDatabase() {
         ) {
 
             data.sites =
-                defaultDatabase().sites;
+                defaults.sites;
 
         }
 
@@ -145,15 +178,42 @@ function readDatabase() {
         }
 
 
-        if (!data.warhead) {
+        if (!Array.isArray(data.councilRequests)) {
+            data.councilRequests = [];
+        }
+
+
+        if (
+            !data.satellite ||
+            typeof data.satellite !== "object"
+        ) {
+
+            data.satellite =
+                defaults.satellite;
+
+        } else {
+
+            data.satellite = {
+                ...defaults.satellite,
+                ...data.satellite
+            };
+
+        }
+
+
+        if (
+            !data.warhead ||
+            typeof data.warhead !== "object"
+        ) {
+
+            data.warhead =
+                defaults.warhead;
+
+        } else {
 
             data.warhead = {
-                active: false,
-                type: null,
-                site: null,
-                status: "STANDBY",
-                message: "",
-                activatedAt: null
+                ...defaults.warhead,
+                ...data.warhead
             };
 
         }
@@ -176,6 +236,10 @@ function readDatabase() {
 }
 
 
+/* =====================================================
+   DATABASE SAVE
+===================================================== */
+
 function saveDatabase(data) {
 
     fs.writeFileSync(
@@ -192,7 +256,7 @@ function saveDatabase(data) {
 
 
 /* =====================================================
-   DATABASE REPAIR
+   DATABASE INITIALIZATION / REPAIR
 ===================================================== */
 
 function initializeDatabase() {
@@ -201,30 +265,65 @@ function initializeDatabase() {
         readDatabase();
 
     const defaults =
-        defaultDatabase().sites;
+        defaultDatabase();
+
 
     let changed = false;
 
 
+    /* -------------------------------------------------
+       SITES
+    -------------------------------------------------- */
+
     for (
-        const [siteId, site]
-        of Object.entries(defaults)
+        const [siteId, defaultSite]
+        of Object.entries(defaults.sites)
     ) {
 
         if (!database.sites[siteId]) {
 
             database.sites[siteId] = {
-                ...site
+                ...defaultSite
             };
 
             changed = true;
+
+            continue;
+
+        }
+
+
+        for (
+            const [key, value]
+            of Object.entries(defaultSite)
+        ) {
+
+            if (
+                database.sites[siteId][key] ===
+                undefined
+            ) {
+
+                database.sites[siteId][key] =
+                    value;
+
+                changed = true;
+
+            }
 
         }
 
     }
 
 
-    if (!Array.isArray(database.siteActivity)) {
+    /* -------------------------------------------------
+       ACTIVITY
+    -------------------------------------------------- */
+
+    if (
+        !Array.isArray(
+            database.siteActivity
+        )
+    ) {
 
         database.siteActivity = [];
 
@@ -233,18 +332,99 @@ function initializeDatabase() {
     }
 
 
-    if (!database.warhead) {
+    /* -------------------------------------------------
+       COUNCIL
+    -------------------------------------------------- */
 
-        database.warhead = {
-            active: false,
-            type: null,
-            site: null,
-            status: "STANDBY",
-            message: "",
-            activatedAt: null
-        };
+    if (
+        !Array.isArray(
+            database.councilRequests
+        )
+    ) {
+
+        database.councilRequests = [];
 
         changed = true;
+
+    }
+
+
+    /* -------------------------------------------------
+       SATELLITE
+    -------------------------------------------------- */
+
+    if (
+        !database.satellite ||
+        typeof database.satellite !== "object"
+    ) {
+
+        database.satellite =
+            defaults.satellite;
+
+        changed = true;
+
+    } else {
+
+        for (
+            const [key, value]
+            of Object.entries(
+                defaults.satellite
+            )
+        ) {
+
+            if (
+                database.satellite[key] ===
+                undefined
+            ) {
+
+                database.satellite[key] =
+                    value;
+
+                changed = true;
+
+            }
+
+        }
+
+    }
+
+
+    /* -------------------------------------------------
+       WARHEAD
+    -------------------------------------------------- */
+
+    if (
+        !database.warhead ||
+        typeof database.warhead !== "object"
+    ) {
+
+        database.warhead =
+            defaults.warhead;
+
+        changed = true;
+
+    } else {
+
+        for (
+            const [key, value]
+            of Object.entries(
+                defaults.warhead
+            )
+        ) {
+
+            if (
+                database.warhead[key] ===
+                undefined
+            ) {
+
+                database.warhead[key] =
+                    value;
+
+                changed = true;
+
+            }
+
+        }
 
     }
 
@@ -262,7 +442,7 @@ function initializeDatabase() {
 
 
 /* =====================================================
-   REQUEST SYSTEM
+   REQUEST HELPERS
 ===================================================== */
 
 function generateRequestId() {
@@ -271,6 +451,7 @@ function generateRequestId() {
         readDatabase();
 
     let id;
+
 
     do {
 
@@ -288,6 +469,37 @@ function generateRequestId() {
         )
     );
 
+
+    return id;
+
+}
+
+
+function generateCouncilRequestId() {
+
+    const database =
+        readDatabase();
+
+    let id;
+
+
+    do {
+
+        id =
+            "O5-" +
+            Math.floor(
+                10000 +
+                Math.random() * 90000
+            );
+
+    } while (
+        database.councilRequests.some(
+            request =>
+                request.id === id
+        )
+    );
+
+
     return id;
 
 }
@@ -298,6 +510,7 @@ function isValidTime(time) {
     if (!time) {
         return false;
     }
+
 
     return /^(0[0-9]|1[0-9]|2[0-3]):(00|30)$/
         .test(
@@ -315,6 +528,7 @@ function getPeriod(time) {
                 .split(":")[0]
         );
 
+
     if (
         hour >= 6 &&
         hour < 18
@@ -323,6 +537,7 @@ function getPeriod(time) {
         return "DAY";
 
     }
+
 
     return "NIGHT";
 
@@ -394,7 +609,7 @@ app.get("/warhead", (req, res) => {
 
 
 /* =====================================================
-   REQUESTS
+   REQUEST SYSTEM
 ===================================================== */
 
 app.get(
@@ -403,6 +618,7 @@ app.get(
 
         const database =
             readDatabase();
+
 
         res.json({
 
@@ -578,6 +794,7 @@ app.post(
                 error
             );
 
+
             res.status(500).json({
 
                 success: false,
@@ -603,6 +820,7 @@ app.post(
 
         const database =
             readDatabase();
+
 
         const request =
             database.requests.find(
@@ -700,6 +918,7 @@ app.post(
 
         const database =
             readDatabase();
+
 
         const request =
             database.requests.find(
@@ -1202,7 +1421,8 @@ app.put(
                 personnel,
                 containment,
                 incidents,
-                description
+                description,
+                satelliteMaterials
             } = req.body;
 
 
@@ -1316,6 +1536,12 @@ app.put(
             const oldContainment =
                 site.containment;
 
+            const oldPersonnel =
+                site.personnel;
+
+            const oldIncidents =
+                site.incidents;
+
 
             if (status !== undefined) {
 
@@ -1373,6 +1599,21 @@ app.put(
                             0,
                             2000
                         );
+
+            }
+
+
+            if (
+                satelliteMaterials !==
+                undefined
+            ) {
+
+                site.satelliteMaterials =
+                    String(
+                        satelliteMaterials
+                    )
+                    .trim()
+                    .toUpperCase();
 
             }
 
@@ -1435,6 +1676,46 @@ app.put(
                     "CONTAINMENT",
 
                     `${siteId} CONTAINMENT STATUS CHANGED: ${oldContainment} -> ${site.containment}`
+
+                );
+
+            }
+
+
+            if (
+                oldPersonnel !==
+                site.personnel
+            ) {
+
+                addSiteActivity(
+
+                    database,
+
+                    siteId,
+
+                    "PERSONNEL",
+
+                    `${siteId} PERSONNEL COUNT CHANGED: ${oldPersonnel} -> ${site.personnel}`
+
+                );
+
+            }
+
+
+            if (
+                oldIncidents !==
+                site.incidents
+            ) {
+
+                addSiteActivity(
+
+                    database,
+
+                    siteId,
+
+                    "INCIDENT",
+
+                    `${siteId} INCIDENT COUNT CHANGED: ${oldIncidents} -> ${site.incidents}`
 
                 );
 
@@ -1602,6 +1883,767 @@ app.get(
 
                 message:
                     "SITE ACTIVITY ERROR."
+
+            });
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   O5 COUNCIL
+===================================================== */
+
+const VALID_COUNCIL_STATUS = [
+    "PENDING",
+    "APPROVED",
+    "REJECTED"
+];
+
+
+/* -----------------------------------------------------
+   GET COUNCIL REQUESTS
+----------------------------------------------------- */
+
+app.get(
+    "/api/council/departure",
+    (req, res) => {
+
+        try {
+
+            const database =
+                initializeDatabase();
+
+
+            res.json({
+
+                success: true,
+
+                requests:
+                    database.councilRequests
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "COUNCIL GET ERROR:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "COUNCIL DATABASE ERROR."
+
+            });
+
+        }
+
+    }
+);
+
+
+/* -----------------------------------------------------
+   CREATE COUNCIL DEPARTURE REQUEST
+----------------------------------------------------- */
+
+app.post(
+    "/api/council/departure",
+    (req, res) => {
+
+        try {
+
+            const {
+                name,
+                rank,
+                councilId,
+                reason,
+                acknowledgement
+            } = req.body;
+
+
+            if (
+                !name ||
+                !String(name).trim()
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "FULL NAME IS REQUIRED."
+
+                });
+
+            }
+
+
+            if (
+                !rank ||
+                !String(rank).trim()
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "CURRENT RANK IS REQUIRED."
+
+                });
+
+            }
+
+
+            if (
+                !councilId ||
+                !String(councilId).trim()
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "COUNCIL IDENTIFICATION IS REQUIRED."
+
+                });
+
+            }
+
+
+            if (
+                !reason ||
+                !String(reason).trim()
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "REASON FOR DEPARTURE IS REQUIRED."
+
+                });
+
+            }
+
+
+            if (
+                acknowledgement === false ||
+                acknowledgement === "false"
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "FINAL ACKNOWLEDGEMENT IS REQUIRED."
+
+                });
+
+            }
+
+
+            const now =
+                new Date().toISOString();
+
+
+            const request = {
+
+                id:
+                    generateCouncilRequestId(),
+
+                name:
+                    String(name)
+                        .trim()
+                        .slice(0, 200),
+
+                rank:
+                    String(rank)
+                        .trim()
+                        .slice(0, 100),
+
+                councilId:
+                    String(councilId)
+                        .trim()
+                        .slice(0, 100),
+
+                reason:
+                    String(reason)
+                        .trim()
+                        .slice(0, 3000),
+
+                acknowledgement:
+                    true,
+
+                status:
+                    "PENDING",
+
+                adminMessage:
+                    "",
+
+                createdAt:
+                    now,
+
+                updatedAt:
+                    now
+
+            };
+
+
+            const database =
+                readDatabase();
+
+
+            database.councilRequests.push(
+                request
+            );
+
+
+            database.councilRequests =
+                database.councilRequests
+                    .slice(
+                        -500
+                    );
+
+
+            saveDatabase(
+                database
+            );
+
+
+            res.status(201).json({
+
+                success: true,
+
+                request
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "COUNCIL REQUEST ERROR:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "COUNCIL REQUEST FAILED."
+
+            });
+
+        }
+
+    }
+);
+
+
+/* -----------------------------------------------------
+   APPROVE COUNCIL REQUEST
+----------------------------------------------------- */
+
+app.post(
+    "/api/council/departure/:id/approve",
+    (req, res) => {
+
+        try {
+
+            const database =
+                initializeDatabase();
+
+
+            const request =
+                database.councilRequests.find(
+                    item =>
+                        item.id ===
+                        req.params.id
+                );
+
+
+            if (!request) {
+
+                return res.status(404).json({
+
+                    success: false,
+
+                    message:
+                        "COUNCIL REQUEST NOT FOUND."
+
+                });
+
+            }
+
+
+            request.status =
+                "APPROVED";
+
+
+            request.adminMessage =
+                req.body.message ||
+                "O5 COUNCIL DEPARTURE REQUEST APPROVED.";
+
+
+            request.updatedAt =
+                new Date().toISOString();
+
+
+            saveDatabase(
+                database
+            );
+
+
+            res.json({
+
+                success: true,
+
+                request
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "COUNCIL APPROVE ERROR:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "COUNCIL APPROVAL FAILED."
+
+            });
+
+        }
+
+    }
+);
+
+
+/* -----------------------------------------------------
+   REJECT COUNCIL REQUEST
+----------------------------------------------------- */
+
+app.post(
+    "/api/council/departure/:id/reject",
+    (req, res) => {
+
+        try {
+
+            const database =
+                initializeDatabase();
+
+
+            const request =
+                database.councilRequests.find(
+                    item =>
+                        item.id ===
+                        req.params.id
+                );
+
+
+            if (!request) {
+
+                return res.status(404).json({
+
+                    success: false,
+
+                    message:
+                        "COUNCIL REQUEST NOT FOUND."
+
+                });
+
+            }
+
+
+            request.status =
+                "REJECTED";
+
+
+            request.adminMessage =
+                req.body.message ||
+                "O5 COUNCIL DEPARTURE REQUEST REJECTED.";
+
+
+            request.updatedAt =
+                new Date().toISOString();
+
+
+            saveDatabase(
+                database
+            );
+
+
+            res.json({
+
+                success: true,
+
+                request
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "COUNCIL REJECT ERROR:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "COUNCIL REJECTION FAILED."
+
+            });
+
+        }
+
+    }
+);
+
+
+/* -----------------------------------------------------
+   UPDATE COUNCIL REQUEST
+----------------------------------------------------- */
+
+app.put(
+    "/api/council/departure/:id",
+    (req, res) => {
+
+        try {
+
+            const database =
+                initializeDatabase();
+
+
+            const request =
+                database.councilRequests.find(
+                    item =>
+                        item.id ===
+                        req.params.id
+                );
+
+
+            if (!request) {
+
+                return res.status(404).json({
+
+                    success: false,
+
+                    message:
+                        "COUNCIL REQUEST NOT FOUND."
+
+                });
+
+            }
+
+
+            const {
+                status,
+                message
+            } = req.body;
+
+
+            if (
+                status !== undefined &&
+                !VALID_COUNCIL_STATUS.includes(
+                    String(status).toUpperCase()
+                )
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "INVALID COUNCIL REQUEST STATUS."
+
+                });
+
+            }
+
+
+            if (status !== undefined) {
+
+                request.status =
+                    String(status)
+                        .toUpperCase();
+
+            }
+
+
+            if (message !== undefined) {
+
+                request.adminMessage =
+                    String(message)
+                        .trim()
+                        .slice(
+                            0,
+                            2000
+                        );
+
+            }
+
+
+            request.updatedAt =
+                new Date().toISOString();
+
+
+            saveDatabase(
+                database
+            );
+
+
+            res.json({
+
+                success: true,
+
+                request
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "COUNCIL UPDATE ERROR:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "COUNCIL UPDATE FAILED."
+
+            });
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   SATELLITE SYSTEM
+===================================================== */
+
+app.get(
+    "/api/satellite",
+    (req, res) => {
+
+        try {
+
+            const database =
+                initializeDatabase();
+
+
+            res.json({
+
+                success: true,
+
+                satellite:
+                    database.satellite
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "SATELLITE GET ERROR:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "SATELLITE STATUS ERROR."
+
+            });
+
+        }
+
+    }
+);
+
+
+/* -----------------------------------------------------
+   UPDATE SATELLITE STATUS
+----------------------------------------------------- */
+
+app.put(
+    "/api/satellite",
+    (req, res) => {
+
+        try {
+
+            const database =
+                initializeDatabase();
+
+
+            const {
+                status,
+                progress,
+                materials,
+                deployment,
+                location,
+                purpose
+            } = req.body;
+
+
+            if (status !== undefined) {
+
+                database.satellite.status =
+                    String(status)
+                        .trim()
+                        .toUpperCase();
+
+            }
+
+
+            if (progress !== undefined) {
+
+                const numericProgress =
+                    Number(progress);
+
+
+                if (
+                    !Number.isFinite(
+                        numericProgress
+                    ) ||
+                    numericProgress < 0 ||
+                    numericProgress > 100
+                ) {
+
+                    return res.status(400).json({
+
+                        success: false,
+
+                        message:
+                            "INVALID SATELLITE PROGRESS."
+
+                    });
+
+                }
+
+
+                database.satellite.progress =
+                    Math.floor(
+                        numericProgress
+                    );
+
+            }
+
+
+            if (materials !== undefined) {
+
+                database.satellite.materials =
+                    String(materials)
+                        .trim()
+                        .toUpperCase();
+
+            }
+
+
+            if (deployment !== undefined) {
+
+                database.satellite.deployment =
+                    String(deployment)
+                        .trim()
+                        .toUpperCase();
+
+            }
+
+
+            if (location !== undefined) {
+
+                database.satellite.location =
+                    String(location)
+                        .trim()
+                        .slice(
+                            0,
+                            200
+                        );
+
+            }
+
+
+            if (purpose !== undefined) {
+
+                database.satellite.purpose =
+                    String(purpose)
+                        .trim()
+                        .slice(
+                            0,
+                            300
+                        );
+
+            }
+
+
+            database.satellite.lastUpdated =
+                new Date().toISOString();
+
+
+            saveDatabase(
+                database
+            );
+
+
+            res.json({
+
+                success: true,
+
+                satellite:
+                    database.satellite
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "SATELLITE UPDATE ERROR:",
+                error
+            );
+
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "SATELLITE UPDATE FAILED."
 
             });
 
@@ -1992,6 +3034,30 @@ app.get(
             ).length;
 
 
+        const councilPending =
+            database.councilRequests.filter(
+                request =>
+                    request.status ===
+                    "PENDING"
+            ).length;
+
+
+        const councilApproved =
+            database.councilRequests.filter(
+                request =>
+                    request.status ===
+                    "APPROVED"
+            ).length;
+
+
+        const councilRejected =
+            database.councilRequests.filter(
+                request =>
+                    request.status ===
+                    "REJECTED"
+            ).length;
+
+
         const sites =
             Object.values(
                 database.sites
@@ -2011,6 +3077,14 @@ app.get(
                 site =>
                     site.status ===
                     "LOCKDOWN"
+            ).length;
+
+
+        const offlineSites =
+            sites.filter(
+                site =>
+                    site.status ===
+                    "OFFLINE"
             ).length;
 
 
@@ -2043,6 +3117,18 @@ app.get(
             rejectedRequests:
                 rejected,
 
+            totalCouncilRequests:
+                database.councilRequests.length,
+
+            pendingCouncilRequests:
+                councilPending,
+
+            approvedCouncilRequests:
+                councilApproved,
+
+            rejectedCouncilRequests:
+                councilRejected,
+
             totalSites:
                 sites.length,
 
@@ -2050,10 +3136,18 @@ app.get(
 
             lockdownSites,
 
+            offlineSites,
+
             warhead:
                 database.warhead.active
                     ? "ACTIVE"
                     : "STANDBY",
+
+            satellite:
+                database.satellite.status,
+
+            satelliteProgress:
+                database.satellite.progress,
 
             uptime:
                 process.uptime()
@@ -2128,8 +3222,11 @@ AVAILABLE COMMANDS
 help       Show available commands
 status     Show system status
 requests   Show request statistics
+council    Show O5 Council requests
 sites      Show registered sites
+satellite  Show satellite status
 warhead    Show warhead status
+activity   Show recent site activity
 about      Show SITE-64 information
 clear      Clear terminal`
 
@@ -2151,6 +3248,14 @@ clear      Clear terminal`
                 ).length;
 
 
+            const councilPending =
+                database.councilRequests.filter(
+                    request =>
+                        request.status ===
+                        "PENDING"
+                ).length;
+
+
             return res.json({
 
                 output:
@@ -2162,6 +3267,9 @@ SITE         : SITE-64
 REQUESTS     : ${database.requests.length}
 PENDING      : ${pending}
 SITES        : ${Object.keys(database.sites).length}
+COUNCIL      : ${database.councilRequests.length}
+COUNCIL PEND : ${councilPending}
+SATELLITE    : ${database.satellite.status}
 WARHEAD      : ${database.warhead.active ? "ACTIVE" : "STANDBY"}`
 
             });
@@ -2215,6 +3323,50 @@ REJECTED   : ${rejected}`
 
         if (
             command ===
+            "council"
+        ) {
+
+            const pending =
+                database.councilRequests.filter(
+                    request =>
+                        request.status ===
+                        "PENDING"
+                ).length;
+
+
+            const approved =
+                database.councilRequests.filter(
+                    request =>
+                        request.status ===
+                        "APPROVED"
+                ).length;
+
+
+            const rejected =
+                database.councilRequests.filter(
+                    request =>
+                        request.status ===
+                        "REJECTED"
+                ).length;
+
+
+            return res.json({
+
+                output:
+`O5 COUNCIL DEPARTURE DATABASE
+==============================
+TOTAL      : ${database.councilRequests.length}
+PENDING    : ${pending}
+APPROVED   : ${approved}
+REJECTED   : ${rejected}`
+
+            });
+
+        }
+
+
+        if (
+            command ===
             "sites"
         ) {
 
@@ -2232,9 +3384,35 @@ REJECTED   : ${rejected}`
 ${sites
     .map(
         site =>
-            `${site.id.padEnd(10)} | ${site.status}`
+            `${site.id.padEnd(10)} | ${site.status.padEnd(9)} | ${site.security}`
     )
     .join("\n")}`
+
+            });
+
+        }
+
+
+        if (
+            command ===
+            "satellite"
+        ) {
+
+            const satellite =
+                database.satellite;
+
+
+            return res.json({
+
+                output:
+`EXTERNAL ORBITAL SATELLITE
+==============================
+STATUS       : ${satellite.status}
+PROGRESS     : ${satellite.progress}%
+MATERIALS    : ${satellite.materials}
+DEPLOYMENT   : ${satellite.deployment}
+LOCATION     : ${satellite.location}
+PURPOSE      : ${satellite.purpose}`
 
             });
 
@@ -2267,6 +3445,38 @@ STATE       : ${warhead.status}`
 
         if (
             command ===
+            "activity"
+        ) {
+
+            const activity =
+                database.siteActivity
+                    .slice(
+                        0,
+                        15
+                    );
+
+
+            return res.json({
+
+                output:
+`SITE ACTIVITY LOG
+==============================
+${activity.length
+    ? activity
+        .map(
+            item =>
+                `[${item.siteId}] ${item.type} - ${item.message}`
+        )
+        .join("\n")
+    : "NO ACTIVITY RECORDED."}`
+
+            });
+
+        }
+
+
+        if (
+            command ===
             "about"
         ) {
 
@@ -2277,8 +3487,12 @@ STATE       : ${warhead.status}`
 SITE-64 ADMINISTRATION SYSTEM
 
 CLASSIFICATION : O5
-FACILITY        : SITE-64
-STATUS          : OPERATIONAL
+FACILITY       : SITE-64
+STATUS         : OPERATIONAL
+
+O5 COUNCIL     : ACTIVE
+SATELLITE      : NOT CONSTRUCTED
+MATERIALS      : INSUFFICIENT
 
 Unauthorized access is prohibited.`
 
@@ -2408,6 +3622,14 @@ app.listen(
 
         console.log(
             "WARHEAD: /warhead"
+        );
+
+        console.log(
+            "O5 API : /api/council/departure"
+        );
+
+        console.log(
+            "SAT API: /api/satellite"
         );
 
         console.log(
