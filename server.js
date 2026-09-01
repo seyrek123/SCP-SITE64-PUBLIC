@@ -4,10 +4,34 @@ const path = require("path");
 
 const app = express();
 
+/* =====================================================
+   CONFIG
+===================================================== */
+
 const PORT = process.env.PORT || 6464;
 
 const PUBLIC_DIR = path.join(__dirname, "public");
 const DATA_FILE = path.join(__dirname, "data.json");
+
+
+/* =====================================================
+   CHECK PUBLIC DIRECTORY
+===================================================== */
+
+if (!fs.existsSync(PUBLIC_DIR)) {
+    console.error("ERROR: public folder not found.");
+    console.error("Expected path:", PUBLIC_DIR);
+    process.exit(1);
+}
+
+const INDEX_FILE = path.join(PUBLIC_DIR, "index.html");
+
+if (!fs.existsSync(INDEX_FILE)) {
+    console.error("ERROR: public/index.html not found.");
+    console.error("Expected path:", INDEX_FILE);
+    process.exit(1);
+}
+
 
 /* =====================================================
    MIDDLEWARE
@@ -16,11 +40,6 @@ const DATA_FILE = path.join(__dirname, "data.json");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/*
-    PUBLIC KLASÖRÜ ÖNCELİKLİ
-    Böylece eski ana klasördeki index.html
-    yanlışlıkla açılmaz.
-*/
 app.use(express.static(PUBLIC_DIR));
 
 
@@ -54,13 +73,12 @@ function ensureDatabase() {
 
     try {
 
-        const data =
-            JSON.parse(
-                fs.readFileSync(
-                    DATA_FILE,
-                    "utf8"
-                )
-            );
+        const data = JSON.parse(
+            fs.readFileSync(
+                DATA_FILE,
+                "utf8"
+            )
+        );
 
         let changed = false;
 
@@ -133,7 +151,7 @@ function saveDatabase(database) {
 
 
 /* =====================================================
-   ID
+   REQUEST ID
 ===================================================== */
 
 function generateId() {
@@ -150,12 +168,10 @@ function generateId() {
             );
 
     } while (
-        readDatabase()
-            .requests
-            .some(
-                request =>
-                    request.id === id
-            )
+        readDatabase().requests.some(
+            request =>
+                request.id === id
+        )
     );
 
     return id;
@@ -174,19 +190,14 @@ function validateTime(time) {
 
     const match =
         /^([0-9]{1,2}):([0-9]{2})$/
-            .exec(
-                String(time)
-            );
+            .exec(String(time));
 
     if (!match) {
         return false;
     }
 
-    const hour =
-        Number(match[1]);
-
-    const minute =
-        Number(match[2]);
+    const hour = Number(match[1]);
+    const minute = Number(match[2]);
 
     if (
         hour < 1 ||
@@ -204,8 +215,7 @@ function getPeriod(time) {
 
     const hour =
         Number(
-            String(time)
-                .split(":")[0]
+            String(time).split(":")[0]
         );
 
     return hour <= 12
@@ -221,10 +231,7 @@ function getPeriod(time) {
 app.get("/", (req, res) => {
 
     res.sendFile(
-        path.join(
-            PUBLIC_DIR,
-            "index.html"
-        )
+        INDEX_FILE
     );
 });
 
@@ -302,51 +309,42 @@ app.post(
             } = req.body;
 
 
-            /* NAME */
+            if (
+                !name ||
+                !String(name).trim()
+            ) {
 
-            if (!name || !String(name).trim()) {
-
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        message:
-                            "FULL NAME IS REQUIRED."
-                    });
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "FULL NAME IS REQUIRED."
+                });
             }
 
-
-            /* REQUEST TYPE */
 
             if (!type) {
 
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        message:
-                            "REQUEST TYPE IS REQUIRED."
-                    });
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "REQUEST TYPE IS REQUIRED."
+                });
             }
 
 
-            /* TIME */
-
             if (!validateTime(time)) {
 
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        message:
-                            "INVALID TIME."
-                    });
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "INVALID TIME."
+                });
             }
 
 
             /*
-                SADECE SCP DENETİMİ
-                seçildiyse SCP zorunlu.
+                SCP DENETİMİ seçildiyse
+                SCP alanı zorunludur.
             */
 
             if (
@@ -354,13 +352,11 @@ app.post(
                 (!scp || !String(scp).trim())
             ) {
 
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        message:
-                            "SCP MUST BE SELECTED."
-                    });
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "SCP MUST BE SELECTED."
+                });
             }
 
 
@@ -384,8 +380,9 @@ app.post(
                     type.toUpperCase(),
 
                 scp:
-                    scp ||
-                    null,
+                    type === "scp"
+                        ? String(scp).trim()
+                        : null,
 
                 time:
                     time,
@@ -394,8 +391,9 @@ app.post(
                     getPeriod(time),
 
                 message:
-                    message ||
-                    "",
+                    message
+                        ? String(message).trim()
+                        : "",
 
                 status:
                     "PENDING",
@@ -425,57 +423,16 @@ app.post(
             );
 
 
-            console.log("");
             console.log(
-                "========================================"
+                `[NEW REQUEST] ${request.id} | ${request.typeName} | ${request.name}`
             );
-            console.log(
-                "       NEW SITE-64 REQUEST"
-            );
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "ID      :",
-                request.id
-            );
-            console.log(
-                "NAME    :",
-                request.name
-            );
-            console.log(
-                "TYPE    :",
-                request.typeName
-            );
-            console.log(
-                "SCP     :",
-                request.scp || "N/A"
-            );
-            console.log(
-                "TIME    :",
-                request.time
-            );
-            console.log(
-                "PERIOD  :",
-                request.period
-            );
-            console.log(
-                "STATUS  :",
-                request.status
-            );
-            console.log(
-                "========================================"
-            );
-            console.log("");
 
 
-            res
-                .status(201)
-                .json({
-                    success: true,
-                    request:
-                        request
-                });
+            return res.status(201).json({
+                success: true,
+                request:
+                    request
+            });
 
         } catch (error) {
 
@@ -484,13 +441,11 @@ app.post(
                 error
             );
 
-            res
-                .status(500)
-                .json({
-                    success: false,
-                    message:
-                        "SERVER ERROR."
-                });
+            return res.status(500).json({
+                success: false,
+                message:
+                    "SERVER ERROR."
+            });
         }
     }
 );
@@ -518,13 +473,11 @@ app.post(
 
         if (!request) {
 
-            return res
-                .status(404)
-                .json({
-                    success: false,
-                    message:
-                        "REQUEST NOT FOUND."
-                });
+            return res.status(404).json({
+                success: false,
+                message:
+                    "REQUEST NOT FOUND."
+            });
         }
 
 
@@ -538,15 +491,12 @@ app.post(
 
             if (!validateTime(time)) {
 
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        message:
-                            "INVALID TIME."
-                    });
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "INVALID TIME."
+                });
             }
-
 
             request.time =
                 time;
@@ -575,7 +525,7 @@ app.post(
 
 
         console.log(
-            `[APPROVED] ${request.id} @ ${request.time}`
+            `[APPROVED] ${request.id}`
         );
 
 
@@ -610,13 +560,11 @@ app.post(
 
         if (!request) {
 
-            return res
-                .status(404)
-                .json({
-                    success: false,
-                    message:
-                        "REQUEST NOT FOUND."
-                });
+            return res.status(404).json({
+                success: false,
+                message:
+                    "REQUEST NOT FOUND."
+            });
         }
 
 
@@ -667,13 +615,11 @@ app.post(
 
         if (!validateTime(time)) {
 
-            return res
-                .status(400)
-                .json({
-                    success: false,
-                    message:
-                        "INVALID TIME."
-                });
+            return res.status(400).json({
+                success: false,
+                message:
+                    "INVALID TIME."
+            });
         }
 
 
@@ -691,13 +637,11 @@ app.post(
 
         if (!request) {
 
-            return res
-                .status(404)
-                .json({
-                    success: false,
-                    message:
-                        "REQUEST NOT FOUND."
-                });
+            return res.status(404).json({
+                success: false,
+                message:
+                    "REQUEST NOT FOUND."
+            });
         }
 
 
@@ -715,11 +659,6 @@ app.post(
 
         saveDatabase(
             database
-        );
-
-
-        console.log(
-            `[TIME CHANGED] ${request.id} -> ${time}`
         );
 
 
@@ -807,8 +746,6 @@ app.post(
         }
 
 
-        /* HELP */
-
         if (command === "help") {
 
             return res.json({
@@ -828,8 +765,6 @@ about      Show SITE-64 information`
             });
         }
 
-
-        /* STATUS */
 
         if (command === "status") {
 
@@ -854,8 +789,6 @@ PENDING      : ${pending}`
             });
         }
 
-
-        /* REQUESTS */
 
         if (command === "requests") {
 
@@ -896,8 +829,6 @@ REJECTED   : ${rejected}`
         }
 
 
-        /* SITES */
-
         if (command === "sites") {
 
             return res.json({
@@ -912,8 +843,6 @@ SITE-██   | REDACTED`
             });
         }
 
-
-        /* ABOUT */
 
         if (command === "about") {
 
@@ -931,8 +860,6 @@ Unauthorized access is prohibited.`
         }
 
 
-        /* CLEAR */
-
         if (command === "clear") {
 
             return res.json({
@@ -941,8 +868,6 @@ Unauthorized access is prohibited.`
             });
         }
 
-
-        /* UNKNOWN */
 
         return res.json({
 
@@ -954,79 +879,92 @@ Unauthorized access is prohibited.`
 
 
 /* =====================================================
-   404 API
+   API 404
 ===================================================== */
 
 app.use(
     "/api",
     (req, res) => {
 
-        res
-            .status(404)
-            .json({
-                success: false,
-                message:
-                    "API ENDPOINT NOT FOUND."
-            });
+        res.status(404).json({
+            success: false,
+            message:
+                "API ENDPOINT NOT FOUND."
+        });
     }
 );
 
 
 /* =====================================================
-   START
+   START SERVER
 ===================================================== */
 
 ensureDatabase();
 
 
-app.listen(
-    PORT,
-    "0.0.0.0",
-    () => {
+const server =
+    app.listen(
+        PORT,
+        "0.0.0.0",
+        () => {
 
-        console.log("");
+            console.log("");
+            console.log(
+                "========================================"
+            );
+            console.log(
+                "     SECURECONTAINPROTECT // SITE-64"
+            );
+            console.log(
+                "========================================"
+            );
+            console.log(
+                "SERVER : ONLINE"
+            );
+            console.log(
+                "PORT   :",
+                PORT
+            );
+            console.log(
+                "PUBLIC : /"
+            );
+            console.log(
+                "ADMIN  : /admin"
+            );
+            console.log(
+                "SITES  : /sites"
+            );
+            console.log(
+                "TERM   : /term"
+            );
+            console.log(
+                "========================================"
+            );
+            console.log("");
+        }
+    );
 
-        console.log(
-            "========================================"
+
+/* =====================================================
+   SERVER ERROR HANDLER
+===================================================== */
+
+server.on(
+    "error",
+    error => {
+
+        console.error(
+            "SERVER ERROR:",
+            error
         );
 
-        console.log(
-            "     SECURECONTAINPROTECT // SITE-64"
-        );
+        if (error.code === "EADDRINUSE") {
 
-        console.log(
-            "========================================"
-        );
+            console.error(
+                `Port ${PORT} is already in use.`
+            );
+        }
 
-        console.log(
-            "SERVER : ONLINE"
-        );
-
-        console.log(
-            "PORT   :",
-            PORT
-        );
-
-        console.log(
-            "PUBLIC : /"
-        );
-
-        console.log(
-            "ADMIN  : /admin"
-        );
-
-        console.log(
-            "SITES  : /sites"
-        );
-
-        console.log(
-            "TERM   : /term"
-        );
-
-        console.log(
-            "========================================"
-        );
-
-        console.log("");
+        process.exit(1);
     }
 );
