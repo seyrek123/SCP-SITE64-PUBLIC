@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>SCP FOUNDATION // WARHEAD CONTROL</title>
 
 <style>
@@ -17,12 +18,12 @@ body {
     color: #dceeff;
     font-family: "Courier New", monospace;
     min-height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
-/* =========================
-   SECURITY SCREEN
-========================= */
+/* =========================================
+   O5 SECURITY SCREEN
+========================================= */
 
 #securityScreen {
     position: fixed;
@@ -35,32 +36,41 @@ body {
             transparent 3px,
             rgba(40,130,190,.035) 4px
         );
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     z-index: 9999;
 }
 
 .security-box {
     width: min(700px, 90%);
-    background: rgba(2,8,14,.96);
+    background: rgba(2,8,14,.97);
     border: 1px solid #287ca8;
+
     box-shadow:
         0 0 35px rgba(0,110,180,.25),
         inset 0 0 30px rgba(0,80,130,.08);
+
     padding: 42px;
     position: relative;
 }
 
 .security-box::before {
     content: "";
+
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
+
     height: 3px;
+
     background: #b51224;
-    box-shadow: 0 0 15px #b51224;
+
+    box-shadow:
+        0 0 15px #b51224;
 }
 
 .classification {
@@ -85,11 +95,17 @@ body {
 
 .warning {
     border-left: 3px solid #c51e32;
-    background: rgba(130,0,15,.08);
+
+    background:
+        rgba(130,0,15,.08);
+
     padding: 18px;
+
     color: #d7e2e8;
+
     line-height: 1.7;
     font-size: 13px;
+
     margin-bottom: 28px;
 }
 
@@ -100,154 +116,194 @@ body {
 .security-info {
     display: grid;
     grid-template-columns: 1fr 1fr;
+
     gap: 10px;
+
     margin-bottom: 30px;
 }
 
 .info {
     border: 1px solid #173c52;
+
     padding: 13px;
+
     background: #030b12;
 }
 
 .info span {
     display: block;
+
     color: #527d94;
+
     font-size: 10px;
+
     margin-bottom: 5px;
 }
 
 .info strong {
     color: #b9e7ff;
+
     font-size: 12px;
 }
 
 .continue-btn {
     width: 100%;
+
     padding: 16px;
+
     background: #071c2b;
+
     border: 1px solid #318fbe;
+
     color: #9ddfff;
+
     font-family: inherit;
+
     font-weight: bold;
+
     letter-spacing: 3px;
+
     cursor: pointer;
+
     transition: .2s;
 }
 
 .continue-btn:hover {
     background: #0c334b;
+
     border-color: #ef233c;
+
     color: white;
+
     box-shadow:
         0 0 20px rgba(239,35,60,.25);
 }
 
+
+/* =========================================
+   WARHEAD SYSTEM
+========================================= */
+
 #warheadSystem {
     display: none;
-    height: 100vh;
-    overflow-y: auto;
-}
 
-/* =========================
-   HEADER
-========================= */
+    min-height: 100vh;
+}
 
 header {
     height: 75px;
+
     border-bottom: 1px solid #1c5875;
+
     background: rgba(2,8,13,.95);
+
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
+
     padding: 0 35px;
-    box-shadow: 0 0 20px rgba(0,100,160,.12);
+
+    box-shadow:
+        0 0 20px rgba(0,100,160,.12);
 }
 
 .logo {
     color: #9bddff;
+
     letter-spacing: 3px;
+
     font-weight: bold;
 }
 
 .status {
     color: #38d7ff;
+
     font-size: 12px;
 }
 
 .status::before {
     content: "●";
+
     color: #2ee69a;
+
     margin-right: 8px;
 }
 
-/* =========================
+
+/* =========================================
    MAIN
-========================= */
+========================================= */
 
 .main {
     max-width: 1150px;
+
     margin: auto;
+
     padding: 55px 25px;
 }
 
 .page-title {
     color: #bdeaff;
+
     font-size: 34px;
+
     letter-spacing: 5px;
+
     margin-bottom: 8px;
 }
 
 .page-description {
     color: #57798a;
+
     font-size: 12px;
+
     margin-bottom: 45px;
 }
 
-/* =========================
-   WARHEAD GRID
-========================= */
+
+/* =========================================
+   WARHEAD BUTTONS
+========================================= */
 
 .warhead-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
     gap: 22px;
 }
 
 .warhead {
     min-height: 190px;
-    background:
-        linear-gradient(135deg, #050b10, #080307);
-    border: 1px solid #254a5e;
-    position: relative;
-    padding: 28px;
-    cursor: pointer;
-    overflow: hidden;
-    transition: .25s;
-}
 
-.warhead::before {
-    content: "";
-    position: absolute;
-    inset: 0;
     background:
         linear-gradient(
-            90deg,
-            transparent,
-            rgba(0,150,220,.04),
-            transparent
+            135deg,
+            #050b10,
+            #080307
         );
-    transform: translateX(-100%);
-    transition: .4s;
-}
 
-.warhead:hover::before {
-    transform: translateX(100%);
+    border: 1px solid #254a5e;
+
+    position: relative;
+
+    padding: 28px;
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    transition: .25s;
 }
 
 .warhead:hover {
     transform: translateY(-3px);
+
     border-color: #3da6d7;
+
     box-shadow:
         0 0 25px rgba(0,130,200,.18),
         inset 0 0 30px rgba(0,80,130,.08);
@@ -271,87 +327,127 @@ header {
 
 .warhead-code {
     color: #526f7c;
+
     font-size: 11px;
+
     letter-spacing: 3px;
 }
 
 .warhead-name {
     font-size: 28px;
+
     color: #dff5ff;
+
     letter-spacing: 4px;
+
     margin: 15px 0;
 }
 
 .warhead-effect {
     color: #7295a5;
+
     font-size: 12px;
 }
 
 .access {
     position: absolute;
+
     right: 25px;
+
     bottom: 22px;
+
     color: #e2263d;
+
     font-size: 10px;
+
     letter-spacing: 2px;
 }
 
-/* =========================
+
+/* =========================================
    MODAL
-========================= */
+========================================= */
 
 .modal {
     position: fixed;
+
     inset: 0;
-    background: rgba(0,0,0,.82);
+
+    background:
+        rgba(0,0,0,.84);
+
     display: none;
+
     align-items: center;
+
     justify-content: center;
+
     z-index: 5000;
 }
 
 .modal-box {
     width: min(600px, 90%);
+
     background: #03090f;
+
     border: 1px solid #287da7;
+
     padding: 35px;
+
     box-shadow:
         0 0 45px rgba(0,110,180,.2);
 }
 
 .modal-title {
     color: #8edcff;
+
     letter-spacing: 3px;
+
     font-size: 20px;
+
     margin-bottom: 20px;
 }
 
 .modal-text {
     color: #7795a3;
+
     font-size: 12px;
+
     line-height: 1.7;
+
     margin-bottom: 25px;
 }
 
 input {
     width: 100%;
+
     padding: 15px;
+
     background: #020507;
+
     border: 1px solid #24556d;
+
     color: white;
+
     outline: none;
+
     font-family: inherit;
+
     letter-spacing: 3px;
 }
 
 input:focus {
     border-color: #32a7dc;
-    box-shadow: 0 0 12px rgba(20,150,210,.2);
+
+    box-shadow:
+        0 0 12px rgba(20,150,210,.2);
 }
 
 .modal-buttons {
     display: flex;
+
     gap: 12px;
+
     margin-top: 20px;
 }
 
@@ -361,18 +457,27 @@ button {
 
 .confirm {
     flex: 1;
+
     padding: 14px;
+
     background: #092238;
+
     color: #9fe3ff;
+
     border: 1px solid #318dbb;
+
     cursor: pointer;
 }
 
 .cancel {
     padding: 14px 22px;
+
     background: #110407;
+
     color: #e9364d;
+
     border: 1px solid #71202c;
+
     cursor: pointer;
 }
 
@@ -384,13 +489,16 @@ button {
     background: #26070c;
 }
 
-/* =========================
+
+/* =========================================
    RULES
-========================= */
+========================================= */
 
 .rules {
     color: #b9cbd3;
+
     font-size: 12px;
+
     line-height: 1.8;
 }
 
@@ -402,68 +510,159 @@ button {
     color: #e52b41;
 }
 
-/* =========================
+
+/* =========================================
    SITE SELECT
-========================= */
+========================================= */
 
 .site-grid {
     display: grid;
-    grid-template-columns: repeat(3,1fr);
+
+    grid-template-columns:
+        repeat(3,1fr);
+
     gap: 12px;
 }
 
 .site-btn {
     padding: 20px 10px;
+
     background: #050e15;
+
     color: #8fdcff;
+
     border: 1px solid #22566e;
+
     cursor: pointer;
+
     letter-spacing: 2px;
 }
 
-.site-btn:hover,
-.site-btn.selected {
+.site-btn:hover {
     border-color: #df263d;
+
     color: white;
+
     background: #18060a;
-    box-shadow: 0 0 18px rgba(210,20,45,.18);
+
+    box-shadow:
+        0 0 18px rgba(210,20,45,.18);
 }
 
-/* =========================
-   TERMINAL
-========================= */
+
+/* =========================================
+   WARHEAD TERMINAL
+========================================= */
 
 #terminal {
     display: none;
+
     position: fixed;
+
     left: 0;
     right: 0;
+
     top: 15%;
+
     height: 55%;
-    background: #010304;
-    border-top: 1px solid #263f4c;
-    border-bottom: 1px solid #263f4c;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #061018 0%,
+            #020507 65%,
+            #000 100%
+        );
+
+    border-top: 1px solid #31576a;
+
+    border-bottom: 1px solid #31576a;
+
     z-index: 9000;
-    padding: 30px 40px;
+
+    padding: 40px;
+
     box-shadow:
-        0 0 50px rgba(0,0,0,.9);
+        0 0 70px rgba(0,0,0,.95),
+        inset 0 0 50px rgba(0,80,120,.08);
+
+    overflow: hidden;
+}
+
+/* scanlines */
+
+#terminal::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255,255,255,.015),
+            rgba(255,255,255,.015) 1px,
+            transparent 1px,
+            transparent 4px
+        );
+}
+
+.terminal-header {
+    color: #4c7f96;
+
+    font-size: 11px;
+
+    letter-spacing: 3px;
+
+    margin-bottom: 25px;
+
+    border-bottom: 1px solid #173543;
+
+    padding-bottom: 12px;
 }
 
 #terminalOutput {
     color: #a9dfff;
+
     font-size: 15px;
+
     line-height: 2;
+
     white-space: pre-wrap;
-    text-shadow: 0 0 8px rgba(80,180,230,.3);
+
+    text-shadow:
+        0 0 8px rgba(80,180,230,.3);
+
+    position: relative;
+
+    z-index: 2;
 }
 
 .terminal-red {
     color: #ed2d43;
+
+    text-shadow:
+        0 0 10px rgba(237,45,67,.4);
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+.terminal-complete {
+    color: #ff334d;
+
+    font-weight: bold;
+
+    margin-top: 15px;
+
+    text-shadow:
+        0 0 15px rgba(255,30,50,.5);
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
 
 @media(max-width:700px) {
 
@@ -482,13 +681,36 @@ button {
     .site-grid {
         grid-template-columns: 1fr;
     }
+
+    header {
+        padding: 0 15px;
+    }
+
+    .logo {
+        font-size: 11px;
+    }
+
+    #terminal {
+        top: 18%;
+
+        height: 50%;
+
+        padding: 25px 20px;
+    }
+
+    #terminalOutput {
+        font-size: 13px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<!-- O5 SECURITY SCREEN -->
+
+<!-- =========================================
+     O5 SECURITY
+========================================= -->
 
 <div id="securityScreen">
 
@@ -559,7 +781,9 @@ button {
 </div>
 
 
-<!-- WARHEAD SYSTEM -->
+<!-- =========================================
+     WARHEAD PAGE
+========================================= -->
 
 <div id="warheadSystem">
 
@@ -691,7 +915,9 @@ button {
 </div>
 
 
-<!-- MODAL -->
+<!-- =========================================
+     MODAL
+========================================= -->
 
 <div
     id="modal"
@@ -724,9 +950,15 @@ button {
 </div>
 
 
-<!-- TERMINAL -->
+<!-- =========================================
+     SAME-PAGE TERMINAL
+========================================= -->
 
 <div id="terminal">
+
+    <div class="terminal-header">
+        SCP FOUNDATION // WARHEAD CONTROL NODE // SECURE CONNECTION
+    </div>
 
     <div id="terminalOutput"></div>
 
@@ -736,12 +968,13 @@ button {
 <script>
 
 let selectedWarhead = null;
+
 let selectedSite = null;
 
 
-/* =========================
+/* =========================================
    ENTER SYSTEM
-========================= */
+========================================= */
 
 function enterWarheadSystem() {
 
@@ -755,26 +988,26 @@ function enterWarheadSystem() {
 }
 
 
-/* =========================
+/* =========================================
    SELECT WARHEAD
-========================= */
+========================================= */
 
 function selectWarhead(type) {
 
     selectedWarhead = type;
 
     showCodeScreen();
-
 }
 
 
-/* =========================
+/* =========================================
    CODE SCREEN
-========================= */
+========================================= */
 
 function showCodeScreen() {
 
     openModal(
+
         "O5 AUTHORIZATION REQUIRED",
 
         `
@@ -813,9 +1046,9 @@ function showCodeScreen() {
 }
 
 
-/* =========================
+/* =========================================
    CHECK CODE
-========================= */
+========================================= */
 
 function checkCode() {
 
@@ -841,13 +1074,12 @@ function checkCode() {
     }
 
     showRules();
-
 }
 
 
-/* =========================
+/* =========================================
    RULES
-========================= */
+========================================= */
 
 function showRules() {
 
@@ -913,13 +1145,15 @@ function showRules() {
 }
 
 
-/* =========================
+/* =========================================
    AFTER RULES
-========================= */
+========================================= */
 
 function continueAfterRules() {
 
-    if (selectedWarhead === "GAMMA") {
+    if (
+        selectedWarhead === "GAMMA"
+    ) {
 
         showFinalConfirmation();
 
@@ -932,9 +1166,9 @@ function continueAfterRules() {
 }
 
 
-/* =========================
+/* =========================================
    SITE SELECTION
-========================= */
+========================================= */
 
 function showSiteSelection() {
 
@@ -944,9 +1178,6 @@ function showSiteSelection() {
 
         `
         SELECT THE FACILITY TARGET.
-
-        GAMMA WARHEADS DO NOT REQUIRE
-        A FACILITY TARGET.
         `,
 
         `
@@ -989,22 +1220,21 @@ function showSiteSelection() {
 }
 
 
-/* =========================
+/* =========================================
    CHOOSE SITE
-========================= */
+========================================= */
 
 function chooseSite(site) {
 
     selectedSite = site;
 
     showFinalConfirmation();
-
 }
 
 
-/* =========================
+/* =========================================
    FINAL CONFIRMATION
-========================= */
+========================================= */
 
 function showFinalConfirmation() {
 
@@ -1038,8 +1268,8 @@ function showFinalConfirmation() {
 
         <br><br>
 
-        This action cannot be reversed once
-        the firing sequence begins.
+        Confirming this action will begin
+        the Warhead firing sequence.
         `,
 
         "",
@@ -1064,9 +1294,9 @@ function showFinalConfirmation() {
 }
 
 
-/* =========================
+/* =========================================
    ACTIVATE
-========================= */
+========================================= */
 
 function activateWarhead() {
 
@@ -1088,39 +1318,57 @@ function activateWarhead() {
     output.innerHTML = "";
 
     terminalSequence();
-
 }
 
 
-/* =========================
-   TERMINAL SEQUENCE
-========================= */
+/* =========================================
+   SLOW TERMINAL SEQUENCE
+========================================= */
 
 async function terminalSequence() {
+
+    /*
+        Terminal artık aynı sayfanın üzerinde.
+        Kullanıcı sadece mesajları görüyor.
+        Bekleme süreleri ekranda YAZMIYOR.
+    */
+
+
+    await wait(1200);
 
     await terminalLine(
         "WARHEAD SYSTEM INITIALIZING..."
     );
 
+
+    await wait(2800);
+
+
     await terminalLine(
         "SYSTEM SUCCESSFULLY LOADED"
     );
 
-    await delay(1000);
+
+    await wait(4000);
+
 
     await terminalLine(
         "WARHEAD FIRING...",
         true
     );
 
-    await delay(1000);
+
+    await wait(3500);
+
 
     await terminalLine(
         "WARHEAD DROPPING...",
         true
     );
 
-    await delay(1200);
+
+    await wait(3000);
+
 
     for (
         let i = 0;
@@ -1133,27 +1381,31 @@ async function terminalSequence() {
             true
         );
 
-        await delay(180);
+        await wait(700);
 
     }
 
-    await delay(800);
+
+    await wait(3500);
+
 
     await terminalLine(
         "WARHEAD DETONATION COMPLETE.",
+        true,
         true
     );
 
 }
 
 
-/* =========================
+/* =========================================
    TERMINAL LINE
-========================= */
+========================================= */
 
 function terminalLine(
     text,
-    red = false
+    red = false,
+    complete = false
 ) {
 
     return new Promise(resolve => {
@@ -1164,8 +1416,19 @@ function terminalLine(
             );
 
         if (red) {
-            line.className =
-                "terminal-red";
+
+            line.classList.add(
+                "terminal-red"
+            );
+
+        }
+
+        if (complete) {
+
+            line.classList.add(
+                "terminal-complete"
+            );
+
         }
 
         line.textContent = text;
@@ -1183,23 +1446,26 @@ function terminalLine(
 }
 
 
-/* =========================
-   DELAY
-========================= */
+/* =========================================
+   WAIT
+========================================= */
 
-function delay(ms) {
+function wait(milliseconds) {
 
     return new Promise(
         resolve =>
-            setTimeout(resolve, ms)
+            setTimeout(
+                resolve,
+                milliseconds
+            )
     );
 
 }
 
 
-/* =========================
+/* =========================================
    MODAL
-========================= */
+========================================= */
 
 function openModal(
     title,
@@ -1227,7 +1493,6 @@ function openModal(
     document.getElementById(
         "modal"
     ).style.display = "flex";
-
 }
 
 
@@ -1236,7 +1501,6 @@ function closeModal() {
     document.getElementById(
         "modal"
     ).style.display = "none";
-
 }
 
 </script>
