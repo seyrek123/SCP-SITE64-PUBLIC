@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>SITE-64 // ADMINISTRATION</title>
 
     <link rel="stylesheet" href="script.css">
 
     <style>
+
         body {
             background:
                 radial-gradient(
@@ -135,6 +141,14 @@
             font-size: 13px;
         }
 
+        .admin-info input,
+        .admin-info select,
+        .site-control-select,
+        .personnel-select {
+            width: 100%;
+            margin: 0;
+        }
+
         .admin-message-input {
             margin-bottom: 15px;
         }
@@ -181,6 +195,51 @@
             font-size: 12px;
         }
 
+        .security-status {
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .site-message {
+            color: #8796a2;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-top: 15px;
+            padding: 12px;
+            border: 1px solid #1e2a33;
+        }
+
+        .personnel-record {
+            border: 1px solid #1e2a33;
+            padding: 18px;
+            margin-top: 12px;
+        }
+
+        .personnel-record-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .personnel-record-id {
+            color: #596b78;
+            font-family: monospace;
+            font-size: 10px;
+        }
+
+        .request-time-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .request-time-row select {
+            min-width: 150px;
+        }
+
         @media (max-width: 800px) {
 
             .stats {
@@ -190,11 +249,28 @@
             .admin-info {
                 grid-template-columns: 1fr;
             }
+
         }
+
+        @media (max-width: 500px) {
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-page {
+                padding-top: 110px;
+            }
+
+        }
+
     </style>
+
 </head>
 
+
 <body>
+
 
 <header class="topbar">
 
@@ -209,6 +285,7 @@
         </div>
 
     </div>
+
 
     <nav class="navigation">
 
@@ -229,17 +306,32 @@
 </header>
 
 
+
 <main class="admin-page">
 
-    <div class="admin-login" id="loginBox">
+
+    <!-- =================================================
+         LOGIN
+    ================================================== -->
+
+    <div
+        class="admin-login"
+        id="loginBox"
+    >
 
         <h2>
             ADMINISTRATION ACCESS
         </h2>
 
-        <p style="color:#71818d;margin-bottom:20px;">
+        <p
+            style="
+                color:#71818d;
+                margin-bottom:20px;
+            "
+        >
             Authorized personnel only.
         </p>
+
 
         <input
             id="adminPassword"
@@ -247,12 +339,14 @@
             placeholder="ACCESS CODE"
         >
 
+
         <button
             class="primary-button"
             onclick="login()"
         >
             ACCESS SYSTEM
         </button>
+
 
         <div
             id="loginError"
@@ -268,10 +362,16 @@
     </div>
 
 
+
+    <!-- =================================================
+         DASHBOARD
+    ================================================== -->
+
     <div
         class="dashboard"
         id="dashboard"
     >
+
 
         <div class="admin-header">
 
@@ -290,9 +390,16 @@
         </div>
 
 
+
+        <!-- =================================================
+             STATS
+        ================================================== -->
+
         <div class="stats">
 
+
             <div class="stat">
+
                 <span>
                     TOTAL REQUESTS
                 </span>
@@ -300,10 +407,12 @@
                 <strong id="totalRequests">
                     0
                 </strong>
+
             </div>
 
 
             <div class="stat">
+
                 <span>
                     PENDING
                 </span>
@@ -311,10 +420,12 @@
                 <strong id="pendingRequests">
                     0
                 </strong>
+
             </div>
 
 
             <div class="stat">
+
                 <span>
                     APPROVED
                 </span>
@@ -322,10 +433,12 @@
                 <strong id="approvedRequests">
                     0
                 </strong>
+
             </div>
 
 
             <div class="stat">
+
                 <span>
                     REJECTED
                 </span>
@@ -333,9 +446,12 @@
                 <strong id="rejectedRequests">
                     0
                 </strong>
+
             </div>
 
+
         </div>
+
 
 
         <div
@@ -344,18 +460,374 @@
         ></div>
 
 
-        <div id="requestsContainer"></div>
+
+        <!-- =================================================
+             SITE SECURITY CONTROL
+        ================================================== -->
+
+        <div class="admin-card">
+
+            <div class="admin-card-top">
+
+                <h3>
+                    SITE SECURITY CONTROL
+                </h3>
+
+            </div>
+
+
+            <div class="admin-info">
+
+
+                <div>
+
+                    <span>
+                        SELECT SITE
+                    </span>
+
+                    <select
+                        id="controlSite"
+                        class="site-control-select"
+                    >
+
+                        <option value="SITE-19">
+                            SITE-19
+                        </option>
+
+                        <option value="SITE-51">
+                            SITE-51
+                        </option>
+
+                        <option value="SITE-64">
+                            SITE-64
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div>
+
+                    <span>
+                        SECURITY STATUS
+                    </span>
+
+                    <select
+                        id="controlStatus"
+                        class="site-control-select"
+                    >
+
+                        <option value="NORMAL">
+                            NORMAL
+                        </option>
+
+                        <option value="ELEVATED">
+                            ELEVATED
+                        </option>
+
+                        <option value="HIGH">
+                            HIGH
+                        </option>
+
+                        <option value="CRITICAL">
+                            CRITICAL
+                        </option>
+
+                        <option value="LOCKDOWN">
+                            LOCKDOWN
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div>
+
+                    <span>
+                        CURRENT STATUS
+                    </span>
+
+                    <strong
+                        id="currentSiteStatus"
+                        class="security-status"
+                    >
+                        NORMAL
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <textarea
+                id="siteControlMessage"
+                class="admin-message-input"
+                rows="3"
+                placeholder="Security announcement / reason..."
+            ></textarea>
+
+
+            <div class="admin-actions">
+
+                <button
+                    class="approve-button"
+                    onclick="updateSiteSecurity()"
+                >
+                    UPDATE SITE STATUS
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             PERSONNEL DATABASE
+        ================================================== -->
+
+        <div class="admin-card">
+
+            <div class="admin-card-top">
+
+                <h3>
+                    PERSONNEL DATABASE
+                </h3>
+
+            </div>
+
+
+            <div class="admin-info">
+
+
+                <div>
+
+                    <span>
+                        NAME
+                    </span>
+
+                    <input
+                        id="personName"
+                        type="text"
+                        placeholder="Personnel name"
+                    >
+
+                </div>
+
+
+
+                <div>
+
+                    <span>
+                        RANK
+                    </span>
+
+                    <input
+                        id="personRank"
+                        type="text"
+                        placeholder="Rank / position"
+                    >
+
+                </div>
+
+
+
+                <div>
+
+                    <span>
+                        DEPARTMENT
+                    </span>
+
+                    <select
+                        id="personDepartment"
+                        class="personnel-select"
+                    >
+
+                        <option>
+                            O5 COUNCIL
+                        </option>
+
+                        <option>
+                            SITE DIRECTOR
+                        </option>
+
+                        <option>
+                            RESEARCH
+                        </option>
+
+                        <option>
+                            SECURITY
+                        </option>
+
+                        <option>
+                            MTF
+                        </option>
+
+                        <option>
+                            MEDICAL
+                        </option>
+
+                        <option>
+                            D-CLASS
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div>
+
+                    <span>
+                        SITE
+                    </span>
+
+                    <select
+                        id="personSite"
+                        class="personnel-select"
+                    >
+
+                        <option>
+                            SITE-19
+                        </option>
+
+                        <option>
+                            SITE-51
+                        </option>
+
+                        <option>
+                            SITE-64
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div>
+
+                    <span>
+                        CLEARANCE
+                    </span>
+
+                    <select
+                        id="personClearance"
+                        class="personnel-select"
+                    >
+
+                        <option>
+                            LEVEL 1
+                        </option>
+
+                        <option>
+                            LEVEL 2
+                        </option>
+
+                        <option>
+                            LEVEL 3
+                        </option>
+
+                        <option>
+                            LEVEL 4
+                        </option>
+
+                        <option>
+                            LEVEL 5
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div>
+
+                    <span>
+                        STATUS
+                    </span>
+
+                    <select
+                        id="personStatus"
+                        class="personnel-select"
+                    >
+
+                        <option>
+                            ACTIVE
+                        </option>
+
+                        <option>
+                            INACTIVE
+                        </option>
+
+                        <option>
+                            MISSING
+                        </option>
+
+                        <option>
+                            DECEASED
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="admin-actions">
+
+                <button
+                    class="approve-button"
+                    onclick="addPersonnel()"
+                >
+                    ADD PERSONNEL
+                </button>
+
+            </div>
+
+
+            <div
+                id="personnelContainer"
+            ></div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             REQUEST DATABASE
+        ================================================== -->
+
+        <div
+            id="requestsContainer"
+        ></div>
+
 
     </div>
 
 </main>
 
 
+
 <script>
 
-const ADMIN_CODE = "SITE64-O5";
+
+const ADMIN_CODE =
+    "SITE64-O5";
+
 
 let requests = [];
+
 
 
 /* =====================================================
@@ -366,42 +838,72 @@ function login() {
 
     const password =
         document
-            .getElementById("adminPassword")
+            .getElementById(
+                "adminPassword"
+            )
             .value;
 
-    if (password === ADMIN_CODE) {
+    if (
+        password ===
+        ADMIN_CODE
+    ) {
 
         document
-            .getElementById("loginBox")
-            .style.display = "none";
+            .getElementById(
+                "loginBox"
+            )
+            .style.display =
+                "none";
 
         document
-            .getElementById("dashboard")
-            .style.display = "block";
+            .getElementById(
+                "dashboard"
+            )
+            .style.display =
+                "block";
+
 
         loadRequests();
+
+        loadSiteSecurity();
+
+        loadPersonnel();
 
     } else {
 
         document
-            .getElementById("loginError")
-            .style.display = "block";
+            .getElementById(
+                "loginError"
+            )
+            .style.display =
+                "block";
+
     }
+
 }
 
 
+
 document
-    .getElementById("adminPassword")
+    .getElementById(
+        "adminPassword"
+    )
     .addEventListener(
         "keydown",
         event => {
 
-            if (event.key === "Enter") {
+            if (
+                event.key ===
+                "Enter"
+            ) {
+
                 login();
+
             }
 
         }
     );
+
 
 
 /* =====================================================
@@ -413,21 +915,35 @@ async function loadRequests() {
     try {
 
         const response =
-            await fetch("/api/requests");
+            await fetch(
+                "/api/requests"
+            );
 
         const data =
             await response.json();
 
-        if (!data.success) {
+
+        if (
+            !data.success
+        ) {
+
             return;
+
         }
 
+
         requests =
-            data.requests || [];
+            Array.isArray(
+                data.requests
+            )
+                ? data.requests
+                : [];
+
 
         updateStats();
 
         renderRequests();
+
 
     } catch {
 
@@ -435,8 +951,11 @@ async function loadRequests() {
             "Unable to connect to request database.",
             true
         );
+
     }
+
 }
+
 
 
 /* =====================================================
@@ -445,39 +964,140 @@ async function loadRequests() {
 
 function updateStats() {
 
-    document.getElementById(
-        "totalRequests"
-    ).textContent =
-        requests.length;
+    document
+        .getElementById(
+            "totalRequests"
+        )
+        .textContent =
+            requests.length;
 
 
-    document.getElementById(
-        "pendingRequests"
-    ).textContent =
-        requests.filter(
-            r => r.status === "PENDING"
-        ).length;
+    document
+        .getElementById(
+            "pendingRequests"
+        )
+        .textContent =
+            requests.filter(
+                r =>
+                    r.status ===
+                    "PENDING"
+            ).length;
 
 
-    document.getElementById(
-        "approvedRequests"
-    ).textContent =
-        requests.filter(
-            r => r.status === "APPROVED"
-        ).length;
+    document
+        .getElementById(
+            "approvedRequests"
+        )
+        .textContent =
+            requests.filter(
+                r =>
+                    r.status ===
+                    "APPROVED"
+            ).length;
 
 
-    document.getElementById(
-        "rejectedRequests"
-    ).textContent =
-        requests.filter(
-            r => r.status === "REJECTED"
-        ).length;
+    document
+        .getElementById(
+            "rejectedRequests"
+        )
+        .textContent =
+            requests.filter(
+                r =>
+                    r.status ===
+                    "REJECTED"
+            ).length;
+
 }
 
 
+
 /* =====================================================
-   RENDER
+   TIME OPTIONS
+===================================================== */
+
+function createTimeOptions(
+    selected
+) {
+
+    let html = "";
+
+    for (
+        let hour = 0;
+        hour < 24;
+        hour++
+    ) {
+
+        for (
+            let minute = 0;
+            minute < 60;
+            minute += 30
+        ) {
+
+            const value =
+                String(hour)
+                    .padStart(
+                        2,
+                        "0"
+                    ) +
+                ":" +
+                String(minute)
+                    .padStart(
+                        2,
+                        "0"
+                    );
+
+
+            let hour12 =
+                hour % 12;
+
+            if (
+                hour12 === 0
+            ) {
+                hour12 = 12;
+            }
+
+
+            const suffix =
+                hour < 12
+                    ? "AM"
+                    : "PM";
+
+
+            const label =
+                `${hour12}:${String(
+                    minute
+                ).padStart(
+                    2,
+                    "0"
+                )} ${suffix}`;
+
+
+            html += `
+                <option
+                    value="${value}"
+                    ${
+                        value ===
+                        selected
+                            ? "selected"
+                            : ""
+                    }
+                >
+                    ${label}
+                </option>
+            `;
+
+        }
+
+    }
+
+    return html;
+
+}
+
+
+
+/* =====================================================
+   REQUEST RENDER
 ===================================================== */
 
 function renderRequests() {
@@ -488,17 +1108,22 @@ function renderRequests() {
         );
 
 
-    if (!requests.length) {
+    if (
+        !requests.length
+    ) {
 
         container.innerHTML = `
             <div class="admin-card">
+
                 <strong>
                     NO REQUESTS IN DATABASE.
                 </strong>
+
             </div>
         `;
 
         return;
+
     }
 
 
@@ -506,42 +1131,69 @@ function renderRequests() {
         requests
             .slice()
             .reverse()
-            .map(request =>
-                createRequest(request)
+            .map(
+                request =>
+                    createRequest(
+                        request
+                    )
             )
             .join("");
+
 }
 
 
-function createRequest(request) {
+
+/* =====================================================
+   REQUEST CARD
+===================================================== */
+
+function createRequest(
+    request
+) {
 
     const status =
         String(
-            request.status || "PENDING"
-        ).toLowerCase();
+            request.status ||
+            "PENDING"
+        )
+        .toLowerCase();
 
 
     return `
-        <article class="admin-card">
 
-            <div class="admin-card-top">
+        <article
+            class="admin-card"
+        >
+
+
+            <div
+                class="admin-card-top"
+            >
 
                 <h3>
-                    ${escapeHtml(request.id)}
+                    ${escapeHtml(
+                        request.id
+                    )}
                 </h3>
+
 
                 <span
                     class="request-status ${status}"
                 >
                     ${escapeHtml(
-                        request.status
+                        request.status ||
+                        "PENDING"
                     )}
                 </span>
 
             </div>
 
 
-            <div class="admin-info">
+
+            <div
+                class="admin-info"
+            >
+
 
                 <div>
 
@@ -558,6 +1210,7 @@ function createRequest(request) {
                 </div>
 
 
+
                 <div>
 
                     <span>
@@ -566,11 +1219,14 @@ function createRequest(request) {
 
                     <strong>
                         ${escapeHtml(
-                            request.typeName
+                            request.typeName ||
+                            request.type ||
+                            "UNKNOWN"
                         )}
                     </strong>
 
                 </div>
+
 
 
                 <div>
@@ -581,11 +1237,13 @@ function createRequest(request) {
 
                     <strong>
                         ${escapeHtml(
-                            request.scp || "N/A"
+                            request.scp ||
+                            "N/A"
                         )}
                     </strong>
 
                 </div>
+
 
 
                 <div>
@@ -596,11 +1254,13 @@ function createRequest(request) {
 
                     <strong>
                         ${escapeHtml(
-                            request.time
+                            request.time ||
+                            "N/A"
                         )}
                     </strong>
 
                 </div>
+
 
 
                 <div>
@@ -611,11 +1271,13 @@ function createRequest(request) {
 
                     <strong>
                         ${escapeHtml(
-                            request.period
+                            request.period ||
+                            "N/A"
                         )}
                     </strong>
 
                 </div>
+
 
 
                 <div>
@@ -626,15 +1288,17 @@ function createRequest(request) {
 
                     <strong>
                         ${escapeHtml(
-                            new Date(
+                            formatDate(
                                 request.createdAt
-                            ).toLocaleString()
+                            )
                         )}
                     </strong>
 
                 </div>
 
+
             </div>
+
 
 
             <div
@@ -656,71 +1320,147 @@ function createRequest(request) {
             </div>
 
 
+
+            <!-- REQUEST TIME CONTROL -->
+
+            <div
+                style="
+                    border-top:1px solid #1e2a33;
+                    padding-top:15px;
+                    margin-bottom:18px;
+                "
+            >
+
+                <div
+                    style="
+                        color:#596b78;
+                        font-size:9px;
+                        letter-spacing:2px;
+                        margin-bottom:8px;
+                    "
+                >
+                    CHANGE REQUEST TIME
+                </div>
+
+
+                <div
+                    class="request-time-row"
+                >
+
+                    <select
+                        id="time-${escapeHtml(
+                            request.id
+                        )}"
+                    >
+
+                        ${createTimeOptions(
+                            request.time
+                        )}
+
+                    </select>
+
+
+                    <button
+                        class="approve-button"
+                        onclick="changeRequestTime('${escapeJs(
+                            request.id
+                        )}')"
+                    >
+                        UPDATE TIME
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
             ${
-                request.status === "PENDING"
+                request.status ===
+                "PENDING"
+
                     ? `
 
-                    <textarea
-                        id="message-${request.id}"
-                        class="admin-message-input"
-                        rows="3"
-                        placeholder="Admin message..."
-                    ></textarea>
+                        <textarea
+                            id="message-${escapeHtml(
+                                request.id
+                            )}"
+                            class="admin-message-input"
+                            rows="3"
+                            placeholder="Admin message..."
+                        ></textarea>
 
 
-                    <div class="admin-actions">
-
-                        <button
-                            class="approve-button"
-                            onclick="approveRequest('${request.id}')"
+                        <div
+                            class="admin-actions"
                         >
-                            APPROVE REQUEST
-                        </button>
+
+                            <button
+                                class="approve-button"
+                                onclick="approveRequest('${escapeJs(
+                                    request.id
+                                )}')"
+                            >
+                                APPROVE REQUEST
+                            </button>
 
 
-                        <button
-                            class="reject-button"
-                            onclick="rejectRequest('${request.id}')"
-                        >
-                            REJECT REQUEST
-                        </button>
+                            <button
+                                class="reject-button"
+                                onclick="rejectRequest('${escapeJs(
+                                    request.id
+                                )}')"
+                            >
+                                REJECT REQUEST
+                            </button>
 
-                    </div>
+                        </div>
 
                     `
+
                     : `
 
-                    <div
-                        style="
-                            color:#647582;
-                            font-size:12px;
-                        "
-                    >
-                        ADMIN MESSAGE:
-                        ${escapeHtml(
-                            request.adminMessage ||
-                            "NONE"
-                        )}
-                    </div>
+                        <div
+                            style="
+                                color:#647582;
+                                font-size:12px;
+                            "
+                        >
+
+                            ADMIN MESSAGE:
+
+                            ${escapeHtml(
+                                request.adminMessage ||
+                                "NONE"
+                            )}
+
+                        </div>
 
                     `
             }
 
+
         </article>
+
     `;
+
 }
+
 
 
 /* =====================================================
    APPROVE
 ===================================================== */
 
-async function approveRequest(id) {
+async function approveRequest(
+    id
+) {
 
     const input =
         document.getElementById(
             `message-${id}`
         );
+
 
     const message =
         input
@@ -733,19 +1473,24 @@ async function approveRequest(id) {
         "approve",
         message
     );
+
 }
+
 
 
 /* =====================================================
    REJECT
 ===================================================== */
 
-async function rejectRequest(id) {
+async function rejectRequest(
+    id
+) {
 
     const input =
         document.getElementById(
             `message-${id}`
         );
+
 
     const message =
         input
@@ -758,11 +1503,13 @@ async function rejectRequest(id) {
         "reject",
         message
     );
+
 }
 
 
+
 /* =====================================================
-   UPDATE
+   UPDATE REQUEST
 ===================================================== */
 
 async function updateRequest(
@@ -775,9 +1522,13 @@ async function updateRequest(
 
         const response =
             await fetch(
-                `/api/requests/${id}/${action}`,
+                `/api/requests/${encodeURIComponent(
+                    id
+                )}/${action}`,
                 {
-                    method: "POST",
+
+                    method:
+                        "POST",
 
                     headers: {
                         "Content-Type":
@@ -788,6 +1539,7 @@ async function updateRequest(
                         JSON.stringify({
                             message
                         })
+
                 }
             );
 
@@ -796,7 +1548,9 @@ async function updateRequest(
             await response.json();
 
 
-        if (!response.ok) {
+        if (
+            !response.ok
+        ) {
 
             showResult(
                 data.message ||
@@ -805,6 +1559,7 @@ async function updateRequest(
             );
 
             return;
+
         }
 
 
@@ -814,7 +1569,7 @@ async function updateRequest(
         );
 
 
-        loadRequests();
+        await loadRequests();
 
     } catch {
 
@@ -822,8 +1577,753 @@ async function updateRequest(
             "SERVER CONNECTION ERROR.",
             true
         );
+
     }
+
 }
+
+
+
+/* =====================================================
+   CHANGE REQUEST TIME
+===================================================== */
+
+async function changeRequestTime(
+    id
+) {
+
+    const select =
+        document.getElementById(
+            `time-${id}`
+        );
+
+
+    if (!select) {
+        return;
+    }
+
+
+    const time =
+        select.value;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/requests/${encodeURIComponent(
+                    id
+                )}/time`,
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            time
+                        })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok
+        ) {
+
+            showResult(
+                data.message ||
+                "TIME UPDATE FAILED.",
+                true
+            );
+
+            return;
+
+        }
+
+
+        showResult(
+            `REQUEST TIME UPDATED TO ${formatTime(
+                time
+            )}.`,
+            false
+        );
+
+
+        await loadRequests();
+
+    } catch {
+
+        showResult(
+            "SERVER CONNECTION ERROR.",
+            true
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   SITE SECURITY
+===================================================== */
+
+async function loadSiteSecurity() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/sites"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.success ||
+            !data.sites
+        ) {
+
+            return;
+
+        }
+
+
+        const site =
+            document.getElementById(
+                "controlSite"
+            ).value;
+
+
+        updateSiteDisplay(
+            data.sites,
+            site
+        );
+
+
+    } catch {
+
+        showResult(
+            "SITE SECURITY DATABASE CONNECTION ERROR.",
+            true
+        );
+
+    }
+
+}
+
+
+
+function updateSiteDisplay(
+    sites,
+    site
+) {
+
+    const current =
+        sites[site];
+
+
+    if (!current) {
+        return;
+    }
+
+
+    document
+        .getElementById(
+            "currentSiteStatus"
+        )
+        .textContent =
+            current.status ||
+            "NORMAL";
+
+
+    document
+        .getElementById(
+            "controlStatus"
+        )
+        .value =
+            current.status ||
+            "NORMAL";
+
+
+    document
+        .getElementById(
+            "siteControlMessage"
+        )
+        .value =
+            current.message ||
+            "";
+
+}
+
+
+
+document
+    .getElementById(
+        "controlSite"
+    )
+    .addEventListener(
+        "change",
+        loadSiteSecurity
+    );
+
+
+
+async function updateSiteSecurity() {
+
+    const site =
+        document.getElementById(
+            "controlSite"
+        ).value;
+
+
+    const status =
+        document.getElementById(
+            "controlStatus"
+        ).value;
+
+
+    const message =
+        document.getElementById(
+            "siteControlMessage"
+        ).value.trim();
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/sites/${encodeURIComponent(
+                    site
+                )}`,
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            status,
+                            message
+                        })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok
+        ) {
+
+            showResult(
+                data.message ||
+                "SITE STATUS UPDATE FAILED.",
+                true
+            );
+
+            return;
+
+        }
+
+
+        document
+            .getElementById(
+                "currentSiteStatus"
+            )
+            .textContent =
+                status;
+
+
+        showResult(
+            `${site} STATUS UPDATED TO ${status}.`,
+            false
+        );
+
+
+        loadSiteSecurity();
+
+    } catch {
+
+        showResult(
+            "SERVER CONNECTION ERROR.",
+            true
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   PERSONNEL
+===================================================== */
+
+async function loadPersonnel() {
+
+    const container =
+        document.getElementById(
+            "personnelContainer"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/personnel"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.success
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            !Array.isArray(
+                data.personnel
+            ) ||
+            !data.personnel.length
+        ) {
+
+            container.innerHTML = `
+                <div
+                    style="
+                        color:#647582;
+                        font-size:12px;
+                        margin-top:20px;
+                    "
+                >
+                    NO PERSONNEL RECORDS.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            data.personnel
+                .slice()
+                .reverse()
+                .map(
+                    person =>
+                        createPersonnelCard(
+                            person
+                        )
+                )
+                .join("");
+
+
+    } catch {
+
+        container.innerHTML = `
+            <div
+                style="
+                    color:#d98989;
+                    font-size:12px;
+                    margin-top:20px;
+                "
+            >
+                PERSONNEL DATABASE CONNECTION ERROR.
+            </div>
+        `;
+
+    }
+
+}
+
+
+
+function createPersonnelCard(
+    person
+) {
+
+    return `
+
+        <div
+            class="personnel-record"
+        >
+
+
+            <div
+                class="personnel-record-top"
+            >
+
+                <strong>
+                    ${escapeHtml(
+                        person.name
+                    )}
+                </strong>
+
+
+                <span
+                    class="personnel-record-id"
+                >
+                    ${escapeHtml(
+                        person.id
+                    )}
+                </span>
+
+            </div>
+
+
+
+            <div
+                class="admin-info"
+            >
+
+
+                <div>
+
+                    <span>
+                        RANK
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            person.rank
+                        )}
+                    </strong>
+
+                </div>
+
+
+
+                <div>
+
+                    <span>
+                        DEPARTMENT
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            person.department
+                        )}
+                    </strong>
+
+                </div>
+
+
+
+                <div>
+
+                    <span>
+                        SITE
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            person.site
+                        )}
+                    </strong>
+
+                </div>
+
+
+
+                <div>
+
+                    <span>
+                        CLEARANCE
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            person.clearance
+                        )}
+                    </strong>
+
+                </div>
+
+
+
+                <div>
+
+                    <span>
+                        STATUS
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            person.status
+                        )}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+
+            <button
+                class="reject-button"
+                onclick="deletePersonnel('${escapeJs(
+                    person.id
+                )}')"
+            >
+                REMOVE PERSONNEL
+            </button>
+
+
+        </div>
+
+    `;
+
+}
+
+
+
+/* =====================================================
+   ADD PERSONNEL
+===================================================== */
+
+async function addPersonnel() {
+
+    const name =
+        document.getElementById(
+            "personName"
+        ).value.trim();
+
+
+    const rank =
+        document.getElementById(
+            "personRank"
+        ).value.trim();
+
+
+    const department =
+        document.getElementById(
+            "personDepartment"
+        ).value;
+
+
+    const site =
+        document.getElementById(
+            "personSite"
+        ).value;
+
+
+    const clearance =
+        document.getElementById(
+            "personClearance"
+        ).value;
+
+
+    const status =
+        document.getElementById(
+            "personStatus"
+        ).value;
+
+
+    if (
+        !name ||
+        !rank
+    ) {
+
+        showResult(
+            "NAME AND RANK ARE REQUIRED.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/personnel",
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            name,
+                            rank,
+                            department,
+                            site,
+                            clearance,
+                            status
+                        })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok
+        ) {
+
+            showResult(
+                data.message ||
+                "PERSONNEL CREATION FAILED.",
+                true
+            );
+
+            return;
+
+        }
+
+
+        document
+            .getElementById(
+                "personName"
+            )
+            .value = "";
+
+
+        document
+            .getElementById(
+                "personRank"
+            )
+            .value = "";
+
+
+        showResult(
+            "PERSONNEL RECORD CREATED.",
+            false
+        );
+
+
+        loadPersonnel();
+
+    } catch {
+
+        showResult(
+            "SERVER CONNECTION ERROR.",
+            true
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   DELETE PERSONNEL
+===================================================== */
+
+async function deletePersonnel(
+    id
+) {
+
+    if (
+        !confirm(
+            "REMOVE THIS PERSONNEL RECORD?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/personnel/${encodeURIComponent(
+                    id
+                )}`,
+                {
+                    method:
+                        "DELETE"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok
+        ) {
+
+            showResult(
+                data.message ||
+                "PERSONNEL REMOVAL FAILED.",
+                true
+            );
+
+            return;
+
+        }
+
+
+        showResult(
+            "PERSONNEL RECORD REMOVED.",
+            false
+        );
+
+
+        loadPersonnel();
+
+    } catch {
+
+        showResult(
+            "SERVER CONNECTION ERROR.",
+            true
+        );
+
+    }
+
+}
+
 
 
 /* =====================================================
@@ -840,9 +2340,14 @@ function showResult(
             "adminResult"
         );
 
-    box.style.display = "block";
 
-    box.textContent = message;
+    box.style.display =
+        "block";
+
+
+    box.textContent =
+        message;
+
 
     box.style.border =
         "1px solid " +
@@ -852,28 +2357,181 @@ function showResult(
                 : "#315d48"
         );
 
+
     box.style.color =
         error
             ? "#d98989"
             : "#8dccaa";
+
 }
+
 
 
 /* =====================================================
-   ESCAPE
+   FORMAT TIME
 ===================================================== */
 
-function escapeHtml(value) {
+function formatTime(
+    value
+) {
 
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    if (!value) {
+        return "N/A";
+    }
+
+
+    const parts =
+        String(value).split(":");
+
+
+    if (
+        parts.length !== 2
+    ) {
+
+        return value;
+
+    }
+
+
+    let hour =
+        Number(parts[0]);
+
+
+    const minute =
+        parts[1];
+
+
+    const suffix =
+        hour < 12
+            ? "AM"
+            : "PM";
+
+
+    hour =
+        hour % 12;
+
+
+    if (
+        hour === 0
+    ) {
+
+        hour = 12;
+
+    }
+
+
+    return `${hour}:${minute} ${suffix}`;
+
+}
+
+
+
+/* =====================================================
+   FORMAT DATE
+===================================================== */
+
+function formatDate(
+    value
+) {
+
+    if (!value) {
+        return "N/A";
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "N/A";
+
+    }
+
+
+    return date.toLocaleString();
+
+}
+
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+
+/* =====================================================
+   ESCAPE JAVASCRIPT
+===================================================== */
+
+function escapeJs(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /\\/g,
+        "\\\\"
+    )
+    .replace(
+        /'/g,
+        "\\'"
+    )
+    .replace(
+        /"/g,
+        '\\"'
+    )
+    .replace(
+        /\r/g,
+        "\\r"
+    )
+    .replace(
+        /\n/g,
+        "\\n"
+    );
+
 }
 
 </script>
+
 
 </body>
 </html>
