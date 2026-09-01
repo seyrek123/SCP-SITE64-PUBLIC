@@ -1,153 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+    <title>SITE-64 // ADMINISTRATION</title>
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <link rel="stylesheet" href="script.css">
 
-<title>SITE-64 // ADMIN</title>
+    <style>
+        body {
+            background:
+                radial-gradient(
+                    circle at top,
+                    #101820 0%,
+                    #05070a 55%
+                );
+        }
 
-<link
-    rel="stylesheet"
-    href="/script.css"
->
+        .admin-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 130px 6% 80px;
+        }
 
-<style>
+        .admin-header {
+            margin-bottom: 35px;
+        }
 
-.admin-container {
-    max-width: 1200px;
-    margin: auto;
-    padding: 120px 5% 60px;
-}
+        .admin-header span {
+            color: #5f778a;
+            font-size: 11px;
+            letter-spacing: 3px;
+        }
 
-.login {
-    max-width: 400px;
-    margin: 80px auto;
-}
+        .admin-header h1 {
+            margin-top: 10px;
+            font-size: 42px;
+        }
 
-.login input,
-.login button {
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 12px;
-}
+        .admin-header p {
+            color: #71818d;
+            margin-top: 8px;
+        }
 
-.dashboard {
-    display: none;
-}
+        .admin-login {
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 35px;
+            background: #090e13;
+            border: 1px solid #263440;
+        }
 
-.stats {
-    display: grid;
-    grid-template-columns:
-        repeat(4, 1fr);
-    gap: 12px;
-    margin: 25px 0;
-}
+        .admin-login h2 {
+            margin-bottom: 25px;
+        }
 
-.stat {
-    padding: 20px;
-    border: 1px solid #26343d;
-}
+        .admin-login input {
+            margin-bottom: 15px;
+        }
 
-.stat span {
-    display: block;
-    font-size: 10px;
-    letter-spacing: 2px;
-}
+        .dashboard {
+            display: none;
+        }
 
-.stat strong {
-    display: block;
-    font-size: 28px;
-    margin-top: 8px;
-}
+        .stats {
+            display: grid;
+            grid-template-columns:
+                repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
 
-.request {
-    border: 1px solid #26343d;
-    padding: 22px;
-    margin-bottom: 18px;
-}
+        .stat {
+            padding: 22px;
+            background: #090e13;
+            border: 1px solid #202d38;
+        }
 
-.request-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
+        .stat span {
+            display: block;
+            color: #5d7180;
+            font-size: 10px;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
 
-.request-info {
-    display: grid;
-    grid-template-columns:
-        repeat(3, 1fr);
-    gap: 10px;
-}
+        .stat strong {
+            font-size: 28px;
+        }
 
-.info {
-    border: 1px solid #202b33;
-    padding: 12px;
-}
+        .admin-card {
+            background: #090e13;
+            border: 1px solid #202d38;
+            padding: 24px;
+            margin-bottom: 18px;
+        }
 
-.info small {
-    display: block;
-    opacity: .6;
-    font-size: 9px;
-    letter-spacing: 2px;
-}
+        .admin-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
 
-.time-area {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #26343d;
-}
+        .admin-card h3 {
+            font-family: monospace;
+            font-size: 15px;
+        }
 
-.time-area select {
-    min-width: 200px;
-}
+        .admin-info {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 18px;
+        }
 
-.message {
-    width: 100%;
-    box-sizing: border-box;
-    min-height: 80px;
-    margin-top: 15px;
-}
+        .admin-info div {
+            border: 1px solid #1e2a33;
+            padding: 13px;
+        }
 
-.buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 12px;
-}
+        .admin-info span {
+            display: block;
+            color: #596b78;
+            font-size: 9px;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
 
-.buttons button {
-    padding: 12px 18px;
-    cursor: pointer;
-}
+        .admin-info strong {
+            font-size: 13px;
+        }
 
-.success {
-    color: #83cda4;
-}
+        .admin-message-input {
+            margin-bottom: 15px;
+        }
 
-.error {
-    color: #d88383;
-}
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
 
-@media(max-width:700px) {
+        .approve-button,
+        .reject-button {
+            padding: 12px 18px;
+            border: 1px solid;
+            background: transparent;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
 
-    .stats,
-    .request-info {
-        grid-template-columns: 1fr;
-    }
+        .approve-button {
+            color: #8dccaa;
+            border-color: #315d48;
+        }
 
-}
+        .reject-button {
+            color: #dc8c8c;
+            border-color: #633838;
+        }
 
-</style>
+        .approve-button:hover {
+            background: #102219;
+        }
 
+        .reject-button:hover {
+            background: #210d0d;
+        }
+
+        .admin-result {
+            margin-bottom: 20px;
+            padding: 12px;
+            display: none;
+            font-size: 12px;
+        }
+
+        @media (max-width: 800px) {
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .admin-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
-
 
 <header class="topbar">
 
@@ -163,167 +210,193 @@
 
     </div>
 
+    <nav class="navigation">
+
+        <a href="/">
+            HOME
+        </a>
+
+        <a href="/sites">
+            SITES
+        </a>
+
+        <a href="/term">
+            TERMINAL
+        </a>
+
+    </nav>
+
 </header>
 
 
-<main class="admin-container">
+<main class="admin-page">
 
+    <div class="admin-login" id="loginBox">
 
-<section
-    id="login"
-    class="login"
->
+        <h2>
+            ADMINISTRATION ACCESS
+        </h2>
 
-    <h1>
-        ADMIN ACCESS
-    </h1>
+        <p style="color:#71818d;margin-bottom:20px;">
+            Authorized personnel only.
+        </p>
 
-    <p>
-        Restricted SITE-64 administration system.
-    </p>
+        <input
+            id="adminPassword"
+            type="password"
+            placeholder="ACCESS CODE"
+        >
 
+        <button
+            class="primary-button"
+            onclick="login()"
+        >
+            ACCESS SYSTEM
+        </button>
 
-    <input
-        id="password"
-        type="password"
-        placeholder="ACCESS CODE"
-    >
-
-
-    <button
-        id="loginButton"
-    >
-        ACCESS SYSTEM
-    </button>
-
-
-    <p
-        id="loginError"
-        class="error"
-        style="display:none;"
-    >
-        ACCESS DENIED.
-    </p>
-
-</section>
-
-
-<section
-    id="dashboard"
-    class="dashboard"
->
-
-    <h1>
-        SITE-64 CONTROL
-    </h1>
-
-
-    <div class="stats">
-
-        <div class="stat">
-            <span>TOTAL</span>
-            <strong id="total">0</strong>
-        </div>
-
-        <div class="stat">
-            <span>PENDING</span>
-            <strong id="pending">0</strong>
-        </div>
-
-        <div class="stat">
-            <span>APPROVED</span>
-            <strong id="approved">0</strong>
-        </div>
-
-        <div class="stat">
-            <span>REJECTED</span>
-            <strong id="rejected">0</strong>
+        <div
+            id="loginError"
+            style="
+                color:#d98989;
+                margin-top:15px;
+                display:none;
+            "
+        >
+            ACCESS DENIED.
         </div>
 
     </div>
 
 
-    <div id="message"></div>
+    <div
+        class="dashboard"
+        id="dashboard"
+    >
+
+        <div class="admin-header">
+
+            <span>
+                SECURE CONTAIN PROTECT / O5 ADMINISTRATION
+            </span>
+
+            <h1>
+                SITE-64 CONTROL
+            </h1>
+
+            <p>
+                Request management and facility monitoring.
+            </p>
+
+        </div>
 
 
-    <div id="requests"></div>
+        <div class="stats">
 
-</section>
+            <div class="stat">
+                <span>
+                    TOTAL REQUESTS
+                </span>
 
+                <strong id="totalRequests">
+                    0
+                </strong>
+            </div>
+
+
+            <div class="stat">
+                <span>
+                    PENDING
+                </span>
+
+                <strong id="pendingRequests">
+                    0
+                </strong>
+            </div>
+
+
+            <div class="stat">
+                <span>
+                    APPROVED
+                </span>
+
+                <strong id="approvedRequests">
+                    0
+                </strong>
+            </div>
+
+
+            <div class="stat">
+                <span>
+                    REJECTED
+                </span>
+
+                <strong id="rejectedRequests">
+                    0
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div
+            id="adminResult"
+            class="admin-result"
+        ></div>
+
+
+        <div id="requestsContainer"></div>
+
+    </div>
 
 </main>
 
 
 <script>
 
-const ADMIN_PASSWORD =
-    "SITE64-O5";
-
-
-const TIMES = [
-
-    "12:00 PM",
-    "12:30 PM",
-
-    "1:00 PM",
-    "1:30 PM",
-
-    "2:00 PM",
-    "2:30 PM",
-
-    "3:00 PM",
-    "3:30 PM",
-
-    "4:00 PM",
-    "4:30 PM",
-
-    "5:00 PM",
-    "5:30 PM",
-
-    "6:00 PM",
-    "6:30 PM",
-
-    "7:00 PM",
-    "7:30 PM",
-
-    "8:00 PM",
-    "8:30 PM",
-
-    "9:00 PM",
-    "9:30 PM",
-
-    "10:00 PM",
-    "10:30 PM",
-
-    "11:00 PM",
-    "11:30 PM",
-
-    "12:00 AM"
-
-];
-
+const ADMIN_CODE = "SITE64-O5";
 
 let requests = [];
 
 
-document
-    .getElementById("loginButton")
-    .addEventListener(
-        "click",
-        login
-    );
+/* =====================================================
+   LOGIN
+===================================================== */
+
+function login() {
+
+    const password =
+        document
+            .getElementById("adminPassword")
+            .value;
+
+    if (password === ADMIN_CODE) {
+
+        document
+            .getElementById("loginBox")
+            .style.display = "none";
+
+        document
+            .getElementById("dashboard")
+            .style.display = "block";
+
+        loadRequests();
+
+    } else {
+
+        document
+            .getElementById("loginError")
+            .style.display = "block";
+    }
+}
 
 
 document
-    .getElementById("password")
+    .getElementById("adminPassword")
     .addEventListener(
         "keydown",
         event => {
 
-            if (
-                event.key ===
-                "Enter"
-            ) {
+            if (event.key === "Enter") {
                 login();
             }
 
@@ -331,156 +404,99 @@ document
     );
 
 
-function login() {
-
-    const password =
-        document
-            .getElementById(
-                "password"
-            )
-            .value;
-
-
-    if (
-        password !==
-        ADMIN_PASSWORD
-    ) {
-
-        document
-            .getElementById(
-                "loginError"
-            )
-            .style.display =
-                "block";
-
-        return;
-    }
-
-
-    document
-        .getElementById(
-            "login"
-        )
-        .style.display =
-            "none";
-
-
-    document
-        .getElementById(
-            "dashboard"
-        )
-        .style.display =
-            "block";
-
-
-    loadRequests();
-}
-
+/* =====================================================
+   LOAD REQUESTS
+===================================================== */
 
 async function loadRequests() {
 
     try {
 
         const response =
-            await fetch(
-                "/api/requests"
-            );
-
+            await fetch("/api/requests");
 
         const data =
             await response.json();
 
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.message ||
-                "DATABASE ERROR."
-            );
+        if (!data.success) {
+            return;
         }
 
-
         requests =
-            Array.isArray(
-                data.requests
-            )
-                ? data.requests
-                : [];
-
+            data.requests || [];
 
         updateStats();
 
-        render();
+        renderRequests();
 
-    } catch (error) {
+    } catch {
 
-        showMessage(
-            error.message,
+        showResult(
+            "Unable to connect to request database.",
             true
         );
     }
 }
 
 
+/* =====================================================
+   STATS
+===================================================== */
+
 function updateStats() {
 
-    document
-        .getElementById(
-            "total"
-        )
-        .textContent =
-            requests.length;
+    document.getElementById(
+        "totalRequests"
+    ).textContent =
+        requests.length;
 
 
-    document
-        .getElementById(
-            "pending"
-        )
-        .textContent =
-            requests.filter(
-                r =>
-                    r.status ===
-                    "PENDING"
-            ).length;
+    document.getElementById(
+        "pendingRequests"
+    ).textContent =
+        requests.filter(
+            r => r.status === "PENDING"
+        ).length;
 
 
-    document
-        .getElementById(
-            "approved"
-        )
-        .textContent =
-            requests.filter(
-                r =>
-                    r.status ===
-                    "APPROVED"
-            ).length;
+    document.getElementById(
+        "approvedRequests"
+    ).textContent =
+        requests.filter(
+            r => r.status === "APPROVED"
+        ).length;
 
 
-    document
-        .getElementById(
-            "rejected"
-        )
-        .textContent =
-            requests.filter(
-                r =>
-                    r.status ===
-                    "REJECTED"
-            ).length;
+    document.getElementById(
+        "rejectedRequests"
+    ).textContent =
+        requests.filter(
+            r => r.status === "REJECTED"
+        ).length;
 }
 
 
-function render() {
+/* =====================================================
+   RENDER
+===================================================== */
+
+function renderRequests() {
 
     const container =
         document.getElementById(
-            "requests"
+            "requestsContainer"
         );
 
 
     if (!requests.length) {
 
-        container.innerHTML =
-            "<p>NO REQUESTS FOUND.</p>";
+        container.innerHTML = `
+            <div class="admin-card">
+                <strong>
+                    NO REQUESTS IN DATABASE.
+                </strong>
+            </div>
+        `;
 
         return;
     }
@@ -490,304 +506,278 @@ function render() {
         requests
             .slice()
             .reverse()
-            .map(
-                requestCard
+            .map(request =>
+                createRequest(request)
             )
             .join("");
 }
 
 
-function requestCard(request) {
+function createRequest(request) {
 
-    const options =
-        TIMES.map(
-            time => {
-
-                const selected =
-                    time ===
-                    request.time
-                        ? "selected"
-                        : "";
-
-
-                return `
-                    <option
-                        value="${time}"
-                        ${selected}
-                    >
-                        ${time}
-                    </option>
-                `;
-            }
-        )
-        .join("");
+    const status =
+        String(
+            request.status || "PENDING"
+        ).toLowerCase();
 
 
     return `
+        <article class="admin-card">
 
-        <article class="request">
+            <div class="admin-card-top">
 
-            <div class="request-header">
+                <h3>
+                    ${escapeHtml(request.id)}
+                </h3>
 
-                <strong>
-                    ${escapeHtml(
-                        request.id
-                    )}
-                </strong>
-
-                <strong>
+                <span
+                    class="request-status ${status}"
+                >
                     ${escapeHtml(
                         request.status
                     )}
-                </strong>
+                </span>
 
             </div>
 
 
-            <div class="request-info">
+            <div class="admin-info">
 
-                <div class="info">
-                    <small>NAME</small>
-                    ${escapeHtml(
-                        request.name
-                    )}
+                <div>
+
+                    <span>
+                        NAME
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            request.name
+                        )}
+                    </strong>
+
                 </div>
 
-                <div class="info">
-                    <small>TYPE</small>
-                    ${escapeHtml(
-                        request.typeName ||
-                        request.type
-                    )}
+
+                <div>
+
+                    <span>
+                        REQUEST TYPE
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            request.typeName
+                        )}
+                    </strong>
+
                 </div>
 
-                <div class="info">
-                    <small>SCP</small>
-                    ${escapeHtml(
-                        request.scp ||
-                        "N/A"
-                    )}
+
+                <div>
+
+                    <span>
+                        SCP
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            request.scp || "N/A"
+                        )}
+                    </strong>
+
                 </div>
 
-                <div class="info">
-                    <small>TIME</small>
-                    ${escapeHtml(
-                        request.time
-                    )}
+
+                <div>
+
+                    <span>
+                        REQUEST TIME
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            request.time
+                        )}
+                    </strong>
+
                 </div>
 
-                <div class="info">
-                    <small>PERIOD</small>
-                    ${escapeHtml(
-                        request.period
-                    )}
+
+                <div>
+
+                    <span>
+                        PERIOD
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            request.period
+                        )}
+                    </strong>
+
                 </div>
 
-                <div class="info">
-                    <small>CREATED</small>
-                    ${escapeHtml(
-                        request.createdAt
-                    )}
+
+                <div>
+
+                    <span>
+                        CREATED
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            new Date(
+                                request.createdAt
+                            ).toLocaleString()
+                        )}
+                    </strong>
+
                 </div>
 
             </div>
 
 
-            <div class="time-area">
-
-                <strong>
-                    CHANGE REQUEST TIME
-                </strong>
-
-
-                <br><br>
-
-
-                <select
-                    id="time-${escapeHtml(
-                        request.id
-                    )}"
-                >
-
-                    ${options}
-
-                </select>
-
-
-                <button
-                    onclick="changeTime(
-                        '${escapeJs(
-                            request.id
-                        )}'
-                    )"
-                >
-                    CHANGE TIME
-                </button>
-
-            </div>
-
-
-            <textarea
-                id="message-${escapeHtml(
-                    request.id
-                )}"
-                class="message"
-                placeholder="ADMIN MESSAGE..."
-            ></textarea>
-
-
-            <div class="buttons">
+            <div
+                style="
+                    color:#8796a2;
+                    font-size:13px;
+                    line-height:1.6;
+                    margin-bottom:20px;
+                "
+            >
 
                 ${
-                    request.status ===
-                    "PENDING"
-
-                    ? `
-
-                    <button
-                        onclick="approve(
-                            '${escapeJs(
-                                request.id
-                            )}'
-                        )"
-                    >
-                        APPROVE
-                    </button>
-
-                    <button
-                        onclick="reject(
-                            '${escapeJs(
-                                request.id
-                            )}'
-                        )"
-                    >
-                        REJECT
-                    </button>
-
-                    `
-                    : ""
+                    escapeHtml(
+                        request.message ||
+                        "NO ADDITIONAL DETAILS."
+                    )
                 }
 
             </div>
 
-        </article>
 
+            ${
+                request.status === "PENDING"
+                    ? `
+
+                    <textarea
+                        id="message-${request.id}"
+                        class="admin-message-input"
+                        rows="3"
+                        placeholder="Admin message..."
+                    ></textarea>
+
+
+                    <div class="admin-actions">
+
+                        <button
+                            class="approve-button"
+                            onclick="approveRequest('${request.id}')"
+                        >
+                            APPROVE REQUEST
+                        </button>
+
+
+                        <button
+                            class="reject-button"
+                            onclick="rejectRequest('${request.id}')"
+                        >
+                            REJECT REQUEST
+                        </button>
+
+                    </div>
+
+                    `
+                    : `
+
+                    <div
+                        style="
+                            color:#647582;
+                            font-size:12px;
+                        "
+                    >
+                        ADMIN MESSAGE:
+                        ${escapeHtml(
+                            request.adminMessage ||
+                            "NONE"
+                        )}
+                    </div>
+
+                    `
+            }
+
+        </article>
     `;
 }
 
 
-async function changeTime(id) {
+/* =====================================================
+   APPROVE
+===================================================== */
 
-    const select =
-        document.getElementById(
-            `time-${id}`
-        );
+async function approveRequest(id) {
 
-
-    const time =
-        select.value;
-
-
-    try {
-
-        const response =
-            await fetch(
-                `/api/requests/${encodeURIComponent(
-                    id
-                )}/time`,
-                {
-                    method:
-                        "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify({
-                            time
-                        })
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.message ||
-                "TIME CHANGE FAILED."
-            );
-        }
-
-
-        showMessage(
-            `TIME CHANGED TO ${data.request.time}.`,
-            false
-        );
-
-
-        loadRequests();
-
-    } catch (error) {
-
-        showMessage(
-            error.message,
-            true
-        );
-    }
-}
-
-
-async function approve(id) {
-
-    await sendAction(
-        id,
-        "approve"
-    );
-}
-
-
-async function reject(id) {
-
-    await sendAction(
-        id,
-        "reject"
-    );
-}
-
-
-async function sendAction(
-    id,
-    action
-) {
-
-    const messageElement =
+    const input =
         document.getElementById(
             `message-${id}`
         );
 
-
     const message =
-        messageElement
-            ? messageElement.value.trim()
+        input
+            ? input.value.trim()
             : "";
 
+
+    await updateRequest(
+        id,
+        "approve",
+        message
+    );
+}
+
+
+/* =====================================================
+   REJECT
+===================================================== */
+
+async function rejectRequest(id) {
+
+    const input =
+        document.getElementById(
+            `message-${id}`
+        );
+
+    const message =
+        input
+            ? input.value.trim()
+            : "";
+
+
+    await updateRequest(
+        id,
+        "reject",
+        message
+    );
+}
+
+
+/* =====================================================
+   UPDATE
+===================================================== */
+
+async function updateRequest(
+    id,
+    action,
+    message
+) {
 
     try {
 
         const response =
             await fetch(
-                `/api/requests/${encodeURIComponent(
-                    id
-                )}/${action}`,
+                `/api/requests/${id}/${action}`,
                 {
-                    method:
-                        "POST",
+                    method: "POST",
 
                     headers: {
                         "Content-Type":
@@ -808,100 +798,82 @@ async function sendAction(
 
         if (!response.ok) {
 
-            throw new Error(
+            showResult(
                 data.message ||
-                "ACTION FAILED."
+                "REQUEST UPDATE FAILED.",
+                true
             );
+
+            return;
         }
 
 
-        showMessage(
-            action === "approve"
-                ? "REQUEST APPROVED."
-                : "REQUEST REJECTED.",
+        showResult(
+            `REQUEST ${action.toUpperCase()}D SUCCESSFULLY.`,
             false
         );
 
 
         loadRequests();
 
-    } catch (error) {
+    } catch {
 
-        showMessage(
-            error.message,
+        showResult(
+            "SERVER CONNECTION ERROR.",
             true
         );
     }
 }
 
 
-function showMessage(
-    text,
+/* =====================================================
+   RESULT
+===================================================== */
+
+function showResult(
+    message,
     error
 ) {
 
-    const element =
+    const box =
         document.getElementById(
-            "message"
+            "adminResult"
         );
 
+    box.style.display = "block";
 
-    element.textContent =
-        text;
+    box.textContent = message;
 
+    box.style.border =
+        "1px solid " +
+        (
+            error
+                ? "#633838"
+                : "#315d48"
+        );
 
-    element.className =
+    box.style.color =
         error
-            ? "error"
-            : "success";
+            ? "#d98989"
+            : "#8dccaa";
 }
 
+
+/* =====================================================
+   ESCAPE
+===================================================== */
 
 function escapeHtml(value) {
 
-    return String(
-        value ?? ""
-    )
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-}
-
-
-function escapeJs(value) {
-
-    return String(
-        value ?? ""
-    )
-        .replace(
-            /\\/g,
-            "\\\\"
-        )
-        .replace(
-            /'/g,
-            "\\'"
-        );
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 </script>
 
 </body>
-
 </html>
