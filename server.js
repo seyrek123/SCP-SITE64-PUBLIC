@@ -20,16 +20,21 @@ app.use(express.urlencoded({ extended: true }));
 function emptyDatabase() {
     return {
         requests: [],
-        incidents: []
+        incidents: [],
+        warhead: {
+            active: false,
+            type: null,
+            status: "STANDBY",
+            message: "",
+            activatedAt: null
+        }
     };
 }
 
 function readDatabase() {
-
     try {
 
         if (!fs.existsSync(DATA_FILE)) {
-
             fs.writeFileSync(
                 DATA_FILE,
                 JSON.stringify(
@@ -41,13 +46,12 @@ function readDatabase() {
             );
         }
 
-        const data =
-            JSON.parse(
-                fs.readFileSync(
-                    DATA_FILE,
-                    "utf8"
-                )
-            );
+        const data = JSON.parse(
+            fs.readFileSync(
+                DATA_FILE,
+                "utf8"
+            )
+        );
 
         if (!Array.isArray(data.requests)) {
             data.requests = [];
@@ -55,6 +59,16 @@ function readDatabase() {
 
         if (!Array.isArray(data.incidents)) {
             data.incidents = [];
+        }
+
+        if (!data.warhead) {
+            data.warhead = {
+                active: false,
+                type: null,
+                status: "STANDBY",
+                message: "",
+                activatedAt: null
+            };
         }
 
         return data;
@@ -71,7 +85,6 @@ function readDatabase() {
 }
 
 function saveDatabase(data) {
-
     fs.writeFileSync(
         DATA_FILE,
         JSON.stringify(
@@ -148,7 +161,6 @@ function generateIncidentId() {
 
 /* =====================================================
    TIME
-   12:00 AM - 11:30 PM
 ===================================================== */
 
 function isValidTime(time) {
@@ -166,15 +178,13 @@ function getPeriod(time) {
 
     const hour =
         Number(
-            String(time)
-                .split(":")[0]
+            String(time).split(":")[0]
         );
 
     if (
         hour >= 6 &&
         hour < 18
     ) {
-
         return "DAY";
     }
 
@@ -207,7 +217,6 @@ app.get("/", (req, res) => {
     );
 });
 
-
 app.get("/admin", (req, res) => {
 
     res.sendFile(
@@ -217,7 +226,6 @@ app.get("/admin", (req, res) => {
         )
     );
 });
-
 
 app.get("/sites", (req, res) => {
 
@@ -229,7 +237,6 @@ app.get("/sites", (req, res) => {
     );
 });
 
-
 app.get("/term", (req, res) => {
 
     res.sendFile(
@@ -240,9 +247,19 @@ app.get("/term", (req, res) => {
     );
 });
 
+app.get("/warhead", (req, res) => {
+
+    res.sendFile(
+        path.join(
+            PUBLIC_DIR,
+            "warhead.html"
+        )
+    );
+});
+
 
 /* =====================================================
-   GET ALL REQUESTS
+   REQUEST API
 ===================================================== */
 
 app.get(
@@ -260,10 +277,6 @@ app.get(
     }
 );
 
-
-/* =====================================================
-   CREATE REQUEST
-===================================================== */
 
 app.post(
     "/api/requests",
@@ -287,7 +300,9 @@ app.post(
             ) {
 
                 return res.status(400).json({
+
                     success: false,
+
                     message:
                         "FULL NAME IS REQUIRED."
                 });
@@ -297,7 +312,9 @@ app.post(
             if (!type) {
 
                 return res.status(400).json({
+
                     success: false,
+
                     message:
                         "REQUEST TYPE IS REQUIRED."
                 });
@@ -307,7 +324,9 @@ app.post(
             if (!isValidTime(time)) {
 
                 return res.status(400).json({
+
                     success: false,
+
                     message:
                         "INVALID TIME. SELECT A 30-MINUTE INTERVAL."
                 });
@@ -323,7 +342,9 @@ app.post(
             ) {
 
                 return res.status(400).json({
+
                     success: false,
+
                     message:
                         "SCP SELECTION IS REQUIRED."
                 });
@@ -436,13 +457,9 @@ app.post(
             );
             console.log("");
 
-
             res.status(201).json({
-
                 success: true,
-
-                request:
-                    request
+                request
             });
 
         } catch (error) {
@@ -549,8 +566,7 @@ app.post(
 
             success: true,
 
-            request:
-                request
+            request
         });
     }
 );
@@ -610,8 +626,7 @@ app.post(
 
             success: true,
 
-            request:
-                request
+            request
         });
     }
 );
@@ -687,8 +702,7 @@ app.post(
 
             success: true,
 
-            request:
-                request
+            request
         });
     }
 );
@@ -705,15 +719,12 @@ const ALLOWED_SITES = [
 ];
 
 
-/* GET INCIDENTS */
-
 app.get(
     "/api/incidents",
     (req, res) => {
 
         const database =
             readDatabase();
-
 
         res.json({
 
@@ -725,8 +736,6 @@ app.get(
     }
 );
 
-
-/* CREATE INCIDENT */
 
 app.post(
     "/api/incidents",
@@ -848,8 +857,7 @@ app.post(
 
                 success: true,
 
-                incident:
-                    incident
+                incident
             });
 
         } catch (error) {
@@ -858,7 +866,6 @@ app.post(
                 "INCIDENT ERROR:",
                 error
             );
-
 
             res.status(500).json({
 
@@ -871,10 +878,6 @@ app.post(
     }
 );
 
-
-/* =====================================================
-   RESOLVE INCIDENT
-===================================================== */
 
 app.post(
     "/api/incidents/:id/resolve",
@@ -921,8 +924,7 @@ app.post(
 
             success: true,
 
-            incident:
-                incident
+            incident
         });
     }
 );
@@ -998,8 +1000,263 @@ app.get(
 
             success: true,
 
-            sites:
-                sites
+            sites
+        });
+    }
+);
+
+
+/* =====================================================
+   WARHEAD SYSTEM
+===================================================== */
+
+const WARHEAD_TYPES = {
+
+    GAMMA: {
+
+        name:
+            "GAMMA",
+
+        effect:
+            "GLOBAL TERMINATION",
+
+        description:
+            "TOTAL GLOBAL DESTRUCTION."
+    },
+
+    DELTA: {
+
+        name:
+            "DELTA",
+
+        effect:
+            "FACILITY TERMINATION",
+
+        description:
+            "DESTRUCTION OF THE SELECTED FACILITY."
+    },
+
+    ALPHA: {
+
+        name:
+            "ALPHA",
+
+        effect:
+            "FACILITY TERMINATION",
+
+        description:
+            "DESTRUCTION OF THE SELECTED FACILITY."
+    },
+
+    BETA: {
+
+        name:
+            "BETA",
+
+        effect:
+            "FACILITY TERMINATION",
+
+        description:
+            "DESTRUCTION OF THE SELECTED FACILITY."
+    }
+};
+
+
+/* GET WARHEAD */
+
+app.get(
+    "/api/warhead",
+    (req, res) => {
+
+        const database =
+            readDatabase();
+
+        res.json({
+
+            success: true,
+
+            warhead:
+                database.warhead,
+
+            types:
+                WARHEAD_TYPES
+        });
+    }
+);
+
+
+/* ACTIVATE WARHEAD */
+
+app.post(
+    "/api/warhead/activate",
+    (req, res) => {
+
+        try {
+
+            const type =
+                String(
+                    req.body.type || ""
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            if (
+                !WARHEAD_TYPES[type]
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "INVALID WARHEAD TYPE."
+                });
+            }
+
+
+            const database =
+                readDatabase();
+
+
+            if (
+                database.warhead.active
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "A WARHEAD IS ALREADY ACTIVE."
+                });
+            }
+
+
+            const now =
+                new Date().toISOString();
+
+
+            database.warhead = {
+
+                active:
+                    true,
+
+                type:
+                    type,
+
+                status:
+                    "ARMED",
+
+                message:
+                    WARHEAD_TYPES[type]
+                        .description,
+
+                activatedAt:
+                    now
+            };
+
+
+            saveDatabase(
+                database
+            );
+
+
+            console.log("");
+            console.log(
+                "========================================"
+            );
+            console.log(
+                "          WARHEAD ACTIVATED"
+            );
+            console.log(
+                "========================================"
+            );
+            console.log(
+                "TYPE   :",
+                type
+            );
+            console.log(
+                "EFFECT :",
+                WARHEAD_TYPES[type]
+                    .effect
+            );
+            console.log(
+                "STATUS : ARMED"
+            );
+            console.log(
+                "========================================"
+            );
+            console.log("");
+
+
+            res.json({
+
+                success: true,
+
+                warhead:
+                    database.warhead
+            });
+
+        } catch (error) {
+
+            console.error(
+                "WARHEAD ERROR:",
+                error
+            );
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "WARHEAD SYSTEM ERROR."
+            });
+        }
+    }
+);
+
+
+/* DEACTIVATE WARHEAD */
+
+app.post(
+    "/api/warhead/deactivate",
+    (req, res) => {
+
+        const database =
+            readDatabase();
+
+
+        database.warhead = {
+
+            active:
+                false,
+
+            type:
+                null,
+
+            status:
+                "STANDBY",
+
+            message:
+                "",
+
+            activatedAt:
+                null
+        };
+
+
+        saveDatabase(
+            database
+        );
+
+
+        res.json({
+
+            success: true,
+
+            warhead:
+                database.warhead
         });
     }
 );
@@ -1050,7 +1307,8 @@ app.get(
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
             server:
                 "ONLINE",
@@ -1067,6 +1325,9 @@ app.get(
             incidentSystem:
                 "ONLINE",
 
+            warheadSystem:
+                "ONLINE",
+
             totalRequests:
                 database.requests.length,
 
@@ -1081,6 +1342,9 @@ app.get(
 
             activeIncidents:
                 activeIncidents,
+
+            warhead:
+                database.warhead,
 
             uptime:
                 process.uptime()
@@ -1118,12 +1382,10 @@ app.post(
 
 
         if (
-            command ===
-            "clear"
+            command === "clear"
         ) {
 
             return res.json({
-
                 output:
                     "__CLEAR__"
             });
@@ -1131,8 +1393,7 @@ app.post(
 
 
         if (
-            command ===
-            "help"
+            command === "help"
         ) {
 
             return res.json({
@@ -1148,6 +1409,7 @@ status     Show system status
 requests   Show request statistics
 incidents  Show active incidents
 sites      Show registered sites
+warhead    Show warhead status
 about      Show SITE-64 information
 clear      Clear terminal`
             });
@@ -1155,8 +1417,7 @@ clear      Clear terminal`
 
 
         if (
-            command ===
-            "status"
+            command === "status"
         ) {
 
             const pending =
@@ -1184,14 +1445,14 @@ DATABASE     : ONLINE
 SITE         : SITE-64
 REQUESTS     : ${database.requests.length}
 PENDING      : ${pending}
-INCIDENTS    : ${activeIncidents}`
+INCIDENTS    : ${activeIncidents}
+WARHEAD      : ${database.warhead.status}`
             });
         }
 
 
         if (
-            command ===
-            "requests"
+            command === "requests"
         ) {
 
             const pending =
@@ -1232,8 +1493,7 @@ REJECTED   : ${rejected}`
 
 
         if (
-            command ===
-            "incidents"
+            command === "incidents"
         ) {
 
             const active =
@@ -1276,8 +1536,7 @@ ${output}`
 
 
         if (
-            command ===
-            "sites"
+            command === "sites"
         ) {
 
             const activeIncidents =
@@ -1317,8 +1576,28 @@ SITE-64    | ${siteStatus("SITE-64")}`
 
 
         if (
-            command ===
-            "about"
+            command === "warhead"
+        ) {
+
+            const warhead =
+                database.warhead;
+
+
+            return res.json({
+
+                output:
+`WARHEAD CONTROL
+==============================
+STATUS     : ${warhead.status}
+TYPE       : ${warhead.type || "NONE"}
+ACTIVATED  : ${warhead.activatedAt || "N/A"}
+MESSAGE    : ${warhead.message || "NONE"}`
+            });
+        }
+
+
+        if (
+            command === "about"
         ) {
 
             return res.json({
@@ -1355,7 +1634,8 @@ app.use(
 
         res.status(404).json({
 
-            success: false,
+            success:
+                false,
 
             message:
                 "API ENDPOINT NOT FOUND."
@@ -1411,6 +1691,9 @@ app.listen(
         );
         console.log(
             "TERM   : /term"
+        );
+        console.log(
+            "WARHEAD: /warhead"
         );
         console.log(
             "========================================"
