@@ -1,35 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+    <title>SCP FOUNDATION // SITE-64</title>
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>SITE-64</title>
-
-<link
-    rel="stylesheet"
-    href="/script.css"
->
-
+    <link rel="stylesheet" href="script.css">
 </head>
 
 <body>
 
 <header class="topbar">
 
-    <div class="logo">
-        SECURECONTAINPROTECT
+    <div class="brand">
+        <div class="brand-title">
+            SCP FOUNDATION
+        </div>
+
+        <div class="brand-subtitle">
+            SITE-64
+        </div>
     </div>
 
-    <nav>
-
-        <a href="#home">
+    <nav class="navigation">
+        <a href="#home" class="active">
             HOME
         </a>
 
@@ -37,10 +32,9 @@
             REQUEST
         </a>
 
-        <a href="#status">
-            STATUS
+        <a href="#my-requests">
+            MY REQUESTS
         </a>
-
     </nav>
 
 </header>
@@ -50,13 +44,13 @@
 
 <section
     id="home"
-    class="hero page-section"
+    class="page-section hero"
 >
 
     <div class="hero-content">
 
         <div class="classification">
-            CLASSIFIED // SITE-64
+            SECURE • CONTAIN • PROTECT
         </div>
 
         <h1>
@@ -64,12 +58,12 @@
         </h1>
 
         <p>
-            SECURE CONTAIN PROTECT
+            SECURE FACILITY REQUEST SYSTEM
         </p>
 
         <a
             href="#request"
-            class="button"
+            class="primary-button"
         >
             SUBMIT REQUEST
         </a>
@@ -81,263 +75,221 @@
 
 <section
     id="request"
-    class="page-section section"
+    class="page-section"
 >
 
-    <div class="section-title">
+    <div class="section-header">
 
         <span>
-            REQUEST SYSTEM
+            SITE-64 / REQUEST SYSTEM
         </span>
 
         <h2>
-            ACCESS REQUEST
+            SUBMIT A REQUEST
         </h2>
+
+        <p>
+            Submit a request to SITE-64 personnel.
+        </p>
 
     </div>
 
 
-    <form
-        id="requestForm"
-        class="request-form"
-    >
+    <form id="requestForm">
 
-        <label>
-            FULL NAME
+        <div class="form-grid">
 
-            <input
-                id="name"
-                type="text"
-                required
-                autocomplete="name"
+            <div class="form-group">
+
+                <label for="name">
+                    FULL NAME
+                </label>
+
+                <input
+                    id="name"
+                    type="text"
+                    placeholder="Enter your full name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="type">
+                    REQUEST TYPE
+                </label>
+
+                <select
+                    id="type"
+                    required
+                >
+
+                    <option value="">
+                        SELECT REQUEST TYPE
+                    </option>
+
+                    <option value="scp">
+                        SCP INSPECTION
+                    </option>
+
+                    <option value="research">
+                        RESEARCH REQUEST
+                    </option>
+
+                    <option value="personnel">
+                        PERSONNEL REQUEST
+                    </option>
+
+                    <option value="facility">
+                        FACILITY REQUEST
+                    </option>
+
+                    <option value="security">
+                        SECURITY REQUEST
+                    </option>
+
+                    <option value="other">
+                        OTHER
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div
+                class="form-group"
+                id="scpGroup"
+                style="display:none;"
             >
 
-        </label>
+                <label for="scp">
+                    SCP DESIGNATION
+                </label>
+
+                <input
+                    id="scp"
+                    type="text"
+                    placeholder="Example: SCP-173"
+                >
+
+            </div>
 
 
-        <label>
-            REQUEST TYPE
+            <div class="form-group">
 
-            <select
-                id="type"
-                required
-            >
+                <label for="time">
+                    REQUEST TIME
+                </label>
 
-                <option value="">
-                    SELECT REQUEST TYPE
-                </option>
+                <select
+                    id="time"
+                    required
+                >
 
-                <option value="scp">
-                    SCP DENETİMİ
-                </option>
+                    <option value="">
+                        SELECT TIME
+                    </option>
 
-                <option value="facility">
-                    FACILITY ACCESS
-                </option>
+                    <option value="00:00">12:00 AM</option>
+                    <option value="00:30">12:30 AM</option>
 
-                <option value="research">
-                    RESEARCH REQUEST
-                </option>
+                    <option value="01:00">1:00 AM</option>
+                    <option value="01:30">1:30 AM</option>
 
-                <option value="personnel">
-                    PERSONNEL REQUEST
-                </option>
+                    <option value="02:00">2:00 AM</option>
+                    <option value="02:30">2:30 AM</option>
 
-                <option value="security">
-                    SECURITY REQUEST
-                </option>
+                    <option value="03:00">3:00 AM</option>
+                    <option value="03:30">3:30 AM</option>
 
-                <option value="equipment">
-                    EQUIPMENT REQUEST
-                </option>
+                    <option value="04:00">4:00 AM</option>
+                    <option value="04:30">4:30 AM</option>
 
-                <option value="other">
-                    OTHER
-                </option>
+                    <option value="05:00">5:00 AM</option>
+                    <option value="05:30">5:30 AM</option>
 
-            </select>
+                    <option value="06:00">6:00 AM</option>
+                    <option value="06:30">6:30 AM</option>
 
-        </label>
+                    <option value="07:00">7:00 AM</option>
+                    <option value="07:30">7:30 AM</option>
 
+                    <option value="08:00">8:00 AM</option>
+                    <option value="08:30">8:30 AM</option>
 
-        <label
-            id="scpGroup"
-            style="display:none;"
-        >
+                    <option value="09:00">9:00 AM</option>
+                    <option value="09:30">9:30 AM</option>
 
-            SCP
+                    <option value="10:00">10:00 AM</option>
+                    <option value="10:30">10:30 AM</option>
 
-            <select id="scp">
+                    <option value="11:00">11:00 AM</option>
+                    <option value="11:30">11:30 AM</option>
 
-                <option value="">
-                    SELECT SCP
-                </option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="12:30">12:30 PM</option>
 
-                <option value="SCP-049">
-                    SCP-049
-                </option>
+                    <option value="13:00">1:00 PM</option>
+                    <option value="13:30">1:30 PM</option>
 
-                <option value="SCP-096">
-                    SCP-096
-                </option>
+                    <option value="14:00">2:00 PM</option>
+                    <option value="14:30">2:30 PM</option>
 
-                <option value="SCP-173">
-                    SCP-173
-                </option>
+                    <option value="15:00">3:00 PM</option>
+                    <option value="15:30">3:30 PM</option>
 
-                <option value="SCP-682">
-                    SCP-682
-                </option>
+                    <option value="16:00">4:00 PM</option>
+                    <option value="16:30">4:30 PM</option>
 
-                <option value="SCP-939">
-                    SCP-939
-                </option>
+                    <option value="17:00">5:00 PM</option>
+                    <option value="17:30">5:30 PM</option>
 
-                <option value="SCP-106">
-                    SCP-106
-                </option>
+                    <option value="18:00">6:00 PM</option>
+                    <option value="18:30">6:30 PM</option>
 
-                <option value="SCP-3008">
-                    SCP-3008
-                </option>
+                    <option value="19:00">7:00 PM</option>
+                    <option value="19:30">7:30 PM</option>
 
-            </select>
+                    <option value="20:00">8:00 PM</option>
+                    <option value="20:30">8:30 PM</option>
 
-        </label>
+                    <option value="21:00">9:00 PM</option>
+                    <option value="21:30">9:30 PM</option>
 
+                    <option value="22:00">10:00 PM</option>
+                    <option value="22:30">10:30 PM</option>
 
-        <label>
-            TIME
+                    <option value="23:00">11:00 PM</option>
+                    <option value="23:30">11:30 PM</option>
 
-            <select
-                id="time"
-                required
-            >
+                </select>
 
-                <option value="">
-                    SELECT TIME
-                </option>
+            </div>
 
-                <option value="12:00">
-                    12:00
-                </option>
-
-                <option value="12:30">
-                    12:30
-                </option>
-
-                <option value="13:00">
-                    13:00
-                </option>
-
-                <option value="13:30">
-                    13:30
-                </option>
-
-                <option value="14:00">
-                    14:00
-                </option>
-
-                <option value="14:30">
-                    14:30
-                </option>
-
-                <option value="15:00">
-                    15:00
-                </option>
-
-                <option value="15:30">
-                    15:30
-                </option>
-
-                <option value="16:00">
-                    16:00
-                </option>
-
-                <option value="16:30">
-                    16:30
-                </option>
-
-                <option value="17:00">
-                    17:00
-                </option>
-
-                <option value="17:30">
-                    17:30
-                </option>
-
-                <option value="18:00">
-                    18:00
-                </option>
-
-                <option value="18:30">
-                    18:30
-                </option>
-
-                <option value="19:00">
-                    19:00
-                </option>
-
-                <option value="19:30">
-                    19:30
-                </option>
-
-                <option value="20:00">
-                    20:00
-                </option>
-
-                <option value="20:30">
-                    20:30
-                </option>
-
-                <option value="21:00">
-                    21:00
-                </option>
-
-                <option value="21:30">
-                    21:30
-                </option>
-
-                <option value="22:00">
-                    22:00
-                </option>
-
-                <option value="22:30">
-                    22:30
-                </option>
-
-                <option value="23:00">
-                    23:00
-                </option>
-
-                <option value="23:30">
-                    23:30
-                </option>
-
-                <option value="00:00">
-                    00:00
-                </option>
-
-            </select>
-
-        </label>
+        </div>
 
 
-        <label>
-            MESSAGE
+        <div class="form-group">
+
+            <label for="message">
+                REQUEST DETAILS
+            </label>
 
             <textarea
                 id="message"
                 rows="6"
-                placeholder="REQUEST DETAILS..."
+                placeholder="Enter request details..."
             ></textarea>
 
-        </label>
+        </div>
 
 
         <button
             type="submit"
-            class="button"
+            class="primary-button"
         >
             SUBMIT REQUEST
         </button>
@@ -354,60 +306,33 @@
 
 
 <section
-    id="status"
-    class="page-section section"
+    id="my-requests"
+    class="page-section"
 >
 
-    <div class="section-title">
+    <div class="section-header">
 
         <span>
-            SYSTEM
+            SITE-64 / REQUEST DATABASE
         </span>
 
         <h2>
-            SYSTEM STATUS
+            MY REQUESTS
         </h2>
 
     </div>
 
+    <div id="myRequestsList">
 
-    <div class="status-grid">
+        <div class="empty-state">
 
-        <div class="status-box">
-
-            <span>
-                SERVER
-            </span>
-
-            <strong id="serverStatus">
-                SYSTEMS CHECKING...
-            </strong>
-
-        </div>
-
-
-        <div class="status-box">
+            <div>
+                NO REQUESTS FOUND
+            </div>
 
             <span>
-                DATABASE
+                Submitted requests will appear here.
             </span>
-
-            <strong id="databaseStatus">
-                SYSTEMS CHECKING...
-            </strong>
-
-        </div>
-
-
-        <div class="status-box">
-
-            <span>
-                REQUEST SYSTEM
-            </span>
-
-            <strong id="requestStatus">
-                SYSTEMS CHECKING...
-            </strong>
 
         </div>
 
@@ -420,13 +345,18 @@
 
 <footer>
 
-    SECURECONTAINPROTECT // SITE-64
+    <div>
+        SCP FOUNDATION // SITE-64
+    </div>
+
+    <div>
+        SECURE • CONTAIN • PROTECT
+    </div>
 
 </footer>
 
 
-<script src="/script.js"></script>
+<script src="script.js"></script>
 
 </body>
-
 </html>

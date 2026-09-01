@@ -5,11 +5,10 @@ const path = require("path");
 const app = express();
 
 const PORT = process.env.PORT || 6464;
+const HOST = "0.0.0.0";
+
 const PUBLIC_DIR = path.join(__dirname, "public");
 const DATA_FILE = path.join(__dirname, "data.json");
-
-const ADMIN_PASSWORD =
-    process.env.ADMIN_PASSWORD || "CHANGE_THIS_PASSWORD";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -18,97 +17,62 @@ app.use(express.urlencoded({ extended: true }));
    DATABASE
 ===================================================== */
 
-function createDatabase() {
+function emptyDatabase() {
     return {
         requests: []
     };
 }
 
-function ensureDatabase() {
-
-    if (!fs.existsSync(DATA_FILE)) {
-
-        fs.writeFileSync(
-            DATA_FILE,
-            JSON.stringify(createDatabase(), null, 4),
-            "utf8"
-        );
-
-        return;
-    }
-
+function readDatabase() {
     try {
+        if (!fs.existsSync(DATA_FILE)) {
+            fs.writeFileSync(
+                DATA_FILE,
+                JSON.stringify(emptyDatabase(), null, 2),
+                "utf8"
+            );
+        }
 
         const data = JSON.parse(
             fs.readFileSync(DATA_FILE, "utf8")
         );
 
         if (!Array.isArray(data.requests)) {
-
             data.requests = [];
-
-            saveDatabase(data);
         }
 
-    } catch {
-
-        fs.writeFileSync(
-            DATA_FILE,
-            JSON.stringify(createDatabase(), null, 4),
-            "utf8"
-        );
+        return data;
+    } catch (error) {
+        console.error("DATABASE ERROR:", error);
+        return emptyDatabase();
     }
 }
 
-function readDatabase() {
-
-    ensureDatabase();
-
-    try {
-
-        return JSON.parse(
-            fs.readFileSync(DATA_FILE, "utf8")
-        );
-
-    } catch {
-
-        return createDatabase();
-    }
-}
-
-function saveDatabase(database) {
-
+function saveDatabase(data) {
     fs.writeFileSync(
         DATA_FILE,
-        JSON.stringify(database, null, 4),
+        JSON.stringify(data, null, 2),
         "utf8"
     );
 }
 
 /* =====================================================
-   ID
+   REQUEST ID
 ===================================================== */
 
-function generateId() {
+function generateRequestId() {
+    const database = readDatabase();
 
     let id;
 
     do {
-
         id =
             "SITE64-" +
-            Math.floor(
-                10000 +
-                Math.random() * 90000
-            );
-
+            Math.floor(10000 + Math.random() * 90000);
     } while (
-        readDatabase()
-            .requests
-            .some(
-                request =>
-                    request.id === id
-            )
+        database.requests.some(
+            request => request.id === id
+        )
     );
 
     return id;
@@ -116,58 +80,25 @@ function generateId() {
 
 /* =====================================================
    TIME
+   12:00 AM - 11:30 PM
 ===================================================== */
 
-function validateTime(time) {
-
+function isValidTime(time) {
     if (!time) {
         return false;
     }
 
-    const match =
-        /^([0-9]{1,2}):([0-9]{2})$/
-            .exec(String(time));
-
-    if (!match) {
-        return false;
-    }
-
-    const hour = Number(match[1]);
-    const minute = Number(match[2]);
-
-    if (
-        hour < 0 ||
-        hour > 23
-    ) {
-        return false;
-    }
-
-    if (
-        minute !== 0 &&
-        minute !== 30
-    ) {
-        return false;
-    }
-
-    if (hour === 0) {
-        return true;
-    }
-
-    return hour >= 12;
+    return /^(0[0-9]|1[0-9]|2[0-3]):(00|30)$/.test(
+        String(time)
+    );
 }
 
 function getPeriod(time) {
+    const hour = Number(
+        String(time).split(":")[0]
+    );
 
-    const hour =
-        Number(
-            String(time).split(":")[0]
-        );
-
-    if (hour === 0) {
-        return "NIGHT";
-    }
-
-    if (hour >= 12 && hour < 18) {
+    if (hour >= 6 && hour < 18) {
         return "DAY";
     }
 
@@ -175,741 +106,502 @@ function getPeriod(time) {
 }
 
 /* =====================================================
-   ADMIN AUTH
-===================================================== */
-
-function checkAdmin(req) {
-
-    const password =
-        req.headers["x-admin-password"];
-
-    return (
-        password &&
-        password === ADMIN_PASSWORD
-    );
-}
-
-function requireAdmin(req, res, next) {
-
-    if (checkAdmin(req)) {
-        return next();
-    }
-
-    return res.status(401).json({
-        success: false,
-        message: "ADMIN AUTHENTICATION REQUIRED."
-    });
-}
-
-/* =====================================================
-   ADMIN LOGIN
-===================================================== */
-
-app.post(
-    "/api/admin/login",
-    (req, res) => {
-
-        const password =
-            String(
-                req.body.password || ""
-            );
-
-        if (
-            password ===
-            ADMIN_PASSWORD
-        ) {
-
-            return res.json({
-                success: true
-            });
-        }
-
-        return res.status(401).json({
-            success: false,
-            message: "ACCESS DENIED."
-        });
-    }
-);
-
-/* =====================================================
-   PUBLIC HOME
-===================================================== */
-
-app.get(
-    "/",
-    (req, res) => {
-
-        res.sendFile(
-            path.join(
-                PUBLIC_DIR,
-                "index.html"
-            )
-        );
-    }
-);
-
-/* =====================================================
-   PROTECTED PAGES
-===================================================== */
-
-app.get(
-    "/admin",
-    requireAdmin,
-    (req, res) => {
-
-        res.sendFile(
-            path.join(
-                PUBLIC_DIR,
-                "admin.html"
-            )
-        );
-    }
-);
-
-app.get(
-    "/sites",
-    requireAdmin,
-    (req, res) => {
-
-        res.sendFile(
-            path.join(
-                PUBLIC_DIR,
-                "sites.html"
-            )
-        );
-    }
-);
-
-app.get(
-    "/term",
-    requireAdmin,
-    (req, res) => {
-
-        res.sendFile(
-            path.join(
-                PUBLIC_DIR,
-                "term.html"
-            )
-        );
-    }
-);
-
-/* =====================================================
    STATIC FILES
 ===================================================== */
 
-app.use(
-    express.static(PUBLIC_DIR)
-);
+app.use(express.static(PUBLIC_DIR));
 
 /* =====================================================
-   PUBLIC STATUS
+   PAGES
 ===================================================== */
 
-app.get(
-    "/api/status",
-    (req, res) => {
+app.get("/", (req, res) => {
+    res.sendFile(
+        path.join(PUBLIC_DIR, "index.html")
+    );
+});
 
-        const database =
-            readDatabase();
+app.get("/admin", (req, res) => {
+    res.sendFile(
+        path.join(PUBLIC_DIR, "admin.html")
+    );
+});
 
-        const pending =
-            database.requests.filter(
-                r =>
-                    r.status ===
-                    "PENDING"
-            ).length;
+app.get("/sites", (req, res) => {
+    res.sendFile(
+        path.join(PUBLIC_DIR, "sites.html")
+    );
+});
 
-        res.json({
-
-            success: true,
-
-            server:
-                "ONLINE",
-
-            site:
-                "SITE-64",
-
-            database:
-                "ONLINE",
-
-            requestSystem:
-                "ONLINE",
-
-            pendingRequests:
-                pending,
-
-            totalRequests:
-                database.requests.length,
-
-            uptime:
-                process.uptime()
-        });
-    }
-);
+app.get("/term", (req, res) => {
+    res.sendFile(
+        path.join(PUBLIC_DIR, "term.html")
+    );
+});
 
 /* =====================================================
-   PUBLIC CREATE REQUEST
+   GET ALL REQUESTS
 ===================================================== */
 
-app.post(
-    "/api/requests",
-    (req, res) => {
+app.get("/api/requests", (req, res) => {
+    const database = readDatabase();
 
-        try {
-
-            const {
-                name,
-                type,
-                typeName,
-                scp,
-                time,
-                message
-            } = req.body;
-
-            if (
-                !name ||
-                !String(name).trim()
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "FULL NAME IS REQUIRED."
-                });
-            }
-
-            if (!type) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "REQUEST TYPE IS REQUIRED."
-                });
-            }
-
-            if (!validateTime(time)) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "INVALID TIME."
-                });
-            }
-
-            /*
-                SCP DENETİMİ
-                seçildiyse SCP zorunlu
-            */
-
-            if (
-                type === "scp" &&
-                (
-                    !scp ||
-                    !String(scp).trim()
-                )
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "SCP MUST BE SELECTED."
-                });
-            }
-
-            const now =
-                new Date().toISOString();
-
-            const request = {
-
-                id:
-                    generateId(),
-
-                name:
-                    String(name).trim(),
-
-                type:
-                    String(type),
-
-                typeName:
-                    String(
-                        typeName ||
-                        type
-                    ),
-
-                scp:
-                    scp
-                        ? String(scp)
-                        : null,
-
-                time:
-                    String(time),
-
-                period:
-                    getPeriod(time),
-
-                message:
-                    String(
-                        message || ""
-                    ),
-
-                status:
-                    "PENDING",
-
-                adminMessage:
-                    "",
-
-                createdAt:
-                    now,
-
-                updatedAt:
-                    now
-            };
-
-            const database =
-                readDatabase();
-
-            database.requests.push(
-                request
-            );
-
-            saveDatabase(
-                database
-            );
-
-            console.log(
-                `[NEW REQUEST] ${request.id}`
-            );
-
-            return res.status(201).json({
-                success: true,
-                request
-            });
-
-        } catch (error) {
-
-            console.error(
-                "REQUEST ERROR:",
-                error
-            );
-
-            return res.status(500).json({
-                success: false,
-                message:
-                    "SERVER ERROR."
-            });
-        }
-    }
-);
+    res.json({
+        success: true,
+        requests: database.requests
+    });
+});
 
 /* =====================================================
-   ADMIN REQUESTS
+   CREATE REQUEST
 ===================================================== */
 
-app.get(
-    "/api/requests/admin",
-    requireAdmin,
-    (req, res) => {
-
-        const database =
-            readDatabase();
-
-        res.json({
-            success: true,
-            requests:
-                database.requests
-        });
-    }
-);
-
-/* =====================================================
-   APPROVE
-===================================================== */
-
-app.post(
-    "/api/requests/:id/approve",
-    requireAdmin,
-    (req, res) => {
-
-        const database =
-            readDatabase();
-
-        const request =
-            database.requests.find(
-                item =>
-                    item.id ===
-                    req.params.id
-            );
-
-        if (!request) {
-
-            return res.status(404).json({
-                success: false,
-                message:
-                    "REQUEST NOT FOUND."
-            });
-        }
-
+app.post("/api/requests", (req, res) => {
+    try {
         const {
-            message,
-            time
+            name,
+            type,
+            typeName,
+            scp,
+            time,
+            message
         } = req.body;
 
-        if (time) {
-
-            if (!validateTime(time)) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "INVALID TIME."
-                });
-            }
-
-            request.time =
-                String(time);
-
-            request.period =
-                getPeriod(time);
-        }
-
-        request.status =
-            "APPROVED";
-
-        request.adminMessage =
-            String(
-                message ||
-                "YOUR REQUEST HAS BEEN ACCEPTED."
-            );
-
-        request.updatedAt =
-            new Date().toISOString();
-
-        saveDatabase(
-            database
-        );
-
-        return res.json({
-            success: true,
-            request
-        });
-    }
-);
-
-/* =====================================================
-   REJECT
-===================================================== */
-
-app.post(
-    "/api/requests/:id/reject",
-    requireAdmin,
-    (req, res) => {
-
-        const database =
-            readDatabase();
-
-        const request =
-            database.requests.find(
-                item =>
-                    item.id ===
-                    req.params.id
-            );
-
-        if (!request) {
-
-            return res.status(404).json({
+        if (!name || !String(name).trim()) {
+            return res.status(400).json({
                 success: false,
-                message:
-                    "REQUEST NOT FOUND."
+                message: "FULL NAME IS REQUIRED."
             });
         }
 
-        request.status =
-            "REJECTED";
+        if (!type) {
+            return res.status(400).json({
+                success: false,
+                message: "REQUEST TYPE IS REQUIRED."
+            });
+        }
 
-        request.adminMessage =
-            String(
-                req.body.message ||
-                "YOUR REQUEST HAS BEEN REJECTED."
-            );
-
-        request.updatedAt =
-            new Date().toISOString();
-
-        saveDatabase(
-            database
-        );
-
-        return res.json({
-            success: true,
-            request
-        });
-    }
-);
-
-/* =====================================================
-   CHANGE TIME
-===================================================== */
-
-app.post(
-    "/api/requests/:id/time",
-    requireAdmin,
-    (req, res) => {
-
-        const {
-            time
-        } = req.body;
-
-        if (!validateTime(time)) {
-
+        if (!isValidTime(time)) {
             return res.status(400).json({
                 success: false,
                 message:
-                    "INVALID TIME."
+                    "INVALID TIME. SELECT A 30-MINUTE INTERVAL."
             });
         }
 
-        const database =
-            readDatabase();
-
-        const request =
-            database.requests.find(
-                item =>
-                    item.id ===
-                    req.params.id
-            );
-
-        if (!request) {
-
-            return res.status(404).json({
+        if (
+            type === "scp" &&
+            (!scp || !String(scp).trim())
+        ) {
+            return res.status(400).json({
                 success: false,
-                message:
-                    "REQUEST NOT FOUND."
+                message: "SCP SELECTION IS REQUIRED."
             });
         }
 
-        request.time =
-            String(time);
+        const now = new Date().toISOString();
 
-        request.period =
-            getPeriod(time);
+        const request = {
+            id: generateRequestId(),
 
-        request.updatedAt =
-            new Date().toISOString();
+            name: String(name).trim(),
 
-        saveDatabase(
-            database
-        );
+            type: String(type),
 
-        return res.json({
+            typeName:
+                typeName ||
+                String(type).toUpperCase(),
+
+            scp:
+                scp
+                    ? String(scp).trim()
+                    : null,
+
+            time: String(time),
+
+            period: getPeriod(time),
+
+            message:
+                message
+                    ? String(message).trim()
+                    : "",
+
+            status: "PENDING",
+
+            adminMessage: "",
+
+            createdAt: now,
+
+            updatedAt: now
+        };
+
+        const database = readDatabase();
+
+        database.requests.push(request);
+
+        saveDatabase(database);
+
+        console.log("");
+        console.log("========================================");
+        console.log("        NEW SITE-64 REQUEST");
+        console.log("========================================");
+        console.log("REQUEST ID :", request.id);
+        console.log("NAME       :", request.name);
+        console.log("TYPE       :", request.typeName);
+        console.log("SCP        :", request.scp || "N/A");
+        console.log("TIME       :", request.time);
+        console.log("PERIOD     :", request.period);
+        console.log("STATUS     :", request.status);
+        console.log("========================================");
+        console.log("");
+
+        res.status(201).json({
             success: true,
             request
         });
+
+    } catch (error) {
+        console.error("REQUEST ERROR:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "SERVER ERROR."
+        });
     }
-);
+});
 
 /* =====================================================
-   TERMINAL
+   APPROVE REQUEST
 ===================================================== */
 
-app.post(
-    "/api/terminal",
-    requireAdmin,
-    (req, res) => {
+app.post("/api/requests/:id/approve", (req, res) => {
+    const database = readDatabase();
 
-        const command =
-            String(
-                req.body.command || ""
-            )
-                .trim()
-                .toLowerCase();
+    const request = database.requests.find(
+        item => item.id === req.params.id
+    );
 
-        const database =
-            readDatabase();
+    if (!request) {
+        return res.status(404).json({
+            success: false,
+            message: "REQUEST NOT FOUND."
+        });
+    }
 
-        if (!command) {
+    const {
+        message,
+        time
+    } = req.body;
 
-            return res.json({
-                output: ""
+    if (time !== undefined && time !== "") {
+        if (!isValidTime(time)) {
+            return res.status(400).json({
+                success: false,
+                message: "INVALID TIME."
             });
         }
 
-        if (command === "help") {
+        request.time = time;
+        request.period = getPeriod(time);
+    }
 
-            return res.json({
+    request.status = "APPROVED";
 
-                output:
+    request.adminMessage =
+        message ||
+        "YOUR REQUEST HAS BEEN APPROVED.";
+
+    request.updatedAt =
+        new Date().toISOString();
+
+    saveDatabase(database);
+
+    res.json({
+        success: true,
+        request
+    });
+});
+
+/* =====================================================
+   REJECT REQUEST
+===================================================== */
+
+app.post("/api/requests/:id/reject", (req, res) => {
+    const database = readDatabase();
+
+    const request = database.requests.find(
+        item => item.id === req.params.id
+    );
+
+    if (!request) {
+        return res.status(404).json({
+            success: false,
+            message: "REQUEST NOT FOUND."
+        });
+    }
+
+    request.status = "REJECTED";
+
+    request.adminMessage =
+        req.body.message ||
+        "YOUR REQUEST HAS BEEN REJECTED.";
+
+    request.updatedAt =
+        new Date().toISOString();
+
+    saveDatabase(database);
+
+    res.json({
+        success: true,
+        request
+    });
+});
+
+/* =====================================================
+   CHANGE REQUEST TIME
+===================================================== */
+
+app.post("/api/requests/:id/time", (req, res) => {
+    const {
+        time
+    } = req.body;
+
+    if (!isValidTime(time)) {
+        return res.status(400).json({
+            success: false,
+            message: "INVALID TIME."
+        });
+    }
+
+    const database = readDatabase();
+
+    const request = database.requests.find(
+        item => item.id === req.params.id
+    );
+
+    if (!request) {
+        return res.status(404).json({
+            success: false,
+            message: "REQUEST NOT FOUND."
+        });
+    }
+
+    request.time = time;
+    request.period = getPeriod(time);
+    request.updatedAt =
+        new Date().toISOString();
+
+    saveDatabase(database);
+
+    res.json({
+        success: true,
+        request
+    });
+});
+
+/* =====================================================
+   SERVER STATUS
+===================================================== */
+
+app.get("/api/status", (req, res) => {
+    const database = readDatabase();
+
+    const pending = database.requests.filter(
+        request =>
+            request.status === "PENDING"
+    ).length;
+
+    const approved = database.requests.filter(
+        request =>
+            request.status === "APPROVED"
+    ).length;
+
+    const rejected = database.requests.filter(
+        request =>
+            request.status === "REJECTED"
+    ).length;
+
+    res.json({
+        success: true,
+
+        server: "ONLINE",
+
+        database: "ONLINE",
+
+        site: "SITE-64",
+
+        requestSystem: "ONLINE",
+
+        totalRequests:
+            database.requests.length,
+
+        pendingRequests:
+            pending,
+
+        approvedRequests:
+            approved,
+
+        rejectedRequests:
+            rejected,
+
+        uptime:
+            process.uptime()
+    });
+});
+
+/* =====================================================
+   TERMINAL API
+===================================================== */
+
+app.post("/api/terminal", (req, res) => {
+    const command = String(
+        req.body.command || ""
+    )
+        .trim()
+        .toLowerCase();
+
+    const database = readDatabase();
+
+    if (!command) {
+        return res.json({
+            output: ""
+        });
+    }
+
+    if (command === "clear") {
+        return res.json({
+            output: "__CLEAR__"
+        });
+    }
+
+    if (command === "help") {
+        return res.json({
+            output:
 `SITE-64 TERMINAL
 ==============================
+
+AVAILABLE COMMANDS
 
 help       Show available commands
 status     Show system status
 requests   Show request statistics
 sites      Show registered sites
-clear      Clear terminal
-about      Show SITE-64 information`
-            });
-        }
+about      Show SITE-64 information
+clear      Clear terminal`
+        });
+    }
 
-        if (command === "status") {
+    if (command === "status") {
+        const pending =
+            database.requests.filter(
+                r => r.status === "PENDING"
+            ).length;
 
-            const pending =
-                database.requests.filter(
-                    r =>
-                        r.status ===
-                        "PENDING"
-                ).length;
-
-            return res.json({
-
-                output:
+        return res.json({
+            output:
 `SYSTEM STATUS
 ==============================
 SERVER       : ONLINE
 DATABASE     : ONLINE
-SITE-64      : OPERATIONAL
+SITE         : SITE-64
 REQUESTS     : ${database.requests.length}
 PENDING      : ${pending}`
-            });
-        }
+        });
+    }
 
-        if (command === "requests") {
+    if (command === "requests") {
+        const pending =
+            database.requests.filter(
+                r => r.status === "PENDING"
+            ).length;
 
-            const pending =
-                database.requests.filter(
-                    r =>
-                        r.status ===
-                        "PENDING"
-                ).length;
+        const approved =
+            database.requests.filter(
+                r => r.status === "APPROVED"
+            ).length;
 
-            const approved =
-                database.requests.filter(
-                    r =>
-                        r.status ===
-                        "APPROVED"
-                ).length;
+        const rejected =
+            database.requests.filter(
+                r => r.status === "REJECTED"
+            ).length;
 
-            const rejected =
-                database.requests.filter(
-                    r =>
-                        r.status ===
-                        "REJECTED"
-                ).length;
-
-            return res.json({
-
-                output:
+        return res.json({
+            output:
 `REQUEST DATABASE
 ==============================
 TOTAL      : ${database.requests.length}
 PENDING    : ${pending}
 APPROVED   : ${approved}
 REJECTED   : ${rejected}`
-            });
-        }
-
-        if (command === "sites") {
-
-            return res.json({
-
-                output:
-`SITE-64
-==============================
-SITE-19   | OPERATIONAL
-SITE-51   | CLASSIFIED
-SITE-64   | UNKNOWN
-SITE-██   | REDACTED`
-            });
-        }
-
-        if (command === "about") {
-
-            return res.json({
-
-                output:
-`SECURECONTAINPROTECT
-SITE-64 ADMINISTRATION SYSTEM
-
-CLASSIFICATION: O5
-ACCESS LEVEL: ADMIN`
-            });
-        }
-
-        if (command === "clear") {
-
-            return res.json({
-                output:
-                    "__CLEAR__"
-            });
-        }
-
-        return res.json({
-
-            output:
-                `COMMAND NOT FOUND: ${command}`
         });
     }
-);
+
+    if (command === "sites") {
+        return res.json({
+            output:
+`SCP FOUNDATION SITES
+==============================
+SITE-19    | ACTIVE
+SITE-51    | ACTIVE
+SITE-64    | ACTIVE
+SITE-██    | CLASSIFIED`
+        });
+    }
+
+    if (command === "about") {
+        return res.json({
+            output:
+`SECURE CONTAIN PROTECT
+SITE-64 ADMINISTRATION SYSTEM
+
+CLASSIFICATION : O5
+FACILITY        : SITE-64
+STATUS          : OPERATIONAL
+
+Unauthorized access is prohibited.`
+        });
+    }
+
+    return res.json({
+        output:
+            `COMMAND NOT FOUND: ${command}\nType "help" for available commands.`
+    });
+});
 
 /* =====================================================
    API 404
 ===================================================== */
 
-app.use(
-    "/api",
-    (req, res) => {
-
-        res.status(404).json({
-            success: false,
-            message:
-                "API ENDPOINT NOT FOUND."
-        });
-    }
-);
+app.use("/api", (req, res) => {
+    res.status(404).json({
+        success: false,
+        message: "API ENDPOINT NOT FOUND."
+    });
+});
 
 /* =====================================================
-   START
+   START SERVER
 ===================================================== */
 
-ensureDatabase();
+if (!fs.existsSync(DATA_FILE)) {
+    saveDatabase(emptyDatabase());
+}
 
 app.listen(
     PORT,
-    "0.0.0.0",
+    HOST,
     () => {
-
         console.log("");
-        console.log(
-            "========================================"
-        );
-        console.log(
-            " SECURECONTAINPROTECT // SITE-64"
-        );
-        console.log(
-            "========================================"
-        );
-        console.log(
-            "SERVER : ONLINE"
-        );
-        console.log(
-            "PORT   :",
-            PORT
-        );
-        console.log(
-            "PUBLIC : /"
-        );
-        console.log(
-            "ADMIN  : /admin"
-        );
-        console.log(
-            "SITES  : /sites"
-        );
-        console.log(
-            "TERM   : /term"
-        );
-        console.log(
-            "========================================"
-        );
+        console.log("========================================");
+        console.log("     SECURE CONTAIN PROTECT // SITE-64");
+        console.log("========================================");
+        console.log("SERVER : ONLINE");
+        console.log("PORT   :", PORT);
+        console.log("PUBLIC : /");
+        console.log("ADMIN  : /admin");
+        console.log("SITES  : /sites");
+        console.log("TERM   : /term");
+        console.log("========================================");
         console.log("");
     }
 );
