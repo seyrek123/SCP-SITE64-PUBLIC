@@ -3,703 +3,836 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>SCP FOUNDATION // WARHEAD CONTROL</title>
+<title>WARHEAD CONTROL // SITE-64</title>
 
 <style>
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --red: #d90429;
+    --red-bright: #ff163d;
+    --red-dark: #6d0015;
+    --bg: #050608;
+    --panel: #0a0d11;
+    --panel-2: #0d1117;
+    --border: rgba(255,255,255,.09);
+    --text: #e8edf2;
+    --muted: #707983;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family:
+        "Courier New",
+        Courier,
+        monospace;
 }
 
 body {
-    margin: 0;
-    background:
-        radial-gradient(circle at center, #071522 0%, #020508 55%, #000 100%);
-    color: #dceeff;
-    font-family: "Courier New", monospace;
-    min-height: 100vh;
     overflow-x: hidden;
 }
 
-/* =========================================
-   O5 SECURITY SCREEN
-========================================= */
+/* =====================================================
+   BACKGROUND
+===================================================== */
 
-#securityScreen {
+body::before {
+    content: "";
     position: fixed;
     inset: 0;
+    pointer-events: none;
     background:
-        linear-gradient(rgba(0,20,35,.92), rgba(0,0,0,.97)),
-        repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 3px,
-            rgba(40,130,190,.035) 4px
+        linear-gradient(
+            rgba(255,255,255,.018) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.018) 1px,
+            transparent 1px
         );
+    background-size: 35px 35px;
+    mask-image: linear-gradient(
+        to bottom,
+        black,
+        transparent
+    );
+}
 
+.scanline {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: -10%;
+    height: 2px;
+    background: rgba(255, 20, 55, .45);
+    box-shadow: 0 0 15px rgba(255, 20, 55, .7);
+    pointer-events: none;
+    z-index: 999;
+    animation: scan 7s linear infinite;
+}
+
+@keyframes scan {
+    from {
+        top: -5%;
+    }
+
+    to {
+        top: 105%;
+    }
+}
+
+/* =====================================================
+   TOP BAR
+===================================================== */
+
+.topbar {
+    height: 68px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 35px;
+    background: rgba(5,6,8,.94);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.brand-symbol {
+    width: 35px;
+    height: 35px;
+    border: 1px solid var(--red);
+    color: var(--red);
+    display: grid;
+    place-items: center;
+    font-size: 17px;
+    box-shadow: 0 0 18px rgba(217,4,41,.18);
+}
+
+.security {
+    color: var(--red-bright);
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+main {
+    width: min(1150px, calc(100% - 35px));
+    margin: 0 auto;
+    padding: 65px 0 100px;
+}
+
+.header {
+    margin-bottom: 45px;
+    animation: fadeUp .7s ease both;
+}
+
+.classification {
+    color: var(--red);
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+}
+
+h1 {
+    font-size: clamp(32px, 5vw, 62px);
+    letter-spacing: 5px;
+    line-height: 1;
+}
+
+.header p {
+    margin-top: 18px;
+    color: var(--muted);
+    max-width: 650px;
+    line-height: 1.7;
+    font-size: 13px;
+}
+
+/* =====================================================
+   SECURITY INTRO
+===================================================== */
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+    animation: screenIn .55s ease both;
+}
+
+.security-screen {
+    min-height: 510px;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    z-index: 9999;
 }
 
 .security-box {
-    width: min(700px, 90%);
-    background: rgba(2,8,14,.97);
-    border: 1px solid #287ca8;
-
-    box-shadow:
-        0 0 35px rgba(0,110,180,.25),
-        inset 0 0 30px rgba(0,80,130,.08);
-
-    padding: 42px;
+    width: min(700px, 100%);
+    border: 1px solid rgba(217,4,41,.35);
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(217,4,41,.08),
+            transparent 55%
+        ),
+        var(--panel);
+    padding: 55px;
     position: relative;
+    overflow: hidden;
+    text-align: center;
+    box-shadow:
+        0 0 60px rgba(217,4,41,.07);
 }
 
 .security-box::before {
     content: "";
-
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-
-    height: 3px;
-
-    background: #b51224;
-
-    box-shadow:
-        0 0 15px #b51224;
+    inset: 0;
+    border-top: 2px solid var(--red);
+    animation: borderPulse 2s infinite;
 }
 
-.classification {
-    color: #e21c32;
+.security-icon {
+    width: 90px;
+    height: 90px;
+    border: 1px solid var(--red);
+    margin: 0 auto 30px;
+    display: grid;
+    place-items: center;
+    color: var(--red-bright);
+    font-size: 35px;
+    animation: securityPulse 2s infinite;
+}
+
+.security-box h2 {
+    letter-spacing: 4px;
+    font-size: 25px;
+}
+
+.security-box .warning {
+    margin: 20px auto;
+    max-width: 560px;
+    color: #aeb5bc;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.security-level {
+    display: inline-block;
+    padding: 8px 15px;
+    border: 1px solid var(--red-dark);
+    color: var(--red-bright);
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+}
+
+@keyframes securityPulse {
+    0%,100% {
+        box-shadow: 0 0 0 rgba(217,4,41,0);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(217,4,41,.25);
+    }
+}
+
+@keyframes borderPulse {
+    0%,100% {
+        opacity: .4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.btn {
+    border: 1px solid rgba(217,4,41,.55);
+    background: rgba(217,4,41,.06);
+    color: #fff;
+    padding: 15px 25px;
+    font-family: inherit;
+    font-size: 11px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: .25s;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.1),
+        transparent
+    );
+    transition: .5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:hover {
+    background: var(--red);
+    border-color: var(--red);
+    box-shadow: 0 0 25px rgba(217,4,41,.25);
+}
+
+.btn.danger {
+    background: var(--red);
+    border-color: var(--red);
+}
+
+.btn.secondary {
+    border-color: rgba(255,255,255,.12);
+    background: transparent;
+    color: #8f979f;
+}
+
+.btn.secondary:hover {
+    background: rgba(255,255,255,.06);
+    border-color: rgba(255,255,255,.25);
+    color: #fff;
+}
+
+/* =====================================================
+   WARHEAD GRID
+===================================================== */
+
+.section-title {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    margin-bottom: 18px;
+}
+
+.warhead-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.warhead-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 28px;
+    min-height: 210px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: .3s;
+    animation: cardIn .6s ease both;
+}
+
+.warhead-card:nth-child(2) {
+    animation-delay: .08s;
+}
+
+.warhead-card:nth-child(3) {
+    animation-delay: .16s;
+}
+
+.warhead-card:nth-child(4) {
+    animation-delay: .24s;
+}
+
+.warhead-card::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: .35s;
+}
+
+.warhead-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(217,4,41,.45);
+    box-shadow: 0 15px 45px rgba(0,0,0,.45);
+}
+
+.warhead-card:hover::after {
+    transform: scaleX(1);
+}
+
+.warhead-code {
+    color: var(--red-bright);
+    font-size: 27px;
+    font-weight: bold;
+    letter-spacing: 4px;
+}
+
+.warhead-effect {
+    margin-top: 12px;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+.warhead-description {
+    color: var(--muted);
+    margin-top: 12px;
+    line-height: 1.6;
+    font-size: 11px;
+}
+
+.card-corner {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    color: #343b43;
+    font-size: 10px;
+}
+
+/* =====================================================
+   AUTH
+===================================================== */
+
+.auth-container {
+    width: min(600px, 100%);
+    margin: 70px auto;
+}
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 35px;
+    position: relative;
+}
+
+.panel h2 {
+    font-size: 18px;
+    letter-spacing: 3px;
+}
+
+.panel-subtitle {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 10px;
+    line-height: 1.6;
+}
+
+.input {
+    width: 100%;
+    margin-top: 25px;
+    background: #05070a;
+    border: 1px solid #20262d;
+    color: #fff;
+    padding: 17px;
+    font-family: inherit;
+    letter-spacing: 4px;
+    outline: none;
+    text-align: center;
+    transition: .25s;
+}
+
+.input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 20px rgba(217,4,41,.12);
+}
+
+.auth-error {
+    color: var(--red-bright);
+    font-size: 11px;
+    margin-top: 13px;
+    min-height: 15px;
+}
+
+/* =====================================================
+   RULES
+===================================================== */
+
+.rules {
+    margin-top: 28px;
+    border: 1px solid rgba(217,4,41,.25);
+    background: rgba(217,4,41,.025);
+    padding: 25px;
+}
+
+.rules-title {
+    color: var(--red-bright);
     font-size: 13px;
     letter-spacing: 3px;
     margin-bottom: 18px;
 }
 
-.security-title {
-    color: #8ed8ff;
-    font-size: 29px;
-    letter-spacing: 4px;
-    margin-bottom: 8px;
-}
-
-.security-subtitle {
-    color: #6e9db5;
-    font-size: 13px;
-    margin-bottom: 30px;
-}
-
-.warning {
-    border-left: 3px solid #c51e32;
-
-    background:
-        rgba(130,0,15,.08);
-
-    padding: 18px;
-
-    color: #d7e2e8;
-
-    line-height: 1.7;
-    font-size: 13px;
-
-    margin-bottom: 28px;
-}
-
-.warning strong {
-    color: #ed3045;
-}
-
-.security-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-
-    gap: 10px;
-
-    margin-bottom: 30px;
-}
-
-.info {
-    border: 1px solid #173c52;
-
-    padding: 13px;
-
-    background: #030b12;
-}
-
-.info span {
-    display: block;
-
-    color: #527d94;
-
-    font-size: 10px;
-
-    margin-bottom: 5px;
-}
-
-.info strong {
-    color: #b9e7ff;
-
-    font-size: 12px;
-}
-
-.continue-btn {
-    width: 100%;
-
-    padding: 16px;
-
-    background: #071c2b;
-
-    border: 1px solid #318fbe;
-
-    color: #9ddfff;
-
-    font-family: inherit;
-
-    font-weight: bold;
-
-    letter-spacing: 3px;
-
-    cursor: pointer;
-
-    transition: .2s;
-}
-
-.continue-btn:hover {
-    background: #0c334b;
-
-    border-color: #ef233c;
-
-    color: white;
-
-    box-shadow:
-        0 0 20px rgba(239,35,60,.25);
-}
-
-
-/* =========================================
-   WARHEAD SYSTEM
-========================================= */
-
-#warheadSystem {
-    display: none;
-
-    min-height: 100vh;
-}
-
-header {
-    height: 75px;
-
-    border-bottom: 1px solid #1c5875;
-
-    background: rgba(2,8,13,.95);
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    padding: 0 35px;
-
-    box-shadow:
-        0 0 20px rgba(0,100,160,.12);
-}
-
-.logo {
-    color: #9bddff;
-
-    letter-spacing: 3px;
-
-    font-weight: bold;
-}
-
-.status {
-    color: #38d7ff;
-
-    font-size: 12px;
-}
-
-.status::before {
-    content: "●";
-
-    color: #2ee69a;
-
-    margin-right: 8px;
-}
-
-
-/* =========================================
-   MAIN
-========================================= */
-
-.main {
-    max-width: 1150px;
-
-    margin: auto;
-
-    padding: 55px 25px;
-}
-
-.page-title {
-    color: #bdeaff;
-
-    font-size: 34px;
-
-    letter-spacing: 5px;
-
-    margin-bottom: 8px;
-}
-
-.page-description {
-    color: #57798a;
-
-    font-size: 12px;
-
-    margin-bottom: 45px;
-}
-
-
-/* =========================================
-   WARHEAD BUTTONS
-========================================= */
-
-.warhead-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
-    gap: 22px;
-}
-
-.warhead {
-    min-height: 190px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #050b10,
-            #080307
-        );
-
-    border: 1px solid #254a5e;
-
-    position: relative;
-
-    padding: 28px;
-
-    cursor: pointer;
-
-    overflow: hidden;
-
-    transition: .25s;
-}
-
-.warhead:hover {
-    transform: translateY(-3px);
-
-    border-color: #3da6d7;
-
-    box-shadow:
-        0 0 25px rgba(0,130,200,.18),
-        inset 0 0 30px rgba(0,80,130,.08);
-}
-
-.warhead.gamma {
-    border-left: 4px solid #e51b35;
-}
-
-.warhead.delta {
-    border-left: 4px solid #157bb1;
-}
-
-.warhead.alpha {
-    border-left: 4px solid #a8142b;
-}
-
-.warhead.beta {
-    border-left: 4px solid #287ea8;
-}
-
-.warhead-code {
-    color: #526f7c;
-
-    font-size: 11px;
-
-    letter-spacing: 3px;
-}
-
-.warhead-name {
-    font-size: 28px;
-
-    color: #dff5ff;
-
-    letter-spacing: 4px;
-
-    margin: 15px 0;
-}
-
-.warhead-effect {
-    color: #7295a5;
-
-    font-size: 12px;
-}
-
-.access {
-    position: absolute;
-
-    right: 25px;
-
-    bottom: 22px;
-
-    color: #e2263d;
-
-    font-size: 10px;
-
-    letter-spacing: 2px;
-}
-
-
-/* =========================================
-   MODAL
-========================================= */
-
-.modal {
-    position: fixed;
-
-    inset: 0;
-
-    background:
-        rgba(0,0,0,.84);
-
-    display: none;
-
-    align-items: center;
-
-    justify-content: center;
-
-    z-index: 5000;
-}
-
-.modal-box {
-    width: min(600px, 90%);
-
-    background: #03090f;
-
-    border: 1px solid #287da7;
-
-    padding: 35px;
-
-    box-shadow:
-        0 0 45px rgba(0,110,180,.2);
-}
-
-.modal-title {
-    color: #8edcff;
-
-    letter-spacing: 3px;
-
-    font-size: 20px;
-
-    margin-bottom: 20px;
-}
-
-.modal-text {
-    color: #7795a3;
-
-    font-size: 12px;
-
-    line-height: 1.7;
-
-    margin-bottom: 25px;
-}
-
-input {
-    width: 100%;
-
-    padding: 15px;
-
-    background: #020507;
-
-    border: 1px solid #24556d;
-
-    color: white;
-
-    outline: none;
-
-    font-family: inherit;
-
-    letter-spacing: 3px;
-}
-
-input:focus {
-    border-color: #32a7dc;
-
-    box-shadow:
-        0 0 12px rgba(20,150,210,.2);
-}
-
-.modal-buttons {
-    display: flex;
-
-    gap: 12px;
-
-    margin-top: 20px;
-}
-
-button {
-    font-family: inherit;
-}
-
-.confirm {
-    flex: 1;
-
-    padding: 14px;
-
-    background: #092238;
-
-    color: #9fe3ff;
-
-    border: 1px solid #318dbb;
-
-    cursor: pointer;
-}
-
-.cancel {
-    padding: 14px 22px;
-
-    background: #110407;
-
-    color: #e9364d;
-
-    border: 1px solid #71202c;
-
-    cursor: pointer;
-}
-
-.confirm:hover {
-    background: #10405d;
-}
-
-.cancel:hover {
-    background: #26070c;
-}
-
-
-/* =========================================
-   RULES
-========================================= */
-
-.rules {
-    color: #b9cbd3;
-
-    font-size: 12px;
-
-    line-height: 1.8;
+.rules ol {
+    padding-left: 22px;
 }
 
 .rules li {
-    margin-bottom: 9px;
+    margin: 12px 0;
+    color: #a9b0b7;
+    font-size: 11px;
+    line-height: 1.6;
 }
 
-.rules strong {
-    color: #e52b41;
+.warning-box {
+    margin-top: 25px;
+    padding: 18px;
+    border: 1px solid rgba(217,4,41,.35);
+    color: #d9dce0;
+    font-size: 11px;
+    line-height: 1.7;
 }
 
-
-/* =========================================
+/* =====================================================
    SITE SELECT
-========================================= */
+===================================================== */
 
 .site-grid {
     display: grid;
-
-    grid-template-columns:
-        repeat(3,1fr);
-
-    gap: 12px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 25px;
 }
 
-.site-btn {
-    padding: 20px 10px;
-
-    background: #050e15;
-
-    color: #8fdcff;
-
-    border: 1px solid #22566e;
-
+.site-option {
+    border: 1px solid var(--border);
+    background: var(--panel);
+    padding: 25px;
     cursor: pointer;
+    transition: .25s;
+    position: relative;
+}
 
+.site-option:hover {
+    border-color: rgba(217,4,41,.5);
+    transform: translateY(-3px);
+}
+
+.site-option.selected {
+    border-color: var(--red);
+    background: rgba(217,4,41,.08);
+    box-shadow:
+        inset 0 0 30px rgba(217,4,41,.04),
+        0 0 25px rgba(217,4,41,.08);
+}
+
+.site-option .site-id {
+    color: var(--red-bright);
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.site-option .site-status {
+    margin-top: 12px;
+    color: #6e777f;
+    font-size: 10px;
     letter-spacing: 2px;
 }
 
-.site-btn:hover {
-    border-color: #df263d;
-
-    color: white;
-
-    background: #18060a;
-
-    box-shadow:
-        0 0 18px rgba(210,20,45,.18);
+.site-option.selected .site-status {
+    color: #ff526c;
 }
 
+/* =====================================================
+   FINAL
+===================================================== */
 
-/* =========================================
-   WARHEAD TERMINAL
-========================================= */
+.final-warning {
+    text-align: center;
+    padding: 60px 25px;
+}
 
-#terminal {
+.final-warning .danger-symbol {
+    color: var(--red-bright);
+    font-size: 48px;
+    animation: dangerPulse 1.1s infinite;
+}
+
+.final-warning h2 {
+    margin-top: 25px;
+    font-size: 25px;
+    letter-spacing: 4px;
+}
+
+.final-warning p {
+    max-width: 650px;
+    margin: 20px auto;
+    color: #8c949c;
+    line-height: 1.8;
+    font-size: 11px;
+}
+
+.final-target {
+    margin: 25px auto;
+    border: 1px solid rgba(217,4,41,.35);
+    width: min(500px, 100%);
+    padding: 18px;
+    color: var(--red-bright);
+    letter-spacing: 2px;
+}
+
+@keyframes dangerPulse {
+    0%,100% {
+        transform: scale(1);
+        text-shadow: 0 0 0 rgba(255,0,50,0);
+    }
+
+    50% {
+        transform: scale(1.08);
+        text-shadow: 0 0 30px rgba(255,0,50,.8);
+    }
+}
+
+/* =====================================================
+   TERMINAL OVERLAY
+===================================================== */
+
+#terminalOverlay {
     display: none;
-
     position: fixed;
+    inset: 0;
+    z-index: 900;
+    background: rgba(0,0,0,.92);
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+}
 
-    left: 0;
-    right: 0;
+#terminalOverlay.active {
+    display: flex;
+    animation: overlayIn .7s ease both;
+}
 
-    top: 15%;
-
-    height: 55%;
-
+.terminal {
+    width: min(900px, 100%);
+    height: 50vh;
+    min-height: 400px;
     background:
-        radial-gradient(
-            circle at center,
-            #061018 0%,
-            #020507 65%,
-            #000 100%
-        );
-
-    border-top: 1px solid #31576a;
-
-    border-bottom: 1px solid #31576a;
-
-    z-index: 9000;
-
-    padding: 40px;
-
+        linear-gradient(
+            rgba(255,255,255,.015) 1px,
+            transparent 1px
+        ),
+        #030405;
+    background-size: 100% 4px;
+    border: 1px solid rgba(217,4,41,.45);
     box-shadow:
-        0 0 70px rgba(0,0,0,.95),
-        inset 0 0 50px rgba(0,80,120,.08);
-
+        0 0 80px rgba(217,4,41,.12),
+        inset 0 0 50px rgba(255,255,255,.01);
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
 }
 
-/* scanlines */
-
-#terminal::after {
-    content: "";
-
-    position: absolute;
-
-    inset: 0;
-
-    pointer-events: none;
-
-    background:
-        repeating-linear-gradient(
-            0deg,
-            rgba(255,255,255,.015),
-            rgba(255,255,255,.015) 1px,
-            transparent 1px,
-            transparent 4px
-        );
-}
-
 .terminal-header {
-    color: #4c7f96;
-
-    font-size: 11px;
-
-    letter-spacing: 3px;
-
-    margin-bottom: 25px;
-
-    border-bottom: 1px solid #173543;
-
-    padding-bottom: 12px;
+    height: 48px;
+    border-bottom: 1px solid rgba(217,4,41,.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    color: var(--red-bright);
+    font-size: 10px;
+    letter-spacing: 2px;
 }
 
-#terminalOutput {
-    color: #a9dfff;
+.terminal-light {
+    width: 8px;
+    height: 8px;
+    background: var(--red-bright);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--red-bright);
+    animation: terminalBlink .7s infinite;
+}
 
-    font-size: 15px;
-
-    line-height: 2;
-
+.terminal-output {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    color: #d9dde1;
+    font-size: 13px;
+    line-height: 1.8;
     white-space: pre-wrap;
-
-    text-shadow:
-        0 0 8px rgba(80,180,230,.3);
-
-    position: relative;
-
-    z-index: 2;
 }
 
-.terminal-red {
-    color: #ed2d43;
-
-    text-shadow:
-        0 0 10px rgba(237,45,67,.4);
+.terminal-line {
+    opacity: 0;
+    transform: translateX(-12px);
+    animation: terminalLine .45s ease forwards;
 }
 
-.terminal-complete {
-    color: #ff334d;
-
-    font-weight: bold;
-
-    margin-top: 15px;
-
-    text-shadow:
-        0 0 15px rgba(255,30,50,.5);
+.terminal-line.red {
+    color: var(--red-bright);
 }
 
+.terminal-hash {
+    color: var(--red);
+}
 
-/* =========================================
-   MOBILE
-========================================= */
+@keyframes terminalLine {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
 
-@media(max-width:700px) {
+@keyframes terminalBlink {
+    0%,100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .25;
+    }
+}
+
+/* =====================================================
+   CANCEL
+===================================================== */
+
+.cancel-area {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.cancel-area button {
+    background: transparent;
+    border: none;
+    color: #555d65;
+    font-family: inherit;
+    font-size: 10px;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+.cancel-area button:hover {
+    color: #fff;
+}
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes screenIn {
+    from {
+        opacity: 0;
+        transform: scale(.985) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes cardIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes overlayIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 750px) {
+
+    .topbar {
+        padding: 0 18px;
+    }
+
+    .security {
+        display: none;
+    }
+
+    main {
+        width: min(100% - 24px, 1150px);
+        padding-top: 40px;
+    }
 
     .warhead-grid {
         grid-template-columns: 1fr;
-    }
-
-    .security-info {
-        grid-template-columns: 1fr;
-    }
-
-    .security-box {
-        padding: 25px;
     }
 
     .site-grid {
         grid-template-columns: 1fr;
     }
 
-    header {
-        padding: 0 15px;
+    .security-box {
+        padding: 35px 20px;
     }
 
-    .logo {
+    .panel {
+        padding: 25px 18px;
+    }
+
+    .terminal {
+        height: 55vh;
+        min-height: 350px;
+    }
+
+    .terminal-output {
+        padding: 20px;
         font-size: 11px;
-    }
-
-    #terminal {
-        top: 18%;
-
-        height: 50%;
-
-        padding: 25px 20px;
-    }
-
-    #terminalOutput {
-        font-size: 13px;
     }
 }
 </style>
@@ -707,802 +840,905 @@ button {
 
 <body>
 
+<div class="scanline"></div>
 
-<!-- =========================================
-     O5 SECURITY
-========================================= -->
+<header class="topbar">
 
-<div id="securityScreen">
+    <div class="brand">
+        <div class="brand-symbol">Ω</div>
+        <span>SCP FOUNDATION</span>
+    </div>
 
-    <div class="security-box">
+    <div class="security">
+        O5 // WARHEAD CONTROL
+    </div>
 
+</header>
+
+
+<main>
+
+    <div class="header">
         <div class="classification">
-            O5 SECURITY CLEARANCE // LEVEL 5
+            CLASSIFIED // O5 EYES ONLY
         </div>
 
-        <div class="security-title">
-            WARHEAD CONTROL SYSTEM
-        </div>
+        <h1>WARHEAD CONTROL</h1>
 
-        <div class="security-subtitle">
-            SCP FOUNDATION // RESTRICTED ACCESS TERMINAL
-        </div>
-
-        <div class="warning">
-
-            <strong>WARNING:</strong><br><br>
-
-            You are attempting to access the Foundation
-            Warhead Control System.
-
-            Access to this system is restricted to
-            authorized personnel with appropriate
-            O5-level clearance.
-
-            Unauthorized activation of any Warhead system
-            may result in catastrophic facility or global
-            consequences.
-
-        </div>
-
-        <div class="security-info">
-
-            <div class="info">
-                <span>AUTHORIZATION LEVEL</span>
-                <strong>O5 COUNCIL</strong>
-            </div>
-
-            <div class="info">
-                <span>SYSTEM STATUS</span>
-                <strong>STANDBY</strong>
-            </div>
-
-            <div class="info">
-                <span>ACCESS CLASS</span>
-                <strong>RESTRICTED</strong>
-            </div>
-
-            <div class="info">
-                <span>CONTROL NODE</span>
-                <strong>SITE-64</strong>
-            </div>
-
-        </div>
-
-        <button
-            class="continue-btn"
-            onclick="enterWarheadSystem()"
-        >
-            CONTINUE
-        </button>
-
+        <p>
+            Strategic Warhead Control System.
+            All activation procedures are monitored
+            and logged by Foundation security.
+        </p>
     </div>
 
-</div>
 
+    <!-- =================================================
+         SCREEN 1
+    ================================================== -->
 
-<!-- =========================================
-     WARHEAD PAGE
-========================================= -->
+    <section
+        id="securityScreen"
+        class="screen active security-screen"
+    >
 
-<div id="warheadSystem">
+        <div class="security-box">
 
-    <header>
-
-        <div class="logo">
-            SCP FOUNDATION // WARHEAD CONTROL
-        </div>
-
-        <div class="status">
-            SYSTEM STANDBY
-        </div>
-
-    </header>
-
-
-    <main class="main">
-
-        <div class="page-title">
-            WARHEAD CONTROL
-        </div>
-
-        <div class="page-description">
-            AUTHORIZED PERSONNEL ONLY // O5 SECURITY CLEARANCE REQUIRED
-        </div>
-
-
-        <div class="warhead-grid">
-
-            <div
-                class="warhead gamma"
-                onclick="selectWarhead('GAMMA')"
-            >
-
-                <div class="warhead-code">
-                    WARHEAD-01
-                </div>
-
-                <div class="warhead-name">
-                    GAMMA
-                </div>
-
-                <div class="warhead-effect">
-                    GLOBAL TERMINATION
-                </div>
-
-                <div class="access">
-                    O5 AUTHORIZATION
-                </div>
-
+            <div class="security-icon">
+                Ω
             </div>
 
-
-            <div
-                class="warhead delta"
-                onclick="selectWarhead('DELTA')"
-            >
-
-                <div class="warhead-code">
-                    WARHEAD-02
-                </div>
-
-                <div class="warhead-name">
-                    DELTA
-                </div>
-
-                <div class="warhead-effect">
-                    FACILITY TERMINATION
-                </div>
-
-                <div class="access">
-                    O5 AUTHORIZATION
-                </div>
-
+            <div class="security-level">
+                O5 SECURITY CLEARANCE REQUIRED
             </div>
 
+            <h2>WARHEAD CONTROL SYSTEM</h2>
 
-            <div
-                class="warhead alpha"
-                onclick="selectWarhead('ALPHA')"
+            <p class="warning">
+                You are attempting to access a restricted
+                Foundation strategic weapons system.
+                Unauthorized activation is strictly prohibited.
+            </p>
+
+            <p class="warning">
+                All actions performed within this system
+                may be permanently logged.
+            </p>
+
+            <button
+                class="btn"
+                id="continueBtn"
             >
-
-                <div class="warhead-code">
-                    WARHEAD-03
-                </div>
-
-                <div class="warhead-name">
-                    ALPHA
-                </div>
-
-                <div class="warhead-effect">
-                    FACILITY TERMINATION
-                </div>
-
-                <div class="access">
-                    O5 AUTHORIZATION
-                </div>
-
-            </div>
-
-
-            <div
-                class="warhead beta"
-                onclick="selectWarhead('BETA')"
-            >
-
-                <div class="warhead-code">
-                    WARHEAD-04
-                </div>
-
-                <div class="warhead-name">
-                    BETA
-                </div>
-
-                <div class="warhead-effect">
-                    FACILITY TERMINATION
-                </div>
-
-                <div class="access">
-                    O5 AUTHORIZATION
-                </div>
-
-            </div>
+                CONTINUE
+            </button>
 
         </div>
 
-    </main>
-
-</div>
+    </section>
 
 
-<!-- =========================================
-     MODAL
-========================================= -->
+    <!-- =================================================
+         SCREEN 2
+    ================================================== -->
 
-<div
-    id="modal"
-    class="modal"
->
+    <section
+        id="warheadScreen"
+        class="screen"
+    >
 
-    <div class="modal-box">
+        <div class="section-title">
+            SELECT WARHEAD SYSTEM
+        </div>
 
         <div
-            id="modalTitle"
-            class="modal-title"
+            class="warhead-grid"
+            id="warheadGrid"
         ></div>
 
-        <div
-            id="modalContent"
-            class="modal-text"
-        ></div>
+        <div class="cancel-area">
+            <button id="backFromWarhead">
+                RETURN TO SECURITY SCREEN
+            </button>
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         SCREEN 3
+    ================================================== -->
+
+    <section
+        id="authScreen"
+        class="screen"
+    >
+
+        <div class="auth-container">
+
+            <div class="panel">
+
+                <h2>AUTHORIZATION REQUIRED</h2>
+
+                <p class="panel-subtitle">
+                    Enter the authorization code
+                    assigned to the selected warhead system.
+                </p>
+
+                <input
+                    id="authCode"
+                    class="input"
+                    type="password"
+                    autocomplete="off"
+                    placeholder="AUTHORIZATION CODE"
+                >
+
+                <div
+                    id="authError"
+                    class="auth-error"
+                ></div>
+
+                <button
+                    id="authBtn"
+                    class="btn"
+                    style="width:100%; margin-top:15px;"
+                >
+                    AUTHORIZE
+                </button>
+
+                <div class="cancel-area">
+                    <button id="backFromAuth">
+                        CANCEL
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         SCREEN 4
+    ================================================== -->
+
+    <section
+        id="rulesScreen"
+        class="screen"
+    >
+
+        <div class="panel">
+
+            <h2>WARHEAD RULES</h2>
+
+            <p class="panel-subtitle">
+                Review the following conditions before
+                continuing with the activation procedure.
+            </p>
+
+            <div class="rules">
+
+                <div class="rules-title">
+                    SYSTEM RULES
+                </div>
+
+                <ol>
+                    <li>
+                        Warhead activation is irreversible.
+                    </li>
+
+                    <li>
+                        Activation may result in complete
+                        destruction of the selected facility.
+                    </li>
+
+                    <li>
+                        All personnel must be considered
+                        compromised unless otherwise confirmed.
+                    </li>
+
+                    <li>
+                        Once the firing sequence begins,
+                        cancellation is no longer available.
+                    </li>
+
+                    <li>
+                        Unauthorized activation will trigger
+                        Foundation security protocols.
+                    </li>
+                </ol>
+
+                <div class="warning-box">
+                    WARNING: YOU ARE ABOUT TO ACCESS A
+                    STRATEGIC FOUNDATION WEAPON SYSTEM.
+                    CONTINUE ONLY IF AUTHORIZED.
+                </div>
+
+            </div>
+
+            <button
+                id="rulesContinue"
+                class="btn danger"
+                style="margin-top:25px;"
+            >
+                I UNDERSTAND AND CONTINUE
+            </button>
+
+            <div class="cancel-area">
+                <button id="backFromRules">
+                    CANCEL ACTIVATION
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         SCREEN 5
+    ================================================== -->
+
+    <section
+        id="siteScreen"
+        class="screen"
+    >
+
+        <div class="panel">
+
+            <h2>SELECT TARGET FACILITY</h2>
+
+            <p class="panel-subtitle">
+                Select the facility targeted by the
+                strategic warhead.
+            </p>
+
+            <div
+                id="siteGrid"
+                class="site-grid"
+            >
+
+                <div
+                    class="site-option"
+                    data-site="SITE-19"
+                >
+                    <div class="site-id">
+                        SITE-19
+                    </div>
+
+                    <div class="site-status">
+                        MAIN CONTAINMENT FACILITY
+                    </div>
+                </div>
+
+                <div
+                    class="site-option"
+                    data-site="SITE-51"
+                >
+                    <div class="site-id">
+                        SITE-51
+                    </div>
+
+                    <div class="site-status">
+                        CARLSON FACILITY
+                    </div>
+                </div>
+
+                <div
+                    class="site-option"
+                    data-site="SITE-64"
+                >
+                    <div class="site-id">
+                        SITE-64
+                    </div>
+
+                    <div class="site-status">
+                        UNKNOWN FACILITY
+                    </div>
+                </div>
+
+            </div>
+
+            <button
+                id="siteContinue"
+                class="btn danger"
+                style="margin-top:25px;"
+                disabled
+            >
+                CONFIRM TARGET
+            </button>
+
+            <div class="cancel-area">
+                <button id="backFromSite">
+                    CANCEL ACTIVATION
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         SCREEN 6
+    ================================================== -->
+
+    <section
+        id="finalScreen"
+        class="screen"
+    >
+
+        <div class="panel final-warning">
+
+            <div class="danger-symbol">
+                ⚠
+            </div>
+
+            <h2>FINAL AUTHORIZATION</h2>
+
+            <p>
+                THE FOLLOWING ACTION WILL ACTIVATE THE
+                SELECTED WARHEAD SYSTEM.
+            </p>
+
+            <div
+                class="final-target"
+                id="finalTarget"
+            >
+                TARGET: GLOBAL
+            </div>
+
+            <p>
+                Once the firing sequence begins,
+                cancellation will no longer be possible.
+            </p>
+
+            <button
+                id="activateBtn"
+                class="btn danger"
+            >
+                ACTIVATE WARHEAD
+            </button>
+
+            <div class="cancel-area">
+                <button id="backFromFinal">
+                    CANCEL ACTIVATION
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =====================================================
+     TERMINAL
+====================================================== -->
+
+<div id="terminalOverlay">
+
+    <div class="terminal">
+
+        <div class="terminal-header">
+
+            <span>
+                WARHEAD CONTROL TERMINAL
+            </span>
+
+            <div class="terminal-light"></div>
+
+        </div>
 
         <div
-            id="modalInputArea"
-        ></div>
-
-        <div
-            id="modalButtons"
-            class="modal-buttons"
+            id="terminalOutput"
+            class="terminal-output"
         ></div>
 
     </div>
-
-</div>
-
-
-<!-- =========================================
-     SAME-PAGE TERMINAL
-========================================= -->
-
-<div id="terminal">
-
-    <div class="terminal-header">
-        SCP FOUNDATION // WARHEAD CONTROL NODE // SECURE CONNECTION
-    </div>
-
-    <div id="terminalOutput"></div>
 
 </div>
 
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
 
-let selectedWarhead = null;
+    const screens = {
+        security: document.getElementById("securityScreen"),
+        warhead: document.getElementById("warheadScreen"),
+        auth: document.getElementById("authScreen"),
+        rules: document.getElementById("rulesScreen"),
+        site: document.getElementById("siteScreen"),
+        final: document.getElementById("finalScreen")
+    };
 
-let selectedSite = null;
+    const warheadGrid =
+        document.getElementById("warheadGrid");
 
+    const authCode =
+        document.getElementById("authCode");
 
-/* =========================================
-   ENTER SYSTEM
-========================================= */
+    const authError =
+        document.getElementById("authError");
 
-function enterWarheadSystem() {
+    const siteContinue =
+        document.getElementById("siteContinue");
 
-    document.getElementById(
-        "securityScreen"
-    ).style.display = "none";
+    const finalTarget =
+        document.getElementById("finalTarget");
 
-    document.getElementById(
-        "warheadSystem"
-    ).style.display = "block";
-}
+    const terminalOverlay =
+        document.getElementById("terminalOverlay");
 
+    const terminalOutput =
+        document.getElementById("terminalOutput");
 
-/* =========================================
-   SELECT WARHEAD
-========================================= */
 
-function selectWarhead(type) {
+    let selectedWarhead = null;
+    let selectedSite = null;
+    let firingStarted = false;
+    let activationInProgress = false;
 
-    selectedWarhead = type;
 
-    showCodeScreen();
-}
+    /* =====================================================
+       WARHEAD DATA
+    ====================================================== */
 
+    const warheads = {
 
-/* =========================================
-   CODE SCREEN
-========================================= */
+        GAMMA: {
+            name: "GAMMA",
+            effect: "GLOBAL TERMINATION",
+            description:
+                "GLOBAL STRATEGIC TERMINATION PROTOCOL.",
+            requiresSite: false
+        },
 
-function showCodeScreen() {
+        DELTA: {
+            name: "DELTA",
+            effect: "DEATH RAY",
+            description:
+                "HIGH-ENERGY DEATH RAY DESIGNED FOR TOTAL FACILITY DESTRUCTION.",
+            requiresSite: true
+        },
 
-    openModal(
+        ALPHA: {
+            name: "ALPHA",
+            effect: "FACILITY TERMINATION",
+            description:
+                "STRATEGIC FACILITY TERMINATION SYSTEM.",
+            requiresSite: true
+        },
 
-        "O5 AUTHORIZATION REQUIRED",
+        BETA: {
+            name: "BETA",
+            effect: "RADIATION BOMB",
+            description:
+                "HIGH-YIELD RADIATION WARHEAD FOR FACILITY TERMINATION.",
+            requiresSite: true
+        }
 
-        `
-        WARHEAD SYSTEM ACCESS REQUEST.<br><br>
+    };
 
-        ENTER THE AUTHORIZATION CODE
-        PROVIDED BY THE O5 COUNCIL.
-        `,
 
-        `
-        <input
-            id="authorizationCode"
-            type="password"
-            placeholder="AUTHORIZATION CODE"
-            autocomplete="off"
-        />
-        `,
+    /* =====================================================
+       SCREEN CONTROL
+    ====================================================== */
 
-        `
-        <button
-            class="cancel"
-            onclick="closeModal()"
-        >
-            CANCEL
-        </button>
+    function showScreen(name) {
 
-        <button
-            class="confirm"
-            onclick="checkCode()"
-        >
-            AUTHORIZE
-        </button>
-        `
-    );
+        Object.values(screens).forEach(screen => {
+            screen.classList.remove("active");
+        });
 
-}
+        screens[name].classList.add("active");
 
-
-/* =========================================
-   CHECK CODE
-========================================= */
-
-function checkCode() {
-
-    const input =
-        document.getElementById(
-            "authorizationCode"
-        );
-
-    if (
-        !input ||
-        input.value !== "WARHEAD"
-    ) {
-
-        input.style.borderColor =
-            "#e5223c";
-
-        input.value = "";
-
-        input.placeholder =
-            "INVALID AUTHORIZATION CODE";
-
-        return;
-    }
-
-    showRules();
-}
-
-
-/* =========================================
-   RULES
-========================================= */
-
-function showRules() {
-
-    openModal(
-
-        "WARHEAD SYSTEM RULES",
-
-        `
-        <div class="rules">
-
-            <ul>
-
-                <li>
-                    <strong>WARNING:</strong>
-                    Warhead activation is an irreversible
-                    Foundation action.
-                </li>
-
-                <li>
-                    Activation requires valid
-                    O5-level authorization.
-                </li>
-
-                <li>
-                    All personnel must evacuate the
-                    selected facility before activation.
-                </li>
-
-                <li>
-                    Warhead activation must be confirmed
-                    by authorized personnel.
-                </li>
-
-                <li>
-                    Once the firing sequence begins,
-                    <strong>cancellation is unavailable.</strong>
-                </li>
-
-            </ul>
-
-        </div>
-        `,
-
-        "",
-
-        `
-        <button
-            class="cancel"
-            onclick="closeModal()"
-        >
-            CANCEL
-        </button>
-
-        <button
-            class="confirm"
-            onclick="continueAfterRules()"
-        >
-            ACCEPT
-        </button>
-        `
-    );
-
-}
-
-
-/* =========================================
-   AFTER RULES
-========================================= */
-
-function continueAfterRules() {
-
-    if (
-        selectedWarhead === "GAMMA"
-    ) {
-
-        showFinalConfirmation();
-
-    } else {
-
-        showSiteSelection();
-
-    }
-
-}
-
-
-/* =========================================
-   SITE SELECTION
-========================================= */
-
-function showSiteSelection() {
-
-    openModal(
-
-        "TARGET FACILITY",
-
-        `
-        SELECT THE FACILITY TARGET.
-        `,
-
-        `
-        <div class="site-grid">
-
-            <button
-                class="site-btn"
-                onclick="chooseSite('SITE-19')"
-            >
-                SITE-19
-            </button>
-
-            <button
-                class="site-btn"
-                onclick="chooseSite('SITE-51')"
-            >
-                SITE-51
-            </button>
-
-            <button
-                class="site-btn"
-                onclick="chooseSite('SITE-64')"
-            >
-                SITE-64
-            </button>
-
-        </div>
-        `,
-
-        `
-        <button
-            class="cancel"
-            onclick="closeModal()"
-        >
-            CANCEL
-        </button>
-        `
-    );
-
-}
-
-
-/* =========================================
-   CHOOSE SITE
-========================================= */
-
-function chooseSite(site) {
-
-    selectedSite = site;
-
-    showFinalConfirmation();
-}
-
-
-/* =========================================
-   FINAL CONFIRMATION
-========================================= */
-
-function showFinalConfirmation() {
-
-    const target =
-        selectedWarhead === "GAMMA"
-            ? "GLOBAL TARGET"
-            : selectedSite;
-
-    openModal(
-
-        "FINAL AUTHORIZATION",
-
-        `
-        <strong style="color:#e52b41">
-            FINAL WARNING
-        </strong>
-
-        <br><br>
-
-        WARHEAD:
-        <strong style="color:#aee6ff">
-            ${selectedWarhead}
-        </strong>
-
-        <br>
-
-        TARGET:
-        <strong style="color:#aee6ff">
-            ${target}
-        </strong>
-
-        <br><br>
-
-        Confirming this action will begin
-        the Warhead firing sequence.
-        `,
-
-        "",
-
-        `
-        <button
-            class="cancel"
-            onclick="closeModal()"
-        >
-            CANCEL
-        </button>
-
-        <button
-            class="confirm"
-            onclick="activateWarhead()"
-        >
-            CONFIRM ACTIVATION
-        </button>
-        `
-    );
-
-}
-
-
-/* =========================================
-   ACTIVATE
-========================================= */
-
-function activateWarhead() {
-
-    closeModal();
-
-    const terminal =
-        document.getElementById(
-            "terminal"
-        );
-
-    const output =
-        document.getElementById(
-            "terminalOutput"
-        );
-
-    terminal.style.display =
-        "block";
-
-    output.innerHTML = "";
-
-    terminalSequence();
-}
-
-
-/* =========================================
-   SLOW TERMINAL SEQUENCE
-========================================= */
-
-async function terminalSequence() {
-
-    /*
-        Terminal artık aynı sayfanın üzerinde.
-        Kullanıcı sadece mesajları görüyor.
-        Bekleme süreleri ekranda YAZMIYOR.
-    */
-
-
-    await wait(1200);
-
-    await terminalLine(
-        "WARHEAD SYSTEM INITIALIZING..."
-    );
-
-
-    await wait(2800);
-
-
-    await terminalLine(
-        "SYSTEM SUCCESSFULLY LOADED"
-    );
-
-
-    await wait(4000);
-
-
-    await terminalLine(
-        "WARHEAD FIRING...",
-        true
-    );
-
-
-    await wait(3500);
-
-
-    await terminalLine(
-        "WARHEAD DROPPING...",
-        true
-    );
-
-
-    await wait(3000);
-
-
-    for (
-        let i = 0;
-        i < 7;
-        i++
-    ) {
-
-        await terminalLine(
-            "#############",
-            true
-        );
-
-        await wait(700);
-
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
     }
 
 
-    await wait(3500);
+    /* =====================================================
+       WARHEAD BUTTONS
+    ====================================================== */
+
+    Object.values(warheads).forEach(warhead => {
+
+        const card =
+            document.createElement("article");
+
+        card.className = "warhead-card";
+
+        card.innerHTML = `
+            <span class="card-corner">
+                CLASSIFIED
+            </span>
+
+            <div class="warhead-code">
+                ${warhead.name}
+            </div>
+
+            <div class="warhead-effect">
+                ${warhead.effect}
+            </div>
+
+            <div class="warhead-description">
+                ${warhead.description}
+            </div>
+        `;
+
+        card.addEventListener("click", () => {
+
+            if (activationInProgress) {
+                return;
+            }
+
+            selectedWarhead = warhead;
+            selectedSite = null;
+
+            authCode.value = "";
+            authError.textContent = "";
+
+            showScreen("auth");
+
+            setTimeout(() => {
+                authCode.focus();
+            }, 350);
+        });
+
+        warheadGrid.appendChild(card);
+    });
 
 
-    await terminalLine(
-        "WARHEAD DETONATION COMPLETE.",
-        true,
-        true
+    /* =====================================================
+       CONTINUE
+    ====================================================== */
+
+    document
+        .getElementById("continueBtn")
+        .addEventListener("click", () => {
+
+            showScreen("warhead");
+
+        });
+
+
+    /* =====================================================
+       AUTHORIZATION
+    ====================================================== */
+
+    function authorize() {
+
+        const code =
+            authCode.value.trim().toUpperCase();
+
+        if (code !== "WARHEAD") {
+
+            authError.textContent =
+                "INVALID AUTHORIZATION CODE.";
+
+            authCode.classList.add("error");
+
+            setTimeout(() => {
+                authCode.classList.remove("error");
+            }, 500);
+
+            return;
+        }
+
+        authError.textContent = "";
+
+        showScreen("rules");
+    }
+
+
+    document
+        .getElementById("authBtn")
+        .addEventListener(
+            "click",
+            authorize
+        );
+
+
+    authCode.addEventListener(
+        "keydown",
+        event => {
+
+            if (event.key === "Enter") {
+                authorize();
+            }
+
+        }
     );
 
-}
+
+    /* =====================================================
+       RULES
+    ====================================================== */
+
+    document
+        .getElementById("rulesContinue")
+        .addEventListener(
+            "click",
+            () => {
+
+                if (!selectedWarhead) {
+                    return;
+                }
+
+                if (
+                    selectedWarhead.requiresSite
+                ) {
+
+                    showScreen("site");
+
+                } else {
+
+                    selectedSite = null;
+
+                    finalTarget.textContent =
+                        "TARGET: GLOBAL";
+
+                    showScreen("final");
+                }
+
+            }
+        );
 
 
-/* =========================================
-   TERMINAL LINE
-========================================= */
+    /* =====================================================
+       SITE SELECT
+    ====================================================== */
 
-function terminalLine(
-    text,
-    red = false,
-    complete = false
-) {
+    document
+        .querySelectorAll(".site-option")
+        .forEach(option => {
 
-    return new Promise(resolve => {
+            option.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .querySelectorAll(".site-option")
+                        .forEach(item => {
+                            item.classList.remove(
+                                "selected"
+                            );
+                        });
+
+                    option.classList.add(
+                        "selected"
+                    );
+
+                    selectedSite =
+                        option.dataset.site;
+
+                    siteContinue.disabled =
+                        false;
+                }
+            );
+
+        });
+
+
+    siteContinue.addEventListener(
+        "click",
+        () => {
+
+            if (!selectedSite) {
+                return;
+            }
+
+            finalTarget.textContent =
+                "TARGET: " + selectedSite;
+
+            showScreen("final");
+        }
+    );
+
+
+    /* =====================================================
+       BACK / CANCEL
+    ====================================================== */
+
+    document
+        .getElementById("backFromWarhead")
+        .addEventListener(
+            "click",
+            () => showScreen("security")
+        );
+
+
+    document
+        .getElementById("backFromAuth")
+        .addEventListener(
+            "click",
+            () => showScreen("warhead")
+        );
+
+
+    document
+        .getElementById("backFromRules")
+        .addEventListener(
+            "click",
+            () => showScreen("auth")
+        );
+
+
+    document
+        .getElementById("backFromSite")
+        .addEventListener(
+            "click",
+            () => showScreen("rules")
+        );
+
+
+    document
+        .getElementById("backFromFinal")
+        .addEventListener(
+            "click",
+            () => {
+
+                if (!firingStarted) {
+                    showScreen(
+                        selectedWarhead &&
+                        selectedWarhead.requiresSite
+                            ? "site"
+                            : "rules"
+                    );
+                }
+
+            }
+        );
+
+
+    /* =====================================================
+       TERMINAL
+    ====================================================== */
+
+    function sleep(ms) {
+        return new Promise(resolve => {
+            setTimeout(resolve, ms);
+        });
+    }
+
+
+    function addTerminalLine(
+        text,
+        className = ""
+    ) {
 
         const line =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
-        if (red) {
-
-            line.classList.add(
-                "terminal-red"
-            );
-
-        }
-
-        if (complete) {
-
-            line.classList.add(
-                "terminal-complete"
-            );
-
-        }
+        line.className =
+            "terminal-line " + className;
 
         line.textContent = text;
 
-        document
-            .getElementById(
-                "terminalOutput"
-            )
-            .appendChild(line);
+        terminalOutput.appendChild(line);
 
-        resolve();
-
-    });
-
-}
+        terminalOutput.scrollTop =
+            terminalOutput.scrollHeight;
+    }
 
 
-/* =========================================
-   WAIT
-========================================= */
+    async function runTerminal() {
 
-function wait(milliseconds) {
+        terminalOutput.innerHTML = "";
 
-    return new Promise(
-        resolve =>
-            setTimeout(
-                resolve,
-                milliseconds
-            )
-    );
+        firingStarted = false;
 
-}
+        await sleep(1200);
+
+        addTerminalLine(
+            "WARHEAD SYSTEM INITIALIZING..."
+        );
+
+        await sleep(2800);
+
+        addTerminalLine(
+            "SYSTEM SUCCESSFULLY LOADED"
+        );
+
+        await sleep(4000);
+
+        /*
+         * From this point onward the firing sequence
+         * cannot be cancelled.
+         */
+
+        firingStarted = true;
+
+        addTerminalLine(
+            "WARHEAD FIRING...",
+            "red"
+        );
+
+        await sleep(3500);
+
+        addTerminalLine(
+            "WARHEAD DROPPING...",
+            "red"
+        );
+
+        await sleep(3000);
+
+        const hashes =
+            [
+                "#############",
+                "#############",
+                "#############",
+                "#############",
+                "#############",
+                "#############",
+                "#############"
+            ];
+
+        for (const hash of hashes) {
+
+            addTerminalLine(
+                hash,
+                "terminal-hash"
+            );
+
+            await sleep(700);
+        }
+
+        await sleep(3500);
+
+        addTerminalLine(
+            "WARHEAD DETONATION COMPLETE.",
+            "red"
+        );
+
+        await sleep(1000);
+
+        /*
+         * Keep the terminal open.
+         * No automatic navigation.
+         */
+    }
 
 
-/* =========================================
-   MODAL
-========================================= */
+    /* =====================================================
+       ACTIVATE
+    ====================================================== */
 
-function openModal(
-    title,
-    content,
-    input,
-    buttons
-) {
+    document
+        .getElementById("activateBtn")
+        .addEventListener(
+            "click",
+            async () => {
 
-    document.getElementById(
-        "modalTitle"
-    ).textContent = title;
+                if (
+                    activationInProgress ||
+                    !selectedWarhead
+                ) {
+                    return;
+                }
 
-    document.getElementById(
-        "modalContent"
-    ).innerHTML = content;
+                activationInProgress = true;
 
-    document.getElementById(
-        "modalInputArea"
-    ).innerHTML = input;
+                /*
+                 * The actual firing sequence begins here.
+                 * Once runTerminal reaches FIRING,
+                 * cancellation is impossible.
+                 */
 
-    document.getElementById(
-        "modalButtons"
-    ).innerHTML = buttons;
+                terminalOverlay.classList.add(
+                    "active"
+                );
 
-    document.getElementById(
-        "modal"
-    ).style.display = "flex";
-}
+                await runTerminal();
 
+            }
+        );
 
-function closeModal() {
-
-    document.getElementById(
-        "modal"
-    ).style.display = "none";
-}
-
+});
 </script>
 
 </body>
