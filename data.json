@@ -1,3 +1,34 @@
 {
-    "requests": []
+    "requests": [
+        {
+            "id": "REQ-98132",
+            "name": "Taer",
+            "type": "personnel",
+            "typeName": "PERSONNEL REQUEST",
+            "scp": null,
+            "time": "13:00",
+            "period": "DAY",
+            "message": "Bar",
+            "status": "REJECTED",
+            "adminMessage": "ASD",
+            "createdAt": "2026-09-01T08:45:37.568Z",
+            "updatedAt": "2026-09-01T08:46:47.143Z"
+        },
+        {
+            "id": "REQ-69834",
+            "name": "DENETİM İSTİYORUM",
+            "type": "Basic Department Inspection",
+            "typeName": "BASIC DEPARTMENT INSPECTION",
+            "scp": null,
+            "time": "11:54",
+            "period": "NIGHT",
+            "message": "DENETİM",
+            "status": "APPROVED",
+            "adminMessage": "YOUR REQUEST HAS BEEN APPROVED.",
+            "createdAt": "2026-09-01T08:56:58.621Z",
+            "updatedAt": "2026-09-01T08:57:52.941Z"
+        }
+    ],
+    "sites": [],
+    "scps": []
 }

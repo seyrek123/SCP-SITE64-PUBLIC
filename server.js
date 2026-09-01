@@ -2,65 +2,100 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 
-
-const app =
-    express();
-
+const app = express();
 
 const PORT = process.env.PORT || 6464;
 
-const DATA_FILE =
-    path.join(
-        __dirname,
-        "data.json"
-    );
+const PUBLIC_DIR = path.join(__dirname, "public");
+const DATA_FILE = path.join(__dirname, "data.json");
+
+/* =====================================================
+   MIDDLEWARE
+===================================================== */
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+/*
+    PUBLIC KLASÖRÜ ÖNCELİKLİ
+    Böylece eski ana klasördeki index.html
+    yanlışlıkla açılmaz.
+*/
+app.use(express.static(PUBLIC_DIR));
 
 
-app.use(
-    express.json()
-);
-
-
-app.use(
-    express.static(
-        __dirname
-    )
-);
-
-
-/* =========================================
+/* =====================================================
    DATABASE
-========================================= */
+===================================================== */
+
+function createEmptyDatabase() {
+    return {
+        requests: []
+    };
+}
+
 
 function ensureDatabase() {
 
-    if (
-        !fs.existsSync(
-            DATA_FILE
-        )
-    ) {
+    if (!fs.existsSync(DATA_FILE)) {
 
         fs.writeFileSync(
             DATA_FILE,
-
             JSON.stringify(
-                {
-                    requests: []
-                },
+                createEmptyDatabase(),
                 null,
                 4
-            )
+            ),
+            "utf8"
         );
 
+        return;
     }
 
+    try {
+
+        const data =
+            JSON.parse(
+                fs.readFileSync(
+                    DATA_FILE,
+                    "utf8"
+                )
+            );
+
+        let changed = false;
+
+        if (!Array.isArray(data.requests)) {
+            data.requests = [];
+            changed = true;
+        }
+
+        if (changed) {
+            saveDatabase(data);
+        }
+
+    } catch (error) {
+
+        console.error(
+            "DATABASE ERROR:",
+            error
+        );
+
+        fs.writeFileSync(
+            DATA_FILE,
+            JSON.stringify(
+                createEmptyDatabase(),
+                null,
+                4
+            ),
+            "utf8"
+        );
+    }
 }
 
 
 function readDatabase() {
 
     ensureDatabase();
-
 
     try {
 
@@ -71,94 +106,165 @@ function readDatabase() {
             )
         );
 
+    } catch (error) {
+
+        console.error(
+            "DATABASE READ ERROR:",
+            error
+        );
+
+        return createEmptyDatabase();
     }
-
-    catch {
-
-        return {
-            requests: []
-        };
-
-    }
-
 }
 
 
-function saveDatabase(
-    database
-) {
+function saveDatabase(database) {
 
     fs.writeFileSync(
         DATA_FILE,
-
         JSON.stringify(
             database,
             null,
             4
-        )
+        ),
+        "utf8"
     );
-
 }
 
 
-/* =========================================
+/* =====================================================
    ID
-========================================= */
+===================================================== */
 
 function generateId() {
 
-    const number =
-        Math.floor(
-            10000 +
-            Math.random() * 90000
-        );
+    let id;
 
+    do {
 
-    return (
-        "SITE64-" +
-        number
+        id =
+            "SITE64-" +
+            Math.floor(
+                10000 +
+                Math.random() * 90000
+            );
+
+    } while (
+        readDatabase()
+            .requests
+            .some(
+                request =>
+                    request.id === id
+            )
     );
 
+    return id;
 }
 
 
-/* =========================================
+/* =====================================================
+   TIME
+===================================================== */
+
+function validateTime(time) {
+
+    if (!time) {
+        return false;
+    }
+
+    const match =
+        /^([0-9]{1,2}):([0-9]{2})$/
+            .exec(
+                String(time)
+            );
+
+    if (!match) {
+        return false;
+    }
+
+    const hour =
+        Number(match[1]);
+
+    const minute =
+        Number(match[2]);
+
+    if (
+        hour < 1 ||
+        hour > 22 ||
+        minute !== 0
+    ) {
+        return false;
+    }
+
+    return true;
+}
+
+
+function getPeriod(time) {
+
+    const hour =
+        Number(
+            String(time)
+                .split(":")[0]
+        );
+
+    return hour <= 12
+        ? "NIGHT"
+        : "DAY";
+}
+
+
+/* =====================================================
    PAGES
-========================================= */
+===================================================== */
 
-app.get(
-    "/",
-    (req, res) => {
+app.get("/", (req, res) => {
 
-        res.sendFile(
-            path.join(
-                __dirname,
-                "index.html"
-            )
-        );
-
-    }
-);
+    res.sendFile(
+        path.join(
+            PUBLIC_DIR,
+            "index.html"
+        )
+    );
+});
 
 
-app.get(
-    "/admin",
-    (req, res) => {
+app.get("/admin", (req, res) => {
 
-        res.sendFile(
-            path.join(
-                __dirname,
-                "admin.html"
-            )
-        );
-
-    }
-);
+    res.sendFile(
+        path.join(
+            PUBLIC_DIR,
+            "admin.html"
+        )
+    );
+});
 
 
-/* =========================================
+app.get("/sites", (req, res) => {
+
+    res.sendFile(
+        path.join(
+            PUBLIC_DIR,
+            "sites.html"
+        )
+    );
+});
+
+
+app.get("/term", (req, res) => {
+
+    res.sendFile(
+        path.join(
+            PUBLIC_DIR,
+            "term.html"
+        )
+    );
+});
+
+
+/* =====================================================
    GET REQUESTS
-========================================= */
+===================================================== */
 
 app.get(
     "/api/requests",
@@ -167,22 +273,18 @@ app.get(
         const database =
             readDatabase();
 
-
         res.json({
             success: true,
-
             requests:
                 database.requests
-
         });
-
     }
 );
 
 
-/* =========================================
+/* =====================================================
    CREATE REQUEST
-========================================= */
+===================================================== */
 
 app.post(
     "/api/requests",
@@ -191,87 +293,79 @@ app.post(
         try {
 
             const {
+                name,
                 type,
                 typeName,
                 scp,
                 time,
-                period
+                message
             } = req.body;
 
+
+            /* NAME */
+
+            if (!name || !String(name).trim()) {
+
+                return res
+                    .status(400)
+                    .json({
+                        success: false,
+                        message:
+                            "FULL NAME IS REQUIRED."
+                    });
+            }
+
+
+            /* REQUEST TYPE */
 
             if (!type) {
 
                 return res
                     .status(400)
                     .json({
+                        success: false,
                         message:
-                            "TALEP TÜRÜ GEREKLİ."
+                            "REQUEST TYPE IS REQUIRED."
                     });
-
             }
 
 
-            if (!time) {
+            /* TIME */
+
+            if (!validateTime(time)) {
 
                 return res
                     .status(400)
                     .json({
+                        success: false,
                         message:
-                            "SAAT GEREKLİ."
+                            "INVALID TIME."
                     });
-
             }
 
 
+            /*
+                SADECE SCP DENETİMİ
+                seçildiyse SCP zorunlu.
+            */
+
             if (
-                type === "scp"
-                &&
-                !scp
+                type === "scp" &&
+                (!scp || !String(scp).trim())
             ) {
 
                 return res
                     .status(400)
                     .json({
+                        success: false,
                         message:
-                            "SCP SEÇİLMELİ."
+                            "SCP MUST BE SELECTED."
                     });
-
             }
 
 
-            const hour =
-                parseInt(
-                    time.split(":")[0],
-                    10
-                );
-
-
-            if (
-                Number.isNaN(hour)
-                ||
-                hour < 1
-                ||
-                hour > 22
-            ) {
-
-                return res
-                    .status(400)
-                    .json({
-                        message:
-                            "GEÇERSİZ SAAT."
-                    });
-
-            }
-
-
-            const correctPeriod =
-                hour <= 12
-                    ? "NIGHT"
-                    : "DAY";
-
-
-            const database =
-                readDatabase();
+            const now =
+                new Date().toISOString();
 
 
             const request = {
@@ -279,20 +373,29 @@ app.post(
                 id:
                     generateId(),
 
+                name:
+                    String(name).trim(),
+
                 type:
                     type,
 
                 typeName:
-                    typeName || type,
+                    typeName ||
+                    type.toUpperCase(),
 
                 scp:
-                    scp || null,
+                    scp ||
+                    null,
 
                 time:
                     time,
 
                 period:
-                    correctPeriod,
+                    getPeriod(time),
+
+                message:
+                    message ||
+                    "",
 
                 status:
                     "PENDING",
@@ -301,14 +404,15 @@ app.post(
                     "",
 
                 createdAt:
-                    new Date()
-                    .toISOString(),
+                    now,
 
                 updatedAt:
-                    new Date()
-                    .toISOString()
-
+                    now
             };
+
+
+            const database =
+                readDatabase();
 
 
             database.requests.push(
@@ -322,94 +426,79 @@ app.post(
 
 
             console.log("");
-
             console.log(
                 "========================================"
             );
-
             console.log(
-                "       YENİ SITE-64 TALEBİ"
+                "       NEW SITE-64 REQUEST"
             );
-
             console.log(
                 "========================================"
             );
-
             console.log(
                 "ID      :",
                 request.id
             );
-
             console.log(
-                "TÜR     :",
+                "NAME    :",
+                request.name
+            );
+            console.log(
+                "TYPE    :",
                 request.typeName
             );
-
             console.log(
                 "SCP     :",
                 request.scp || "N/A"
             );
-
             console.log(
-                "SAAT    :",
+                "TIME    :",
                 request.time
             );
-
             console.log(
-                "DÖNEM   :",
+                "PERIOD  :",
                 request.period
             );
-
             console.log(
-                "DURUM   :",
+                "STATUS  :",
                 request.status
             );
-
             console.log(
                 "========================================"
             );
-
             console.log("");
 
 
-            res.status(201)
+            res
+                .status(201)
                 .json({
-
-                    success:
-                        true,
-
+                    success: true,
                     request:
                         request
-
                 });
 
-
-        }
-
-        catch (error) {
+        } catch (error) {
 
             console.error(
+                "REQUEST ERROR:",
                 error
             );
 
-
-            res.status(500)
+            res
+                .status(500)
                 .json({
-
+                    success: false,
                     message:
                         "SERVER ERROR."
-
                 });
-
         }
-
     }
 );
 
 
-/* =========================================
-   APPROVE
-========================================= */
+/* =====================================================
+   APPROVE REQUEST
+===================================================== */
 
 app.post(
     "/api/requests/:id/approve",
@@ -432,10 +521,10 @@ app.post(
             return res
                 .status(404)
                 .json({
+                    success: false,
                     message:
-                        "TALEP BULUNAMADI."
+                        "REQUEST NOT FOUND."
                 });
-
         }
 
 
@@ -447,40 +536,23 @@ app.post(
 
         if (time) {
 
-            const hour =
-                parseInt(
-                    time.split(":")[0],
-                    10
-                );
-
-
-            if (
-                Number.isNaN(hour)
-                ||
-                hour < 1
-                ||
-                hour > 22
-            ) {
+            if (!validateTime(time)) {
 
                 return res
                     .status(400)
                     .json({
+                        success: false,
                         message:
-                            "GEÇERSİZ SAAT."
+                            "INVALID TIME."
                     });
-
             }
 
 
             request.time =
                 time;
 
-
             request.period =
-                hour <= 12
-                    ? "NIGHT"
-                    : "DAY";
-
+                getPeriod(time);
         }
 
 
@@ -490,12 +562,11 @@ app.post(
 
         request.adminMessage =
             message ||
-            "TALEBİNİZ KABUL EDİLDİ.";
+            "YOUR REQUEST HAS BEEN ACCEPTED.";
 
 
         request.updatedAt =
-            new Date()
-            .toISOString();
+            new Date().toISOString();
 
 
         saveDatabase(
@@ -504,27 +575,22 @@ app.post(
 
 
         console.log(
-            `[APPROVED] ${request.id}`
+            `[APPROVED] ${request.id} @ ${request.time}`
         );
 
 
         res.json({
-
-            success:
-                true,
-
+            success: true,
             request:
                 request
-
         });
-
     }
 );
 
 
-/* =========================================
-   REJECT
-========================================= */
+/* =====================================================
+   REJECT REQUEST
+===================================================== */
 
 app.post(
     "/api/requests/:id/reject",
@@ -547,10 +613,10 @@ app.post(
             return res
                 .status(404)
                 .json({
+                    success: false,
                     message:
-                        "TALEP BULUNAMADI."
+                        "REQUEST NOT FOUND."
                 });
-
         }
 
 
@@ -560,12 +626,11 @@ app.post(
 
         request.adminMessage =
             req.body.message ||
-            "TALEBİNİZ REDDEDİLDİ.";
+            "YOUR REQUEST HAS BEEN REJECTED.";
 
 
         request.updatedAt =
-            new Date()
-            .toISOString();
+            new Date().toISOString();
 
 
         saveDatabase(
@@ -579,22 +644,17 @@ app.post(
 
 
         res.json({
-
-            success:
-                true,
-
+            success: true,
             request:
                 request
-
         });
-
     }
 );
 
 
-/* =========================================
-   CHANGE TIME
-========================================= */
+/* =====================================================
+   CHANGE REQUEST TIME
+===================================================== */
 
 app.post(
     "/api/requests/:id/time",
@@ -605,40 +665,15 @@ app.post(
         } = req.body;
 
 
-        if (!time) {
+        if (!validateTime(time)) {
 
             return res
                 .status(400)
                 .json({
+                    success: false,
                     message:
-                        "SAAT GEREKLİ."
+                        "INVALID TIME."
                 });
-
-        }
-
-
-        const hour =
-            parseInt(
-                time.split(":")[0],
-                10
-            );
-
-
-        if (
-            Number.isNaN(hour)
-            ||
-            hour < 1
-            ||
-            hour > 22
-        ) {
-
-            return res
-                .status(400)
-                .json({
-                    message:
-                        "GEÇERSİZ SAAT."
-                });
-
         }
 
 
@@ -659,10 +694,10 @@ app.post(
             return res
                 .status(404)
                 .json({
+                    success: false,
                     message:
-                        "TALEP BULUNAMADI."
+                        "REQUEST NOT FOUND."
                 });
-
         }
 
 
@@ -671,14 +706,11 @@ app.post(
 
 
         request.period =
-            hour <= 12
-                ? "NIGHT"
-                : "DAY";
+            getPeriod(time);
 
 
         request.updatedAt =
-            new Date()
-            .toISOString();
+            new Date().toISOString();
 
 
         saveDatabase(
@@ -692,28 +724,264 @@ app.post(
 
 
         res.json({
-
-            success:
-                true,
-
+            success: true,
             request:
                 request
-
         });
-
     }
 );
 
 
-/* =========================================
+/* =====================================================
+   SERVER STATUS
+===================================================== */
+
+app.get(
+    "/api/status",
+    (req, res) => {
+
+        const database =
+            readDatabase();
+
+
+        const pending =
+            database.requests.filter(
+                request =>
+                    request.status ===
+                    "PENDING"
+            ).length;
+
+
+        res.json({
+
+            server:
+                "ONLINE",
+
+            site:
+                "SITE-64",
+
+            database:
+                "ONLINE",
+
+            requestSystem:
+                "ONLINE",
+
+            pendingRequests:
+                pending,
+
+            totalRequests:
+                database.requests.length,
+
+            uptime:
+                process.uptime()
+        });
+    }
+);
+
+
+/* =====================================================
+   TERMINAL
+===================================================== */
+
+app.post(
+    "/api/terminal",
+    (req, res) => {
+
+        const command =
+            String(
+                req.body.command || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const database =
+            readDatabase();
+
+
+        if (!command) {
+
+            return res.json({
+                output: ""
+            });
+        }
+
+
+        /* HELP */
+
+        if (command === "help") {
+
+            return res.json({
+
+                output:
+`SITE-64 TERMINAL
+==============================
+
+AVAILABLE COMMANDS
+
+help       Show available commands
+status     Show system status
+requests   Show request statistics
+sites      Show registered sites
+clear      Clear terminal
+about      Show SITE-64 information`
+            });
+        }
+
+
+        /* STATUS */
+
+        if (command === "status") {
+
+            const pending =
+                database.requests.filter(
+                    r =>
+                        r.status ===
+                        "PENDING"
+                ).length;
+
+
+            return res.json({
+
+                output:
+`SYSTEM STATUS
+==============================
+SERVER       : ONLINE
+DATABASE     : ONLINE
+SITE-64      : OPERATIONAL
+REQUESTS     : ${database.requests.length}
+PENDING      : ${pending}`
+            });
+        }
+
+
+        /* REQUESTS */
+
+        if (command === "requests") {
+
+            const pending =
+                database.requests.filter(
+                    r =>
+                        r.status ===
+                        "PENDING"
+                ).length;
+
+
+            const approved =
+                database.requests.filter(
+                    r =>
+                        r.status ===
+                        "APPROVED"
+                ).length;
+
+
+            const rejected =
+                database.requests.filter(
+                    r =>
+                        r.status ===
+                        "REJECTED"
+                ).length;
+
+
+            return res.json({
+
+                output:
+`REQUEST DATABASE
+==============================
+TOTAL      : ${database.requests.length}
+PENDING    : ${pending}
+APPROVED   : ${approved}
+REJECTED   : ${rejected}`
+            });
+        }
+
+
+        /* SITES */
+
+        if (command === "sites") {
+
+            return res.json({
+
+                output:
+`SITE-64
+==============================
+SITE-19   | OPERATIONAL
+SITE-51   | CLASSIFIED
+SITE-64   | UNKNOWN
+SITE-██   | REDACTED`
+            });
+        }
+
+
+        /* ABOUT */
+
+        if (command === "about") {
+
+            return res.json({
+
+                output:
+`SECURECONTAINPROTECT
+SITE-64 ADMINISTRATION SYSTEM
+
+CLASSIFICATION: O5
+ACCESS LEVEL: ADMIN
+
+Unauthorized access is prohibited.`
+            });
+        }
+
+
+        /* CLEAR */
+
+        if (command === "clear") {
+
+            return res.json({
+                output:
+                    "__CLEAR__"
+            });
+        }
+
+
+        /* UNKNOWN */
+
+        return res.json({
+
+            output:
+                `COMMAND NOT FOUND: ${command}\nType "help" for available commands.`
+        });
+    }
+);
+
+
+/* =====================================================
+   404 API
+===================================================== */
+
+app.use(
+    "/api",
+    (req, res) => {
+
+        res
+            .status(404)
+            .json({
+                success: false,
+                message:
+                    "API ENDPOINT NOT FOUND."
+            });
+    }
+);
+
+
+/* =====================================================
    START
-========================================= */
+===================================================== */
 
 ensureDatabase();
 
 
 app.listen(
     PORT,
+    "0.0.0.0",
     () => {
 
         console.log("");
@@ -740,14 +1008,19 @@ app.listen(
         );
 
         console.log(
-            "SITE   : http://localhost:" +
-            PORT
+            "PUBLIC : /"
         );
 
         console.log(
-            "ADMIN  : http://localhost:" +
-            PORT +
-            "/admin"
+            "ADMIN  : /admin"
+        );
+
+        console.log(
+            "SITES  : /sites"
+        );
+
+        console.log(
+            "TERM   : /term"
         );
 
         console.log(
@@ -755,6 +1028,5 @@ app.listen(
         );
 
         console.log("");
-
     }
 );

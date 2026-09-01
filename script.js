@@ -1,998 +1,810 @@
-let selectedType = null;
-let selectedSCP = null;
-let selectedTime = null;
-let selectedPeriod = null;
+/* =========================================================
+   SECURECONTAINPROTECT // SITE-64
+   PUBLIC CLIENT SCRIPT
+========================================================= */
 
+document.addEventListener("DOMContentLoaded", () => {
 
-const requestTypes = [
+    /* =====================================================
+       NAVIGATION
+    ===================================================== */
 
-    {
-        id: "hygiene",
-        name: "HYGIENE",
-        description: "Temizlik ve hijyen talebi."
-    },
+    const navLinks =
+        document.querySelectorAll(".navigation a");
 
-    {
-        id: "control",
-        name: "CONTROL",
-        description: "Site kontrol ve güvenlik talebi."
-    },
+    const sections =
+        document.querySelectorAll(".page-section");
 
-    {
-        id: "inspection",
-        name: "INSPECTION",
-        description: "Belirli bir alan için inceleme talebi."
-    },
+    function updateActiveNavigation() {
 
-    {
-        id: "auto",
-        name: "AUTO INSPECTION",
-        description: "Otomatik inceleme talebi."
-    },
+        let currentSection = "home";
 
-    {
-        id: "scp",
-        name: "SCP",
-        description: "Bir SCP hakkında kontrol talebi."
-    }
+        sections.forEach(section => {
 
-];
+            const rect =
+                section.getBoundingClientRect();
 
-
-const scps = [
-
-    ["SCP-049", "THE PLAGUE DOCTOR"],
-    ["SCP-096", "THE SHY GUY"],
-    ["SCP-173", "THE SCULPTURE"],
-    ["SCP-682", "HARD-TO-DESTROY REPTILE"],
-    ["SCP-106", "THE OLD MAN"],
-    ["SCP-939", "WITH MANY VOICES"],
-    ["SCP-079", "OLD AI"],
-    ["SCP-999", "THE TICKLE MONSTER"],
-    ["SCP-3008", "INFINITE IKEA"],
-    ["SCP-087", "THE STAIRWELL"],
-    ["SCP-055", "UNKNOWN"],
-    ["SCP-2521", "UNKNOWN"]
-
-];
-
-
-function $(id) {
-    return document.getElementById(id);
-}
-
-
-/* =========================================
-   NAVIGATION
-========================================= */
-
-document.querySelectorAll(".nav-button")
-.forEach(button => {
-
-    button.addEventListener("click", () => {
-
-        showPage(
-            button.dataset.page
-        );
-
-    });
-
-});
-
-
-function showPage(pageId) {
-
-    document.querySelectorAll(".page")
-    .forEach(page => {
-
-        page.classList.remove("active");
-
-    });
-
-
-    document.querySelectorAll(".nav-button")
-    .forEach(button => {
-
-        button.classList.remove("active");
-
-    });
-
-
-    const page =
-        $(pageId);
-
-    if (page) {
-
-        page.classList.add("active");
-
-    }
-
-
-    const button =
-        document.querySelector(
-            `.nav-button[data-page="${pageId}"]`
-        );
-
-
-    if (button) {
-
-        button.classList.add("active");
-
-    }
-
-
-    if (pageId === "myrequests") {
-
-        loadRequests();
-
-    }
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-}
-
-
-/* =========================================
-   HOME
-========================================= */
-
-$("startRequest")
-.addEventListener("click", () => {
-
-    showPage("request");
-
-});
-
-
-/* =========================================
-   REQUEST TYPES
-========================================= */
-
-function renderRequestTypes() {
-
-    const container =
-        $("requestTypes");
-
-    container.innerHTML = "";
-
-
-    requestTypes.forEach(type => {
-
-        const button =
-            document.createElement("button");
-
-
-        button.className =
-            "request-option";
-
-
-        button.innerHTML = `
-
-            <strong>
-                ${type.name}
-            </strong>
-
-            <small>
-                ${type.description}
-            </small>
-
-        `;
-
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                selectType(
-                    type.id,
-                    button
-                );
-
+            if (
+                rect.top <= 180 &&
+                rect.bottom >= 180
+            ) {
+                currentSection =
+                    section.id;
             }
-        );
 
+        });
 
-        container.appendChild(
-            button
-        );
+        navLinks.forEach(link => {
 
-    });
+            const target =
+                link.getAttribute("href");
 
-}
-
-
-function selectType(
-    type,
-    button
-) {
-
-    selectedType =
-        type;
-
-    selectedSCP =
-        null;
-
-    selectedTime =
-        null;
-
-    selectedPeriod =
-        null;
-
-
-    document.querySelectorAll(
-        ".request-option"
-    )
-    .forEach(element => {
-
-        element.classList.remove(
-            "selected"
-        );
-
-    });
-
-
-    button.classList.add(
-        "selected"
-    );
-
-
-    if (type === "scp") {
-
-        $("scpStep")
-        .classList
-        .remove("hidden");
-
-        renderSCPs();
-
-    }
-
-    else {
-
-        $("scpStep")
-        .classList
-        .add("hidden");
-
-    }
-
-
-    $("timeStep")
-    .classList
-    .remove("hidden");
-
-
-    $("summary")
-    .classList
-    .add("hidden");
-
-
-    clearTimeSelection();
-
-    updateSummary();
-
-}
-
-
-/* =========================================
-   SCP
-========================================= */
-
-function renderSCPs() {
-
-    const container =
-        $("scpList");
-
-    container.innerHTML = "";
-
-
-    $("selectedSCP")
-        .textContent =
-        "SCP SEÇİLMEDİ";
-
-
-    scps.forEach(scp => {
-
-        const button =
-            document.createElement("button");
-
-
-        button.className =
-            "scp-option";
-
-
-        button.innerHTML = `
-
-            <strong>
-                ${scp[0]}
-            </strong>
-
-            <small>
-                ${scp[1]}
-            </small>
-
-        `;
-
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                selectedSCP =
-                    scp[0];
-
-
-                document
-                .querySelectorAll(
-                    ".scp-option"
-                )
-                .forEach(element => {
-
-                    element.classList
-                    .remove("selected");
-
-                });
-
-
-                button.classList
-                .add("selected");
-
-
-                $("selectedSCP")
-                .innerHTML =
-                    `SEÇİLEN SCP:
-                    <strong>
-                    ${scp[0]}
-                    </strong>`;
-
-
-                updateSummary();
-
-            }
-        );
-
-
-        container.appendChild(
-            button
-        );
-
-    });
-
-}
-
-
-/* =========================================
-   TIME
-========================================= */
-
-function renderTimes() {
-
-    const night =
-        $("nightTimes");
-
-    const day =
-        $("dayTimes");
-
-
-    night.innerHTML = "";
-
-    day.innerHTML = "";
-
-
-    for (
-        let hour = 1;
-        hour <= 12;
-        hour++
-    ) {
-
-        createTime(
-            hour,
-            "NIGHT",
-            night
-        );
-
-    }
-
-
-    for (
-        let hour = 13;
-        hour <= 22;
-        hour++
-    ) {
-
-        createTime(
-            hour,
-            "DAY",
-            day
-        );
-
-    }
-
-}
-
-
-function createTime(
-    hour,
-    period,
-    container
-) {
-
-    const button =
-        document.createElement("button");
-
-
-    button.className =
-        "time";
-
-
-    const formatted =
-        String(hour)
-        .padStart(2, "0")
-        + ":00";
-
-
-    button.textContent =
-        formatted;
-
-
-    button.addEventListener(
-        "click",
-        () => {
-
-            selectedTime =
-                formatted;
-
-            selectedPeriod =
-                period;
-
-
-            clearTimeSelection();
-
-
-            button.classList
-                .add("selected");
-
-
-            updateSummary();
-
-        }
-    );
-
-
-    container.appendChild(
-        button
-    );
-
-}
-
-
-function clearTimeSelection() {
-
-    document.querySelectorAll(
-        ".time"
-    )
-    .forEach(button => {
-
-        button.classList
-            .remove("selected");
-
-    });
-
-}
-
-
-/* =========================================
-   SUMMARY
-========================================= */
-
-function updateSummary() {
-
-    if (!selectedType) {
-
-        $("summary")
-            .classList
-            .add("hidden");
-
-        return;
-
-    }
-
-
-    const type =
-        requestTypes.find(
-            item =>
-                item.id === selectedType
-        );
-
-
-    $("sumType")
-        .textContent =
-        type
-            ? type.name
-            : "-";
-
-
-    $("sumSCP")
-        .textContent =
-        selectedSCP || "N/A";
-
-
-    $("sumTime")
-        .textContent =
-        selectedTime || "-";
-
-
-    $("sumPeriod")
-        .textContent =
-        selectedPeriod || "-";
-
-
-    const ready =
-
-        selectedType &&
-        selectedTime &&
-        (
-            selectedType !== "scp"
-            ||
-            selectedSCP
-        );
-
-
-    if (ready) {
-
-        $("summary")
-            .classList
-            .remove("hidden");
-
-    }
-
-    else {
-
-        $("summary")
-            .classList
-            .add("hidden");
-
-    }
-
-}
-
-
-/* =========================================
-   SUBMIT
-========================================= */
-
-$("submitRequest")
-.addEventListener(
-    "click",
-    async () => {
-
-        if (!selectedType) {
-
-            alert(
-                "TALEP TÜRÜ SEÇMELİSİN."
+            link.classList.toggle(
+                "active",
+                target === `#${currentSection}`
             );
 
-            return;
+        });
+    }
 
+    window.addEventListener(
+        "scroll",
+        updateActiveNavigation
+    );
+
+    updateActiveNavigation();
+
+
+    /* =====================================================
+       REQUEST FORM
+    ===================================================== */
+
+    const requestForm =
+        document.getElementById("requestForm");
+
+    const result =
+        document.getElementById("result");
+
+    if (requestForm) {
+
+        requestForm.addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+                const name =
+                    document
+                        .getElementById("name")
+                        ?.value
+                        .trim();
+
+                const type =
+                    document
+                        .getElementById("type")
+                        ?.value;
+
+                const time =
+                    document
+                        .getElementById("time")
+                        ?.value;
+
+                const message =
+                    document
+                        .getElementById("message")
+                        ?.value
+                        .trim();
+
+
+                if (!name) {
+                    showResult(
+                        "PLEASE ENTER YOUR FULL NAME.",
+                        "error"
+                    );
+                    return;
+                }
+
+                if (!type) {
+                    showResult(
+                        "PLEASE SELECT A REQUEST TYPE.",
+                        "error"
+                    );
+                    return;
+                }
+
+                if (!time) {
+                    showResult(
+                        "PLEASE SELECT A TIME.",
+                        "error"
+                    );
+                    return;
+                }
+
+                if (!message) {
+                    showResult(
+                        "PLEASE ENTER REQUEST DETAILS.",
+                        "error"
+                    );
+                    return;
+                }
+
+
+                const hour =
+                    parseInt(
+                        time.split(":")[0],
+                        10
+                    );
+
+
+                if (
+                    Number.isNaN(hour) ||
+                    hour < 1 ||
+                    hour > 22
+                ) {
+
+                    showResult(
+                        "PLEASE SELECT A VALID TIME BETWEEN 01:00 AND 22:00.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                const period =
+                    hour <= 12
+                        ? "NIGHT"
+                        : "DAY";
+
+
+                const requestData = {
+
+                    type:
+                        type,
+
+                    typeName:
+                        type.toUpperCase(),
+
+                    scp:
+                        null,
+
+                    time:
+                        time,
+
+                    period:
+                        period,
+
+                    name:
+                        name,
+
+                    message:
+                        message
+
+                };
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/requests",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        requestData
+                                    )
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        showResult(
+                            data.message ||
+                            "REQUEST COULD NOT BE SUBMITTED.",
+                            "error"
+                        );
+
+                        return;
+                    }
+
+
+                    saveMyRequest(
+                        data.request
+                    );
+
+
+                    showResult(
+                        `
+                        REQUEST SUBMITTED SUCCESSFULLY.<br><br>
+                        REQUEST ID:
+                        <strong>${escapeHtml(data.request.id)}</strong><br>
+                        STATUS:
+                        <strong>PENDING</strong>
+                        `,
+                        "success"
+                    );
+
+
+                    requestForm.reset();
+
+                    loadRequests();
+
+                } catch (error) {
+
+                    console.error(
+                        "REQUEST ERROR:",
+                        error
+                    );
+
+                    showResult(
+                        "SERVER CONNECTION FAILED.",
+                        "error"
+                    );
+                }
+
+            }
+        );
+    }
+
+
+    /* =====================================================
+       RESULT
+    ===================================================== */
+
+    function showResult(
+        message,
+        type
+    ) {
+
+        if (!result) {
+            return;
         }
 
+        result.innerHTML =
+            message;
+
+        result.className =
+            `result ${type}`;
+
+        result.classList.remove(
+            "hidden"
+        );
+    }
+
+
+    /* =====================================================
+       MY REQUESTS
+    ===================================================== */
+
+    const requestsList =
+        document.getElementById(
+            "requestsList"
+        );
+
+
+    function saveMyRequest(request) {
+
+        if (!request) {
+            return;
+        }
+
+        let stored =
+            getMyRequests();
 
         if (
-            selectedType === "scp"
-            &&
-            !selectedSCP
+            !stored.some(
+                item =>
+                    item.id ===
+                    request.id
+            )
         ) {
 
-            alert(
-                "LÜTFEN SCP SEÇ."
+            stored.push(request);
+
+            localStorage.setItem(
+                "scp_site64_requests",
+                JSON.stringify(stored)
             );
+        }
+    }
 
+
+    function getMyRequests() {
+
+        try {
+
+            const data =
+                localStorage.getItem(
+                    "scp_site64_requests"
+                );
+
+            if (!data) {
+                return [];
+            }
+
+            const parsed =
+                JSON.parse(data);
+
+            return Array.isArray(parsed)
+                ? parsed
+                : [];
+
+        } catch {
+
+            return [];
+        }
+    }
+
+
+    async function loadRequests() {
+
+        if (!requestsList) {
             return;
-
         }
 
+        const myRequests =
+            getMyRequests();
 
-        if (!selectedTime) {
 
-            alert(
-                "LÜTFEN SAAT SEÇ."
-            );
+        if (!myRequests.length) {
+
+            renderEmptyRequests();
 
             return;
-
         }
-
-
-        const type =
-            requestTypes.find(
-                item =>
-                    item.id === selectedType
-            );
-
-
-        const requestData = {
-
-            type:
-                selectedType,
-
-            typeName:
-                type.name,
-
-            scp:
-                selectedSCP,
-
-            time:
-                selectedTime,
-
-            period:
-                selectedPeriod
-
-        };
 
 
         try {
 
             const response =
                 await fetch(
-                    "/api/requests",
-                    {
-
-                        method:
-                            "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify(
-                                requestData
-                            )
-
-                    }
+                    "/api/requests"
                 );
-
-
-            const result =
-                await response.json();
-
 
             if (!response.ok) {
+                renderRequests(
+                    myRequests
+                );
+                return;
+            }
 
-                throw new Error(
-                    result.message
+            const data =
+                await response.json();
+
+            if (
+                !data.success ||
+                !Array.isArray(
+                    data.requests
+                )
+            ) {
+
+                renderRequests(
+                    myRequests
                 );
 
+                return;
             }
 
 
-            showAcceptedPage(
-                result.request
+            const updated =
+                [];
+
+
+            myRequests.forEach(local => {
+
+                const serverRequest =
+                    data.requests.find(
+                        server =>
+                            server.id ===
+                            local.id
+                    );
+
+                if (
+                    serverRequest
+                ) {
+                    updated.push(
+                        serverRequest
+                    );
+                } else {
+                    updated.push(
+                        local
+                    );
+                }
+
+            });
+
+
+            localStorage.setItem(
+                "scp_site64_requests",
+                JSON.stringify(updated)
             );
 
 
+            renderRequests(
+                updated
+            );
+
+        } catch {
+
+            renderRequests(
+                myRequests
+            );
         }
-
-        catch (error) {
-
-            console.error(error);
-
-            alert(
-                "SUNUCUYA BAĞLANILAMADI.\n\n" +
-                "server.js ÇALIŞIYOR MU KONTROL ET."
-            );
-
-        }
-
-    }
-);
-
-
-/* =========================================
-   REQUEST SUCCESS
-========================================= */
-
-function showAcceptedPage(request) {
-
-    $("request").innerHTML = `
-
-        <div class="page-header">
-
-            <div>
-
-                <small>
-                    SITE-64 // REQUEST SYSTEM
-                </small>
-
-                <h2>
-                    TALEP GÖNDERİLDİ
-                </h2>
-
-            </div>
-
-            <b>
-                RECEIVED
-            </b>
-
-        </div>
-
-
-        <div class="warning-box">
-
-            <small>
-                FOUNDATION DATABASE
-            </small>
-
-            <h3>
-                TALEBİNİZ ALINDI
-            </h3>
-
-            <div class="warning-line"></div>
-
-            <p>
-                TALEBİNİZ O5 YÖNETİMİNE İLETİLDİ.
-            </p>
-
-            <div class="classified-data">
-
-                <div>
-                    REQUEST ID
-
-                    <strong>
-                        ${request.id}
-                    </strong>
-                </div>
-
-                <div>
-                    STATUS
-
-                    <strong>
-                        PENDING
-                    </strong>
-                </div>
-
-                <div>
-                    TIME
-
-                    <strong>
-                        ${request.time}
-                    </strong>
-                </div>
-
-            </div>
-
-            <button
-                class="main-button"
-                onclick="location.reload()">
-
-                ANA SAYFAYA DÖN
-
-                <span>→</span>
-
-            </button>
-
-        </div>
-
-    `;
-
-}
-
-
-/* =========================================
-   REQUEST DATABASE
-========================================= */
-
-async function loadRequests() {
-
-    const container =
-        $("myRequests");
-
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/requests"
-            );
-
-
-        const data =
-            await response.json();
-
-
-        renderRequests(
-            data.requests
-        );
-
-
     }
 
-    catch {
 
-        renderRequests([]);
+    function renderEmptyRequests() {
 
-    }
+        requestsList.innerHTML = `
 
-}
+            <div class="empty-state">
 
+                <div>
+                    NO REQUESTS FOUND
+                </div>
 
-function renderRequests(
-    requests
-) {
-
-    const container =
-        $("myRequests");
-
-
-    if (
-        !requests
-        ||
-        !requests.length
-    ) {
-
-        container.innerHTML = `
-
-            <div class="empty-request">
-
-                HENÜZ TALEP BULUNAMADI.
+                <span>
+                    SUBMITTED REQUESTS WILL APPEAR HERE.
+                </span>
 
             </div>
 
         `;
-
-        return;
-
     }
 
 
-    container.innerHTML = "";
+    function renderRequests(
+        requests
+    ) {
+
+        if (!requests.length) {
+
+            renderEmptyRequests();
+
+            return;
+        }
 
 
-    requests
-        .slice()
-        .reverse()
-        .forEach(request => {
-
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-
-            card.className =
-                "request-card";
+        requestsList.innerHTML =
+            requests
+                .slice()
+                .reverse()
+                .map(
+                    createRequestCard
+                )
+                .join("");
+    }
 
 
-            const status =
+    function createRequestCard(
+        request
+    ) {
+
+        const status =
+            String(
                 request.status ||
-                "PENDING";
+                "PENDING"
+            ).toLowerCase();
 
 
-            card.innerHTML = `
+        const type =
+            request.typeName ||
+            request.type ||
+            "UNKNOWN";
+
+
+        const message =
+            request.adminMessage ||
+            "NO ADMINISTRATIVE MESSAGE.";
+
+
+        return `
+
+            <div class="request-card">
 
                 <div class="request-card-top">
 
-                    <strong>
-                        ${request.id}
-                    </strong>
-
-                    <span
-                        class="status
-                        ${status.toLowerCase()}">
-
-                        ${status}
-
-                    </span>
-
-                </div>
-
-
-                <div class="request-info">
-
-                    <div>
-                        TÜR
-
-                        <strong>
-                            ${request.typeName}
-                        </strong>
-
+                    <div class="request-id">
+                        ${escapeHtml(
+                            request.id ||
+                            "UNKNOWN"
+                        )}
                     </div>
 
-                    <div>
-                        SCP
-
-                        <strong>
-                            ${request.scp || "N/A"}
-                        </strong>
-
-                    </div>
-
-                    <div>
-                        SAAT
-
-                        <strong>
-                            ${request.time}
-                        </strong>
-
-                    </div>
-
-                    <div>
-                        DÖNEM
-
-                        <strong>
-                            ${request.period}
-                        </strong>
-
+                    <div class="request-status ${escapeHtml(status)}">
+                        ${escapeHtml(
+                            request.status ||
+                            "PENDING"
+                        )}
                     </div>
 
                 </div>
 
 
-                ${
-                    request.adminMessage
-                    ?
-                    `
+                <div class="request-details">
 
-                    <div class="admin-response">
+                    <div class="request-detail">
 
-                        <small>
-                            O5 YÖNETİMİ
-                        </small>
+                        <span>
+                            REQUEST TYPE
+                        </span>
 
-                        <p>
-                            ${request.adminMessage}
-                        </p>
+                        <strong>
+                            ${escapeHtml(type)}
+                        </strong>
 
                     </div>
 
-                    `
-                    :
-                    ""
-                }
 
-            `;
+                    <div class="request-detail">
 
+                        <span>
+                            PREFERRED TIME
+                        </span>
 
-            container.appendChild(
-                card
-            );
+                        <strong>
+                            ${escapeHtml(
+                                request.time ||
+                                "N/A"
+                            )}
+                        </strong>
 
-        });
-
-}
-
-
-/* =========================================
-   START
-========================================= */
-
-renderRequestTypes();
-
-renderTimes();
-
-loadRequests();
+                    </div>
 
 
-setInterval(
-    () => {
+                    <div class="request-detail">
 
-        const page =
-            $("myrequests");
+                        <span>
+                            PERIOD
+                        </span>
+
+                        <strong>
+                            ${escapeHtml(
+                                request.period ||
+                                "N/A"
+                            )}
+                        </strong>
+
+                    </div>
+
+                </div>
 
 
-        if (
-            page &&
-            page.classList
-                .contains("active")
-        ) {
+                <div class="admin-message">
 
-            loadRequests();
+                    ${escapeHtml(
+                        message
+                    )}
 
+                </div>
+
+            </div>
+
+        `;
+    }
+
+
+    /* =====================================================
+       TERMINAL
+    ===================================================== */
+
+    const terminalForm =
+        document.getElementById(
+            "terminalForm"
+        );
+
+    const terminalInput =
+        document.getElementById(
+            "terminalInput"
+        );
+
+    const terminalOutput =
+        document.getElementById(
+            "terminalOutput"
+        );
+
+
+    function terminalPrint(
+        text
+    ) {
+
+        if (!terminalOutput) {
+            return;
         }
 
-    },
-    5000
-);
+        terminalOutput.innerHTML +=
+            `\n${escapeHtml(text)}`;
+
+        terminalOutput.scrollTop =
+            terminalOutput.scrollHeight;
+    }
+
+
+    if (
+        terminalForm &&
+        terminalInput
+    ) {
+
+        terminalForm.addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+                const command =
+                    terminalInput.value.trim();
+
+                if (!command) {
+                    return;
+                }
+
+
+                terminalPrint(
+                    `> ${command}`
+                );
+
+
+                terminalInput.value =
+                    "";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/terminal",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify({
+                                        command:
+                                            command
+                                    })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (
+                        data.output ===
+                        "__CLEAR__"
+                    ) {
+
+                        terminalOutput.innerHTML =
+                            "";
+
+                        return;
+                    }
+
+
+                    terminalPrint(
+                        data.output ||
+                        "NO OUTPUT."
+                    );
+
+                } catch {
+
+                    terminalPrint(
+                        "TERMINAL CONNECTION ERROR."
+                    );
+                }
+
+            }
+        );
+    }
+
+
+    /* =====================================================
+       SITE STATUS
+    ===================================================== */
+
+    async function loadSystemStatus() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/status"
+                );
+
+            if (!response.ok) {
+                return;
+            }
+
+            const data =
+                await response.json();
+
+
+            const statusBoxes =
+                document.querySelectorAll(
+                    ".status-box strong"
+                );
+
+
+            if (
+                statusBoxes.length >= 3
+            ) {
+
+                statusBoxes[0].textContent =
+                    data.server ||
+                    "ONLINE";
+
+                statusBoxes[1].textContent =
+                    data.database ||
+                    "ONLINE";
+
+                statusBoxes[2].textContent =
+                    "OPERATIONAL";
+            }
+
+        } catch {
+
+            console.warn(
+                "STATUS SERVER UNAVAILABLE."
+            );
+        }
+    }
+
+
+    /* =====================================================
+       HTML SECURITY
+    ===================================================== */
+
+    function escapeHtml(
+        value
+    ) {
+
+        return String(value)
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+    }
+
+
+    /* =====================================================
+       START
+    ===================================================== */
+
+    loadRequests();
+
+    loadSystemStatus();
+
+});

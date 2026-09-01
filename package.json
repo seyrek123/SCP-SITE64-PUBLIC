@@ -1,12 +1,12 @@
 {
-  "name": "scp-site64",
-  "version": "1.0.0",
-  "description": "SecureContainProtect SITE-64",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "express": "^5.1.0"
-  }
+    "name": "scp-site64",
+    "version": "1.0.0",
+    "description": "SECURECONTAINPROTECT SITE-64",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.21.2"
+    }
 }
