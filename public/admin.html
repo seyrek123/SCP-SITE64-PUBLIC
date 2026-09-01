@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
     <meta charset="UTF-8">
@@ -11,7 +12,10 @@
 
     <title>SITE-64 // ADMINISTRATION</title>
 
-    <link rel="stylesheet" href="script.css">
+    <link
+        rel="stylesheet"
+        href="script.css"
+    >
 
     <style>
 
@@ -141,14 +145,6 @@
             font-size: 13px;
         }
 
-        .admin-info input,
-        .admin-info select,
-        .site-control-select,
-        .personnel-select {
-            width: 100%;
-            margin: 0;
-        }
-
         .admin-message-input {
             margin-bottom: 15px;
         }
@@ -195,50 +191,101 @@
             font-size: 12px;
         }
 
-        .security-status {
-            font-family: monospace;
-            font-size: 12px;
+
+        /* =================================================
+           SITE CONTROL
+        ================================================= */
+
+        .site-control-section {
+            margin-top: 40px;
         }
 
-        .site-message {
-            color: #8796a2;
-            font-size: 12px;
-            line-height: 1.6;
-            margin-top: 15px;
-            padding: 12px;
-            border: 1px solid #1e2a33;
+        .site-control-header {
+            margin-bottom: 20px;
         }
 
-        .personnel-record {
-            border: 1px solid #1e2a33;
-            padding: 18px;
-            margin-top: 12px;
+        .site-control-header span {
+            color: #5f778a;
+            font-size: 10px;
+            letter-spacing: 3px;
         }
 
-        .personnel-record-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .site-control-header h2 {
+            margin-top: 8px;
+            font-size: 24px;
+        }
+
+        .site-control-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
             gap: 15px;
+        }
+
+        .site-control-card {
+            background: #090e13;
+            border: 1px solid #202d38;
+            padding: 22px;
+        }
+
+        .site-control-card h3 {
+            font-family: monospace;
+            font-size: 18px;
+            margin-bottom: 18px;
+        }
+
+        .site-status-display {
+            border: 1px solid #1e2a33;
+            padding: 14px;
             margin-bottom: 15px;
         }
 
-        .personnel-record-id {
+        .site-status-display span {
+            display: block;
             color: #596b78;
-            font-family: monospace;
-            font-size: 10px;
+            font-size: 9px;
+            letter-spacing: 2px;
+            margin-bottom: 7px;
         }
 
-        .request-time-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
+        .site-status-display strong {
+            font-size: 13px;
         }
 
-        .request-time-row select {
-            min-width: 150px;
+        .site-control-card select,
+        .site-control-card textarea {
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 12px;
         }
+
+        .site-control-card textarea {
+            resize: vertical;
+            min-height: 75px;
+        }
+
+        .site-control-button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #315d48;
+            background: transparent;
+            color: #8dccaa;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .site-control-button:hover {
+            background: #102219;
+        }
+
+        .site-control-updated {
+            margin-top: 10px;
+            color: #596b78;
+            font-size: 9px;
+        }
+
 
         @media (max-width: 800px) {
 
@@ -250,18 +297,9 @@
                 grid-template-columns: 1fr;
             }
 
-        }
-
-        @media (max-width: 500px) {
-
-            .stats {
+            .site-control-grid {
                 grid-template-columns: 1fr;
             }
-
-            .admin-page {
-                padding-top: 110px;
-            }
-
         }
 
     </style>
@@ -306,13 +344,10 @@
 </header>
 
 
-
 <main class="admin-page">
 
 
-    <!-- =================================================
-         LOGIN
-    ================================================== -->
+    <!-- LOGIN -->
 
     <div
         class="admin-login"
@@ -332,13 +367,11 @@
             Authorized personnel only.
         </p>
 
-
         <input
             id="adminPassword"
             type="password"
             placeholder="ACCESS CODE"
         >
-
 
         <button
             class="primary-button"
@@ -346,7 +379,6 @@
         >
             ACCESS SYSTEM
         </button>
-
 
         <div
             id="loginError"
@@ -362,10 +394,7 @@
     </div>
 
 
-
-    <!-- =================================================
-         DASHBOARD
-    ================================================== -->
+    <!-- DASHBOARD -->
 
     <div
         class="dashboard"
@@ -390,13 +419,9 @@
         </div>
 
 
-
-        <!-- =================================================
-             STATS
-        ================================================== -->
+        <!-- STATS -->
 
         <div class="stats">
-
 
             <div class="stat">
 
@@ -449,9 +474,7 @@
 
             </div>
 
-
         </div>
-
 
 
         <div
@@ -460,357 +483,40 @@
         ></div>
 
 
+        <!-- REQUESTS -->
 
-        <!-- =================================================
-             SITE SECURITY CONTROL
-        ================================================== -->
-
-        <div class="admin-card">
-
-            <div class="admin-card-top">
-
-                <h3>
-                    SITE SECURITY CONTROL
-                </h3>
-
-            </div>
-
-
-            <div class="admin-info">
-
-
-                <div>
-
-                    <span>
-                        SELECT SITE
-                    </span>
-
-                    <select
-                        id="controlSite"
-                        class="site-control-select"
-                    >
-
-                        <option value="SITE-19">
-                            SITE-19
-                        </option>
-
-                        <option value="SITE-51">
-                            SITE-51
-                        </option>
-
-                        <option value="SITE-64">
-                            SITE-64
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-
-                <div>
-
-                    <span>
-                        SECURITY STATUS
-                    </span>
-
-                    <select
-                        id="controlStatus"
-                        class="site-control-select"
-                    >
-
-                        <option value="NORMAL">
-                            NORMAL
-                        </option>
-
-                        <option value="ELEVATED">
-                            ELEVATED
-                        </option>
-
-                        <option value="HIGH">
-                            HIGH
-                        </option>
-
-                        <option value="CRITICAL">
-                            CRITICAL
-                        </option>
-
-                        <option value="LOCKDOWN">
-                            LOCKDOWN
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-
-                <div>
-
-                    <span>
-                        CURRENT STATUS
-                    </span>
-
-                    <strong
-                        id="currentSiteStatus"
-                        class="security-status"
-                    >
-                        NORMAL
-                    </strong>
-
-                </div>
-
-
-            </div>
-
-
-            <textarea
-                id="siteControlMessage"
-                class="admin-message-input"
-                rows="3"
-                placeholder="Security announcement / reason..."
-            ></textarea>
-
-
-            <div class="admin-actions">
-
-                <button
-                    class="approve-button"
-                    onclick="updateSiteSecurity()"
-                >
-                    UPDATE SITE STATUS
-                </button>
-
-            </div>
-
-
-        </div>
-
+        <div
+            id="requestsContainer"
+        ></div>
 
 
         <!-- =================================================
-             PERSONNEL DATABASE
+             SITE CONTROL
         ================================================== -->
 
-        <div class="admin-card">
+        <section class="site-control-section">
 
-            <div class="admin-card-top">
 
-                <h3>
-                    PERSONNEL DATABASE
-                </h3>
+            <div class="site-control-header">
 
-            </div>
+                <span>
+                    FACILITY STATUS MANAGEMENT
+                </span>
 
-
-            <div class="admin-info">
-
-
-                <div>
-
-                    <span>
-                        NAME
-                    </span>
-
-                    <input
-                        id="personName"
-                        type="text"
-                        placeholder="Personnel name"
-                    >
-
-                </div>
-
-
-
-                <div>
-
-                    <span>
-                        RANK
-                    </span>
-
-                    <input
-                        id="personRank"
-                        type="text"
-                        placeholder="Rank / position"
-                    >
-
-                </div>
-
-
-
-                <div>
-
-                    <span>
-                        DEPARTMENT
-                    </span>
-
-                    <select
-                        id="personDepartment"
-                        class="personnel-select"
-                    >
-
-                        <option>
-                            O5 COUNCIL
-                        </option>
-
-                        <option>
-                            SITE DIRECTOR
-                        </option>
-
-                        <option>
-                            RESEARCH
-                        </option>
-
-                        <option>
-                            SECURITY
-                        </option>
-
-                        <option>
-                            MTF
-                        </option>
-
-                        <option>
-                            MEDICAL
-                        </option>
-
-                        <option>
-                            D-CLASS
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-
-                <div>
-
-                    <span>
-                        SITE
-                    </span>
-
-                    <select
-                        id="personSite"
-                        class="personnel-select"
-                    >
-
-                        <option>
-                            SITE-19
-                        </option>
-
-                        <option>
-                            SITE-51
-                        </option>
-
-                        <option>
-                            SITE-64
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-
-                <div>
-
-                    <span>
-                        CLEARANCE
-                    </span>
-
-                    <select
-                        id="personClearance"
-                        class="personnel-select"
-                    >
-
-                        <option>
-                            LEVEL 1
-                        </option>
-
-                        <option>
-                            LEVEL 2
-                        </option>
-
-                        <option>
-                            LEVEL 3
-                        </option>
-
-                        <option>
-                            LEVEL 4
-                        </option>
-
-                        <option>
-                            LEVEL 5
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-
-                <div>
-
-                    <span>
-                        STATUS
-                    </span>
-
-                    <select
-                        id="personStatus"
-                        class="personnel-select"
-                    >
-
-                        <option>
-                            ACTIVE
-                        </option>
-
-                        <option>
-                            INACTIVE
-                        </option>
-
-                        <option>
-                            MISSING
-                        </option>
-
-                        <option>
-                            DECEASED
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-            </div>
-
-
-            <div class="admin-actions">
-
-                <button
-                    class="approve-button"
-                    onclick="addPersonnel()"
-                >
-                    ADD PERSONNEL
-                </button>
+                <h2>
+                    SITE CONTROL
+                </h2>
 
             </div>
 
 
             <div
-                id="personnelContainer"
+                class="site-control-grid"
+                id="siteControlGrid"
             ></div>
 
-        </div>
 
-
-
-        <!-- =================================================
-             REQUEST DATABASE
-        ================================================== -->
-
-        <div
-            id="requestsContainer"
-        ></div>
+        </section>
 
 
     </div>
@@ -818,16 +524,13 @@
 </main>
 
 
-
 <script>
-
 
 const ADMIN_CODE =
     "SITE64-O5";
 
 
 let requests = [];
-
 
 
 /* =====================================================
@@ -862,12 +565,9 @@ function login() {
             .style.display =
                 "block";
 
-
         loadRequests();
 
-        loadSiteSecurity();
-
-        loadPersonnel();
+        loadSiteControls();
 
     } else {
 
@@ -877,11 +577,8 @@ function login() {
             )
             .style.display =
                 "block";
-
     }
-
 }
-
 
 
 document
@@ -898,12 +595,9 @@ document
             ) {
 
                 login();
-
             }
-
         }
     );
-
 
 
 /* =====================================================
@@ -922,28 +616,17 @@ async function loadRequests() {
         const data =
             await response.json();
 
-
-        if (
-            !data.success
-        ) {
-
+        if (!data.success) {
             return;
-
         }
 
-
         requests =
-            Array.isArray(
-                data.requests
-            )
-                ? data.requests
-                : [];
-
+            data.requests ||
+            [];
 
         updateStats();
 
         renderRequests();
-
 
     } catch {
 
@@ -951,11 +634,8 @@ async function loadRequests() {
             "Unable to connect to request database.",
             true
         );
-
     }
-
 }
-
 
 
 /* =====================================================
@@ -964,136 +644,41 @@ async function loadRequests() {
 
 function updateStats() {
 
-    document
-        .getElementById(
-            "totalRequests"
-        )
-        .textContent =
-            requests.length;
+    document.getElementById(
+        "totalRequests"
+    ).textContent =
+        requests.length;
 
 
-    document
-        .getElementById(
-            "pendingRequests"
-        )
-        .textContent =
-            requests.filter(
-                r =>
-                    r.status ===
-                    "PENDING"
-            ).length;
+    document.getElementById(
+        "pendingRequests"
+    ).textContent =
+        requests.filter(
+            r =>
+                r.status ===
+                "PENDING"
+        ).length;
 
 
-    document
-        .getElementById(
-            "approvedRequests"
-        )
-        .textContent =
-            requests.filter(
-                r =>
-                    r.status ===
-                    "APPROVED"
-            ).length;
+    document.getElementById(
+        "approvedRequests"
+    ).textContent =
+        requests.filter(
+            r =>
+                r.status ===
+                "APPROVED"
+        ).length;
 
 
-    document
-        .getElementById(
-            "rejectedRequests"
-        )
-        .textContent =
-            requests.filter(
-                r =>
-                    r.status ===
-                    "REJECTED"
-            ).length;
-
+    document.getElementById(
+        "rejectedRequests"
+    ).textContent =
+        requests.filter(
+            r =>
+                r.status ===
+                "REJECTED"
+        ).length;
 }
-
-
-
-/* =====================================================
-   TIME OPTIONS
-===================================================== */
-
-function createTimeOptions(
-    selected
-) {
-
-    let html = "";
-
-    for (
-        let hour = 0;
-        hour < 24;
-        hour++
-    ) {
-
-        for (
-            let minute = 0;
-            minute < 60;
-            minute += 30
-        ) {
-
-            const value =
-                String(hour)
-                    .padStart(
-                        2,
-                        "0"
-                    ) +
-                ":" +
-                String(minute)
-                    .padStart(
-                        2,
-                        "0"
-                    );
-
-
-            let hour12 =
-                hour % 12;
-
-            if (
-                hour12 === 0
-            ) {
-                hour12 = 12;
-            }
-
-
-            const suffix =
-                hour < 12
-                    ? "AM"
-                    : "PM";
-
-
-            const label =
-                `${hour12}:${String(
-                    minute
-                ).padStart(
-                    2,
-                    "0"
-                )} ${suffix}`;
-
-
-            html += `
-                <option
-                    value="${value}"
-                    ${
-                        value ===
-                        selected
-                            ? "selected"
-                            : ""
-                    }
-                >
-                    ${label}
-                </option>
-            `;
-
-        }
-
-    }
-
-    return html;
-
-}
-
 
 
 /* =====================================================
@@ -1108,9 +693,7 @@ function renderRequests() {
         );
 
 
-    if (
-        !requests.length
-    ) {
+    if (!requests.length) {
 
         container.innerHTML = `
             <div class="admin-card">
@@ -1123,7 +706,6 @@ function renderRequests() {
         `;
 
         return;
-
     }
 
 
@@ -1138,37 +720,23 @@ function renderRequests() {
                     )
             )
             .join("");
-
 }
 
 
-
-/* =====================================================
-   REQUEST CARD
-===================================================== */
-
-function createRequest(
-    request
-) {
+function createRequest(request) {
 
     const status =
         String(
             request.status ||
             "PENDING"
-        )
-        .toLowerCase();
+        ).toLowerCase();
 
 
     return `
 
-        <article
-            class="admin-card"
-        >
+        <article class="admin-card">
 
-
-            <div
-                class="admin-card-top"
-            >
+            <div class="admin-card-top">
 
                 <h3>
                     ${escapeHtml(
@@ -1176,24 +744,18 @@ function createRequest(
                     )}
                 </h3>
 
-
                 <span
                     class="request-status ${status}"
                 >
                     ${escapeHtml(
-                        request.status ||
-                        "PENDING"
+                        request.status
                     )}
                 </span>
 
             </div>
 
 
-
-            <div
-                class="admin-info"
-            >
-
+            <div class="admin-info">
 
                 <div>
 
@@ -1210,7 +772,6 @@ function createRequest(
                 </div>
 
 
-
                 <div>
 
                     <span>
@@ -1219,14 +780,11 @@ function createRequest(
 
                     <strong>
                         ${escapeHtml(
-                            request.typeName ||
-                            request.type ||
-                            "UNKNOWN"
+                            request.typeName
                         )}
                     </strong>
 
                 </div>
-
 
 
                 <div>
@@ -1245,7 +803,6 @@ function createRequest(
                 </div>
 
 
-
                 <div>
 
                     <span>
@@ -1254,13 +811,11 @@ function createRequest(
 
                     <strong>
                         ${escapeHtml(
-                            request.time ||
-                            "N/A"
+                            request.time
                         )}
                     </strong>
 
                 </div>
-
 
 
                 <div>
@@ -1271,13 +826,11 @@ function createRequest(
 
                     <strong>
                         ${escapeHtml(
-                            request.period ||
-                            "N/A"
+                            request.period
                         )}
                     </strong>
 
                 </div>
-
 
 
                 <div>
@@ -1288,17 +841,15 @@ function createRequest(
 
                     <strong>
                         ${escapeHtml(
-                            formatDate(
+                            new Date(
                                 request.createdAt
-                            )
+                            ).toLocaleString()
                         )}
                     </strong>
 
                 </div>
 
-
             </div>
-
 
 
             <div
@@ -1310,69 +861,12 @@ function createRequest(
                 "
             >
 
-                ${
-                    escapeHtml(
-                        request.message ||
-                        "NO ADDITIONAL DETAILS."
-                    )
-                }
+                ${escapeHtml(
+                    request.message ||
+                    "NO ADDITIONAL DETAILS."
+                )}
 
             </div>
-
-
-
-            <!-- REQUEST TIME CONTROL -->
-
-            <div
-                style="
-                    border-top:1px solid #1e2a33;
-                    padding-top:15px;
-                    margin-bottom:18px;
-                "
-            >
-
-                <div
-                    style="
-                        color:#596b78;
-                        font-size:9px;
-                        letter-spacing:2px;
-                        margin-bottom:8px;
-                    "
-                >
-                    CHANGE REQUEST TIME
-                </div>
-
-
-                <div
-                    class="request-time-row"
-                >
-
-                    <select
-                        id="time-${escapeHtml(
-                            request.id
-                        )}"
-                    >
-
-                        ${createTimeOptions(
-                            request.time
-                        )}
-
-                    </select>
-
-
-                    <button
-                        class="approve-button"
-                        onclick="changeRequestTime('${escapeJs(
-                            request.id
-                        )}')"
-                    >
-                        UPDATE TIME
-                    </button>
-
-                </div>
-
-            </div>
-
 
 
             ${
@@ -1381,86 +875,77 @@ function createRequest(
 
                     ? `
 
-                        <textarea
-                            id="message-${escapeHtml(
+                    <textarea
+                        id="message-${escapeHtml(
+                            request.id
+                        )}"
+                        class="admin-message-input"
+                        rows="3"
+                        placeholder="Admin message..."
+                    ></textarea>
+
+
+                    <div class="admin-actions">
+
+                        <button
+                            class="approve-button"
+                            onclick="approveRequest('${escapeJs(
                                 request.id
-                            )}"
-                            class="admin-message-input"
-                            rows="3"
-                            placeholder="Admin message..."
-                        ></textarea>
-
-
-                        <div
-                            class="admin-actions"
+                            )}')"
                         >
-
-                            <button
-                                class="approve-button"
-                                onclick="approveRequest('${escapeJs(
-                                    request.id
-                                )}')"
-                            >
-                                APPROVE REQUEST
-                            </button>
+                            APPROVE REQUEST
+                        </button>
 
 
-                            <button
-                                class="reject-button"
-                                onclick="rejectRequest('${escapeJs(
-                                    request.id
-                                )}')"
-                            >
-                                REJECT REQUEST
-                            </button>
+                        <button
+                            class="reject-button"
+                            onclick="rejectRequest('${escapeJs(
+                                request.id
+                            )}')"
+                        >
+                            REJECT REQUEST
+                        </button>
 
-                        </div>
+                    </div>
 
                     `
 
                     : `
 
-                        <div
-                            style="
-                                color:#647582;
-                                font-size:12px;
-                            "
-                        >
+                    <div
+                        style="
+                            color:#647582;
+                            font-size:12px;
+                        "
+                    >
 
-                            ADMIN MESSAGE:
+                        ADMIN MESSAGE:
 
-                            ${escapeHtml(
-                                request.adminMessage ||
-                                "NONE"
-                            )}
+                        ${escapeHtml(
+                            request.adminMessage ||
+                            "NONE"
+                        )}
 
-                        </div>
+                    </div>
 
                     `
             }
 
-
         </article>
-
     `;
-
 }
-
 
 
 /* =====================================================
    APPROVE
 ===================================================== */
 
-async function approveRequest(
-    id
-) {
+async function approveRequest(id) {
 
     const input =
         document.getElementById(
             `message-${id}`
         );
-
 
     const message =
         input
@@ -1473,24 +958,19 @@ async function approveRequest(
         "approve",
         message
     );
-
 }
-
 
 
 /* =====================================================
    REJECT
 ===================================================== */
 
-async function rejectRequest(
-    id
-) {
+async function rejectRequest(id) {
 
     const input =
         document.getElementById(
             `message-${id}`
         );
-
 
     const message =
         input
@@ -1503,9 +983,7 @@ async function rejectRequest(
         "reject",
         message
     );
-
 }
-
 
 
 /* =====================================================
@@ -1522,11 +1000,8 @@ async function updateRequest(
 
         const response =
             await fetch(
-                `/api/requests/${encodeURIComponent(
-                    id
-                )}/${action}`,
+                `/api/requests/${id}/${action}`,
                 {
-
                     method:
                         "POST",
 
@@ -1539,7 +1014,6 @@ async function updateRequest(
                         JSON.stringify({
                             message
                         })
-
                 }
             );
 
@@ -1548,9 +1022,7 @@ async function updateRequest(
             await response.json();
 
 
-        if (
-            !response.ok
-        ) {
+        if (!response.ok) {
 
             showResult(
                 data.message ||
@@ -1559,7 +1031,6 @@ async function updateRequest(
             );
 
             return;
-
         }
 
 
@@ -1569,7 +1040,7 @@ async function updateRequest(
         );
 
 
-        await loadRequests();
+        loadRequests();
 
     } catch {
 
@@ -1577,331 +1048,32 @@ async function updateRequest(
             "SERVER CONNECTION ERROR.",
             true
         );
-
     }
-
 }
-
 
 
 /* =====================================================
-   CHANGE REQUEST TIME
+   SITE CONTROL
 ===================================================== */
 
-async function changeRequestTime(
-    id
-) {
-
-    const select =
-        document.getElementById(
-            `time-${id}`
-        );
-
-
-    if (!select) {
-        return;
-    }
+const SITE_STATUSES = [
+    "NORMAL",
+    "HIGH ALERT",
+    "CRITICAL",
+    "LOCKDOWN",
+    "EVACUATION",
+    "CLASS-D RIOT"
+];
 
 
-    const time =
-        select.value;
-
+async function loadSiteControls() {
 
     try {
 
         const response =
             await fetch(
-                `/api/requests/${encodeURIComponent(
-                    id
-                )}/time`,
-                {
-
-                    method:
-                        "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify({
-                            time
-                        })
-
-                }
+                "/api/sites/control"
             );
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !response.ok
-        ) {
-
-            showResult(
-                data.message ||
-                "TIME UPDATE FAILED.",
-                true
-            );
-
-            return;
-
-        }
-
-
-        showResult(
-            `REQUEST TIME UPDATED TO ${formatTime(
-                time
-            )}.`,
-            false
-        );
-
-
-        await loadRequests();
-
-    } catch {
-
-        showResult(
-            "SERVER CONNECTION ERROR.",
-            true
-        );
-
-    }
-
-}
-
-
-
-/* =====================================================
-   SITE SECURITY
-===================================================== */
-
-async function loadSiteSecurity() {
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/sites"
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !data.success ||
-            !data.sites
-        ) {
-
-            return;
-
-        }
-
-
-        const site =
-            document.getElementById(
-                "controlSite"
-            ).value;
-
-
-        updateSiteDisplay(
-            data.sites,
-            site
-        );
-
-
-    } catch {
-
-        showResult(
-            "SITE SECURITY DATABASE CONNECTION ERROR.",
-            true
-        );
-
-    }
-
-}
-
-
-
-function updateSiteDisplay(
-    sites,
-    site
-) {
-
-    const current =
-        sites[site];
-
-
-    if (!current) {
-        return;
-    }
-
-
-    document
-        .getElementById(
-            "currentSiteStatus"
-        )
-        .textContent =
-            current.status ||
-            "NORMAL";
-
-
-    document
-        .getElementById(
-            "controlStatus"
-        )
-        .value =
-            current.status ||
-            "NORMAL";
-
-
-    document
-        .getElementById(
-            "siteControlMessage"
-        )
-        .value =
-            current.message ||
-            "";
-
-}
-
-
-
-document
-    .getElementById(
-        "controlSite"
-    )
-    .addEventListener(
-        "change",
-        loadSiteSecurity
-    );
-
-
-
-async function updateSiteSecurity() {
-
-    const site =
-        document.getElementById(
-            "controlSite"
-        ).value;
-
-
-    const status =
-        document.getElementById(
-            "controlStatus"
-        ).value;
-
-
-    const message =
-        document.getElementById(
-            "siteControlMessage"
-        ).value.trim();
-
-
-    try {
-
-        const response =
-            await fetch(
-                `/api/sites/${encodeURIComponent(
-                    site
-                )}`,
-                {
-
-                    method:
-                        "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify({
-                            status,
-                            message
-                        })
-
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !response.ok
-        ) {
-
-            showResult(
-                data.message ||
-                "SITE STATUS UPDATE FAILED.",
-                true
-            );
-
-            return;
-
-        }
-
-
-        document
-            .getElementById(
-                "currentSiteStatus"
-            )
-            .textContent =
-                status;
-
-
-        showResult(
-            `${site} STATUS UPDATED TO ${status}.`,
-            false
-        );
-
-
-        loadSiteSecurity();
-
-    } catch {
-
-        showResult(
-            "SERVER CONNECTION ERROR.",
-            true
-        );
-
-    }
-
-}
-
-
-
-/* =====================================================
-   PERSONNEL
-===================================================== */
-
-async function loadPersonnel() {
-
-    const container =
-        document.getElementById(
-            "personnelContainer"
-        );
-
-
-    if (!container) {
-        return;
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/personnel"
-            );
-
 
         const data =
             await response.json();
@@ -1912,271 +1084,196 @@ async function loadPersonnel() {
         ) {
 
             return;
-
         }
 
 
-        if (
-            !Array.isArray(
-                data.personnel
-            ) ||
-            !data.personnel.length
-        ) {
-
-            container.innerHTML = `
-                <div
-                    style="
-                        color:#647582;
-                        font-size:12px;
-                        margin-top:20px;
-                    "
-                >
-                    NO PERSONNEL RECORDS.
-                </div>
-            `;
-
-            return;
-
-        }
-
-
-        container.innerHTML =
-            data.personnel
-                .slice()
-                .reverse()
-                .map(
-                    person =>
-                        createPersonnelCard(
-                            person
-                        )
-                )
-                .join("");
-
+        renderSiteControls(
+            data.sites
+        );
 
     } catch {
 
-        container.innerHTML = `
-            <div
-                style="
-                    color:#d98989;
-                    font-size:12px;
-                    margin-top:20px;
-                "
-            >
-                PERSONNEL DATABASE CONNECTION ERROR.
-            </div>
-        `;
-
+        showResult(
+            "Unable to load site control.",
+            true
+        );
     }
-
 }
 
 
-
-function createPersonnelCard(
-    person
+function renderSiteControls(
+    sites
 ) {
+
+    const container =
+        document.getElementById(
+            "siteControlGrid"
+        );
+
+
+    container.innerHTML =
+        Object.entries(
+            sites
+        )
+            .map(
+                ([site, control]) =>
+                    createSiteControl(
+                        site,
+                        control
+                    )
+            )
+            .join("");
+}
+
+
+function createSiteControl(
+    site,
+    control
+) {
+
+    const options =
+        SITE_STATUSES
+            .map(
+                status =>
+                    `
+                    <option
+                        value="${escapeHtml(
+                            status
+                        )}"
+                        ${
+                            status ===
+                            control.status
+                                ? "selected"
+                                : ""
+                        }
+                    >
+                        ${escapeHtml(
+                            status
+                        )}
+                    </option>
+                    `
+            )
+            .join("");
+
 
     return `
 
         <div
-            class="personnel-record"
+            class="site-control-card"
+            data-site="${escapeHtml(
+                site
+            )}"
         >
+
+            <h3>
+                ${escapeHtml(
+                    site
+                )}
+            </h3>
 
 
             <div
-                class="personnel-record-top"
+                class="site-status-display"
             >
+
+                <span>
+                    CURRENT STATUS
+                </span>
 
                 <strong>
                     ${escapeHtml(
-                        person.name
+                        control.status ||
+                        "NORMAL"
                     )}
                 </strong>
 
-
-                <span
-                    class="personnel-record-id"
-                >
-                    ${escapeHtml(
-                        person.id
-                    )}
-                </span>
-
             </div>
 
 
-
-            <div
-                class="admin-info"
+            <select
+                class="site-status-select"
             >
+                ${options}
+            </select>
 
 
-                <div>
-
-                    <span>
-                        RANK
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            person.rank
-                        )}
-                    </strong>
-
-                </div>
-
-
-
-                <div>
-
-                    <span>
-                        DEPARTMENT
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            person.department
-                        )}
-                    </strong>
-
-                </div>
-
-
-
-                <div>
-
-                    <span>
-                        SITE
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            person.site
-                        )}
-                    </strong>
-
-                </div>
-
-
-
-                <div>
-
-                    <span>
-                        CLEARANCE
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            person.clearance
-                        )}
-                    </strong>
-
-                </div>
-
-
-
-                <div>
-
-                    <span>
-                        STATUS
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            person.status
-                        )}
-                    </strong>
-
-                </div>
-
-
-            </div>
-
+            <textarea
+                class="site-control-message"
+                placeholder="Optional facility message..."
+            >${escapeHtml(
+                control.message ||
+                ""
+            )}</textarea>
 
 
             <button
-                class="reject-button"
-                onclick="deletePersonnel('${escapeJs(
-                    person.id
+                class="site-control-button"
+                onclick="updateSiteControl('${escapeJs(
+                    site
                 )}')"
             >
-                REMOVE PERSONNEL
+                UPDATE SITE STATUS
             </button>
 
 
+            <div
+                class="site-control-updated"
+            >
+                ${
+                    control.updatedAt
+                        ? "LAST UPDATED: " +
+                          new Date(
+                              control.updatedAt
+                          ).toLocaleString()
+                        : "NO STATUS UPDATE"
+                }
+            </div>
+
         </div>
-
     `;
-
 }
 
 
+async function updateSiteControl(
+    site
+) {
 
-/* =====================================================
-   ADD PERSONNEL
-===================================================== */
-
-async function addPersonnel() {
-
-    const name =
-        document.getElementById(
-            "personName"
-        ).value.trim();
-
-
-    const rank =
-        document.getElementById(
-            "personRank"
-        ).value.trim();
+    const card =
+        document.querySelector(
+            `.site-control-card[data-site="${CSS.escape(
+                site
+            )}"]`
+        );
 
 
-    const department =
-        document.getElementById(
-            "personDepartment"
-        ).value;
-
-
-    const site =
-        document.getElementById(
-            "personSite"
-        ).value;
-
-
-    const clearance =
-        document.getElementById(
-            "personClearance"
-        ).value;
+    if (!card) {
+        return;
+    }
 
 
     const status =
-        document.getElementById(
-            "personStatus"
-        ).value;
+        card
+            .querySelector(
+                ".site-status-select"
+            )
+            .value;
 
 
-    if (
-        !name ||
-        !rank
-    ) {
-
-        showResult(
-            "NAME AND RANK ARE REQUIRED.",
-            true
-        );
-
-        return;
-
-    }
+    const message =
+        card
+            .querySelector(
+                ".site-control-message"
+            )
+            .value
+            .trim();
 
 
     try {
 
         const response =
             await fetch(
-                "/api/personnel",
+                "/api/sites/control",
                 {
-
                     method:
                         "POST",
 
@@ -2187,14 +1284,13 @@ async function addPersonnel() {
 
                     body:
                         JSON.stringify({
-                            name,
-                            rank,
-                            department,
+
                             site,
-                            clearance,
-                            status
+
+                            status,
+
+                            message
                         })
-
                 }
             );
 
@@ -2204,41 +1300,27 @@ async function addPersonnel() {
 
 
         if (
-            !response.ok
+            !response.ok ||
+            !data.success
         ) {
 
             showResult(
                 data.message ||
-                "PERSONNEL CREATION FAILED.",
+                "SITE CONTROL UPDATE FAILED.",
                 true
             );
 
             return;
-
         }
 
 
-        document
-            .getElementById(
-                "personName"
-            )
-            .value = "";
-
-
-        document
-            .getElementById(
-                "personRank"
-            )
-            .value = "";
-
-
         showResult(
-            "PERSONNEL RECORD CREATED.",
+            `${site} STATUS UPDATED TO ${status}.`,
             false
         );
 
 
-        loadPersonnel();
+        loadSiteControls();
 
     } catch {
 
@@ -2246,84 +1328,8 @@ async function addPersonnel() {
             "SERVER CONNECTION ERROR.",
             true
         );
-
     }
-
 }
-
-
-
-/* =====================================================
-   DELETE PERSONNEL
-===================================================== */
-
-async function deletePersonnel(
-    id
-) {
-
-    if (
-        !confirm(
-            "REMOVE THIS PERSONNEL RECORD?"
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                `/api/personnel/${encodeURIComponent(
-                    id
-                )}`,
-                {
-                    method:
-                        "DELETE"
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !response.ok
-        ) {
-
-            showResult(
-                data.message ||
-                "PERSONNEL REMOVAL FAILED.",
-                true
-            );
-
-            return;
-
-        }
-
-
-        showResult(
-            "PERSONNEL RECORD REMOVED.",
-            false
-        );
-
-
-        loadPersonnel();
-
-    } catch {
-
-        showResult(
-            "SERVER CONNECTION ERROR.",
-            true
-        );
-
-    }
-
-}
-
 
 
 /* =====================================================
@@ -2362,176 +1368,57 @@ function showResult(
         error
             ? "#d98989"
             : "#8dccaa";
-
 }
 
 
-
 /* =====================================================
-   FORMAT TIME
+   ESCAPE
 ===================================================== */
 
-function formatTime(
-    value
-) {
+function escapeHtml(value) {
 
-    if (!value) {
-        return "N/A";
-    }
-
-
-    const parts =
-        String(value).split(":");
-
-
-    if (
-        parts.length !== 2
-    ) {
-
-        return value;
-
-    }
-
-
-    let hour =
-        Number(parts[0]);
-
-
-    const minute =
-        parts[1];
-
-
-    const suffix =
-        hour < 12
-            ? "AM"
-            : "PM";
-
-
-    hour =
-        hour % 12;
-
-
-    if (
-        hour === 0
-    ) {
-
-        hour = 12;
-
-    }
-
-
-    return `${hour}:${minute} ${suffix}`;
-
-}
-
-
-
-/* =====================================================
-   FORMAT DATE
-===================================================== */
-
-function formatDate(
-    value
-) {
-
-    if (!value) {
-        return "N/A";
-    }
-
-
-    const date =
-        new Date(value);
-
-
-    if (
-        Number.isNaN(
-            date.getTime()
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
         )
-    ) {
-
-        return "N/A";
-
-    }
-
-
-    return date.toLocaleString();
-
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 }
 
 
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeHtml(
-    value
-) {
+function escapeJs(value) {
 
     return String(
         value ?? ""
     )
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    )
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-    .replace(
-        /'/g,
-        "&#039;"
-    );
-
-}
-
-
-
-/* =====================================================
-   ESCAPE JAVASCRIPT
-===================================================== */
-
-function escapeJs(
-    value
-) {
-
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /\\/g,
-        "\\\\"
-    )
-    .replace(
-        /'/g,
-        "\\'"
-    )
-    .replace(
-        /"/g,
-        '\\"'
-    )
-    .replace(
-        /\r/g,
-        "\\r"
-    )
-    .replace(
-        /\n/g,
-        "\\n"
-    );
-
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+        .replace(
+            /'/g,
+            "\\'"
+        );
 }
 
 </script>
-
 
 </body>
 </html>

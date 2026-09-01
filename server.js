@@ -10,10 +10,6 @@ const HOST = "0.0.0.0";
 const PUBLIC_DIR = path.join(__dirname, "public");
 const DATA_FILE = path.join(__dirname, "data.json");
 
-/* =====================================================
-   SCP ARCHITECT X API KEY
-===================================================== */
-
 const ROBLOX_API_KEY =
     process.env.ROBLOX_API_KEY ||
     "SCPARCHITECTX-64-SECRET-2026";
@@ -26,10 +22,34 @@ app.use(express.urlencoded({ extended: true }));
    DATABASE
 ===================================================== */
 
+function defaultSites() {
+    return {
+        "SITE-19": {
+            status: "NORMAL",
+            message: "",
+            updatedAt: null
+        },
+
+        "SITE-51": {
+            status: "NORMAL",
+            message: "",
+            updatedAt: null
+        },
+
+        "SITE-64": {
+            status: "NORMAL",
+            message: "",
+            updatedAt: null
+        }
+    };
+}
+
+
 function emptyDatabase() {
     return {
         requests: [],
-        incidents: []
+        incidents: [],
+        sites: defaultSites()
     };
 }
 
@@ -65,6 +85,21 @@ function readDatabase() {
 
         if (!Array.isArray(data.incidents)) {
             data.incidents = [];
+        }
+
+        if (!data.sites) {
+            data.sites = defaultSites();
+        }
+
+        const defaults = defaultSites();
+
+        for (const site of Object.keys(defaults)) {
+
+            if (!data.sites[site]) {
+
+                data.sites[site] =
+                    defaults[site];
+            }
         }
 
         return data;
@@ -153,7 +188,6 @@ function getPeriod(time) {
         hour >= 6 &&
         hour < 18
     ) {
-
         return "DAY";
     }
 
@@ -221,7 +255,7 @@ app.get("/term", (req, res) => {
 
 
 /* =====================================================
-   REQUEST SYSTEM
+   REQUESTS
 ===================================================== */
 
 app.get(
@@ -358,49 +392,6 @@ app.post(
                 database
             );
 
-            console.log("");
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "        NEW SITE-64 REQUEST"
-            );
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "REQUEST ID :",
-                request.id
-            );
-            console.log(
-                "NAME       :",
-                request.name
-            );
-            console.log(
-                "TYPE       :",
-                request.typeName
-            );
-            console.log(
-                "SCP        :",
-                request.scp || "N/A"
-            );
-            console.log(
-                "TIME       :",
-                request.time
-            );
-            console.log(
-                "PERIOD     :",
-                request.period
-            );
-            console.log(
-                "STATUS     :",
-                request.status
-            );
-            console.log(
-                "========================================"
-            );
-            console.log("");
-
             res.status(201).json({
                 success: true,
                 request
@@ -424,7 +415,7 @@ app.post(
 
 
 /* =====================================================
-   APPROVE REQUEST
+   APPROVE
 ===================================================== */
 
 app.post(
@@ -499,7 +490,7 @@ app.post(
 
 
 /* =====================================================
-   REJECT REQUEST
+   REJECT
 ===================================================== */
 
 app.post(
@@ -609,9 +600,203 @@ app.post(
 
 
 /* =====================================================
-   SCP ARCHITECT X
-   ROBLOX LIVE INCIDENT SYSTEM
+   SITE CONTROL
 ===================================================== */
+
+const VALID_SITES = [
+    "SITE-19",
+    "SITE-51",
+    "SITE-64"
+];
+
+
+const VALID_SITE_STATUSES = [
+    "NORMAL",
+    "HIGH ALERT",
+    "CRITICAL",
+    "LOCKDOWN",
+    "EVACUATION",
+    "CLASS-D RIOT"
+];
+
+
+/* =====================================================
+   GET SITE CONTROL
+===================================================== */
+
+app.get(
+    "/api/sites/control",
+    (req, res) => {
+
+        const database =
+            readDatabase();
+
+        res.json({
+
+            success:
+                true,
+
+            sites:
+                database.sites
+        });
+    }
+);
+
+
+/* =====================================================
+   CHANGE SITE STATUS
+===================================================== */
+
+app.post(
+    "/api/sites/control",
+    (req, res) => {
+
+        try {
+
+            const {
+                site,
+                status,
+                message
+            } = req.body;
+
+
+            const normalizedSite =
+                String(
+                    site || ""
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            const normalizedStatus =
+                String(
+                    status || ""
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            if (
+                !VALID_SITES.includes(
+                    normalizedSite
+                )
+            ) {
+
+                return res.status(400).json({
+
+                    success:
+                        false,
+
+                    message:
+                        "INVALID SITE."
+                });
+            }
+
+
+            if (
+                !VALID_SITE_STATUSES.includes(
+                    normalizedStatus
+                )
+            ) {
+
+                return res.status(400).json({
+
+                    success:
+                        false,
+
+                    message:
+                        "INVALID SITE STATUS."
+                });
+            }
+
+
+            const database =
+                readDatabase();
+
+
+            database.sites[
+                normalizedSite
+            ] = {
+
+                status:
+                    normalizedStatus,
+
+                message:
+                    message
+                        ? String(message).trim()
+                        : "",
+
+                updatedAt:
+                    new Date()
+                        .toISOString()
+            };
+
+
+            saveDatabase(
+                database
+            );
+
+
+            console.log("");
+            console.log(
+                "========================================"
+            );
+            console.log(
+                "          SITE CONTROL UPDATE"
+            );
+            console.log(
+                "========================================"
+            );
+            console.log(
+                "SITE   :",
+                normalizedSite
+            );
+            console.log(
+                "STATUS :",
+                normalizedStatus
+            );
+            console.log(
+                "MESSAGE:",
+                message || "NONE"
+            );
+            console.log(
+                "========================================"
+            );
+            console.log("");
+
+
+            res.json({
+
+                success:
+                    true,
+
+                site:
+                    normalizedSite,
+
+                control:
+                    database.sites[
+                        normalizedSite
+                    ]
+            });
+
+        } catch (error) {
+
+            console.error(
+                "SITE CONTROL ERROR:",
+                error
+            );
+
+            res.status(500).json({
+
+                success:
+                    false,
+
+                message:
+                    "SITE CONTROL SERVER ERROR."
+            });
+        }
+    }
+);
 
 
 /* =====================================================
@@ -630,7 +815,8 @@ function checkRobloxKey(req, res) {
 
         res.status(401).json({
 
-            success: false,
+            success:
+                false,
 
             message:
                 "UNAUTHORIZED ROBLOX REQUEST."
@@ -644,7 +830,7 @@ function checkRobloxKey(req, res) {
 
 
 /* =====================================================
-   GET LIVE INCIDENTS
+   LIVE INCIDENTS
 ===================================================== */
 
 app.get(
@@ -663,7 +849,8 @@ app.get(
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
             incidents:
                 activeIncidents
@@ -673,7 +860,7 @@ app.get(
 
 
 /* =====================================================
-   ROBLOX SERVER STATUS
+   ROBLOX GAME STATUS
 ===================================================== */
 
 app.post(
@@ -686,7 +873,6 @@ app.post(
                 res
             )
         ) {
-
             return;
         }
 
@@ -722,7 +908,8 @@ app.post(
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
             message:
                 "GAME STATUS UPDATED."
@@ -730,10 +917,6 @@ app.post(
     }
 );
 
-
-/* =====================================================
-   GET ROBLOX SERVER STATUS
-===================================================== */
 
 app.get(
     "/api/game/status",
@@ -763,7 +946,8 @@ app.get(
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
             status
         });
@@ -772,7 +956,7 @@ app.get(
 
 
 /* =====================================================
-   CREATE / UPDATE LIVE INCIDENT
+   CREATE / UPDATE INCIDENT
 ===================================================== */
 
 app.post(
@@ -785,28 +969,19 @@ app.post(
                 res
             )
         ) {
-
             return;
         }
 
         try {
 
             const {
-
                 event,
-
                 site,
-
                 status,
-
                 title,
-
                 description,
-
                 serverId,
-
                 playerCount
-
             } = req.body;
 
 
@@ -828,9 +1003,7 @@ app.post(
 
 
             const normalizedEvent =
-                String(
-                    event
-                )
+                String(event)
                     .trim()
                     .toUpperCase();
 
@@ -856,10 +1029,6 @@ app.post(
                 );
 
 
-            /* =================================================
-               RESOLVE INCIDENT
-            ================================================= */
-
             if (
                 String(status)
                     .toUpperCase() ===
@@ -878,12 +1047,6 @@ app.post(
                     saveDatabase(
                         database
                     );
-
-                    console.log(
-                        "[SCP ARCHITECT X]",
-                        normalizedEvent,
-                        "RESOLVED"
-                    );
                 }
 
                 return res.json({
@@ -900,10 +1063,6 @@ app.post(
                 });
             }
 
-
-            /* =================================================
-               CREATE INCIDENT
-            ================================================= */
 
             if (!incident) {
 
@@ -975,7 +1134,6 @@ app.post(
                     title !==
                     undefined
                 ) {
-
                     incident.title =
                         title;
                 }
@@ -984,7 +1142,6 @@ app.post(
                     description !==
                     undefined
                 ) {
-
                     incident.description =
                         description;
                 }
@@ -993,7 +1150,6 @@ app.post(
                     serverId !==
                     undefined
                 ) {
-
                     incident.serverId =
                         serverId;
                 }
@@ -1002,7 +1158,6 @@ app.post(
                     playerCount !==
                     undefined
                 ) {
-
                     incident.playerCount =
                         Number(
                             playerCount
@@ -1018,42 +1173,6 @@ app.post(
             saveDatabase(
                 database
             );
-
-
-            console.log("");
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "      SCP ARCHITECT X // INCIDENT"
-            );
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "EVENT   :",
-                incident.event
-            );
-            console.log(
-                "SITE    :",
-                incident.site
-            );
-            console.log(
-                "STATUS  :",
-                incident.status
-            );
-            console.log(
-                "PLAYERS :",
-                incident.playerCount
-            );
-            console.log(
-                "SERVER  :",
-                incident.serverId
-            );
-            console.log(
-                "========================================"
-            );
-            console.log("");
 
 
             res.json({
@@ -1163,7 +1282,7 @@ app.get(
 
 
 /* =====================================================
-   TERMINAL API
+   TERMINAL
 ===================================================== */
 
 app.post(
@@ -1185,8 +1304,7 @@ app.post(
         if (!command) {
 
             return res.json({
-                output:
-                    ""
+                output: ""
             });
         }
 
@@ -1220,8 +1338,8 @@ help       Show available commands
 status     Show system status
 requests   Show request statistics
 incidents  Show live incidents
+sites      Show site status
 game       Show SCP Architect X status
-sites      Show registered sites
 about      Show SITE-64 information
 clear      Clear terminal`
             });
@@ -1345,9 +1463,34 @@ PLAYERS    : ${incident.playerCount}`
 
                 output:
 `LIVE INCIDENTS
-==============================
 
 ${output}`
+            });
+        }
+
+
+        if (
+            command ===
+            "sites"
+        ) {
+
+            const siteLines =
+                VALID_SITES
+                    .map(site => {
+
+                        const control =
+                            database.sites[site];
+
+                        return `${site.padEnd(10)} | ${control.status}`;
+                    })
+                    .join("\n");
+
+            return res.json({
+
+                output:
+`SCP FOUNDATION SITES
+==============================
+${siteLines}`
             });
         }
 
@@ -1367,7 +1510,10 @@ ${output}`
                         "SCP Architect X",
 
                     players:
-                        0
+                        0,
+
+                    serverId:
+                        ""
                 };
 
 
@@ -1378,26 +1524,7 @@ ${output}`
 ==============================
 STATUS       : ${game.online ? "ONLINE" : "OFFLINE"}
 PLAYERS      : ${game.players}
-SERVER ID    : ${game.serverId || "N/A"}
-LAST UPDATE  : ${game.updatedAt || "N/A"}`
-            });
-        }
-
-
-        if (
-            command ===
-            "sites"
-        ) {
-
-            return res.json({
-
-                output:
-`SCP FOUNDATION SITES
-==============================
-SITE-19    | ACTIVE
-SITE-51    | ACTIVE
-SITE-64    | ACTIVE
-SITE-██    | CLASSIFIED`
+SERVER ID    : ${game.serverId || "N/A"}`
             });
         }
 
@@ -1415,7 +1542,6 @@ SITE-64 ADMINISTRATION SYSTEM
 
 CLASSIFICATION : O5
 FACILITY        : SITE-64
-STATUS          : OPERATIONAL
 GAME            : SCP Architect X
 
 Unauthorized access is prohibited.`
@@ -1454,7 +1580,7 @@ app.use(
 
 
 /* =====================================================
-   DATABASE INITIALIZATION
+   DATABASE INIT
 ===================================================== */
 
 if (
@@ -1477,56 +1603,46 @@ app.listen(
     () => {
 
         console.log("");
-
         console.log(
             "========================================"
         );
-
         console.log(
             "     SECURE CONTAIN PROTECT // SITE-64"
         );
-
         console.log(
             "========================================"
         );
-
         console.log(
             "SERVER : ONLINE"
         );
-
         console.log(
             "PORT   :",
             PORT
         );
-
         console.log(
             "PUBLIC : /"
         );
-
         console.log(
             "ADMIN  : /admin"
         );
-
         console.log(
             "SITES  : /sites"
         );
-
         console.log(
             "TERM   : /term"
         );
-
         console.log(
             "ROBLOX : /api/game/incident"
         );
-
         console.log(
             "LIVE   : /api/game/incidents"
         );
-
+        console.log(
+            "CONTROL: /api/sites/control"
+        );
         console.log(
             "========================================"
         );
-
         console.log("");
     }
 );
