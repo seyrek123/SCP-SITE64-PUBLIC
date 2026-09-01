@@ -1,2265 +1,1898 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SCP FOUNDATION | ADMINISTRATION</title>
+<title>O5 COUNCIL // ADMINISTRATION</title>
 
 <style>
 
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-:root{
-    --bg:#05070a;
-    --panel:#0b1016;
-    --panel2:#101720;
-    --panel3:#080c11;
-
-    --border:#202a35;
-    --border2:#2c3946;
-
-    --text:#dce3ea;
-    --muted:#788593;
-    --muted2:#56616d;
-
-    --blue:#4ca3ff;
-    --blue2:#77bdff;
-
-    --green:#38d996;
-    --yellow:#f0c75e;
-    --red:#ff4055;
-    --orange:#ff914d;
+:root {
+    --bg: #030405;
+    --panel: #080b0f;
+    --panel2: #0b0f14;
+    --line: rgba(255,255,255,.08);
+    --text: #e7eaed;
+    --muted: #68717a;
+    --red: #c80025;
+    --red2: #ff1742;
+    --green: #68b47f;
+    --yellow: #c7a347;
+    --blue: #4e9cff;
 }
 
+body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Courier New", monospace;
+    overflow-x: hidden;
+}
 
 /* =====================================================
-   BODY
+   BACKGROUND
 ===================================================== */
 
-html{
-    scroll-behavior:smooth;
-}
-
-body{
-
-    background:
-        radial-gradient(
-            circle at 50% -20%,
-            rgba(76,163,255,.12),
-            transparent 42%
-        ),
-        radial-gradient(
-            circle at 100% 100%,
-            rgba(40,90,130,.05),
-            transparent 40%
-        ),
-        linear-gradient(
-            135deg,
-            #040608,
-            #090d12 50%,
-            #05070a
-        );
-
-    color:var(--text);
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    min-height:100vh;
-
-    overflow-x:hidden;
-}
-
-
-/* =====================================================
-   CRT OVERLAY
-===================================================== */
-
-body::before{
-
-    content:"";
-
-    position:fixed;
-
-    inset:0;
-
-    pointer-events:none;
-
-    background:
-        repeating-linear-gradient(
-            to bottom,
-            rgba(255,255,255,.018) 0px,
-            rgba(255,255,255,.018) 1px,
-            transparent 1px,
-            transparent 4px
-        );
-
-    opacity:.32;
-
-    z-index:1000;
-}
-
-
-body::after{
-
-    content:"";
-
-    position:fixed;
-
-    inset:0;
-
-    pointer-events:none;
-
-    background:
-        radial-gradient(
-            ellipse at center,
-            transparent 38%,
-            rgba(0,0,0,.64) 100%
-        );
-
-    z-index:999;
-}
-
-
-/* =====================================================
-   TOPBAR
-===================================================== */
-
-.topbar{
-
-    height:76px;
-
-    border-bottom:1px solid var(--border);
-
-    background:
-        rgba(6,9,13,.92);
-
-    backdrop-filter:
-        blur(18px);
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    padding:
-        0 34px;
-
-    position:sticky;
-
-    top:0;
-
-    z-index:100;
-
-    transition:
-        border-color .35s,
-        box-shadow .35s;
-}
-
-
-.brand{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:16px;
-}
-
-
-.logo{
-
-    width:42px;
-    height:42px;
-
-    border:1px solid #354250;
-
-    display:grid;
-
-    place-items:center;
-
-    font-weight:bold;
-
-    font-size:12px;
-
-    color:#fff;
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -3;
 
     background:
         linear-gradient(
-            135deg,
-            #16202b,
-            #080b0f
+            rgba(255,255,255,.012) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.012) 1px,
+            transparent 1px
         );
+
+    background-size: 35px 35px;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -2;
+
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(200,0,37,.09),
+            transparent 35%
+        );
+}
+
+/* =====================================================
+   SCAN
+===================================================== */
+
+.scanline {
+    position: fixed;
+    left: 0;
+    top: -4px;
+
+    width: 100%;
+    height: 2px;
+
+    background: rgba(255,23,66,.65);
+
+    box-shadow:
+        0 0 15px rgba(255,23,66,.6);
+
+    pointer-events: none;
+    z-index: 9999;
+
+    animation:
+        scan 7s linear infinite;
+}
+
+@keyframes scan {
+
+    from {
+        top: -5px;
+    }
+
+    to {
+        top: 105%;
+    }
+
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.topbar {
+
+    position: sticky;
+    top: 0;
+
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 35px;
+
+    background:
+        rgba(3,4,5,.91);
+
+    border-bottom:
+        1px solid var(--line);
+
+    backdrop-filter: blur(15px);
+
+    z-index: 1000;
+}
+
+.brand {
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+}
+
+.brand-symbol {
+
+    width: 38px;
+    height: 38px;
+
+    display: grid;
+    place-items: center;
+
+    border:
+        1px solid var(--red);
+
+    color:
+        var(--red2);
+
+    font-size: 18px;
 
     box-shadow:
         0 0 20px
-        rgba(76,163,255,.08);
+        rgba(200,0,37,.2);
 
-    position:relative;
-
-    overflow:hidden;
 }
 
+.brand-title {
 
-.logo::after{
+    font-size: 13px;
+    letter-spacing: 3px;
+    font-weight: bold;
 
-    content:"";
+}
 
-    position:absolute;
+.brand-sub {
 
-    width:100%;
+    margin-top: 4px;
 
-    height:2px;
+    color: #4e565e;
 
-    left:0;
+    font-size: 8px;
+    letter-spacing: 2px;
 
-    top:-2px;
+}
 
-    background:var(--blue);
+.top-status {
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--green);
+
+    font-size: 9px;
+    letter-spacing: 2px;
+
+}
+
+.status-dot {
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--green);
 
     box-shadow:
-        0 0 10px var(--blue);
+        0 0 12px
+        rgba(104,180,127,.7);
 
     animation:
-        logoScan 3s linear infinite;
+        pulse 1.8s infinite;
+
 }
 
+@keyframes pulse {
 
-.brand h1{
+    0%,100% {
+        opacity: 1;
+    }
 
-    font-size:15px;
+    50% {
+        opacity: .3;
+    }
 
-    letter-spacing:3px;
 }
-
-
-.brand span{
-
-    display:block;
-
-    margin-top:4px;
-
-    font-size:10px;
-
-    color:var(--muted);
-
-    letter-spacing:1.5px;
-}
-
-
-.classification{
-
-    border:1px solid #52313a;
-
-    color:#ff6878;
-
-    padding:
-        8px 13px;
-
-    font-size:10px;
-
-    letter-spacing:2px;
-
-    background:
-        rgba(255,50,70,.045);
-
-    animation:
-        pulse 3s infinite;
-}
-
 
 /* =====================================================
    LAYOUT
 ===================================================== */
 
-.wrapper{
+.layout {
 
-    width:min(
-        1450px,
-        94%
-    );
+    display: flex;
 
-    margin:
-        30px auto 80px;
+    min-height:
+        calc(100vh - 72px);
+
 }
-
-
-.page-title{
-
-    margin-bottom:25px;
-
-    animation:
-        fadeUp .6s ease both;
-}
-
-
-.page-title .eyebrow{
-
-    color:var(--blue);
-
-    font-size:10px;
-
-    letter-spacing:3px;
-
-    margin-bottom:9px;
-}
-
-
-.page-title h2{
-
-    font-size:30px;
-
-    letter-spacing:3px;
-}
-
-
-.page-title p{
-
-    color:var(--muted);
-
-    margin-top:9px;
-
-    font-size:13px;
-}
-
 
 /* =====================================================
-   DASHBOARD
+   SIDEBAR
 ===================================================== */
 
-.dashboard{
+.sidebar {
 
-    display:grid;
+    width: 225px;
 
-    grid-template-columns:
-        repeat(4,1fr);
-
-    gap:14px;
-
-    margin-bottom:28px;
-}
-
-
-.stat{
-
-    position:relative;
-
-    padding:20px;
-
-    min-height:118px;
-
-    border:1px solid var(--border);
+    flex-shrink: 0;
 
     background:
-        linear-gradient(
-            145deg,
-            rgba(19,27,36,.92),
-            rgba(9,12,17,.92)
-        );
+        rgba(5,7,9,.8);
 
-    overflow:hidden;
+    border-right:
+        1px solid var(--line);
 
-    animation:
-        fadeUp .6s ease both;
+    padding: 25px 13px;
 
-    transition:
-        transform .3s,
-        border-color .3s,
-        box-shadow .3s;
+    position: sticky;
+    top: 72px;
+
+    height:
+        calc(100vh - 72px);
+
 }
 
+.sidebar-label {
 
-.stat:hover{
+    color: #3f464d;
 
-    transform:
-        translateY(-3px);
+    font-size: 8px;
+
+    letter-spacing: 3px;
+
+    padding:
+        0 13px 12px;
+
+}
+
+.sidebar button {
+
+    width: 100%;
+
+    background: transparent;
+
+    border: 1px solid transparent;
+
+    color: #69727a;
+
+    padding: 12px 13px;
+
+    text-align: left;
+
+    font-family: inherit;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
+    transition: .25s;
+
+}
+
+.sidebar button:hover {
+
+    color: #fff;
+
+    background:
+        rgba(255,255,255,.025);
+
+}
+
+.sidebar button.active {
+
+    color: #fff;
 
     border-color:
-        #304354;
-
-    box-shadow:
-        0 12px 35px
-        rgba(0,0,0,.35);
-}
-
-
-.stat::before{
-
-    content:"";
-
-    position:absolute;
-
-    left:0;
-
-    bottom:0;
-
-    width:100%;
-
-    height:2px;
+        rgba(200,0,37,.35);
 
     background:
-        linear-gradient(
-            90deg,
-            transparent,
-            var(--blue),
-            transparent
-        );
+        rgba(200,0,37,.055);
 
-    opacity:.5;
+    box-shadow:
+        inset 2px 0 0 var(--red);
+
 }
-
-
-.stat::after{
-
-    content:"";
-
-    position:absolute;
-
-    width:80px;
-    height:80px;
-
-    right:-35px;
-    top:-35px;
-
-    border:
-        1px solid
-        rgba(76,163,255,.13);
-
-    transform:
-        rotate(45deg);
-}
-
-
-.stat:nth-child(2){
-    animation-delay:.08s;
-}
-
-.stat:nth-child(3){
-    animation-delay:.16s;
-}
-
-.stat:nth-child(4){
-    animation-delay:.24s;
-}
-
-
-.stat-label{
-
-    color:var(--muted);
-
-    font-size:9px;
-
-    letter-spacing:2px;
-}
-
-
-.stat-value{
-
-    margin-top:10px;
-
-    font-size:27px;
-
-    font-weight:bold;
-
-    transition:
-        color .3s;
-}
-
-
-.stat-small{
-
-    margin-top:5px;
-
-    font-size:10px;
-
-    color:var(--muted);
-}
-
 
 /* =====================================================
-   SECTION
+   CONTENT
 ===================================================== */
 
-.section{
+.content {
 
-    border:1px solid var(--border);
-
-    background:
-        rgba(10,14,19,.94);
-
-    margin-bottom:22px;
-
-    box-shadow:
-        0 15px 50px
-        rgba(0,0,0,.25);
-
-    position:relative;
-
-    overflow:hidden;
-}
-
-
-.section::before{
-
-    content:"";
-
-    position:absolute;
-
-    top:0;
-    left:0;
-
-    width:100%;
-    height:1px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(76,163,255,.5),
-            transparent
-        );
-
-    opacity:.45;
-}
-
-
-.section-header{
-
-    min-height:62px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
+    flex: 1;
 
     padding:
-        0 20px;
+        38px;
 
-    border-bottom:
-        1px solid var(--border);
+    min-width: 0;
 
-    background:
-        linear-gradient(
-            90deg,
-            rgba(76,163,255,.06),
-            transparent
-        );
 }
 
+.page {
 
-.section-header h3{
+    display: none;
 
-    font-size:12px;
+    animation:
+        pageIn .45s ease;
 
-    letter-spacing:2px;
 }
 
+.page.active {
 
-.section-header span{
+    display: block;
 
-    color:var(--muted);
-
-    font-size:9px;
-
-    letter-spacing:1.5px;
 }
 
+@keyframes pageIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
 
 /* =====================================================
-   SITE CONTROL
+   PAGE TITLE
 ===================================================== */
 
-.site-grid{
+.page-heading {
 
-    display:grid;
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        flex-end;
+
+    gap: 20px;
+
+    margin-bottom: 30px;
+
+}
+
+.page-heading h1 {
+
+    font-size: 25px;
+
+    letter-spacing: 4px;
+
+}
+
+.page-heading p {
+
+    margin-top: 8px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+}
+
+.classification {
+
+    color: var(--red2);
+
+    font-size: 8px;
+
+    letter-spacing: 3px;
+
+}
+
+/* =====================================================
+   STAT GRID
+===================================================== */
+
+.stats {
+
+    display: grid;
 
     grid-template-columns:
-        repeat(3,1fr);
+        repeat(4, 1fr);
 
-    gap:15px;
+    gap: 12px;
 
-    padding:18px;
+    margin-bottom: 22px;
+
 }
 
+.stat {
 
-.site-card{
+    position: relative;
 
-    position:relative;
+    overflow: hidden;
 
-    border:1px solid var(--border);
+    padding: 23px;
+
+    background: var(--panel);
+
+    border:
+        1px solid var(--line);
+
+}
+
+.stat::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 1px;
 
     background:
-        linear-gradient(
-            145deg,
-            #111821,
-            #090d12
-        );
-
-    min-height:300px;
-
-    padding:20px;
-
-    cursor:pointer;
-
-    overflow:hidden;
-
-    transition:
-        transform .35s cubic-bezier(.22,.61,.36,1),
-        border-color .35s,
-        box-shadow .35s;
-
-    animation:
-        siteAppear .7s ease both;
-}
-
-
-.site-card:nth-child(2){
-    animation-delay:.12s;
-}
-
-.site-card:nth-child(3){
-    animation-delay:.24s;
-}
-
-
-.site-card:hover{
+        var(--red);
 
     transform:
-        translateY(-7px)
-        scale(1.008);
+        scaleX(0);
 
-    border-color:#3b5268;
+    transform-origin:
+        left;
 
-    box-shadow:
-        0 20px 45px
-        rgba(0,0,0,.55),
-        0 0 30px
-        rgba(76,163,255,.07);
+    transition: .35s;
+
 }
 
+.stat:hover::before {
 
-/* SCAN EFFECT */
+    transform:
+        scaleX(1);
 
-.site-card::after{
+}
 
-    content:"";
+.stat-label {
 
-    position:absolute;
+    color: #555e66;
 
-    left:0;
-    right:0;
+    font-size: 8px;
 
-    height:1px;
+    letter-spacing: 2px;
 
-    top:-1px;
+}
+
+.stat-value {
+
+    margin-top: 13px;
+
+    font-size: 25px;
+
+    letter-spacing: 2px;
+
+}
+
+.stat-value.green {
+
+    color: var(--green);
+
+}
+
+.stat-value.red {
+
+    color: var(--red2);
+
+}
+
+.stat-value.yellow {
+
+    color: var(--yellow);
+
+}
+
+/* =====================================================
+   GRID
+===================================================== */
+
+.grid-2 {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 18px;
+
+}
+
+.grid-3 {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 15px;
+
+}
+
+.panel {
+
+    background: var(--panel);
+
+    border:
+        1px solid var(--line);
+
+    padding: 25px;
+
+}
+
+.panel-title {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    padding-bottom: 17px;
+
+    margin-bottom: 18px;
+
+    border-bottom:
+        1px solid var(--line);
+
+}
+
+.panel-title h2 {
+
+    font-size: 11px;
+
+    letter-spacing: 2px;
+
+}
+
+.panel-title span {
+
+    color: #424950;
+
+    font-size: 8px;
+
+    letter-spacing: 1px;
+
+}
+
+/* =====================================================
+   SYSTEM LIST
+===================================================== */
+
+.system-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+
+    padding: 13px 0;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.035);
+
+}
+
+.system-row:last-child {
+
+    border-bottom: none;
+
+}
+
+.system-name {
+
+    color: #8b949c;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+
+}
+
+.system-state {
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+}
+
+.online {
+
+    color: var(--green);
+
+}
+
+.warning {
+
+    color: var(--yellow);
+
+}
+
+.danger {
+
+    color: var(--red2);
+
+}
+
+/* =====================================================
+   SITE CARDS
+===================================================== */
+
+.site-card {
+
+    background: var(--panel);
+
+    border:
+        1px solid var(--line);
+
+    padding: 22px;
+
+    cursor: pointer;
+
+    position: relative;
+
+    overflow: hidden;
+
+    transition: .3s;
+
+}
+
+.site-card:hover {
+
+    transform:
+        translateY(-4px);
+
+    border-color:
+        rgba(200,0,37,.35);
+
+    box-shadow:
+        0 18px 40px
+        rgba(0,0,0,.3);
+
+}
+
+.site-card::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: -100%;
+
+    top: 0;
+
+    width: 70%;
+
+    height: 100%;
 
     background:
         linear-gradient(
             90deg,
             transparent,
-            rgba(76,163,255,.75),
+            rgba(255,255,255,.035),
             transparent
         );
 
-    opacity:0;
+    transition: .5s;
 
-    pointer-events:none;
 }
 
+.site-card:hover::after {
 
-.site-card:hover::after{
+    left: 120%;
 
-    opacity:1;
-
-    animation:
-        cardScan 1.4s linear infinite;
 }
 
+.site-top {
 
-.site-card::before{
+    display: flex;
 
-    content:"";
+    justify-content:
+        space-between;
 
-    position:absolute;
+    align-items:
+        center;
 
-    left:0;
-    top:0;
-
-    width:3px;
-    height:100%;
-
-    background:var(--blue);
-
-    opacity:.85;
-
-    transition:
-        box-shadow .3s;
 }
 
+.site-id {
 
-.site-card:hover::before{
+    color: var(--red2);
 
-    box-shadow:
-        0 0 15px
-        var(--blue);
+    font-size: 18px;
+
+    letter-spacing: 2px;
+
 }
 
+.site-state {
 
-.site-card.lockdown::before{
+    font-size: 7px;
 
-    background:var(--red);
-
-    box-shadow:
-        0 0 15px
-        rgba(255,64,85,.5);
-}
-
-
-.site-card.offline::before{
-
-    background:#626b75;
-}
-
-
-.site-card.lockdown{
-
-    animation:
-        lockdownPulse 1.4s infinite;
-}
-
-
-/* =====================================================
-   SITE TOP
-===================================================== */
-
-.site-top{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    margin-bottom:18px;
-}
-
-
-.site-code{
-
-    font-size:21px;
-
-    font-weight:bold;
-
-    letter-spacing:2px;
-}
-
-
-.status{
-
-    font-size:9px;
-
-    letter-spacing:1.5px;
+    letter-spacing: 2px;
 
     padding:
-        6px 9px;
+        5px 8px;
 
     border:
         1px solid currentColor;
 
+}
+
+.site-state.active {
+
+    color: var(--green);
+
+}
+
+.site-state.lockdown {
+
+    color: var(--red2);
+
     animation:
-        statusPulse 2.8s infinite;
+        dangerPulse 1.2s infinite;
 
-    position:relative;
 }
 
+.site-state.offline {
 
-.status.active{
-    color:var(--green);
+    color: #59616a;
+
 }
 
-.status.lockdown{
-    color:var(--red);
+@keyframes dangerPulse {
+
+    50% {
+
+        opacity: .35;
+
+    }
+
 }
 
-.status.offline{
-    color:#87909a;
+.site-name {
+
+    margin-top: 14px;
+
+    font-size: 11px;
+
+    letter-spacing: 1px;
+
 }
 
+.site-meta {
 
-/* =====================================================
-   SITE INFO
-===================================================== */
-
-.site-name{
-
-    font-size:12px;
-
-    letter-spacing:1px;
-}
-
-
-.site-description{
-
-    color:var(--muted);
-
-    font-size:11px;
-
-    line-height:1.6;
-
-    margin-top:9px;
-
-    min-height:53px;
-}
-
-
-.site-data{
-
-    display:grid;
+    display: grid;
 
     grid-template-columns:
-        repeat(2,1fr);
+        1fr 1fr;
 
-    gap:8px;
+    gap: 10px;
 
-    margin-top:18px;
+    margin-top: 22px;
+
 }
 
+.meta {
 
-.data-box{
+    padding:
+        11px;
 
-    padding:10px;
+    background:
+        rgba(0,0,0,.22);
 
     border:
-        1px solid #1d2731;
+        1px solid
+        rgba(255,255,255,.04);
 
-    background:
-        rgba(8,12,17,.8);
-
-    transition:
-        border-color .25s,
-        background .25s,
-        transform .25s;
 }
 
+.meta span {
 
-.site-card:hover .data-box{
+    display: block;
 
-    border-color:#273746;
+    color: #4f575f;
 
-    background:#0b1016;
+    font-size: 7px;
+
+    letter-spacing: 1px;
+
 }
 
+.meta strong {
 
-.data-box span{
+    display: block;
 
-    display:block;
+    margin-top: 6px;
 
-    color:#687482;
+    font-size: 10px;
 
-    font-size:8px;
-
-    letter-spacing:1px;
 }
-
-
-.data-box strong{
-
-    display:block;
-
-    margin-top:5px;
-
-    font-size:12px;
-}
-
-
-.site-footer{
-
-    position:absolute;
-
-    left:20px;
-    right:20px;
-    bottom:15px;
-
-    display:flex;
-
-    justify-content:space-between;
-
-    font-size:8px;
-
-    color:#596572;
-
-    letter-spacing:1px;
-}
-
 
 /* =====================================================
-   DETAIL OVERLAY
+   SITE DETAIL
 ===================================================== */
 
-.detail-backdrop{
+.detail-overlay {
 
-    position:fixed;
+    position: fixed;
 
-    inset:0;
+    inset: 0;
 
     background:
-        rgba(0,0,0,.55);
+        rgba(0,0,0,.7);
 
     backdrop-filter:
-        blur(3px);
+        blur(5px);
 
-    z-index:450;
+    opacity: 0;
 
-    opacity:0;
+    pointer-events: none;
 
-    pointer-events:none;
+    transition: .3s;
 
-    transition:
-        opacity .35s;
+    z-index: 3000;
+
 }
 
+.detail-overlay.open {
 
-.detail-backdrop.open{
+    opacity: 1;
 
-    opacity:1;
+    pointer-events:
+        auto;
 
-    pointer-events:auto;
 }
 
+.detail-panel {
 
-.site-detail{
+    position: absolute;
 
-    position:fixed;
+    right: 0;
+    top: 0;
 
-    right:0;
-    top:0;
+    height: 100%;
 
-    width:min(
-        500px,
-        96vw
-    );
-
-    height:100vh;
+    width:
+        min(560px, 100%);
 
     background:
-        linear-gradient(
-            160deg,
-            #101720,
-            #070a0e
-        );
+        #070a0d;
 
     border-left:
-        1px solid #26323e;
+        1px solid
+        rgba(200,0,37,.35);
 
-    z-index:500;
+    padding: 32px;
+
+    overflow-y: auto;
 
     transform:
         translateX(100%);
 
     transition:
-        transform .5s
-        cubic-bezier(.22,.61,.36,1);
+        transform .4s
+        cubic-bezier(.2,.8,.2,1);
 
-    box-shadow:
-        -20px 0 70px
-        rgba(0,0,0,.65);
-
-    overflow-y:auto;
 }
 
-
-.site-detail.open{
+.detail-overlay.open
+.detail-panel {
 
     transform:
         translateX(0);
+
 }
 
+.detail-close {
 
-/* =====================================================
-   DETAIL HEAD
-===================================================== */
+    float: right;
 
-.detail-head{
+    border: none;
 
-    padding:24px;
+    background: transparent;
 
-    border-bottom:
-        1px solid var(--border);
+    color: #5c646c;
 
-    display:flex;
+    font-family: inherit;
 
-    justify-content:space-between;
+    font-size: 20px;
 
-    align-items:flex-start;
+    cursor: pointer;
 
-    position:sticky;
-
-    top:0;
-
-    z-index:5;
-
-    background:
-        rgba(10,15,21,.95);
-
-    backdrop-filter:
-        blur(15px);
 }
 
+.detail-id {
 
-.detail-head small{
+    color: var(--red2);
 
-    color:var(--blue);
+    font-size: 26px;
 
-    font-size:9px;
+    letter-spacing: 4px;
 
-    letter-spacing:2px;
+    margin-top: 40px;
+
 }
 
+.detail-name {
 
-.detail-head h2{
+    margin-top: 10px;
 
-    margin-top:8px;
+    color: #8e969d;
 
-    font-size:25px;
+    font-size: 10px;
 
-    letter-spacing:2px;
+    letter-spacing: 2px;
+
 }
 
+.detail-grid {
 
-.close-detail{
-
-    border:
-        1px solid var(--border);
-
-    background:#0b1015;
-
-    color:#9ba6b2;
-
-    width:35px;
-    height:35px;
-
-    cursor:pointer;
-
-    transition:
-        .25s;
-}
-
-
-.close-detail:hover{
-
-    color:white;
-
-    border-color:
-        var(--blue);
-
-    transform:
-        rotate(90deg);
-}
-
-
-/* =====================================================
-   DETAIL BODY
-===================================================== */
-
-.detail-body{
-
-    padding:22px;
-}
-
-
-.detail-status{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    padding:15px;
-
-    border:
-        1px solid var(--border);
-
-    margin-bottom:18px;
-
-    background:
-        rgba(255,255,255,.015);
-}
-
-
-.detail-status span{
-
-    color:var(--muted);
-
-    font-size:9px;
-
-    letter-spacing:1px;
-}
-
-
-.detail-status strong{
-
-    font-size:12px;
-}
-
-
-/* =====================================================
-   CONTROL
-===================================================== */
-
-.control-title{
-
-    font-size:9px;
-
-    color:#73808e;
-
-    letter-spacing:2px;
-
-    margin:
-        22px 0
-        10px;
-}
-
-
-.control-grid{
-
-    display:grid;
+    display: grid;
 
     grid-template-columns:
-        repeat(3,1fr);
+        1fr 1fr;
 
-    gap:8px;
+    gap: 10px;
+
+    margin-top: 30px;
+
 }
 
+.detail-field {
 
-.control-button{
-
-    padding:12px 6px;
-
-    background:#0b1015;
-
-    border:
-        1px solid var(--border);
-
-    color:#bfc8d1;
-
-    font-size:9px;
-
-    letter-spacing:1px;
-
-    cursor:pointer;
-
-    transition:
-        .25s;
-
-    position:relative;
-
-    overflow:hidden;
-}
-
-
-.control-button::after{
-
-    content:"";
-
-    position:absolute;
-
-    left:-100%;
-
-    top:0;
-
-    width:100%;
-
-    height:100%;
+    padding: 15px;
 
     background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(255,255,255,.06),
-            transparent
-        );
+        rgba(255,255,255,.02);
 
-    transition:
-        left .4s;
+    border:
+        1px solid var(--line);
+
 }
 
+.detail-field label {
 
-.control-button:hover::after{
+    display: block;
 
-    left:100%;
+    color: #505860;
+
+    font-size: 7px;
+
+    letter-spacing: 2px;
+
 }
 
+.detail-field select,
+.detail-field input,
+.detail-field textarea {
 
-.control-button:hover{
+    width: 100%;
 
-    border-color:
-        var(--blue);
+    margin-top: 9px;
 
-    color:white;
+    padding: 9px;
 
-    background:#101923;
+    background: #030405;
+
+    border:
+        1px solid #20252a;
+
+    color: #fff;
+
+    outline: none;
+
+    font-family: inherit;
+
+    font-size: 9px;
+
 }
 
+.detail-field textarea {
 
-.control-button.selected{
+    min-height: 100px;
 
-    border-color:
-        var(--blue);
+    resize: vertical;
 
-    color:var(--blue);
-
-    box-shadow:
-        inset 0 0 18px
-        rgba(76,163,255,.08);
 }
 
+.detail-full {
 
-.control-button.danger:hover,
-.control-button.danger.selected{
+    grid-column:
+        1 / -1;
 
-    border-color:
+}
+
+.primary-btn {
+
+    width: 100%;
+
+    margin-top: 15px;
+
+    padding: 13px;
+
+    border:
+        1px solid var(--red);
+
+    background:
+        rgba(200,0,37,.08);
+
+    color: white;
+
+    font-family: inherit;
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+    cursor: pointer;
+
+    transition: .25s;
+
+}
+
+.primary-btn:hover {
+
+    background:
         var(--red);
-
-    color:var(--red);
-
-    box-shadow:
-        inset 0 0 18px
-        rgba(255,64,85,.08);
-}
-
-
-/* =====================================================
-   FIELDS
-===================================================== */
-
-.field{
-
-    margin-bottom:12px;
-}
-
-
-.field label{
-
-    display:block;
-
-    color:#697683;
-
-    font-size:8px;
-
-    letter-spacing:1.5px;
-
-    margin-bottom:6px;
-}
-
-
-.field input,
-.field select,
-.field textarea{
-
-    width:100%;
-
-    padding:11px;
-
-    border:
-        1px solid var(--border);
-
-    outline:none;
-
-    background:#080c11;
-
-    color:#dce2e8;
-
-    font-size:11px;
-
-    transition:
-        border-color .25s,
-        box-shadow .25s;
-}
-
-
-.field input:focus,
-.field select:focus,
-.field textarea:focus{
-
-    border-color:
-        #356d9e;
-
-    box-shadow:
-        0 0 15px
-        rgba(76,163,255,.06);
-}
-
-
-.field textarea{
-
-    resize:vertical;
-
-    min-height:90px;
-}
-
-
-/* =====================================================
-   SAVE
-===================================================== */
-
-.save-button{
-
-    width:100%;
-
-    margin-top:8px;
-
-    padding:14px;
-
-    border:
-        1px solid #356d9e;
-
-    background:#0d1823;
-
-    color:#63b4ff;
-
-    cursor:pointer;
-
-    letter-spacing:2px;
-
-    font-size:10px;
-
-    transition:
-        .25s;
-
-    position:relative;
-
-    overflow:hidden;
-}
-
-
-.save-button:hover{
-
-    background:#132536;
 
     box-shadow:
         0 0 25px
-        rgba(76,163,255,.1);
+        rgba(200,0,37,.2);
+
 }
 
-
-.save-button.loading{
-
-    pointer-events:none;
-
-    color:#fff;
+.lockdown-btn {
 
     border-color:
-        var(--blue);
+        var(--red2);
 
-    animation:
-        savePulse .8s infinite;
+    color:
+        var(--red2);
+
 }
 
-
-/* =====================================================
-   WARNING
-===================================================== */
-
-.warning-box{
-
-    margin-top:18px;
-
-    padding:13px;
-
-    border:
-        1px solid #53313a;
-
-    color:#ff7180;
+.lockdown-btn:hover {
 
     background:
-        rgba(255,50,70,.035);
+        var(--red2);
 
-    font-size:9px;
-
-    line-height:1.6;
-
-    display:none;
 }
-
-
-.warning-box.show{
-
-    display:block;
-
-    animation:
-        warningFlash 1.2s infinite alternate;
-}
-
 
 /* =====================================================
-   DETAIL ACTIVITY
+   WARHEAD
 ===================================================== */
 
-.detail-activity{
+.warhead-card {
 
-    margin-top:25px;
+    padding: 25px;
 
-    border-top:
-        1px solid var(--border);
-
-    padding-top:18px;
-}
-
-
-.detail-activity-title{
-
-    font-size:9px;
-
-    color:#73808e;
-
-    letter-spacing:2px;
-
-    margin-bottom:10px;
-}
-
-
-.detail-log{
-
-    max-height:220px;
-
-    overflow-y:auto;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(200,0,37,.045),
+            transparent
+        ),
+        var(--panel);
 
     border:
-        1px solid #18212a;
+        1px solid
+        rgba(200,0,37,.2);
 
-    background:#070b0f;
+    position: relative;
 
-    padding:10px;
+    overflow: hidden;
+
 }
 
+.warhead-card::before {
 
-.detail-log-line{
+    content: "";
 
-    font-family:
-        Consolas,
-        monospace;
+    position: absolute;
 
-    font-size:9px;
+    top: 0;
+    left: 0;
 
-    color:#9ca7b1;
+    width: 3px;
+    height: 100%;
 
-    padding:8px 0;
-
-    border-bottom:
-        1px solid #121a22;
+    background:
+        var(--red2);
 
     animation:
-        terminalLine .3s ease both;
+        warheadBar 2s infinite;
+
 }
 
+@keyframes warheadBar {
 
-.detail-log-line:last-child{
+    0%,100% {
+        opacity: .4;
+    }
 
-    border-bottom:0;
+    50% {
+        opacity: 1;
+    }
+
 }
 
+.warhead-id {
+
+    color: var(--red2);
+
+    font-size: 17px;
+
+    letter-spacing: 3px;
+
+}
+
+.warhead-name {
+
+    margin-top: 8px;
+
+    font-size: 10px;
+
+    color: #777f87;
+
+}
+
+.warhead-status {
+
+    margin-top: 22px;
+
+    display: inline-block;
+
+    padding:
+        7px 10px;
+
+    border:
+        1px solid
+        rgba(255,23,66,.3);
+
+    color: var(--red2);
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+}
+
+/* =====================================================
+   SATELLITE
+===================================================== */
+
+.satellite-panel {
+
+    padding: 35px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(199,163,71,.04),
+            transparent 60%
+        ),
+        var(--panel);
+
+    border:
+        1px solid
+        rgba(199,163,71,.2);
+
+}
+
+.satellite-status {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap: 20px;
+
+}
+
+.satellite-status h2 {
+
+    font-size: 18px;
+
+    letter-spacing: 3px;
+
+}
+
+.satellite-badge {
+
+    color: var(--yellow);
+
+    border:
+        1px solid
+        rgba(199,163,71,.4);
+
+    padding:
+        8px 12px;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+}
+
+.progress {
+
+    margin-top: 25px;
+
+    height: 7px;
+
+    background:
+        #161a1e;
+
+    border:
+        1px solid #20252a;
+
+    overflow: hidden;
+
+}
+
+.progress div {
+
+    width: 8%;
+
+    height: 100%;
+
+    background:
+        var(--yellow);
+
+    box-shadow:
+        0 0 15px
+        rgba(199,163,71,.45);
+
+}
+
+.satellite-info {
+
+    margin-top: 18px;
+
+    color: #727a82;
+
+    font-size: 9px;
+
+    line-height: 1.8;
+
+}
 
 /* =====================================================
    REQUESTS
 ===================================================== */
 
-.request-list{
+.request {
 
-    padding:18px;
-}
-
-
-.request-card{
+    padding: 18px;
 
     border:
-        1px solid var(--border);
+        1px solid var(--line);
 
-    background:#0a0e13;
+    background:
+        rgba(255,255,255,.012);
 
-    padding:16px;
+    margin-bottom: 10px;
 
-    margin-bottom:10px;
+    transition: .25s;
 
-    transition:.25s;
-
-    animation:
-        fadeUp .45s ease both;
 }
 
-
-.request-card:hover{
+.request:hover {
 
     border-color:
-        #344352;
+        rgba(200,0,37,.3);
 
-    transform:
-        translateX(3px);
 }
 
+.request-top {
 
-.request-top{
+    display: flex;
 
-    display:flex;
+    justify-content:
+        space-between;
 
-    justify-content:space-between;
+    gap: 15px;
 
-    align-items:center;
 }
 
+.request-id {
 
-.request-id{
+    color: var(--red2);
 
-    font-size:10px;
+    font-size: 9px;
 
-    color:var(--blue);
+    letter-spacing: 1px;
 
-    letter-spacing:1px;
 }
 
+.request-status {
 
-.request-name{
+    font-size: 7px;
 
-    font-size:13px;
+    letter-spacing: 2px;
 
-    margin-top:6px;
 }
 
+.request-status.pending {
 
-.request-meta{
+    color: var(--yellow);
 
-    margin-top:10px;
-
-    display:flex;
-
-    gap:18px;
-
-    flex-wrap:wrap;
-
-    color:#737f8c;
-
-    font-size:9px;
 }
 
+.request-status.approved {
 
-.request-actions{
+    color: var(--green);
 
-    display:flex;
-
-    gap:7px;
-
-    margin-top:14px;
 }
 
+.request-status.rejected {
 
-.action{
+    color: var(--red2);
 
-    border:
-        1px solid var(--border);
+}
 
-    background:#0d1218;
+.request-body {
 
-    color:#adb7c0;
+    margin-top: 13px;
+
+    color: #737b83;
+
+    font-size: 9px;
+
+    line-height: 1.7;
+
+}
+
+.request-actions {
+
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 14px;
+
+}
+
+.small-btn {
 
     padding:
         8px 12px;
 
-    font-size:9px;
+    border:
+        1px solid #282e34;
 
-    cursor:pointer;
+    background:
+        #050608;
 
-    transition:.2s;
+    color: #aab0b5;
+
+    font-family: inherit;
+
+    font-size: 7px;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
 }
 
-
-.action:hover{
-
-    border-color:
-        var(--blue);
-
-    color:white;
-}
-
-
-.action.approve:hover{
-
-    border-color:
-        var(--green);
-
-    color:var(--green);
-}
-
-
-.action.reject:hover{
+.small-btn:hover {
 
     border-color:
         var(--red);
 
-    color:var(--red);
-}
+    color: #fff;
 
+}
 
 /* =====================================================
-   ACTIVITY
+   LOG
 ===================================================== */
 
-.activity{
+.log {
 
-    padding:18px;
+    max-height: 350px;
+
+    overflow-y: auto;
+
+    background: #020304;
+
+    border:
+        1px solid var(--line);
+
+    padding: 15px;
+
 }
 
+.log-line {
 
-.log-line{
+    padding:
+        7px 0;
 
-    display:flex;
+    color: #5f6870;
 
-    gap:14px;
+    font-size: 8px;
 
-    padding:10px 0;
+    line-height: 1.6;
 
     border-bottom:
-        1px solid #151d25;
+        1px solid
+        rgba(255,255,255,.025);
 
-    font-family:
-        Consolas,
-        monospace;
-
-    font-size:10px;
-
-    animation:
-        terminalLine .35s ease both;
 }
 
+.log-line strong {
 
-.log-time{
+    color: var(--red2);
 
-    color:#4f5b68;
-
-    min-width:75px;
 }
 
+/* =====================================================
+   ALERT
+===================================================== */
 
-.log-type{
+.alert {
 
-    color:var(--blue);
+    padding: 16px;
 
-    min-width:85px;
+    border:
+        1px solid
+        rgba(200,0,37,.25);
+
+    background:
+        rgba(200,0,37,.035);
+
+    color: #929aa1;
+
+    font-size: 8px;
+
+    line-height: 1.7;
+
+    margin-bottom: 10px;
+
 }
 
+.alert strong {
 
-.log-message{
+    color: var(--red2);
 
-    color:#b8c0c8;
 }
-
 
 /* =====================================================
    TOAST
 ===================================================== */
 
-.toast{
+#toast {
 
-    position:fixed;
+    position: fixed;
 
-    bottom:25px;
-
-    left:50%;
-
-    transform:
-        translate(-50%,30px);
-
-    opacity:0;
-
-    z-index:900;
+    right: 25px;
+    bottom: 25px;
 
     padding:
-        13px 20px;
-
-    border:
-        1px solid #31516b;
-
-    background:#0c141d;
-
-    color:#bfe1ff;
-
-    font-size:10px;
-
-    letter-spacing:1px;
-
-    transition:.3s;
-
-    pointer-events:none;
-
-    box-shadow:
-        0 10px 40px
-        rgba(0,0,0,.4);
-}
-
-
-.toast.show{
-
-    opacity:1;
-
-    transform:
-        translate(-50%,0);
-}
-
-
-.toast.error{
-
-    border-color:
-        #63303a;
-
-    color:#ff7180;
-}
-
-
-/* =====================================================
-   LOCKDOWN
-===================================================== */
-
-body.lockdown-alert .topbar{
-
-    border-bottom-color:
-        var(--red);
-
-    animation:
-        dangerBorder 1s infinite;
-}
-
-
-body.lockdown-alert .classification{
-
-    color:#ff4055;
-
-    border-color:#ff4055;
-
-    animation:
-        dangerText .7s infinite;
-}
-
-
-body.lockdown-alert::before{
-
-    animation:
-        alarmScan .8s infinite;
-}
-
-
-/* =====================================================
-   LOADING SCREEN
-===================================================== */
-
-.boot-screen{
-
-    position:fixed;
-
-    inset:0;
-
-    z-index:2000;
-
-    background:#030507;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    flex-direction:column;
-
-    transition:
-        opacity .6s,
-        visibility .6s;
-}
-
-
-.boot-screen.hide{
-
-    opacity:0;
-
-    visibility:hidden;
-
-    pointer-events:none;
-}
-
-
-.boot-logo{
-
-    font-size:24px;
-
-    font-weight:bold;
-
-    letter-spacing:8px;
-
-    color:#dce3ea;
-
-    margin-bottom:18px;
-}
-
-
-.boot-line{
-
-    width:
-        min(420px,80vw);
-
-    height:1px;
-
-    background:#1b2732;
-
-    overflow:hidden;
-
-    position:relative;
-}
-
-
-.boot-line::after{
-
-    content:"";
-
-    position:absolute;
-
-    left:-100%;
-
-    width:50%;
-
-    height:100%;
+        15px 20px;
 
     background:
-        var(--blue);
+        #080b0f;
 
-    box-shadow:
-        0 0 12px
-        var(--blue);
+    border:
+        1px solid var(--red);
+
+    color: #fff;
+
+    font-size: 8px;
+
+    letter-spacing: 1px;
+
+    transform:
+        translateY(30px);
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: .3s;
+
+    z-index: 5000;
+
+}
+
+#toast.show {
+
+    opacity: 1;
+
+    transform:
+        translateY(0);
+
+}
+
+/* =====================================================
+   LOCKDOWN FLASH
+===================================================== */
+
+#lockdownFlash {
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        rgba(255,0,35,.15);
+
+    opacity: 0;
+
+    z-index: 4000;
+
+}
+
+#lockdownFlash.active {
 
     animation:
-        bootScan 1.3s linear infinite;
+        lockdownFlash .8s
+        ease;
+
 }
 
+@keyframes lockdownFlash {
 
-.boot-text{
+    0% {
+        opacity: 0;
+    }
 
-    margin-top:15px;
+    20% {
+        opacity: 1;
+    }
 
-    font-family:
-        Consolas,
-        monospace;
+    40% {
+        opacity: .15;
+    }
 
-    font-size:9px;
+    60% {
+        opacity: .8;
+    }
 
-    color:#65717e;
+    100% {
+        opacity: 0;
+    }
 
-    letter-spacing:2px;
 }
-
 
 /* =====================================================
-   ANIMATIONS
+   MOBILE
 ===================================================== */
 
-@keyframes fadeUp{
+@media(max-width: 900px) {
 
-    from{
-        opacity:0;
-        transform:translateY(20px);
-    }
+    .sidebar {
 
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-
-@keyframes siteAppear{
-
-    from{
-        opacity:0;
-        transform:
-            translateY(25px)
-            scale(.98);
-    }
-
-    to{
-        opacity:1;
-        transform:
-            translateY(0)
-            scale(1);
-    }
-}
-
-
-@keyframes pulse{
-
-    0%,100%{
-        opacity:1;
-    }
-
-    50%{
-        opacity:.55;
-    }
-}
-
-
-@keyframes statusPulse{
-
-    0%,100%{
-        opacity:1;
-    }
-
-    50%{
-        opacity:.7;
-    }
-}
-
-
-@keyframes warningFlash{
-
-    from{
-        box-shadow:
-            0 0 0
-            rgba(255,64,85,0);
-    }
-
-    to{
-        box-shadow:
-            0 0 20px
-            rgba(255,64,85,.08);
-    }
-}
-
-
-@keyframes lockdownPulse{
-
-    0%,100%{
-        box-shadow:
-            0 0 0
-            rgba(255,64,85,0);
-    }
-
-    50%{
-        box-shadow:
-            0 0 28px
-            rgba(255,64,85,.12);
-    }
-}
-
-
-@keyframes dangerBorder{
-
-    0%,100%{
-        box-shadow:
-            0 0 0
-            rgba(255,64,85,0);
-    }
-
-    50%{
-        box-shadow:
-            0 0 30px
-            rgba(255,64,85,.15);
-    }
-}
-
-
-@keyframes dangerText{
-
-    0%,100%{
-        opacity:1;
-    }
-
-    50%{
-        opacity:.55;
-    }
-}
-
-
-@keyframes alarmScan{
-
-    0%,100%{
-        opacity:.32;
-    }
-
-    50%{
-        opacity:.48;
-    }
-}
-
-
-@keyframes terminalLine{
-
-    from{
-        opacity:0;
-        transform:translateX(-8px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateX(0);
-    }
-}
-
-
-@keyframes logoScan{
-
-    0%{
-        top:-2px;
-    }
-
-    100%{
-        top:44px;
-    }
-}
-
-
-@keyframes cardScan{
-
-    0%{
-        top:-1px;
-    }
-
-    100%{
-        top:100%;
-    }
-}
-
-
-@keyframes bootScan{
-
-    0%{
-        left:-50%;
-    }
-
-    100%{
-        left:100%;
-    }
-}
-
-
-@keyframes savePulse{
-
-    0%,100%{
-        box-shadow:
-            0 0 5px
-            rgba(76,163,255,.08);
-    }
-
-    50%{
-        box-shadow:
-            0 0 25px
-            rgba(76,163,255,.18);
-    }
-}
-
-
-/* =====================================================
-   RESPONSIVE
-===================================================== */
-
-@media(max-width:1000px){
-
-    .dashboard{
-
-        grid-template-columns:
-            repeat(2,1fr);
-    }
-
-    .site-grid{
-
-        grid-template-columns:
-            1fr;
-    }
-
-}
-
-
-@media(max-width:600px){
-
-    .topbar{
+        width: 65px;
 
         padding:
-            0 15px;
+            20px 7px;
+
     }
 
-    .brand h1{
+    .sidebar-label {
 
-        font-size:11px;
+        display: none;
+
     }
 
-    .classification{
+    .sidebar button {
 
-        display:none;
+        font-size: 0;
+
+        text-align: center;
+
+        padding: 14px 4px;
+
     }
 
-    .dashboard{
+    .sidebar button::first-letter {
+
+        font-size: 15px;
+
+    }
+
+    .content {
+
+        padding: 20px;
+
+    }
+
+    .stats,
+    .grid-3 {
+
+        grid-template-columns:
+            1fr 1fr;
+
+    }
+
+    .grid-2 {
 
         grid-template-columns:
             1fr;
-    }
 
-    .page-title h2{
-
-        font-size:22px;
-    }
-
-    .site-card{
-
-        min-height:290px;
-    }
-
-    .section-header{
-
-        align-items:flex-start;
-
-        flex-direction:column;
-
-        justify-content:center;
-
-        gap:5px;
-    }
-
-    .detail-head h2{
-
-        font-size:21px;
     }
 
 }
 
+@media(max-width: 600px) {
 
-/* =====================================================
-   REDUCED MOTION
-===================================================== */
+    .topbar {
 
-@media(prefers-reduced-motion:reduce){
+        padding: 0 15px;
 
-    *,
-    *::before,
-    *::after{
+    }
 
-        animation-duration:
-            .01ms !important;
+    .top-status {
 
-        animation-iteration-count:
-            1 !important;
+        display: none;
 
-        scroll-behavior:
-            auto !important;
+    }
 
-        transition-duration:
-            .01ms !important;
+    .content {
+
+        padding: 15px;
+
+    }
+
+    .stats,
+    .grid-3 {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .page-heading {
+
+        align-items:
+            flex-start;
+
+        flex-direction:
+            column;
+
+    }
+
+    .detail-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .detail-full {
+
+        grid-column:
+            auto;
+
     }
 
 }
 
 </style>
-
 </head>
-
 
 <body>
 
+<div class="scanline"></div>
 
-<!-- =====================================================
-     BOOT SCREEN
-===================================================== -->
+<div id="lockdownFlash"></div>
 
-<div
-    class="boot-screen"
-    id="bootScreen"
->
-
-    <div class="boot-logo">
-        SCP
-    </div>
-
-    <div class="boot-line"></div>
-
-    <div
-        class="boot-text"
-        id="bootText"
-    >
-        CONNECTING TO FOUNDATION NETWORK...
-    </div>
-
-</div>
-
-
-<!-- =====================================================
-     TOPBAR
-===================================================== -->
 
 <header class="topbar">
 
     <div class="brand">
 
-        <div class="logo">
-            SCP
+        <div class="brand-symbol">
+            Ω
         </div>
 
         <div>
 
-            <h1>
-                FOUNDATION ADMINISTRATION
-            </h1>
+            <div class="brand-title">
+                O5 COUNCIL
+            </div>
 
-            <span>
-                SECURE CONTAIN PROTECT // O5 ADMINISTRATIVE INTERFACE
-            </span>
+            <div class="brand-sub">
+                ADMINISTRATION // [SITE-64]
+            </div>
 
         </div>
 
     </div>
 
 
-    <div class="classification">
+    <div class="top-status">
 
-        CLASSIFICATION LEVEL: O5
+        <span class="status-dot"></span>
+
+        COUNCIL SYSTEM ONLINE
 
     </div>
 
 </header>
 
 
+<div class="layout">
+
+
 <!-- =====================================================
-     MAIN
-===================================================== -->
+     SIDEBAR
+====================================================== -->
 
-<main class="wrapper">
+<aside class="sidebar">
+
+    <div class="sidebar-label">
+        COMMAND
+    </div>
+
+    <button
+        class="active"
+        data-page="dashboard"
+    >
+        ◈ DASHBOARD
+    </button>
+
+    <button
+        data-page="sites"
+    >
+        ◫ SITE CONTROL
+    </button>
+
+    <button
+        data-page="warheads"
+    >
+        ⚠ WARHEAD CONTROL
+    </button>
+
+    <button
+        data-page="council"
+    >
+        Ω O5 COUNCIL
+    </button>
+
+    <button
+        data-page="satellite"
+    >
+        ◉ SATELLITE
+    </button>
+
+    <button
+        data-page="requests"
+    >
+        ▣ REQUEST DATABASE
+    </button>
+
+    <button
+        data-page="logs"
+    >
+        ≡ ACTIVITY LOG
+    </button>
+
+    <div
+        class="sidebar-label"
+        style="margin-top:25px;"
+    >
+        SYSTEM
+    </div>
+
+    <button
+        data-page="diagnostics"
+    >
+        ◌ DIAGNOSTICS
+    </button>
+
+    <button
+        onclick="location.href='/'"
+    >
+        ← RETURN TO LOBBY
+    </button>
+
+</aside>
 
 
-    <div class="page-title">
+<main class="content">
 
-        <div class="eyebrow">
-            FOUNDATION INTERNAL SYSTEM
+
+<!-- =====================================================
+     DASHBOARD
+====================================================== -->
+
+<section
+    class="page active"
+    id="page-dashboard"
+>
+
+    <div class="page-heading">
+
+        <div>
+
+            <div class="classification">
+                O5 // CLASSIFIED
+            </div>
+
+            <h1>
+                COMMAND DASHBOARD
+            </h1>
+
+            <p>
+                FOUNDATION GLOBAL OPERATIONS MONITOR
+            </p>
+
         </div>
 
-        <h2>
-            ADMINISTRATION CONTROL
-        </h2>
-
-        <p>
-            FACILITY MANAGEMENT • REQUEST CONTROL • SITE CONTROL
-        </p>
+        <div
+            id="clock"
+            class="classification"
+        >
+            00:00:00
+        </div>
 
     </div>
 
 
-    <!-- =================================================
-         DASHBOARD
-    ================================================== -->
-
-    <section class="dashboard">
-
+    <div class="stats">
 
         <div class="stat">
 
@@ -2269,13 +1902,9 @@ body.lockdown-alert::before{
 
             <div
                 class="stat-value"
-                id="siteCount"
+                id="statSites"
             >
-                0
-            </div>
-
-            <div class="stat-small">
-                FOUNDATION FACILITIES
+                3
             </div>
 
         </div>
@@ -2288,14 +1917,10 @@ body.lockdown-alert::before{
             </div>
 
             <div
-                class="stat-value"
-                id="activeCount"
+                class="stat-value green"
+                id="statActive"
             >
-                0
-            </div>
-
-            <div class="stat-small">
-                CURRENT OPERATIONAL STATUS
+                3
             </div>
 
         </div>
@@ -2308,14 +1933,10 @@ body.lockdown-alert::before{
             </div>
 
             <div
-                class="stat-value"
-                id="lockdownCount"
+                class="stat-value red"
+                id="statLockdown"
             >
                 0
-            </div>
-
-            <div class="stat-small">
-                SECURITY INCIDENTS
             </div>
 
         </div>
@@ -2328,81 +1949,638 @@ body.lockdown-alert::before{
             </div>
 
             <div
-                class="stat-value"
-                id="systemStatus"
+                class="stat-value green"
             >
                 ONLINE
             </div>
 
-            <div class="stat-small">
-                ADMINISTRATION NETWORK
+        </div>
+
+    </div>
+
+
+    <div class="grid-2">
+
+
+        <div class="panel">
+
+            <div class="panel-title">
+
+                <h2>
+                    LIVE FOUNDATION STATUS
+                </h2>
+
+                <span>
+                    LIVE
+                </span>
+
+            </div>
+
+
+            <div class="system-row">
+
+                <span class="system-name">
+                    FOUNDATION NETWORK
+                </span>
+
+                <span class="system-state online">
+                    ONLINE
+                </span>
+
+            </div>
+
+
+            <div class="system-row">
+
+                <span class="system-name">
+                    REQUEST DATABASE
+                </span>
+
+                <span
+                    class="system-state online"
+                    id="dashRequestState"
+                >
+                    ONLINE
+                </span>
+
+            </div>
+
+
+            <div class="system-row">
+
+                <span class="system-name">
+                    WARHEAD NETWORK
+                </span>
+
+                <span class="system-state danger">
+                    ARMED
+                </span>
+
+            </div>
+
+
+            <div class="system-row">
+
+                <span class="system-name">
+                    ORBITAL SATELLITE
+                </span>
+
+                <span class="system-state warning">
+                    UNAVAILABLE
+                </span>
+
+            </div>
+
+
+            <div class="system-row">
+
+                <span class="system-name">
+                    O5 COUNCIL
+                </span>
+
+                <span class="system-state online">
+                    ACTIVE
+                </span>
+
             </div>
 
         </div>
 
 
-    </section>
+        <div class="panel">
+
+            <div class="panel-title">
+
+                <h2>
+                    SECURITY ALERTS
+                </h2>
+
+                <span>
+                    PRIORITY
+                </span>
+
+            </div>
 
 
-    <!-- =================================================
-         SITE CONTROL
-    ================================================== -->
+            <div class="alert">
 
-    <section class="section">
+                <strong>
+                    [CRITICAL]
+                </strong>
+
+                External orbital warhead
+                deactivation system unavailable.
+
+            </div>
 
 
-        <div class="section-header">
+            <div class="alert">
 
-            <h3>
-                SITE CONTROL
-            </h3>
+                <strong>
+                    [WARNING]
+                </strong>
+
+                All Foundation facilities report
+                insufficient satellite construction materials.
+
+            </div>
+
+
+            <div class="alert">
+
+                <strong>
+                    [NOTICE]
+                </strong>
+
+                O5 Council departure requests require
+                final Council authorization.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="panel"
+        style="margin-top:18px;"
+    >
+
+        <div class="panel-title">
+
+            <h2>
+                FACILITY OVERVIEW
+            </h2>
 
             <span>
-                LIVE FOUNDATION FACILITY MANAGEMENT
+                SELECT FACILITY FOR CONTROL
             </span>
 
         </div>
 
 
         <div
-            class="site-grid"
-            id="siteGrid"
+            class="grid-3"
+            id="dashboardSites"
         ></div>
 
+    </div>
 
-    </section>
-
-
-    <!-- =================================================
-         REQUEST CONTROL
-    ================================================== -->
-
-    <section class="section">
+</section>
 
 
-        <div class="section-header">
+<!-- =====================================================
+     SITES
+====================================================== -->
 
-            <h3>
-                REQUEST CONTROL
-            </h3>
+<section
+    class="page"
+    id="page-sites"
+>
+
+    <div class="page-heading">
+
+        <div>
+
+            <div class="classification">
+                FOUNDATION FACILITIES
+            </div>
+
+            <h1>
+                SITE CONTROL
+            </h1>
+
+            <p>
+                FACILITY STATUS AND CONTAINMENT MANAGEMENT
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="grid-3"
+        id="siteGrid"
+    ></div>
+
+</section>
+
+
+<!-- =====================================================
+     WARHEAD
+====================================================== -->
+
+<section
+    class="page"
+    id="page-warheads"
+>
+
+    <div class="page-heading">
+
+        <div>
+
+            <div class="classification">
+                STRATEGIC SYSTEMS
+            </div>
+
+            <h1>
+                WARHEAD CONTROL
+            </h1>
+
+            <p>
+                O5 AUTHORIZATION REQUIRED
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="alert">
+
+        <strong>
+            [WARNING]
+        </strong>
+
+        Warhead systems are fictional Foundation
+        systems and remain under O5 Council authority.
+        Deactivation requires the external orbital
+        satellite system.
+
+    </div>
+
+
+    <div class="grid-2">
+
+
+        <div class="warhead-card">
+
+            <div class="warhead-id">
+                GAMMA
+            </div>
+
+            <div class="warhead-name">
+                GLOBAL TERMINATION
+            </div>
+
+            <div class="warhead-status">
+                ARMED
+            </div>
+
+        </div>
+
+
+        <div class="warhead-card">
+
+            <div class="warhead-id">
+                DELTA
+            </div>
+
+            <div class="warhead-name">
+                DEATH RAY
+            </div>
+
+            <div class="warhead-status">
+                ARMED
+            </div>
+
+        </div>
+
+
+        <div class="warhead-card">
+
+            <div class="warhead-id">
+                ALPHA
+            </div>
+
+            <div class="warhead-name">
+                FACILITY TERMINATION
+            </div>
+
+            <div class="warhead-status">
+                ARMED
+            </div>
+
+        </div>
+
+
+        <div class="warhead-card">
+
+            <div class="warhead-id">
+                BETA
+            </div>
+
+            <div class="warhead-name">
+                RADIATION BOMB
+            </div>
+
+            <div class="warhead-status">
+                ARMED
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="panel"
+        style="margin-top:18px;"
+    >
+
+        <div class="panel-title">
+
+            <h2>
+                DEACTIVATION REQUIREMENTS
+            </h2>
 
             <span>
-                ADMINISTRATIVE REQUEST DATABASE
+                SYSTEM LOCKED
             </span>
 
         </div>
 
 
-        <div
-            class="request-list"
-            id="requestList"
-        >
+        <div class="system-row">
+
+            <span class="system-name">
+                O5 AUTHORIZATION
+            </span>
+
+            <span class="system-state online">
+                REQUIRED
+            </span>
+
+        </div>
+
+
+        <div class="system-row">
+
+            <span class="system-name">
+                TARGET VERIFICATION
+            </span>
+
+            <span class="system-state online">
+                REQUIRED
+            </span>
+
+        </div>
+
+
+        <div class="system-row">
+
+            <span class="system-name">
+                EXTERNAL SATELLITE
+            </span>
+
+            <span class="system-state danger">
+                UNAVAILABLE
+            </span>
+
+        </div>
+
+
+        <div class="system-row">
+
+            <span class="system-name">
+                MATERIAL SUPPLY
+            </span>
+
+            <span class="system-state danger">
+                INSUFFICIENT
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     COUNCIL
+====================================================== -->
+
+<section
+    class="page"
+    id="page-council"
+>
+
+    <div class="page-heading">
+
+        <div>
+
+            <div class="classification">
+                COUNCIL ADMINISTRATION
+            </div>
+
+            <h1>
+                O5 COUNCIL
+            </h1>
+
+            <p>
+                DEPARTURE PERMIT REQUESTS
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="alert">
+
+        <strong>
+            [COUNCIL NOTICE]
+        </strong>
+
+        Leaving the O5 Council requires formal
+        authorization and final Council approval.
+
+    </div>
+
+
+    <div
+        class="panel"
+    >
+
+        <div class="panel-title">
+
+            <h2>
+                DEPARTURE REQUESTS
+            </h2>
+
+            <span id="councilCount">
+                0 REQUESTS
+            </span>
+
+        </div>
+
+
+        <div id="councilRequests">
 
             <div
                 style="
-                    color:#687482;
-                    font-size:10px;
-                    padding:10px;
+                    color:#555e66;
+                    font-size:9px;
+                    padding:20px 0;
+                "
+            >
+                NO DEPARTURE REQUESTS FOUND.
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SATELLITE
+====================================================== -->
+
+<section
+    class="page"
+    id="page-satellite"
+>
+
+    <div class="page-heading">
+
+        <div>
+
+            <div class="classification">
+                PROJECT ORBITAL
+            </div>
+
+            <h1>
+                EXTERNAL SATELLITE
+            </h1>
+
+            <p>
+                WARHEAD DEACTIVATION SUPPORT SYSTEM
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="satellite-panel">
+
+        <div class="satellite-status">
+
+            <h2>
+                EXTERNAL ORBITAL PLATFORM
+            </h2>
+
+            <div class="satellite-badge">
+                CONSTRUCTION UNAVAILABLE
+            </div>
+
+        </div>
+
+
+        <div class="progress">
+            <div></div>
+        </div>
+
+
+        <div class="satellite-info">
+
+            PROJECT COMPLETION: 8%
+
+            <br>
+
+            CURRENT STATUS:
+            CONSTRUCTION SUSPENDED
+
+            <br>
+
+            REASON:
+            INSUFFICIENT MATERIALS ACROSS ALL
+            FOUNDATION FACILITIES.
+
+            <br>
+
+            PURPOSE:
+            AUTHORIZED WARHEAD DEACTIVATION.
+
+            <br><br>
+
+            SITE-19:
+            MATERIALS INSUFFICIENT.
+
+            <br>
+
+            SITE-51:
+            MATERIALS INSUFFICIENT.
+
+            <br>
+
+            SITE-64:
+            MATERIALS INSUFFICIENT.
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     REQUESTS
+====================================================== -->
+
+<section
+    class="page"
+    id="page-requests"
+>
+
+    <div class="page-heading">
+
+        <div>
+
+            <div class="classification">
+                FOUNDATION DATABASE
+            </div>
+
+            <h1>
+                REQUEST DATABASE
+            </h1>
+
+            <p>
+                PERSONNEL REQUEST MANAGEMENT
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div class="panel-title">
+
+            <h2>
+                SUBMITTED REQUESTS
+            </h2>
+
+            <span id="requestCount">
+                0 REQUESTS
+            </span>
+
+        </div>
+
+
+        <div id="requestList">
+
+            <div
+                style="
+                    color:#555e66;
+                    font-size:9px;
+                    padding:20px 0;
                 "
             >
                 LOADING REQUEST DATABASE...
@@ -2410,1132 +2588,1013 @@ body.lockdown-alert::before{
 
         </div>
 
+    </div>
 
-    </section>
-
-
-    <!-- =================================================
-         ACTIVITY LOG
-    ================================================== -->
-
-    <section class="section">
+</section>
 
 
-        <div class="section-header">
+<!-- =====================================================
+     LOGS
+====================================================== -->
 
-            <h3>
+<section
+    class="page"
+    id="page-logs"
+>
+
+    <div class="page-heading">
+
+        <div>
+
+            <div class="classification">
+                FOUNDATION SECURITY
+            </div>
+
+            <h1>
                 ACTIVITY LOG
-            </h3>
+            </h1>
+
+            <p>
+                SYSTEM EVENTS AND ADMINISTRATION ACTIONS
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div class="panel-title">
+
+            <h2>
+                LIVE ACTIVITY
+            </h2>
 
             <span>
-                LIVE FOUNDATION EVENTS
+                TERMINAL
             </span>
 
         </div>
 
 
         <div
-            class="activity"
+            class="log"
             id="activityLog"
         ></div>
 
+    </div>
 
-    </section>
-
-
-</main>
+</section>
 
 
 <!-- =====================================================
-     DETAIL BACKDROP
-===================================================== -->
+     DIAGNOSTICS
+====================================================== -->
 
-<div
-    class="detail-backdrop"
-    id="detailBackdrop"
-    onclick="closeSiteDetail()"
-></div>
-
-
-<!-- =====================================================
-     SITE DETAIL
-===================================================== -->
-
-<aside
-    class="site-detail"
-    id="siteDetail"
+<section
+    class="page"
+    id="page-diagnostics"
 >
 
-
-    <div class="detail-head">
+    <div class="page-heading">
 
         <div>
 
-            <small>
-                FACILITY CONTROL
-            </small>
+            <div class="classification">
+                SYSTEM INTERNALS
+            </div>
 
-            <h2 id="detailSite">
-                SITE-64
-            </h2>
+            <h1>
+                SYSTEM DIAGNOSTICS
+            </h1>
+
+            <p>
+                FOUNDATION NETWORK DIAGNOSTIC INFORMATION
+            </p>
 
         </div>
-
-
-        <button
-            class="close-detail"
-            onclick="closeSiteDetail()"
-        >
-            ×
-        </button>
 
     </div>
 
 
-    <div class="detail-body">
+    <div class="grid-2">
 
 
-        <div class="detail-status">
+        <div class="panel">
 
-            <span>
-                CURRENT STATUS
-            </span>
+            <div class="panel-title">
 
-            <strong id="detailStatus">
-                ACTIVE
-            </strong>
+                <h2>
+                    CORE SERVICES
+                </h2>
 
-        </div>
+                <span>
+                    STATUS
+                </span>
 
-
-        <!-- STATUS -->
-
-        <div class="control-title">
-            FACILITY STATUS
-        </div>
+            </div>
 
 
-        <div class="control-grid">
+            <div class="system-row">
 
-            <button
-                class="control-button"
-                data-status="ACTIVE"
-                onclick="changeSiteStatus('ACTIVE')"
-            >
-                ACTIVE
-            </button>
+                <span class="system-name">
+                    WEB SERVER
+                </span>
 
+                <span class="system-state online">
+                    ONLINE
+                </span>
 
-            <button
-                class="control-button danger"
-                data-status="LOCKDOWN"
-                onclick="changeSiteStatus('LOCKDOWN')"
-            >
-                LOCKDOWN
-            </button>
+            </div>
 
 
-            <button
-                class="control-button"
-                data-status="OFFLINE"
-                onclick="changeSiteStatus('OFFLINE')"
-            >
-                OFFLINE
-            </button>
+            <div class="system-row">
 
-        </div>
+                <span class="system-name">
+                    REQUEST API
+                </span>
 
+                <span
+                    class="system-state online"
+                    id="apiStatus"
+                >
+                    ONLINE
+                </span>
 
-        <!-- INFORMATION -->
-
-        <div class="control-title">
-            FACILITY INFORMATION
-        </div>
+            </div>
 
 
-        <div class="field">
+            <div class="system-row">
 
-            <label>
-                SECURITY LEVEL
-            </label>
+                <span class="system-name">
+                    DATABASE
+                </span>
 
-            <select id="securityLevel">
+                <span
+                    class="system-state online"
+                    id="databaseStatus"
+                >
+                    ONLINE
+                </span>
 
-                <option>LEVEL 1</option>
-                <option>LEVEL 2</option>
-                <option>LEVEL 3</option>
-                <option>LEVEL 4</option>
-                <option>LEVEL 5</option>
+            </div>
 
-            </select>
+
+            <div class="system-row">
+
+                <span class="system-name">
+                    COUNCIL DATABASE
+                </span>
+
+                <span class="system-state warning">
+                    OPTIONAL API
+                </span>
+
+            </div>
 
         </div>
 
 
-        <div class="field">
+        <div class="panel">
 
-            <label>
-                PERSONNEL
-            </label>
+            <div class="panel-title">
 
-            <input
-                id="personnel"
-                type="number"
-                min="0"
-                value="0"
-            >
+                <h2>
+                    SECURITY
+                </h2>
+
+                <span>
+                    O5
+                </span>
+
+            </div>
+
+
+            <div class="system-row">
+
+                <span class="system-name">
+                    ACCESS LEVEL
+                </span>
+
+                <span class="system-state danger">
+                    O5
+                </span>
+
+            </div>
+
+
+            <div class="system-row">
+
+                <span class="system-name">
+                    COUNCIL LOCK
+                </span>
+
+                <span class="system-state online">
+                    ACTIVE
+                </span>
+
+            </div>
+
+
+            <div class="system-row">
+
+                <span class="system-name">
+                    WARHEAD ACCESS
+                </span>
+
+                <span class="system-state warning">
+                    RESTRICTED
+                </span>
+
+            </div>
 
         </div>
 
+    </div>
 
-        <div class="field">
+</section>
 
-            <label>
-                CONTAINMENT STATUS
-            </label>
 
-            <select id="containment">
+</main>
 
-                <option>STABLE</option>
-                <option>MONITORED</option>
-                <option>UNSTABLE</option>
-                <option>CRITICAL</option>
+</div>
 
-            </select>
 
+<!-- =====================================================
+     SITE DETAIL PANEL
+====================================================== -->
+
+<div
+    class="detail-overlay"
+    id="detailOverlay"
+>
+
+    <div class="detail-panel">
+
+        <button
+            class="detail-close"
+            onclick="closeSite()"
+        >
+            ×
+        </button>
+
+
+        <div
+            class="detail-id"
+            id="detailId"
+        >
+            SITE-64
+        </div>
+
+        <div
+            class="detail-name"
+            id="detailName"
+        >
+            UNKNOWN FACILITY
         </div>
 
 
-        <div class="field">
-
-            <label>
-                ACTIVE INCIDENTS
-            </label>
-
-            <input
-                id="incidents"
-                type="number"
-                min="0"
-                value="0"
-            >
-
-        </div>
+        <div class="detail-grid">
 
 
-        <div class="field">
+            <div class="detail-field">
 
-            <label>
-                SITE DETAILS
-            </label>
+                <label>
+                    FACILITY STATUS
+                </label>
 
-            <textarea
-                id="siteDescription"
-            ></textarea>
+                <select id="editStatus">
+
+                    <option value="ACTIVE">
+                        ACTIVE
+                    </option>
+
+                    <option value="LOCKDOWN">
+                        LOCKDOWN
+                    </option>
+
+                    <option value="OFFLINE">
+                        OFFLINE
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="detail-field">
+
+                <label>
+                    SECURITY LEVEL
+                </label>
+
+                <select id="editLevel">
+
+                    <option>
+                        LEVEL 1
+                    </option>
+
+                    <option>
+                        LEVEL 2
+                    </option>
+
+                    <option>
+                        LEVEL 3
+                    </option>
+
+                    <option>
+                        LEVEL 4
+                    </option>
+
+                    <option>
+                        LEVEL 5
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="detail-field">
+
+                <label>
+                    PERSONNEL
+                </label>
+
+                <input
+                    id="editPersonnel"
+                    type="number"
+                >
+
+            </div>
+
+
+            <div class="detail-field">
+
+                <label>
+                    ACTIVE INCIDENTS
+                </label>
+
+                <input
+                    id="editIncidents"
+                    type="number"
+                >
+
+            </div>
+
+
+            <div class="detail-field">
+
+                <label>
+                    CONTAINMENT
+                </label>
+
+                <select id="editContainment">
+
+                    <option>
+                        STABLE
+                    </option>
+
+                    <option>
+                        MONITORED
+                    </option>
+
+                    <option>
+                        UNSTABLE
+                    </option>
+
+                    <option>
+                        CRITICAL
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="detail-field">
+
+                <label>
+                    SATELLITE MATERIAL
+                </label>
+
+                <select id="editMaterials">
+
+                    <option>
+                        INSUFFICIENT
+                    </option>
+
+                    <option>
+                        LIMITED
+                    </option>
+
+                    <option>
+                        AVAILABLE
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="detail-field detail-full">
+
+                <label>
+                    FACILITY DETAILS
+                </label>
+
+                <textarea
+                    id="editDetails"
+                ></textarea>
+
+            </div>
 
         </div>
 
 
         <button
-            class="save-button"
-            id="saveButton"
+            class="primary-btn"
             onclick="saveSite()"
         >
             SAVE FACILITY CONFIGURATION
         </button>
 
 
-        <div
-            class="warning-box"
-            id="lockdownWarning"
+        <button
+            class="primary-btn lockdown-btn"
+            onclick="toggleLockdown()"
         >
-            WARNING: FACILITY LOCKDOWN IS ACTIVE.
-            ALL NON-ESSENTIAL PERSONNEL ACCESS
-            IS CURRENTLY RESTRICTED.
-        </div>
-
-
-        <!-- DETAIL ACTIVITY -->
-
-        <div class="detail-activity">
-
-            <div class="detail-activity-title">
-                FACILITY ACTIVITY
-            </div>
-
-            <div
-                class="detail-log"
-                id="detailActivity"
-            >
-                LOADING FACILITY ACTIVITY...
-            </div>
-
-        </div>
-
+            TOGGLE LOCKDOWN
+        </button>
 
     </div>
 
+</div>
 
-</aside>
 
-
-<!-- =====================================================
-     TOAST
-===================================================== -->
-
-<div
-    class="toast"
-    id="toast"
-></div>
+<div id="toast"></div>
 
 
 <script>
 
-
 /* =====================================================
-   STATE
+   DATA
 ===================================================== */
 
-let sites = {};
+const defaultSites = [
+
+    {
+        id: "SITE-19",
+        name: "MAIN CONTAINMENT FACILITY",
+        status: "ACTIVE",
+        level: "LEVEL 4",
+        personnel: 1284,
+        containment: "STABLE",
+        incidents: 0,
+        materials: "INSUFFICIENT",
+        details:
+            "Primary containment and research facility."
+    },
+
+    {
+        id: "SITE-51",
+        name: "CARLSON FACILITY",
+        status: "ACTIVE",
+        level: "LEVEL 5",
+        personnel: 436,
+        containment: "MONITORED",
+        incidents: 1,
+        materials: "INSUFFICIENT",
+        details:
+            "Classified facility connected to Carlson research."
+    },
+
+    {
+        id: "SITE-64",
+        name: "UNKNOWN FACILITY",
+        status: "ACTIVE",
+        level: "LEVEL 5",
+        personnel: 64,
+        containment: "STABLE",
+        incidents: 0,
+        materials: "INSUFFICIENT",
+        details:
+            "Exact location and operational purpose restricted."
+    }
+
+];
+
+
+let sites =
+    JSON.parse(
+        localStorage.getItem(
+            "o5_sites"
+        ) || "null"
+    ) || defaultSites;
+
 
 let selectedSite = null;
 
-let globalActivity = [];
-
-let toastTimer = null;
-
 
 /* =====================================================
-   BOOT
+   NAVIGATION
 ===================================================== */
 
-function bootSystem(){
+document
+    .querySelectorAll(
+        ".sidebar button[data-page]"
+    )
+    .forEach(button => {
 
-    const bootText =
-        document.getElementById(
-            "bootText"
-        );
-
-    const messages = [
-
-        "CONNECTING TO FOUNDATION NETWORK...",
-
-        "AUTHENTICATING O5 CREDENTIALS...",
-
-        "LOADING FACILITY DATABASE...",
-
-        "INITIALIZING SITE CONTROL...",
-
-        "ADMINISTRATION SYSTEM READY."
-
-    ];
-
-    let index = 0;
-
-
-    const interval =
-        setInterval(
-
+        button.addEventListener(
+            "click",
             () => {
 
-                bootText.textContent =
-                    messages[index];
+                const page =
+                    button.dataset.page;
 
-                index++;
+                document
+                    .querySelectorAll(
+                        ".sidebar button"
+                    )
+                    .forEach(item => {
 
-                if(
-                    index >=
-                    messages.length
-                ){
+                        item.classList.remove(
+                            "active"
+                        );
 
-                    clearInterval(
-                        interval
+                    });
+
+                button.classList.add(
+                    "active"
+                );
+
+
+                document
+                    .querySelectorAll(
+                        ".page"
+                    )
+                    .forEach(section => {
+
+                        section.classList.remove(
+                            "active"
+                        );
+
+                    });
+
+
+                const target =
+                    document.getElementById(
+                        "page-" + page
                     );
 
-                    setTimeout(
-                        () => {
+                if (target) {
 
-                            document
-                                .getElementById(
-                                    "bootScreen"
-                                )
-                                .classList
-                                .add("hide");
-
-                        },
-                        450
+                    target.classList.add(
+                        "active"
                     );
 
                 }
 
-            },
 
-            420
+                if (page === "requests") {
+                    loadRequests();
+                }
+
+                if (page === "council") {
+                    loadCouncilRequests();
+                }
+
+                if (page === "logs") {
+                    renderLogs();
+                }
+
+            }
         );
+
+    });
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function toast(message) {
+
+    const element =
+        document.getElementById(
+            "toast"
+        );
+
+    element.textContent =
+        message;
+
+    element.classList.add(
+        "show"
+    );
+
+    setTimeout(() => {
+
+        element.classList.remove(
+            "show"
+        );
+
+    }, 3500);
 
 }
 
 
-bootSystem();
-
-
 /* =====================================================
-   SITE API
+   LOGGING
 ===================================================== */
 
-async function loadSites(){
+function addLog(message) {
 
-    try{
-
-        const response =
-            await fetch(
-                "/api/sites",
-                {
-                    cache:"no-store"
-                }
-            );
-
-
-        if(!response.ok){
-
-            throw new Error(
-                "SITE DATABASE ERROR"
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        if(
-            !data.success ||
-            !Array.isArray(data.sites)
-        ){
-
-            throw new Error(
-                "INVALID SITE DATA"
-            );
-
-        }
-
-
-        sites = {};
-
-
-        data.sites.forEach(
-            site => {
-
-                sites[site.id] =
-                    site;
-
-            }
+    const logs =
+        JSON.parse(
+            localStorage.getItem(
+                "o5_activity"
+            ) || "[]"
         );
 
 
-        globalActivity =
-            Array.isArray(
-                data.activity
-            )
-                ? data.activity
-                : [];
+    logs.unshift({
+
+        message,
+
+        time:
+            new Date().toLocaleTimeString()
+
+    });
 
 
-        renderSites();
+    localStorage.setItem(
+        "o5_activity",
+        JSON.stringify(
+            logs.slice(0, 100)
+        )
+    );
 
-        renderGlobalActivity();
 
-        updateDashboard();
+    renderLogs();
+
+}
 
 
+function renderLogs() {
+
+    const container =
         document.getElementById(
-            "systemStatus"
-        ).textContent =
-            "ONLINE";
+            "activityLog"
+        );
+
+    if (!container) {
+        return;
+    }
 
 
-        if(selectedSite){
-
-            const current =
-                sites[selectedSite];
-
-            if(current){
-
-                updateDetailPanel(
-                    current
-                );
-
-                loadSiteActivity(
-                    selectedSite
-                );
-
-            }
-
-        }
-
-
-    }catch(error){
-
-        console.error(
-            error
+    const logs =
+        JSON.parse(
+            localStorage.getItem(
+                "o5_activity"
+            ) || "[]"
         );
 
 
-        document.getElementById(
-            "systemStatus"
-        ).textContent =
-            "OFFLINE";
+    if (!logs.length) {
 
-
-        document.getElementById(
-            "siteGrid"
-        ).innerHTML = `
-
-            <div style="
-                grid-column:1/-1;
-                padding:30px;
-                text-align:center;
-                color:#687482;
-                font-family:Consolas,monospace;
-                font-size:10px;
-                border:1px solid #202a35;
-            ">
-
-                SITE DATABASE CONNECTION FAILED.
-
+        container.innerHTML =
+            `
+            <div class="log-line">
+                <strong>[SYSTEM]</strong>
+                No activity recorded.
             </div>
+            `;
 
-        `;
+        return;
 
     }
 
+
+    container.innerHTML =
+        logs
+            .map(
+                log =>
+                    `
+                    <div class="log-line">
+                        <strong>
+                            [${escapeHtml(
+                                log.time
+                            )}]
+                        </strong>
+                        ${escapeHtml(
+                            log.message
+                        )}
+                    </div>
+                    `
+            )
+            .join("");
+
 }
 
 
 /* =====================================================
-   RENDER SITES
+   ESCAPE
 ===================================================== */
 
-function renderSites(){
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   SITE RENDER
+===================================================== */
+
+function renderSites() {
 
     const grid =
         document.getElementById(
             "siteGrid"
         );
 
+    const dashboard =
+        document.getElementById(
+            "dashboardSites"
+        );
 
-    grid.innerHTML =
-        "";
 
-
-    Object.values(
+    const html =
         sites
-    ).forEach(
-        (site,index) => {
+            .map(site => {
 
-            const status =
-                String(
-                    site.status ||
-                    "OFFLINE"
-                ).toLowerCase();
+                const state =
+                    site.status
+                        .toLowerCase();
 
+                return `
 
-            const card =
-                document.createElement(
-                    "article"
-                );
+                    <article
+                        class="site-card"
+                        onclick="openSite('${site.id}')"
+                    >
 
+                        <div class="site-top">
 
-            card.className =
-                "site-card " +
-                status;
+                            <div class="site-id">
+                                ${escapeHtml(
+                                    site.id
+                                )}
+                            </div>
 
+                            <div
+                                class="site-state ${state}"
+                            >
+                                ${escapeHtml(
+                                    site.status
+                                )}
+                            </div>
 
-            card.style.animationDelay =
-                `${index * 0.12}s`;
+                        </div>
 
-
-            card.onclick =
-                () =>
-                    openSiteDetail(
-                        site.id
-                    );
-
-
-            card.innerHTML = `
-
-                <div class="site-top">
-
-                    <div class="site-code">
-                        ${escapeHtml(site.id)}
-                    </div>
-
-                    <div class="
-                        status
-                        ${status}
-                    ">
-                        ${escapeHtml(
-                            site.status
-                        )}
-                    </div>
-
-                </div>
-
-
-                <div class="site-name">
-
-                    ${escapeHtml(
-                        site.name
-                    )}
-
-                </div>
-
-
-                <div class="site-description">
-
-                    ${escapeHtml(
-                        site.description
-                    )}
-
-                </div>
-
-
-                <div class="site-data">
-
-
-                    <div class="data-box">
-
-                        <span>
-                            SECURITY
-                        </span>
-
-                        <strong>
+                        <div class="site-name">
                             ${escapeHtml(
-                                site.security
+                                site.name
                             )}
-                        </strong>
+                        </div>
 
-                    </div>
+                        <div class="site-meta">
 
+                            <div class="meta">
 
-                    <div class="data-box">
+                                <span>
+                                    SECURITY
+                                </span>
 
-                        <span>
-                            PERSONNEL
-                        </span>
+                                <strong>
+                                    ${escapeHtml(
+                                        site.level
+                                    )}
+                                </strong>
 
-                        <strong
-                            data-count="${Number(
-                                site.personnel || 0
-                            )}"
-                        >
-                            ${formatNumber(
-                                site.personnel
-                            )}
-                        </strong>
+                            </div>
 
-                    </div>
+                            <div class="meta">
 
+                                <span>
+                                    PERSONNEL
+                                </span>
 
-                    <div class="data-box">
+                                <strong>
+                                    ${escapeHtml(
+                                        site.personnel
+                                    )}
+                                </strong>
 
-                        <span>
-                            CONTAINMENT
-                        </span>
+                            </div>
 
-                        <strong>
-                            ${escapeHtml(
-                                site.containment
-                            )}
-                        </strong>
+                            <div class="meta">
 
-                    </div>
+                                <span>
+                                    CONTAINMENT
+                                </span>
 
+                                <strong>
+                                    ${escapeHtml(
+                                        site.containment
+                                    )}
+                                </strong>
 
-                    <div class="data-box">
+                            </div>
 
-                        <span>
-                            INCIDENTS
-                        </span>
+                            <div class="meta">
 
-                        <strong>
-                            ${formatNumber(
-                                site.incidents
-                            )}
-                        </strong>
+                                <span>
+                                    INCIDENTS
+                                </span>
 
-                    </div>
+                                <strong>
+                                    ${escapeHtml(
+                                        site.incidents
+                                    )}
+                                </strong>
 
+                            </div>
 
-                </div>
+                        </div>
 
+                    </article>
 
-                <div class="site-footer">
+                `;
 
-                    <span>
-                        FOUNDATION FACILITY
-                    </span>
-
-                    <span>
-                        CONTROL ACCESS
-                    </span>
-
-                </div>
-
-            `;
+            })
+            .join("");
 
 
-            grid.appendChild(
-                card
-            );
+    if (grid) {
+        grid.innerHTML = html;
+    }
 
-        }
-    );
+    if (dashboard) {
+        dashboard.innerHTML = html;
+    }
+
+
+    updateStats();
 
 }
 
 
-/* =====================================================
-   DASHBOARD
-===================================================== */
-
-function updateDashboard(){
-
-    const list =
-        Object.values(
-            sites
-        );
-
+function updateStats() {
 
     const active =
-        list.filter(
+        sites.filter(
             site =>
-                site.status ===
-                "ACTIVE"
+                site.status === "ACTIVE"
         ).length;
 
 
     const lockdown =
-        list.filter(
+        sites.filter(
             site =>
-                site.status ===
-                "LOCKDOWN"
+                site.status === "LOCKDOWN"
         ).length;
 
 
-    animateValue(
-        "siteCount",
-        list.length
-    );
+    document.getElementById(
+        "statSites"
+    ).textContent =
+        sites.length;
 
 
-    animateValue(
-        "activeCount",
-        active
-    );
+    document.getElementById(
+        "statActive"
+    ).textContent =
+        active;
 
 
-    animateValue(
-        "lockdownCount",
-        lockdown
-    );
-
-
-    document.body.classList.toggle(
-        "lockdown-alert",
-        lockdown > 0
-    );
-
-
-    const system =
-        document.getElementById(
-            "systemStatus"
-        );
-
-
-    if(lockdown > 0){
-
-        system.style.color =
-            "var(--red)";
-
-    }else{
-
-        system.style.color =
-            "var(--green)";
-
-    }
+    document.getElementById(
+        "statLockdown"
+    ).textContent =
+        lockdown;
 
 }
 
 
 /* =====================================================
-   NUMBER ANIMATION
+   OPEN SITE
 ===================================================== */
 
-function animateValue(
-    id,
-    target
-){
-
-    const element =
-        document.getElementById(
-            id
-        );
-
-
-    if(!element)
-        return;
-
-
-    const start =
-        Number(
-            element.dataset.value ||
-            0
-        );
-
-
-    const end =
-        Number(target) || 0;
-
-
-    if(start === end){
-
-        element.textContent =
-            end;
-
-        return;
-
-    }
-
-
-    element.dataset.value =
-        end;
-
-
-    const duration =
-        500;
-
-
-    const startTime =
-        performance.now();
-
-
-    function update(
-        currentTime
-    ){
-
-        const progress =
-            Math.min(
-                (
-                    currentTime -
-                    startTime
-                ) /
-                duration,
-                1
-            );
-
-
-        const eased =
-            1 -
-            Math.pow(
-                1 - progress,
-                3
-            );
-
-
-        const value =
-            Math.round(
-                start +
-                (
-                    end -
-                    start
-                ) *
-                eased
-            );
-
-
-        element.textContent =
-            value;
-
-
-        if(progress < 1){
-
-            requestAnimationFrame(
-                update
-            );
-
-        }
-
-    }
-
-
-    requestAnimationFrame(
-        update
-    );
-
-}
-
-
-/* =====================================================
-   OPEN SITE DETAIL
-===================================================== */
-
-async function openSiteDetail(
-    siteId
-){
+function openSite(id) {
 
     selectedSite =
-        siteId;
-
-
-    const site =
-        sites[siteId];
-
-
-    if(!site)
-        return;
-
-
-    updateDetailPanel(
-        site
-    );
-
-
-    document
-        .getElementById(
-            "siteDetail"
-        )
-        .classList
-        .add("open");
-
-
-    document
-        .getElementById(
-            "detailBackdrop"
-        )
-        .classList
-        .add("open");
-
-
-    await loadSiteActivity(
-        siteId
-    );
-
-}
-
-
-/* =====================================================
-   UPDATE DETAIL
-===================================================== */
-
-function updateDetailPanel(
-    site
-){
-
-    document.getElementById(
-        "detailSite"
-    ).textContent =
-        site.id;
-
-
-    document.getElementById(
-        "detailStatus"
-    ).textContent =
-        site.status;
-
-
-    document.getElementById(
-        "securityLevel"
-    ).value =
-        site.security;
-
-
-    document.getElementById(
-        "personnel"
-    ).value =
-        site.personnel;
-
-
-    document.getElementById(
-        "containment"
-    ).value =
-        site.containment;
-
-
-    document.getElementById(
-        "incidents"
-    ).value =
-        site.incidents;
-
-
-    document.getElementById(
-        "siteDescription"
-    ).value =
-        site.description || "";
-
-
-    const warning =
-        document.getElementById(
-            "lockdownWarning"
+        sites.find(
+            site =>
+                site.id === id
         );
 
 
-    warning.classList.toggle(
-        "show",
-        site.status ===
-        "LOCKDOWN"
-    );
+    if (!selectedSite) {
+        return;
+    }
 
 
-    updateControlButtons();
+    document.getElementById(
+        "detailId"
+    ).textContent =
+        selectedSite.id;
 
-}
+
+    document.getElementById(
+        "detailName"
+    ).textContent =
+        selectedSite.name;
 
 
-/* =====================================================
-   CLOSE DETAIL
-===================================================== */
+    document.getElementById(
+        "editStatus"
+    ).value =
+        selectedSite.status;
 
-function closeSiteDetail(){
 
-    selectedSite =
-        null;
+    document.getElementById(
+        "editLevel"
+    ).value =
+        selectedSite.level;
+
+
+    document.getElementById(
+        "editPersonnel"
+    ).value =
+        selectedSite.personnel;
+
+
+    document.getElementById(
+        "editIncidents"
+    ).value =
+        selectedSite.incidents;
+
+
+    document.getElementById(
+        "editContainment"
+    ).value =
+        selectedSite.containment;
+
+
+    document.getElementById(
+        "editMaterials"
+    ).value =
+        selectedSite.materials;
+
+
+    document.getElementById(
+        "editDetails"
+    ).value =
+        selectedSite.details;
 
 
     document
         .getElementById(
-            "siteDetail"
+            "detailOverlay"
         )
-        .classList
-        .remove("open");
+        .classList.add(
+            "open"
+        );
 
+}
+
+
+function closeSite() {
 
     document
         .getElementById(
-            "detailBackdrop"
+            "detailOverlay"
         )
-        .classList
-        .remove("open");
-
-}
-
-
-/* =====================================================
-   ESC KEY
-===================================================== */
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if(
-            event.key ===
-            "Escape"
-        ){
-
-            closeSiteDetail();
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   STATUS BUTTON
-===================================================== */
-
-async function changeSiteStatus(
-    status
-){
-
-    if(!selectedSite)
-        return;
-
-
-    const site =
-        sites[selectedSite];
-
-
-    if(!site)
-        return;
-
-
-    const oldStatus =
-        site.status;
-
-
-    if(
-        oldStatus ===
-        status
-    ){
-
-        return;
-
-    }
-
-
-    site.status =
-        status;
-
-
-    updateDetailPanel(
-        site
-    );
-
-
-    renderSites();
-
-    updateDashboard();
-
-
-    showToast(
-        `${selectedSite} STATUS CHANGED TO ${status}`
-    );
-
-
-    await saveSiteToServer(
-        {
-            status
-        },
-        `${selectedSite} STATUS CHANGED: ${oldStatus} -> ${status}`
-    );
-
-}
-
-
-/* =====================================================
-   CONTROL BUTTONS
-===================================================== */
-
-function updateControlButtons(){
-
-    if(!selectedSite)
-        return;
-
-
-    const site =
-        sites[selectedSite];
-
-
-    if(!site)
-        return;
-
-
-    document
-        .querySelectorAll(
-            ".control-button"
-        )
-        .forEach(
-            button => {
-
-                button.classList.toggle(
-                    "selected",
-                    button.dataset.status ===
-                    site.status
-                );
-
-            }
+        .classList.remove(
+            "open"
         );
 
 }
@@ -3545,385 +3604,174 @@ function updateControlButtons(){
    SAVE SITE
 ===================================================== */
 
-async function saveSite(){
+function saveSite() {
 
-    if(!selectedSite)
+    if (!selectedSite) {
         return;
-
-
-    const button =
-        document.getElementById(
-            "saveButton"
-        );
-
-
-    const site =
-        sites[selectedSite];
-
-
-    if(!site)
-        return;
-
-
-    const security =
-        document.getElementById(
-            "securityLevel"
-        ).value;
-
-
-    const personnel =
-        Number(
-            document.getElementById(
-                "personnel"
-            ).value
-        );
-
-
-    const containment =
-        document.getElementById(
-            "containment"
-        ).value;
-
-
-    const incidents =
-        Number(
-            document.getElementById(
-                "incidents"
-            ).value
-        );
-
-
-    const description =
-        document.getElementById(
-            "siteDescription"
-        ).value.trim();
-
-
-    if(
-        !Number.isFinite(personnel) ||
-        personnel < 0
-    ){
-
-        showToast(
-            "INVALID PERSONNEL COUNT",
-            true
-        );
-
-        return;
-
     }
 
 
-    if(
-        !Number.isFinite(incidents) ||
-        incidents < 0
-    ){
-
-        showToast(
-            "INVALID INCIDENT COUNT",
-            true
-        );
-
-        return;
-
-    }
+    selectedSite.status =
+        document.getElementById(
+            "editStatus"
+        ).value;
 
 
-    const payload = {
-
-        status:
-            site.status,
-
-        security,
-
-        personnel:
-            Math.floor(
-                personnel
-            ),
-
-        containment,
-
-        incidents:
-            Math.floor(
-                incidents
-            ),
-
-        description
-
-    };
+    selectedSite.level =
+        document.getElementById(
+            "editLevel"
+        ).value;
 
 
-    button.classList.add(
-        "loading"
+    selectedSite.personnel =
+        Number(
+            document.getElementById(
+                "editPersonnel"
+            ).value
+        ) || 0;
+
+
+    selectedSite.incidents =
+        Number(
+            document.getElementById(
+                "editIncidents"
+            ).value
+        ) || 0;
+
+
+    selectedSite.containment =
+        document.getElementById(
+            "editContainment"
+        ).value;
+
+
+    selectedSite.materials =
+        document.getElementById(
+            "editMaterials"
+        ).value;
+
+
+    selectedSite.details =
+        document.getElementById(
+            "editDetails"
+        ).value;
+
+
+    localStorage.setItem(
+        "o5_sites",
+        JSON.stringify(
+            sites
+        )
     );
 
 
-    button.textContent =
-        "UPDATING FOUNDATION DATABASE...";
+    addLog(
+        `${selectedSite.id} configuration updated.`
+    );
 
 
-    try{
+    renderSites();
 
-        const response =
-            await fetch(
-                `/api/sites/${encodeURIComponent(
-                    selectedSite
-                )}`,
-                {
+    closeSite();
 
-                    method:"PUT",
-
-                    headers:{
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify(
-                            payload
-                        )
-
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if(
-            !response.ok ||
-            !data.success
-        ){
-
-            throw new Error(
-                data.message ||
-                "SITE UPDATE FAILED."
-            );
-
-        }
-
-
-        sites[selectedSite] =
-            data.site;
-
-
-        if(
-            Array.isArray(
-                data.activity
-            )
-        ){
-
-            globalActivity =
-                data.activity;
-
-        }
-
-
-        renderSites();
-
-        updateDashboard();
-
-        updateDetailPanel(
-            data.site
-        );
-
-        renderGlobalActivity();
-
-
-        await loadSiteActivity(
-            selectedSite
-        );
-
-
-        showToast(
-            `${selectedSite} CONFIGURATION SAVED`
-        );
-
-
-    }catch(error){
-
-        console.error(
-            error
-        );
-
-
-        showToast(
-            error.message ||
-            "SITE UPDATE FAILED",
-            true
-        );
-
-
-        await loadSites();
-
-
-    }finally{
-
-        button.classList.remove(
-            "loading"
-        );
-
-        button.textContent =
-            "SAVE FACILITY CONFIGURATION";
-
-    }
+    toast(
+        "FACILITY CONFIGURATION SAVED."
+    );
 
 }
 
 
 /* =====================================================
-   SAVE PARTIAL SITE
+   LOCKDOWN
 ===================================================== */
 
-async function saveSiteToServer(
-    changes,
-    successMessage
-){
+function toggleLockdown() {
 
-    if(!selectedSite)
+    if (!selectedSite) {
         return;
+    }
 
 
-    try{
+    if (
+        selectedSite.status ===
+        "LOCKDOWN"
+    ) {
 
-        const response =
-            await fetch(
-                `/api/sites/${encodeURIComponent(
-                    selectedSite
-                )}`,
-                {
+        selectedSite.status =
+            "ACTIVE";
 
-                    method:"PUT",
+        addLog(
+            `${selectedSite.id} lockdown lifted.`
+        );
 
-                    headers:{
-                        "Content-Type":
-                            "application/json"
-                    },
+        toast(
+            `${selectedSite.id} LOCKDOWN LIFTED.`
+        );
 
-                    body:
-                        JSON.stringify(
-                            changes
-                        )
+    } else {
 
-                }
+        selectedSite.status =
+            "LOCKDOWN";
+
+
+        const flash =
+            document.getElementById(
+                "lockdownFlash"
             );
 
 
-        const data =
-            await response.json();
-
-
-        if(
-            !response.ok ||
-            !data.success
-        ){
-
-            throw new Error(
-                data.message ||
-                "SITE UPDATE FAILED."
-            );
-
-        }
-
-
-        sites[selectedSite] =
-            data.site;
-
-
-        if(
-            Array.isArray(
-                data.activity
-            )
-        ){
-
-            globalActivity =
-                data.activity;
-
-        }
-
-
-        renderSites();
-
-        updateDashboard();
-
-        updateDetailPanel(
-            data.site
+        flash.classList.remove(
+            "active"
         );
 
-        renderGlobalActivity();
+        void flash.offsetWidth;
 
-        await loadSiteActivity(
-            selectedSite
+        flash.classList.add(
+            "active"
         );
 
 
-        if(successMessage){
-
-            addLocalVisualLog(
-                "SITE",
-                successMessage
-            );
-
-        }
-
-
-    }catch(error){
-
-        console.error(
-            error
+        addLog(
+            `${selectedSite.id} placed into lockdown.`
         );
 
-
-        showToast(
-            error.message ||
-            "SITE UPDATE FAILED",
-            true
+        toast(
+            `${selectedSite.id} LOCKDOWN ACTIVATED.`
         );
-
-
-        await loadSites();
 
     }
+
+
+    localStorage.setItem(
+        "o5_sites",
+        JSON.stringify(
+            sites
+        )
+    );
+
+
+    renderSites();
 
 }
 
 
 /* =====================================================
-   SITE ACTIVITY
+   REQUEST DATABASE
 ===================================================== */
 
-async function loadSiteActivity(
-    siteId
-){
+async function loadRequests() {
 
-    const container =
+    const list =
         document.getElementById(
-            "detailActivity"
+            "requestList"
         );
 
 
-    container.innerHTML =
-        `
-        <div style="
-            color:#56616d;
-            padding:5px;
-        ">
-            LOADING FACILITY ACTIVITY...
-        </div>
-        `;
-
-
-    try{
+    try {
 
         const response =
             await fetch(
-                `/api/sites/${encodeURIComponent(
-                    siteId
-                )}/activity`,
-                {
-                    cache:"no-store"
-                }
+                "/api/requests"
             );
 
 
@@ -3931,30 +3779,38 @@ async function loadSiteActivity(
             await response.json();
 
 
-        if(
-            !response.ok ||
-            !data.success
-        ){
+        if (
+            !data.success ||
+            !Array.isArray(
+                data.requests
+            )
+        ) {
 
-            throw new Error();
+            throw new Error(
+                "Invalid request response."
+            );
 
         }
 
 
-        if(
-            !Array.isArray(
-                data.activity
-            ) ||
-            !data.activity.length
-        ){
+        document.getElementById(
+            "requestCount"
+        ).textContent =
+            `${data.requests.length} REQUESTS`;
 
-            container.innerHTML =
+
+        if (!data.requests.length) {
+
+            list.innerHTML =
                 `
-                <div style="
-                    color:#56616d;
-                    padding:5px;
-                ">
-                    NO FACILITY ACTIVITY RECORDED.
+                <div
+                    style="
+                        color:#555e66;
+                        font-size:9px;
+                        padding:20px 0;
+                    "
+                >
+                    NO REQUESTS FOUND.
                 </div>
                 `;
 
@@ -3963,185 +3819,161 @@ async function loadSiteActivity(
         }
 
 
-        container.innerHTML =
-            data.activity
+        list.innerHTML =
+            data.requests
+                .slice()
+                .reverse()
                 .map(
-                    item => `
+                    request =>
+                        `
+                        <article class="request">
 
-                        <div class="detail-log-line">
+                            <div class="request-top">
 
-                            [${formatLogTime(
-                                item.createdAt
-                            )}]
+                                <span class="request-id">
+                                    ${escapeHtml(
+                                        request.id
+                                    )}
+                                </span>
 
-                            ${escapeHtml(
-                                item.type
-                            )}
+                                <span
+                                    class="request-status ${String(
+                                        request.status ||
+                                        "PENDING"
+                                    ).toLowerCase()}"
+                                >
+                                    ${escapeHtml(
+                                        request.status ||
+                                        "PENDING"
+                                    )}
+                                </span>
 
-                            ::
+                            </div>
 
-                            ${escapeHtml(
-                                item.message
-                            )}
+                            <div class="request-body">
 
-                        </div>
+                                PERSONNEL:
+                                ${escapeHtml(
+                                    request.name
+                                )}
 
-                    `
+                                <br>
+
+                                TYPE:
+                                ${escapeHtml(
+                                    request.typeName ||
+                                    request.type ||
+                                    "UNKNOWN"
+                                )}
+
+                                <br>
+
+                                TIME:
+                                ${escapeHtml(
+                                    request.time ||
+                                    "N/A"
+                                )}
+
+                                ${
+                                    request.scp
+                                        ? `
+                                        <br>
+                                        SCP:
+                                        ${escapeHtml(
+                                            request.scp
+                                        )}
+                                        `
+                                        : ""
+                                }
+
+                                ${
+                                    request.message
+                                        ? `
+                                        <br><br>
+                                        MESSAGE:
+                                        ${escapeHtml(
+                                            request.message
+                                        )}
+                                        `
+                                        : ""
+                                }
+
+                            </div>
+
+
+                            <div class="request-actions">
+
+                                <button
+                                    class="small-btn"
+                                    onclick="updateRequest('${escapeHtml(
+                                        request.id
+                                    )}','APPROVED')"
+                                >
+                                    APPROVE
+                                </button>
+
+                                <button
+                                    class="small-btn"
+                                    onclick="updateRequest('${escapeHtml(
+                                        request.id
+                                    )}','REJECTED')"
+                                >
+                                    REJECT
+                                </button>
+
+                            </div>
+
+                        </article>
+                        `
                 )
                 .join("");
 
 
-    }catch{
+    } catch (error) {
 
-        container.innerHTML =
+        list.innerHTML =
             `
-            <div style="
-                color:#56616d;
-                padding:5px;
-            ">
-                FACILITY ACTIVITY UNAVAILABLE.
+            <div class="alert">
+                <strong>
+                    [ERROR]
+                </strong>
+                Request database could not be loaded.
             </div>
             `;
 
+        document.getElementById(
+            "dashRequestState"
+        ).textContent =
+            "OFFLINE";
+
     }
 
 }
 
 
-/* =====================================================
-   GLOBAL ACTIVITY
-===================================================== */
+async function updateRequest(
+    id,
+    status
+) {
 
-function renderGlobalActivity(){
-
-    const container =
-        document.getElementById(
-            "activityLog"
-        );
-
-
-    if(
-        !Array.isArray(
-            globalActivity
-        ) ||
-        !globalActivity.length
-    ){
-
-        container.innerHTML = `
-
-            <div class="log-line">
-
-                <span class="log-time">
-                    --:--:--
-                </span>
-
-                <span class="log-type">
-                    SYSTEM
-                </span>
-
-                <span class="log-message">
-                    ADMINISTRATION SYSTEM INITIALIZED.
-                </span>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    container.innerHTML =
-        globalActivity
-            .slice(
-                0,
-                50
-            )
-            .map(
-                item => `
-
-                    <div class="log-line">
-
-                        <span class="log-time">
-                            ${formatLogTime(
-                                item.createdAt
-                            )}
-                        </span>
-
-                        <span class="log-type">
-                            ${escapeHtml(
-                                item.type
-                            )}
-                        </span>
-
-                        <span class="log-message">
-                            ${escapeHtml(
-                                item.message
-                            )}
-                        </span>
-
-                    </div>
-
-                `
-            )
-            .join("");
-
-}
-
-
-/* =====================================================
-   LOCAL VISUAL LOG
-===================================================== */
-
-function addLocalVisualLog(
-    type,
-    message
-){
-
-    globalActivity.unshift({
-
-        type,
-
-        message,
-
-        createdAt:
-            new Date().toISOString()
-
-    });
-
-
-    globalActivity =
-        globalActivity.slice(
-            0,
-            50
-        );
-
-
-    renderGlobalActivity();
-
-}
-
-
-/* =====================================================
-   REQUEST SYSTEM
-===================================================== */
-
-async function loadRequests(){
-
-    const container =
-        document.getElementById(
-            "requestList"
-        );
-
-
-    try{
+    try {
 
         const response =
             await fetch(
-                "/api/requests",
+                "/api/requests/" +
+                encodeURIComponent(id),
                 {
-                    cache:"no-store"
+                    method: "PATCH",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            status
+                        })
                 }
             );
 
@@ -4150,536 +3982,393 @@ async function loadRequests(){
             await response.json();
 
 
-        if(
-            !data.success ||
-            !Array.isArray(
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "REQUEST UPDATE FAILED."
+            );
+
+        }
+
+
+        addLog(
+            `Request ${id} marked ${status}.`
+        );
+
+
+        toast(
+            `REQUEST ${status}.`
+        );
+
+
+        loadRequests();
+
+
+    } catch (error) {
+
+        toast(
+            "REQUEST UPDATE FAILED."
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   COUNCIL REQUESTS
+===================================================== */
+
+async function loadCouncilRequests() {
+
+    const container =
+        document.getElementById(
+            "councilRequests"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/council/departure"
+            );
+
+
+        if (!response.ok) {
+            throw new Error(
+                "Council API unavailable."
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const requests =
+            Array.isArray(
                 data.requests
             )
-        ){
-
-            throw new Error();
-
-        }
+                ? data.requests
+                : [];
 
 
-        if(!data.requests.length){
+        renderCouncilRequests(
+            requests
+        );
 
-            container.innerHTML = `
 
-                <div style="
-                    color:#687482;
-                    font-size:10px;
-                    padding:10px;
-                ">
-                    NO REQUESTS FOUND.
-                </div>
+    } catch {
 
-            `;
+        /*
+         * Frontend fallback for the Lobby
+         * if the backend route has not yet
+         * been installed.
+         */
 
-            return;
+        const local =
+            JSON.parse(
+                localStorage.getItem(
+                    "o5_departure_requests"
+                ) || "[]"
+            );
 
-        }
 
+        renderCouncilRequests(
+            local
+        );
+
+    }
+
+}
+
+
+function renderCouncilRequests(
+    requests
+) {
+
+    const container =
+        document.getElementById(
+            "councilRequests"
+        );
+
+
+    document.getElementById(
+        "councilCount"
+    ).textContent =
+        `${requests.length} REQUESTS`;
+
+
+    if (!requests.length) {
 
         container.innerHTML =
-            data.requests
-                .slice()
-                .reverse()
-                .map(
-                    request =>
-                        createRequest(
-                            request
-                        )
-                )
-                .join("");
-
-
-    }catch{
-
-        container.innerHTML = `
-
-            <div style="
-                color:#687482;
-                font-size:10px;
-                padding:10px;
-            ">
-                REQUEST DATABASE TEMPORARILY UNAVAILABLE.
+            `
+            <div
+                style="
+                    color:#555e66;
+                    font-size:9px;
+                    padding:20px 0;
+                "
+            >
+                NO DEPARTURE REQUESTS FOUND.
             </div>
+            `;
 
-        `;
+        return;
 
     }
 
-}
 
+    container.innerHTML =
+        requests
+            .slice()
+            .reverse()
+            .map(
+                (request, index) =>
+                    `
+                    <article class="request">
 
-/* =====================================================
-   CREATE REQUEST
-===================================================== */
+                        <div class="request-top">
 
-function createRequest(
-    request
-){
+                            <span class="request-id">
+                                COUNCIL-${String(
+                                    index + 1
+                                ).padStart(4,"0")}
+                            </span>
 
-    const status =
-        String(
-            request.status ||
-            "PENDING"
-        ).toUpperCase();
+                            <span class="request-status pending">
+                                ${escapeHtml(
+                                    request.status ||
+                                    "PENDING"
+                                )}
+                            </span>
 
+                        </div>
 
-    return `
+                        <div class="request-body">
 
-        <article class="request-card">
+                            NAME:
+                            ${escapeHtml(
+                                request.name
+                            )}
 
-            <div class="request-top">
+                            <br>
 
-                <span class="request-id">
+                            POSITION:
+                            ${escapeHtml(
+                                request.rank
+                            )}
 
-                    ${escapeHtml(
-                        request.id
-                    )}
+                            <br>
 
-                </span>
+                            COUNCIL ID:
+                            ${escapeHtml(
+                                request.councilId
+                            )}
 
-                <span class="
-                    status
-                    ${status.toLowerCase()}
-                ">
+                            <br><br>
 
-                    ${escapeHtml(
-                        status
-                    )}
+                            REASON:
 
-                </span>
+                            <br>
 
-            </div>
+                            ${escapeHtml(
+                                request.reason
+                            )}
 
+                        </div>
 
-            <div class="request-name">
+                        <div class="request-actions">
 
-                ${escapeHtml(
-                    request.name ||
-                    "UNKNOWN PERSONNEL"
-                )}
+                            <button
+                                class="small-btn"
+                                onclick="approveCouncil(${index})"
+                            >
+                                AUTHORIZE
+                            </button>
 
-            </div>
+                            <button
+                                class="small-btn"
+                                onclick="rejectCouncil(${index})"
+                            >
+                                REJECT
+                            </button>
 
+                        </div>
 
-            <div class="request-meta">
-
-                <span>
-
-                    TYPE:
-                    ${escapeHtml(
-                        request.typeName ||
-                        request.type ||
-                        "UNKNOWN"
-                    )}
-
-                </span>
-
-
-                <span>
-
-                    TIME:
-                    ${escapeHtml(
-                        request.time ||
-                        "N/A"
-                    )}
-
-                </span>
-
-
-                <span>
-
-                    SCP:
-                    ${escapeHtml(
-                        request.scp ||
-                        "N/A"
-                    )}
-
-                </span>
-
-            </div>
-
-
-            ${
-                status ===
-                "PENDING"
-
-                ?
-
-                `
-
-                    <div class="request-actions">
-
-
-                        <button
-                            class="action approve"
-                            onclick="
-                                approveRequest(
-                                    '${escapeHtml(
-                                        request.id
-                                    )}'
-                                )
-                            "
-                        >
-                            APPROVE
-                        </button>
-
-
-                        <button
-                            class="action reject"
-                            onclick="
-                                rejectRequest(
-                                    '${escapeHtml(
-                                        request.id
-                                    )}'
-                                )
-                            "
-                        >
-                            REJECT
-                        </button>
-
-
-                    </div>
-
-                `
-
-                :
-
-                ""
-            }
-
-
-        </article>
-
-    `;
+                    </article>
+                    `
+            )
+            .join("");
 
 }
 
 
 /* =====================================================
-   APPROVE
+   COUNCIL LOCAL ACTIONS
 ===================================================== */
 
-async function approveRequest(
-    id
-){
+function approveCouncil(index) {
 
-    const message =
-        "YOUR REQUEST HAS BEEN APPROVED.";
-
-
-    try{
-
-        const response =
-            await fetch(
-                `/api/requests/${encodeURIComponent(
-                    id
-                )}/approve`,
-                {
-
-                    method:
-                        "POST",
-
-                    headers:{
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify({
-                            message
-                        })
-
-                }
-            );
-
-
-        if(!response.ok)
-            throw new Error();
-
-
-        showToast(
-            `${id} APPROVED`
+    const requests =
+        JSON.parse(
+            localStorage.getItem(
+                "o5_departure_requests"
+            ) || "[]"
         );
 
 
-        addLocalVisualLog(
-            "REQUEST",
-            `${id} APPROVED`
-        );
-
-
-        loadRequests();
-
-
-    }catch{
-
-        showToast(
-            "REQUEST APPROVAL FAILED",
-            true
-        );
-
+    if (!requests[index]) {
+        return;
     }
 
-}
+
+    requests[index].status =
+        "APPROVED";
 
 
-/* =====================================================
-   REJECT
-===================================================== */
-
-async function rejectRequest(
-    id
-){
-
-    const message =
-        "YOUR REQUEST HAS BEEN REJECTED.";
-
-
-    try{
-
-        const response =
-            await fetch(
-                `/api/requests/${encodeURIComponent(
-                    id
-                )}/reject`,
-                {
-
-                    method:
-                        "POST",
-
-                    headers:{
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify({
-                            message
-                        })
-
-                }
-            );
-
-
-        if(!response.ok)
-            throw new Error();
-
-
-        showToast(
-            `${id} REJECTED`
-        );
-
-
-        addLocalVisualLog(
-            "REQUEST",
-            `${id} REJECTED`
-        );
-
-
-        loadRequests();
-
-
-    }catch{
-
-        showToast(
-            "REQUEST REJECTION FAILED",
-            true
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   TOAST
-===================================================== */
-
-function showToast(
-    message,
-    error = false
-){
-
-    const toast =
-        document.getElementById(
-            "toast"
-        );
-
-
-    toast.textContent =
-        message;
-
-
-    toast.classList.toggle(
-        "error",
-        error
-    );
-
-
-    toast.classList.add(
-        "show"
-    );
-
-
-    clearTimeout(
-        toastTimer
-    );
-
-
-    toastTimer =
-        setTimeout(
-            () => {
-
-                toast.classList.remove(
-                    "show"
-                );
-
-            },
-            2600
-        );
-
-}
-
-
-/* =====================================================
-   FORMAT NUMBER
-===================================================== */
-
-function formatNumber(
-    value
-){
-
-    return Number(
-        value || 0
-    ).toLocaleString(
-        "en-US"
-    );
-
-}
-
-
-/* =====================================================
-   FORMAT TIME
-===================================================== */
-
-function formatLogTime(
-    value
-){
-
-    if(!value)
-        return "--:--:--";
-
-
-    const date =
-        new Date(
-            value
-        );
-
-
-    if(
-        Number.isNaN(
-            date.getTime()
+    localStorage.setItem(
+        "o5_departure_requests",
+        JSON.stringify(
+            requests
         )
-    ){
+    );
 
-        return "--:--:--";
 
+    addLog(
+        "O5 Council departure request authorized."
+    );
+
+
+    toast(
+        "DEPARTURE REQUEST AUTHORIZED."
+    );
+
+
+    loadCouncilRequests();
+
+}
+
+
+function rejectCouncil(index) {
+
+    const requests =
+        JSON.parse(
+            localStorage.getItem(
+                "o5_departure_requests"
+            ) || "[]"
+        );
+
+
+    if (!requests[index]) {
+        return;
     }
 
 
-    return date.toLocaleTimeString(
-        [],
-        {
-            hour:"2-digit",
-            minute:"2-digit",
-            second:"2-digit"
-        }
+    requests[index].status =
+        "REJECTED";
+
+
+    localStorage.setItem(
+        "o5_departure_requests",
+        JSON.stringify(
+            requests
+        )
     );
+
+
+    addLog(
+        "O5 Council departure request rejected."
+    );
+
+
+    toast(
+        "DEPARTURE REQUEST REJECTED."
+    );
+
+
+    loadCouncilRequests();
 
 }
 
 
 /* =====================================================
-   ESCAPE HTML
+   CLOCK
 ===================================================== */
 
-function escapeHtml(
-    value
-){
+function updateClock() {
 
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    )
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-    .replace(
-        /'/g,
-        "&#039;"
-    );
+    const now =
+        new Date();
+
+
+    const time =
+        now.toLocaleTimeString(
+            "en-GB"
+        );
+
+
+    document.getElementById(
+        "clock"
+    ).textContent =
+        time;
 
 }
+
+
+setInterval(
+    updateClock,
+    1000
+);
+
+updateClock();
 
 
 /* =====================================================
    INITIALIZE
 ===================================================== */
 
-(async function(){
+renderSites();
 
-    await Promise.all([
-        loadSites(),
-        loadRequests()
-    ]);
+renderLogs();
 
-    renderGlobalActivity();
+loadRequests();
 
-})();
+loadCouncilRequests();
+
+
+addLog(
+    "O5 Administration interface initialized."
+);
 
 
 /* =====================================================
-   AUTO REFRESH
+   CLOSE PANEL BY BACKDROP
 ===================================================== */
 
-setInterval(
-    async () => {
+document
+    .getElementById(
+        "detailOverlay"
+    )
+    .addEventListener(
+        "click",
+        event => {
 
-        await loadSites();
+            if (
+                event.target.id ===
+                "detailOverlay"
+            ) {
 
-    },
-    10000
-);
+                closeSite();
 
+            }
 
-setInterval(
-    async () => {
-
-        await loadRequests();
-
-    },
-    10000
-);
+        }
+    );
 
 </script>
 
 </body>
-
 </html>

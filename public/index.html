@@ -1,17 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SITE-64 // SECURE CONTAIN PROTECT</title>
+<title>O5 COUNCIL // [SITE-64]</title>
 
 <style>
 
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #040506;
+    --panel: #090c10;
+    --panel2: #0d1116;
+    --line: rgba(255,255,255,.09);
+    --text: #e5e8eb;
+    --muted: #707982;
+    --red: #c90024;
+    --red2: #ff173e;
+    --green: #72b78a;
+    --yellow: #c9a84a;
 }
 
 html {
@@ -19,214 +32,492 @@ html {
 }
 
 body {
-    margin: 0;
-    background: #05080b;
-    color: #e5ebef;
+    background: var(--bg);
+    color: var(--text);
     font-family: "Courier New", monospace;
+    overflow-x: hidden;
 }
 
-/* =========================
-   NAVIGATION
-========================= */
+/* =====================================================
+   BACKGROUND
+===================================================== */
 
-.navigation {
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: .35;
+
+    background:
+        linear-gradient(
+            rgba(255,255,255,.015) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.015) 1px,
+            transparent 1px
+        );
+
+    background-size: 40px 40px;
+    z-index: -3;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle at 50% 10%,
+            rgba(201,0,36,.07),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 80% 80%,
+            rgba(201,0,36,.025),
+            transparent 30%
+        );
+
+    z-index: -2;
+}
+
+.scanline {
+    position: fixed;
+    top: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+
+    background: rgba(255,23,62,.5);
+    box-shadow: 0 0 18px rgba(255,23,62,.65);
+
+    z-index: 9999;
+    pointer-events: none;
+
+    animation: scan 8s linear infinite;
+}
+
+@keyframes scan {
+    from {
+        top: -5px;
+    }
+
+    to {
+        top: 105%;
+    }
+}
+
+/* =====================================================
+   TOP BAR
+===================================================== */
+
+header {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    height: 65px;
+    width: 100%;
+    height: 70px;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    padding: 0 35px;
+    padding: 0 45px;
 
-    background: rgba(5, 8, 11, .95);
-    border-bottom: 1px solid #26323c;
+    background: rgba(4,5,6,.88);
+    border-bottom: 1px solid var(--line);
+
+    backdrop-filter: blur(14px);
 
     z-index: 1000;
 }
 
 .logo {
-    font-size: 18px;
-    font-weight: bold;
-    letter-spacing: 4px;
-}
-
-.navigation-links {
     display: flex;
-    gap: 25px;
+    align-items: center;
+    gap: 15px;
+
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 3px;
 }
 
-.navigation a {
-    color: #7d8a95;
+.logo-symbol {
+    width: 34px;
+    height: 34px;
+
+    border: 1px solid var(--red);
+    display: grid;
+    place-items: center;
+
+    color: var(--red2);
+
+    box-shadow:
+        0 0 18px rgba(201,0,36,.18);
+}
+
+.header-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+    background: var(--green);
+
+    box-shadow: 0 0 12px rgba(114,183,138,.7);
+
+    animation: statusPulse 2s infinite;
+}
+
+@keyframes statusPulse {
+    0%,100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .35;
+    }
+}
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+nav {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+
+    height: 46px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+
+    background: rgba(4,5,6,.76);
+    border-bottom: 1px solid rgba(255,255,255,.045);
+
+    backdrop-filter: blur(10px);
+
+    z-index: 999;
+}
+
+nav a {
+    color: #626a72;
     text-decoration: none;
-    font-size: 12px;
+
+    font-size: 9px;
     letter-spacing: 2px;
 
     transition: .25s;
+
+    position: relative;
 }
 
-.navigation a:hover,
-.navigation a.active {
+nav a::after {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -9px;
+
+    height: 1px;
+
+    background: var(--red);
+
+    transform: scaleX(0);
+    transition: .25s;
+}
+
+nav a:hover,
+nav a.active {
     color: #fff;
 }
 
-/* =========================
-   HERO
-========================= */
+nav a:hover::after,
+nav a.active::after {
+    transform: scaleX(1);
+}
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+main {
+    width: min(1200px, calc(100% - 40px));
+    margin: auto;
+}
+
+/* =====================================================
+   HERO / LOBBY
+===================================================== */
 
 .hero {
-    min-height: 100vh;
+    min-height: 820px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    padding: 100px 25px 50px;
+    text-align: center;
 
-    background:
-        radial-gradient(
-            circle at center,
-            #111a22 0%,
-            #05080b 60%
-        );
+    padding-top: 120px;
+
+    position: relative;
+}
+
+.hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 600px;
+    height: 600px;
+
+    border: 1px solid rgba(201,0,36,.07);
+    border-radius: 50%;
+
+    animation: radar 12s linear infinite;
+}
+
+@keyframes radar {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .hero-content {
-    width: min(950px, 95%);
+    position: relative;
+    z-index: 2;
+
+    animation: heroIn 1s ease both;
+}
+
+@keyframes heroIn {
+    from {
+        opacity: 0;
+        transform: translateY(35px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .classification {
-    color: #697783;
-    font-size: 12px;
-    letter-spacing: 4px;
-    margin-bottom: 20px;
+    color: var(--red2);
+
+    font-size: 10px;
+    letter-spacing: 5px;
+
+    margin-bottom: 25px;
+
+    animation: flicker 4s infinite;
+}
+
+@keyframes flicker {
+    0%, 92%, 94%, 96%, 100% {
+        opacity: 1;
+    }
+
+    93%, 95% {
+        opacity: .25;
+    }
 }
 
 .hero h1 {
-    font-size: clamp(42px, 8vw, 90px);
-    margin: 0;
+    font-size: clamp(45px, 8vw, 105px);
 
-    letter-spacing: 10px;
+    letter-spacing: 8px;
+
+    line-height: .95;
+
+    font-weight: 700;
 }
 
-.hero p {
-    color: #84919c;
-    max-width: 700px;
-    line-height: 1.8;
+.hero-site {
+    margin-top: 22px;
+
+    color: rgba(255,255,255,.24);
+
+    font-size: 14px;
+    letter-spacing: 7px;
 }
 
-.hero-buttons {
+.hero-line {
+    width: 170px;
+    height: 1px;
+
+    background: var(--red);
+
+    margin: 32px auto;
+
+    box-shadow:
+        0 0 18px rgba(201,0,36,.45);
+}
+
+.hero-sub {
+    color: var(--muted);
+
+    font-size: 11px;
+    letter-spacing: 3px;
+}
+
+/* =====================================================
+   SECTION
+===================================================== */
+
+section {
+    padding: 100px 0;
+}
+
+.section-header {
     display: flex;
-    gap: 12px;
-    margin-top: 30px;
-    flex-wrap: wrap;
-}
+    align-items: center;
+    gap: 20px;
 
-.button {
-    display: inline-block;
-
-    padding: 15px 24px;
-
-    border: 1px solid #45525e;
-
-    background: #0b1116;
-
-    color: #dce4e9;
-
-    text-decoration: none;
-
-    font-family: inherit;
-
-    font-size: 12px;
-
-    letter-spacing: 2px;
-
-    cursor: pointer;
-
-    transition: .25s;
-}
-
-.button:hover {
-    background: #17212a;
-    border-color: #8b99a5;
-}
-
-/* =========================
-   SECTIONS
-========================= */
-
-.page-section {
-    min-height: 100vh;
-    padding: 110px 25px 70px;
-
-    border-top: 1px solid #182129;
-}
-
-.section-container {
-    width: min(1100px, 95%);
-    margin: auto;
-}
-
-.section-title {
-    font-size: 28px;
-    letter-spacing: 5px;
-    margin-bottom: 10px;
-}
-
-.section-subtitle {
-    color: #71808c;
-    font-size: 12px;
     margin-bottom: 35px;
 }
 
-/* =========================
-   STATUS
-========================= */
+.section-header::before,
+.section-header::after {
+    content: "";
 
-.status-grid {
+    height: 1px;
+    background: var(--line);
+
+    flex: 1;
+}
+
+.section-header h2 {
+    font-size: 14px;
+
+    letter-spacing: 4px;
+
+    white-space: nowrap;
+}
+
+.section-class {
+    color: var(--red2);
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 8px;
+}
+
+/* =====================================================
+   COUNCIL STATUS
+===================================================== */
+
+.council-status {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 12px;
 }
 
 .status-card {
-    padding: 25px;
+    background: var(--panel);
 
-    background: #080d12;
+    border: 1px solid var(--line);
 
-    border: 1px solid #26323c;
+    padding: 24px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    animation: cardIn .7s ease both;
+}
+
+.status-card::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 2px;
+    height: 100%;
+
+    background: var(--red);
+
+    transform: scaleY(0);
+
+    transition: .35s;
+}
+
+.status-card:hover::before {
+    transform: scaleY(1);
 }
 
 .status-label {
-    color: #667580;
-    font-size: 10px;
+    color: #596169;
+
+    font-size: 8px;
+
     letter-spacing: 2px;
 }
 
 .status-value {
-    margin-top: 12px;
+    margin-top: 13px;
 
-    color: #dfe7ec;
+    font-size: 18px;
 
-    font-size: 20px;
+    letter-spacing: 2px;
 }
 
-/* =========================
-   REQUEST FORM
-========================= */
-
-.request-box {
-    padding: 30px;
-
-    background: #080d12;
-
-    border: 1px solid #2b3741;
+.status-value.online {
+    color: var(--green);
 }
 
-.form-grid {
+.status-value.warning {
+    color: var(--yellow);
+}
+
+@keyframes cardIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =====================================================
+   REQUIREMENTS
+===================================================== */
+
+.requirements-grid {
     display: grid;
 
     grid-template-columns:
@@ -235,164 +526,364 @@ body {
     gap: 18px;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
+.requirement {
+    background: var(--panel);
+
+    border: 1px solid var(--line);
+
+    padding: 30px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    transition: .3s;
 }
 
-.form-group.full {
-    grid-column: 1 / -1;
+.requirement:hover {
+    transform: translateY(-4px);
+
+    border-color:
+        rgba(201,0,36,.35);
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.35);
 }
 
-label {
-    margin-bottom: 8px;
-
-    color: #778590;
+.requirement-number {
+    color: var(--red);
 
     font-size: 10px;
+
+    letter-spacing: 3px;
+}
+
+.requirement h3 {
+    margin-top: 12px;
+
+    font-size: 17px;
 
     letter-spacing: 2px;
 }
 
-input,
-select,
-textarea {
+.requirement p {
+    margin-top: 13px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+
+    line-height: 1.8;
+}
+
+.requirement ul {
+    margin-top: 20px;
+
+    padding-left: 20px;
+}
+
+.requirement li {
+    color: #a6adb4;
+
+    font-size: 10px;
+
+    margin: 11px 0;
+
+    line-height: 1.6;
+}
+
+.requirement li::marker {
+    color: var(--red);
+}
+
+/* =====================================================
+   SATELLITE
+===================================================== */
+
+.satellite {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(201,0,36,.055),
+            transparent 50%
+        ),
+        var(--panel);
+
+    border: 1px solid rgba(201,0,36,.2);
+
+    padding: 45px;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.satellite::after {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+
+    left: -100%;
+
+    width: 40%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.04),
+            transparent
+        );
+
+    animation: satelliteScan 5s linear infinite;
+}
+
+@keyframes satelliteScan {
+    from {
+        left: -50%;
+    }
+
+    to {
+        left: 120%;
+    }
+}
+
+.satellite-top {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.satellite-title {
+    font-size: 21px;
+
+    letter-spacing: 3px;
+}
+
+.satellite-status {
+    padding: 9px 14px;
+
+    border: 1px solid
+        rgba(201,168,74,.3);
+
+    color: var(--yellow);
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+}
+
+.satellite-description {
+    max-width: 800px;
+
+    margin-top: 20px;
+
+    color: #8b939b;
+
+    font-size: 11px;
+
+    line-height: 1.9;
+}
+
+.material-grid {
+    margin-top: 30px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 10px;
+}
+
+.material {
+    padding: 18px;
+
+    border: 1px solid
+        rgba(255,255,255,.06);
+
+    background: rgba(0,0,0,.18);
+}
+
+.material-name {
+    color: #777f87;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+}
+
+.material-value {
+    margin-top: 10px;
+
+    color: var(--red2);
+
+    font-size: 12px;
+
+    letter-spacing: 1px;
+}
+
+/* =====================================================
+   DEPARTURE PERMIT
+===================================================== */
+
+.permit-layout {
+    display: grid;
+
+    grid-template-columns:
+        1.1fr .9fr;
+
+    gap: 20px;
+}
+
+.permit-form {
+    background: var(--panel);
+
+    border: 1px solid var(--line);
+
+    padding: 35px;
+}
+
+.form-row {
+    margin-bottom: 18px;
+}
+
+.form-row label {
+    display: block;
+
+    color: #686f77;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 8px;
+}
+
+.form-row input,
+.form-row textarea,
+.form-row select {
     width: 100%;
 
+    background: #050608;
+
+    border: 1px solid #20252b;
+
+    color: #dfe3e6;
+
     padding: 14px;
-
-    background: #04070a;
-
-    border: 1px solid #293640;
-
-    color: #e5ebef;
 
     outline: none;
 
     font-family: inherit;
+
+    font-size: 11px;
+
+    transition: .25s;
 }
 
-input:focus,
-select:focus,
-textarea:focus {
-    border-color: #7d8b97;
-}
+.form-row textarea {
+    min-height: 120px;
 
-textarea {
-    min-height: 130px;
     resize: vertical;
 }
 
-#scpGroup {
-    display: none;
+.form-row input:focus,
+.form-row textarea:focus,
+.form-row select:focus {
+    border-color: var(--red);
+
+    box-shadow:
+        0 0 20px
+        rgba(201,0,36,.08);
 }
 
-.submit-button {
-    margin-top: 20px;
-
+.submit-btn {
     width: 100%;
 
-    padding: 16px;
+    margin-top: 10px;
 
-    background: #101820;
+    padding: 15px;
 
-    border: 1px solid #52616e;
+    border: 1px solid var(--red);
+
+    background: rgba(201,0,36,.08);
 
     color: white;
 
     font-family: inherit;
 
+    font-size: 10px;
+
     letter-spacing: 3px;
 
     cursor: pointer;
+
+    transition: .25s;
 }
 
-.submit-button:hover {
-    background: #18232c;
+.submit-btn:hover {
+    background: var(--red);
+
+    box-shadow:
+        0 0 30px
+        rgba(201,0,36,.2);
 }
 
-/* =========================
-   RESULT
-========================= */
+.permit-info {
+    background: var(--panel2);
 
-.result {
-    margin-top: 20px;
+    border: 1px solid var(--line);
 
-    min-height: 20px;
+    padding: 35px;
+}
 
-    padding: 15px;
+.permit-info h3 {
+    font-size: 15px;
 
-    border: 1px solid transparent;
+    letter-spacing: 2px;
+}
 
-    font-size: 12px;
+.permit-info p {
+    margin-top: 18px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+
+    line-height: 1.8;
+}
+
+.permit-rule {
+    display: flex;
+
+    gap: 12px;
+
+    margin-top: 22px;
+
+    color: #8f979e;
+
+    font-size: 9px;
 
     line-height: 1.7;
 }
 
-.result.success {
-    border-color: #31553d;
-    color: #7ec994;
+.permit-rule span {
+    color: var(--red2);
 }
 
-.result.error {
-    border-color: #633536;
-    color: #ff7272;
-}
+/* =====================================================
+   FACILITIES
+===================================================== */
 
-/* =========================
-   REQUEST CARDS
-========================= */
-
-.requests-list {
-    display: grid;
-    gap: 15px;
-}
-
-.request-card {
-    padding: 22px;
-
-    background: #080d12;
-
-    border: 1px solid #27343e;
-}
-
-.request-card-top {
-    display: flex;
-
-    justify-content: space-between;
-
-    gap: 15px;
-
-    margin-bottom: 20px;
-}
-
-.request-id {
-    color: #8d9aa5;
-}
-
-.request-status {
-    padding: 5px 10px;
-
-    border: 1px solid #3b4650;
-
-    font-size: 10px;
-
-    letter-spacing: 1px;
-}
-
-.request-status.pending {
-    color: #d9c777;
-}
-
-.request-status.approved {
-    color: #7ed394;
-}
-
-.request-status.rejected {
-    color: #f16d6d;
-}
-
-.request-details {
+.site-grid {
     display: grid;
 
     grid-template-columns:
@@ -401,296 +892,429 @@ textarea {
     gap: 15px;
 }
 
-.request-detail span {
-    display: block;
+.site-card {
+    background: var(--panel);
 
-    color: #65737e;
+    border: 1px solid var(--line);
 
-    font-size: 9px;
+    padding: 28px;
 
-    letter-spacing: 2px;
+    position: relative;
 
-    margin-bottom: 7px;
+    transition: .3s;
+
+    overflow: hidden;
 }
 
-.request-detail strong {
+.site-card:hover {
+    transform: translateY(-5px);
+
+    border-color:
+        rgba(201,0,36,.4);
+}
+
+.site-number {
+    color: var(--red2);
+
+    font-size: 18px;
+
+    letter-spacing: 3px;
+}
+
+.site-card h3 {
+    margin-top: 14px;
+
     font-size: 13px;
+
+    letter-spacing: 1px;
 }
 
-.admin-message {
+.site-card p {
+    margin-top: 13px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+
+    line-height: 1.7;
+}
+
+.site-status {
+    display: inline-block;
+
     margin-top: 20px;
 
-    padding: 15px;
+    padding: 6px 10px;
 
-    background: #05090d;
+    border: 1px solid
+        rgba(114,183,138,.2);
 
-    border-left: 2px solid #53616c;
+    color: var(--green);
 
-    color: #aab5bd;
+    font-size: 8px;
 
-    line-height: 1.7;
+    letter-spacing: 2px;
 }
 
-.empty-state {
-    padding: 45px;
+/* =====================================================
+   WARNING
+===================================================== */
 
-    text-align: center;
+.warning-panel {
+    border: 1px solid rgba(201,0,36,.3);
 
-    border: 1px dashed #293640;
+    background:
+        rgba(201,0,36,.035);
 
-    color: #7c8993;
-}
-
-.empty-state span {
-    display: block;
-
-    margin-top: 10px;
-
-    font-size: 11px;
-}
-
-/* =========================
-   TERMINAL
-========================= */
-
-.terminal {
-    padding: 25px;
-
-    background: #020405;
-
-    border: 1px solid #27333c;
-
-    min-height: 280px;
-}
-
-.terminal-output {
-    height: 190px;
-
-    overflow-y: auto;
-
-    color: #9ba8b1;
-
-    font-size: 12px;
-
-    line-height: 1.7;
-
-    margin-bottom: 15px;
-}
-
-.terminal-form {
-    display: flex;
-}
-
-.terminal-form input {
-    border-right: none;
-}
-
-.terminal-form button {
-    width: 100px;
-
-    border: 1px solid #35434d;
-
-    background: #10171d;
-
-    color: white;
-
-    font-family: inherit;
-
-    cursor: pointer;
-}
-
-/* =========================
-   FOOTER
-========================= */
-
-footer {
     padding: 30px;
 
     text-align: center;
 
-    color: #4e5b65;
+    position: relative;
+}
+
+.warning-panel::before {
+    content: "CLASSIFIED";
+
+    position: absolute;
+
+    top: 12px;
+    right: 15px;
+
+    color: rgba(255,255,255,.12);
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+}
+
+.warning-symbol {
+    color: var(--red2);
+
+    font-size: 28px;
+
+    animation: warningPulse 1.5s infinite;
+}
+
+.warning-panel h3 {
+    margin-top: 14px;
+
+    font-size: 15px;
+
+    letter-spacing: 3px;
+}
+
+.warning-panel p {
+    margin: 15px auto 0;
+
+    max-width: 800px;
+
+    color: #858d95;
 
     font-size: 10px;
 
-    letter-spacing: 2px;
-
-    border-top: 1px solid #182129;
+    line-height: 1.8;
 }
 
-/* =========================
-   MOBILE
-========================= */
+@keyframes warningPulse {
+    0%,100% {
+        opacity: 1;
+        text-shadow: none;
+    }
 
-@media(max-width: 750px) {
+    50% {
+        opacity: .45;
+        text-shadow:
+            0 0 20px
+            rgba(255,23,62,.7);
+    }
+}
 
-    .navigation {
+/* =====================================================
+   ABOUT
+===================================================== */
+
+.about {
+    max-width: 850px;
+
+    margin: auto;
+
+    text-align: center;
+}
+
+.about p {
+    color: var(--muted);
+
+    font-size: 11px;
+
+    line-height: 2;
+
+    margin-top: 15px;
+}
+
+.classified {
+    margin-top: 25px;
+
+    color: rgba(255,255,255,.18);
+
+    font-size: 9px;
+
+    letter-spacing: 3px;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+    border-top: 1px solid var(--line);
+
+    padding: 35px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    color: #3e454c;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+}
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+#toast {
+    position: fixed;
+
+    right: 25px;
+    bottom: 25px;
+
+    background: #090c10;
+
+    border: 1px solid var(--red);
+
+    padding: 16px 20px;
+
+    color: #fff;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+
+    transform:
+        translateY(30px);
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: .35s;
+
+    z-index: 5000;
+}
+
+#toast.show {
+    transform:
+        translateY(0);
+
+    opacity: 1;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 850px) {
+
+    header {
+        padding: 0 18px;
+    }
+
+    nav {
+        gap: 13px;
+
+        overflow-x: auto;
+
+        justify-content: flex-start;
+
         padding: 0 15px;
     }
 
-    .navigation-links {
-        gap: 10px;
+    .header-status {
+        display: none;
     }
 
-    .navigation a {
-        font-size: 9px;
-    }
-
-    .form-grid,
-    .status-grid,
-    .request-details {
+    .council-status,
+    .requirements-grid,
+    .permit-layout,
+    .site-grid,
+    .material-grid {
         grid-template-columns: 1fr;
     }
 
-    .hero h1 {
-        letter-spacing: 5px;
+    section {
+        padding: 70px 0;
+    }
+
+    .hero {
+        min-height: 700px;
+    }
+
+    .hero::before {
+        width: 350px;
+        height: 350px;
+    }
+
+    .satellite {
+        padding: 28px 20px;
+    }
+
+    .satellite-top {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    footer {
+        flex-direction: column;
+
+        gap: 12px;
     }
 }
 
 </style>
-
 </head>
 
 <body>
 
+<div class="scanline"></div>
 
-<!-- =========================
-     NAVIGATION
-========================= -->
 
-<nav class="navigation">
+<header>
 
     <div class="logo">
-        SITE-64
-    </div>
 
-    <div class="navigation-links">
+        <div class="logo-symbol">
+            Ω
+        </div>
 
-        <a href="#home" class="active">
-            HOME
-        </a>
-
-        <a href="#request">
-            REQUEST
-        </a>
-
-        <a href="#requests">
-            MY REQUESTS
-        </a>
-
-        <a href="/sites">
-            SITES
-        </a>
-
-        <a href="/term">
-            TERM
-        </a>
-
-        <a href="/warhead">
-            WARHEAD
-        </a>
-
-        <a href="/admin">
-            ADMIN
-        </a>
+        <span>
+            O5 COUNCIL
+        </span>
 
     </div>
+
+    <div class="header-status">
+
+        <span class="status-dot"></span>
+
+        COUNCIL NETWORK // ONLINE
+
+    </div>
+
+</header>
+
+
+<nav>
+
+    <a href="#home" class="active">
+        LOBBY
+    </a>
+
+    <a href="#requirements">
+        REQUIREMENTS
+    </a>
+
+    <a href="#satellite">
+        SATELLITE
+    </a>
+
+    <a href="#departure">
+        DEPARTURE
+    </a>
+
+    <a href="#sites">
+        FACILITIES
+    </a>
+
+    <a href="/warhead">
+        WARHEAD
+    </a>
+
+    <a href="/admin">
+        ADMIN
+    </a>
 
 </nav>
 
 
-<!-- =========================
-     HOME
-========================= -->
+<main>
+
+
+<!-- =====================================================
+     LOBBY
+====================================================== -->
 
 <section
+    class="hero"
     id="home"
-    class="page-section hero"
 >
 
-<div class="hero-content">
+    <div class="hero-content">
 
-    <div class="classification">
-        SECURE CONTAIN PROTECT // CLASSIFIED
-    </div>
+        <div class="classification">
+            SECURE • CONTAIN • PROTECT
+        </div>
 
-    <h1>
-        SITE-64
-    </h1>
+        <h1>
+            O5 COUNCIL
+        </h1>
 
-    <p>
-        SECURE CONTAIN PROTECT administration
-        and facility management system.
-    </p>
+        <div class="hero-site">
+            [SITE-64]
+        </div>
 
-    <p>
-        All requests, incidents and strategic
-        systems are monitored by SITE-64
-        administration.
-    </p>
+        <div class="hero-line"></div>
 
-    <div class="hero-buttons">
-
-        <a
-            href="#request"
-            class="button"
-        >
-            SUBMIT REQUEST
-        </a>
-
-        <a
-            href="/warhead"
-            class="button"
-        >
-            WARHEAD CONTROL
-        </a>
-
-        <a
-            href="/sites"
-            class="button"
-        >
-            SITE STATUS
-        </a>
+        <div class="hero-sub">
+            COUNCIL COMMAND // CLASSIFIED ACCESS
+        </div>
 
     </div>
-
-</div>
 
 </section>
 
 
-<!-- =========================
-     SYSTEM STATUS
-========================= -->
+<!-- =====================================================
+     STATUS
+====================================================== -->
 
-<section
-    id="status"
-    class="page-section"
->
+<section>
 
-<div class="section-container">
-
-    <div class="section-title">
-        SYSTEM STATUS
+    <div class="section-class">
+        COUNCIL NETWORK
     </div>
 
-    <div class="section-subtitle">
-        CURRENT FACILITY STATUS
+    <div class="section-header">
+        <h2>
+            O5 COUNCIL STATUS
+        </h2>
     </div>
 
 
-    <div class="status-grid">
+    <div class="council-status">
 
         <div class="status-card">
 
             <div class="status-label">
-                SERVER
+                COUNCIL NETWORK
             </div>
 
-            <div
-                id="serverStatus"
-                class="status-value"
-            >
-                CHECKING...
+            <div class="status-value online">
+                ONLINE
             </div>
 
         </div>
@@ -699,280 +1323,699 @@ footer {
         <div class="status-card">
 
             <div class="status-label">
-                DATABASE
-            </div>
-
-            <div
-                id="databaseStatus"
-                class="status-value"
-            >
-                CHECKING...
-            </div>
-
-        </div>
-
-
-        <div class="status-card">
-
-            <div class="status-label">
-                FACILITY
+                COUNCIL ACCESS
             </div>
 
             <div class="status-value">
-                SITE-64
+                RESTRICTED
+            </div>
+
+        </div>
+
+
+        <div class="status-card">
+
+            <div class="status-label">
+                WARHEAD CONTROL
+            </div>
+
+            <div class="status-value warning">
+                ARMED
+            </div>
+
+        </div>
+
+
+        <div class="status-card">
+
+            <div class="status-label">
+                EXTERNAL SATELLITE
+            </div>
+
+            <div class="status-value warning">
+                UNAVAILABLE
             </div>
 
         </div>
 
     </div>
 
-</div>
+</section>
+
+
+<!-- =====================================================
+     REQUIREMENTS
+====================================================== -->
+
+<section
+    id="requirements"
+>
+
+    <div class="section-class">
+        COUNCIL REGULATIONS
+    </div>
+
+    <div class="section-header">
+        <h2>
+            O5 COUNCIL REQUIREMENTS
+        </h2>
+    </div>
+
+
+    <div class="requirements-grid">
+
+
+        <article class="requirement">
+
+            <div class="requirement-number">
+                01 // COUNCIL DEPARTURE
+            </div>
+
+            <h3>
+                REQUIREMENTS TO LEAVE THE O5 COUNCIL
+            </h3>
+
+            <p>
+                Council membership cannot be terminated
+                through standard Foundation procedures.
+            </p>
+
+            <ul>
+
+                <li>
+                    Valid Council departure authorization
+                </li>
+
+                <li>
+                    Council security review
+                </li>
+
+                <li>
+                    Resolution of all active Council obligations
+                </li>
+
+                <li>
+                    O5 Council approval
+                </li>
+
+                <li>
+                    Submission of an official departure permit
+                </li>
+
+            </ul>
+
+        </article>
+
+
+        <article class="requirement">
+
+            <div class="requirement-number">
+                02 // WARHEAD DEACTIVATION
+            </div>
+
+            <h3>
+                REQUIREMENTS TO DISABLE WARHEADS
+            </h3>
+
+            <p>
+                Warhead deactivation requires authorization
+                from the O5 Council.
+            </p>
+
+            <ul>
+
+                <li>
+                    Valid O5 security clearance
+                </li>
+
+                <li>
+                    Warhead identification
+                </li>
+
+                <li>
+                    Target facility verification
+                </li>
+
+                <li>
+                    Authorized deactivation protocol
+                </li>
+
+                <li>
+                    External orbital satellite support
+                </li>
+
+            </ul>
+
+        </article>
+
+
+        <article class="requirement">
+
+            <div class="requirement-number">
+                03 // DEPARTURE DOCUMENT
+            </div>
+
+            <h3>
+                O5 COUNCIL DEPARTURE PERMIT
+            </h3>
+
+            <p>
+                Personnel leaving the Council must submit
+                a formal Council departure document.
+            </p>
+
+            <ul>
+
+                <li>
+                    Full identity information
+                </li>
+
+                <li>
+                    Current Council position
+                </li>
+
+                <li>
+                    Reason for departure
+                </li>
+
+                <li>
+                    Final acknowledgement
+                </li>
+
+            </ul>
+
+        </article>
+
+
+        <article class="requirement">
+
+            <div class="requirement-number">
+                04 // GLOBAL CONDITION
+            </div>
+
+            <h3>
+                FOUNDATION MATERIAL SHORTAGE
+            </h3>
+
+            <p>
+                All known Foundation facilities currently
+                report insufficient materials for construction
+                of the external orbital satellite.
+            </p>
+
+            <ul>
+
+                <li>
+                    SITE-19 // INSUFFICIENT
+                </li>
+
+                <li>
+                    SITE-51 // INSUFFICIENT
+                </li>
+
+                <li>
+                    SITE-64 // INSUFFICIENT
+                </li>
+
+                <li>
+                    Satellite construction // SUSPENDED
+                </li>
+
+            </ul>
+
+        </article>
+
+    </div>
 
 </section>
 
 
-<!-- =========================
-     REQUEST
-========================= -->
+<!-- =====================================================
+     SATELLITE
+====================================================== -->
 
 <section
-    id="request"
-    class="page-section"
+    id="satellite"
 >
 
-<div class="section-container">
-
-    <div class="section-title">
-        REQUEST SYSTEM
+    <div class="section-class">
+        PROJECT ORBITAL
     </div>
 
-    <div class="section-subtitle">
-        SUBMIT A REQUEST TO SITE-64 ADMINISTRATION
+    <div class="section-header">
+        <h2>
+            EXTERNAL ORBITAL SATELLITE
+        </h2>
     </div>
 
 
-    <div class="request-box">
+    <div class="satellite">
 
-        <form id="requestForm">
+        <div class="satellite-top">
 
-            <div class="form-grid">
+            <div class="satellite-title">
+                WARHEAD DEACTIVATION SATELLITE
+            </div>
+
+            <div class="satellite-status">
+                CONSTRUCTION UNAVAILABLE
+            </div>
+
+        </div>
 
 
-                <div class="form-group">
+        <div class="satellite-description">
 
-                    <label>
-                        FULL NAME
-                    </label>
+            An external orbital satellite is required
+            for the authorized deactivation of strategic
+            Foundation warheads.
 
-                    <input
-                        id="name"
-                        type="text"
-                        required
-                        placeholder="ENTER FULL NAME"
-                    >
+            <br><br>
 
+            Current Foundation inventory is insufficient
+            to construct the required orbital platform.
+
+            <br><br>
+
+            <strong>
+                ALL FOUNDATION FACILITIES CURRENTLY REPORT
+                MATERIAL SHORTAGES.
+            </strong>
+
+        </div>
+
+
+        <div class="material-grid">
+
+            <div class="material">
+
+                <div class="material-name">
+                    SITE-19
                 </div>
 
-
-                <div class="form-group">
-
-                    <label>
-                        REQUEST TYPE
-                    </label>
-
-                    <select
-                        id="type"
-                        required
-                    >
-
-                        <option value="">
-                            SELECT TYPE
-                        </option>
-
-                        <option value="scp">
-                            SCP ACCESS
-                        </option>
-
-                        <option value="research">
-                            RESEARCH
-                        </option>
-
-                        <option value="personnel">
-                            PERSONNEL
-                        </option>
-
-                        <option value="facility">
-                            FACILITY
-                        </option>
-
-                        <option value="other">
-                            OTHER
-                        </option>
-
-                    </select>
-
+                <div class="material-value">
+                    INSUFFICIENT
                 </div>
 
+            </div>
 
-                <div
-                    id="scpGroup"
-                    class="form-group"
+
+            <div class="material">
+
+                <div class="material-name">
+                    SITE-51
+                </div>
+
+                <div class="material-value">
+                    INSUFFICIENT
+                </div>
+
+            </div>
+
+
+            <div class="material">
+
+                <div class="material-name">
+                    SITE-64
+                </div>
+
+                <div class="material-value">
+                    INSUFFICIENT
+                </div>
+
+            </div>
+
+
+            <div class="material">
+
+                <div class="material-name">
+                    GLOBAL INVENTORY
+                </div>
+
+                <div class="material-value">
+                    CRITICAL
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     DEPARTURE
+====================================================== -->
+
+<section
+    id="departure"
+>
+
+    <div class="section-class">
+        O5 ADMINISTRATION
+    </div>
+
+    <div class="section-header">
+        <h2>
+            COUNCIL DEPARTURE PERMIT
+        </h2>
+    </div>
+
+
+    <div class="permit-layout">
+
+
+        <form
+            class="permit-form"
+            id="departureForm"
+        >
+
+            <div class="form-row">
+
+                <label>
+                    FULL NAME
+                </label>
+
+                <input
+                    id="departureName"
+                    type="text"
+                    placeholder="ENTER FULL NAME"
+                    required
                 >
 
-                    <label>
-                        SCP
-                    </label>
-
-                    <input
-                        id="scp"
-                        type="text"
-                        placeholder="SCP-XXX"
-                    >
-
-                </div>
+            </div>
 
 
-                <div class="form-group">
+            <div class="form-row">
 
-                    <label>
-                        REQUEST TIME
-                    </label>
+                <label>
+                    CURRENT COUNCIL POSITION
+                </label>
 
-                    <select
-                        id="time"
-                        required
-                    >
+                <input
+                    id="departureRank"
+                    type="text"
+                    placeholder="ENTER CURRENT POSITION"
+                    required
+                >
 
-                        <option value="">
-                            SELECT TIME
-                        </option>
-
-                        <option value="00:00">00:00</option>
-                        <option value="00:30">00:30</option>
-                        <option value="01:00">01:00</option>
-                        <option value="01:30">01:30</option>
-                        <option value="02:00">02:00</option>
-                        <option value="02:30">02:30</option>
-                        <option value="03:00">03:00</option>
-                        <option value="03:30">03:30</option>
-                        <option value="04:00">04:00</option>
-                        <option value="04:30">04:30</option>
-                        <option value="05:00">05:00</option>
-                        <option value="05:30">05:30</option>
-                        <option value="06:00">06:00</option>
-                        <option value="06:30">06:30</option>
-                        <option value="07:00">07:00</option>
-                        <option value="07:30">07:30</option>
-                        <option value="08:00">08:00</option>
-                        <option value="08:30">08:30</option>
-                        <option value="09:00">09:00</option>
-                        <option value="09:30">09:30</option>
-                        <option value="10:00">10:00</option>
-                        <option value="10:30">10:30</option>
-                        <option value="11:00">11:00</option>
-                        <option value="11:30">11:30</option>
-                        <option value="12:00">12:00</option>
-                        <option value="12:30">12:30</option>
-                        <option value="13:00">13:00</option>
-                        <option value="13:30">13:30</option>
-                        <option value="14:00">14:00</option>
-                        <option value="14:30">14:30</option>
-                        <option value="15:00">15:00</option>
-                        <option value="15:30">15:30</option>
-                        <option value="16:00">16:00</option>
-                        <option value="16:30">16:30</option>
-                        <option value="17:00">17:00</option>
-                        <option value="17:30">17:30</option>
-                        <option value="18:00">18:00</option>
-                        <option value="18:30">18:30</option>
-                        <option value="19:00">19:00</option>
-                        <option value="19:30">19:30</option>
-                        <option value="20:00">20:00</option>
-                        <option value="20:30">20:30</option>
-                        <option value="21:00">21:00</option>
-                        <option value="21:30">21:30</option>
-                        <option value="22:00">22:00</option>
-                        <option value="22:30">22:30</option>
-                        <option value="23:00">23:00</option>
-                        <option value="23:30">23:30</option>
-
-                    </select>
-
-                </div>
+            </div>
 
 
-                <div class="form-group full">
+            <div class="form-row">
 
-                    <label>
-                        MESSAGE
-                    </label>
+                <label>
+                    COUNCIL IDENTIFICATION
+                </label>
 
-                    <textarea
-                        id="message"
-                        placeholder="ENTER REQUEST DETAILS"
-                    ></textarea>
+                <input
+                    id="departureId"
+                    type="text"
+                    placeholder="ENTER COUNCIL ID"
+                    required
+                >
 
-                </div>
+            </div>
+
+
+            <div class="form-row">
+
+                <label>
+                    REASON FOR DEPARTURE
+                </label>
+
+                <textarea
+                    id="departureReason"
+                    placeholder="ENTER REASON..."
+                    required
+                ></textarea>
 
             </div>
 
 
             <button
-                class="submit-button"
+                class="submit-btn"
                 type="submit"
             >
-                SUBMIT REQUEST
+                SUBMIT DEPARTURE REQUEST
             </button>
-
-
-            <div
-                id="result"
-                class="result"
-            ></div>
 
         </form>
 
-    </div>
 
-</div>
+        <div class="permit-info">
+
+            <h3>
+                DEPARTURE AUTHORIZATION
+            </h3>
+
+            <p>
+                This document is a request for O5 Council
+                membership termination.
+            </p>
+
+
+            <div class="permit-rule">
+
+                <span>
+                    //
+                </span>
+
+                Submission does not guarantee approval.
+
+            </div>
+
+
+            <div class="permit-rule">
+
+                <span>
+                    //
+                </span>
+
+                All requests are subject to Council review.
+
+            </div>
+
+
+            <div class="permit-rule">
+
+                <span>
+                    //
+                </span>
+
+                Active Council obligations may delay
+                departure authorization.
+
+            </div>
+
+
+            <div class="permit-rule">
+
+                <span>
+                    //
+                </span>
+
+                Final authorization must be issued by
+                the O5 Council.
+
+            </div>
+
+        </div>
+
+    </div>
 
 </section>
 
 
-<!-- =========================
-     MY REQUESTS
-========================= -->
+<!-- =====================================================
+     WARHEAD WARNING
+====================================================== -->
+
+<section>
+
+    <div class="warning-panel">
+
+        <div class="warning-symbol">
+            ⚠
+        </div>
+
+        <h3>
+            WARHEAD DEACTIVATION NOTICE
+        </h3>
+
+        <p>
+            Strategic warhead systems remain under
+            O5 Council authority. Deactivation currently
+            requires an operational external orbital
+            satellite. Foundation facilities are currently
+            unable to construct the required system due
+            to insufficient materials.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FACILITIES
+====================================================== -->
 
 <section
-    id="requests"
-    class="page-section"
+    id="sites"
 >
 
-<div class="section-container">
-
-    <div class="section-title">
-        MY REQUESTS
+    <div class="section-class">
+        FOUNDATION NETWORK
     </div>
 
-    <div class="section-subtitle">
-        REQUESTS SUBMITTED FROM THIS BROWSER
+    <div class="section-header">
+        <h2>
+            FOUNDATION FACILITIES
+        </h2>
     </div>
 
-    <div
-        id="myRequestsList"
-        class="requests-list"
-    ></div>
 
-</div>
+    <div class="site-grid">
+
+
+        <article class="site-card">
+
+            <div class="site-number">
+                SITE-19
+            </div>
+
+            <h3>
+                MAIN CONTAINMENT FACILITY
+            </h3>
+
+            <p>
+                One of the Foundation's largest known
+                containment and research facilities.
+            </p>
+
+            <span class="site-status">
+                STATUS: OPERATIONAL
+            </span>
+
+        </article>
+
+
+        <article class="site-card">
+
+            <div class="site-number">
+                SITE-51
+            </div>
+
+            <h3>
+                CARLSON FACILITY
+            </h3>
+
+            <p>
+                Classified facility connected to the
+                early research of Eric and Sophia Carlson.
+            </p>
+
+            <span class="site-status">
+                STATUS: CLASSIFIED
+            </span>
+
+        </article>
+
+
+        <article class="site-card">
+
+            <div class="site-number">
+                SITE-64
+            </div>
+
+            <h3>
+                UNKNOWN FACILITY
+            </h3>
+
+            <p>
+                The exact location and operational purpose
+                of this facility remain restricted.
+            </p>
+
+            <span class="site-status">
+                STATUS: UNKNOWN
+            </span>
+
+        </article>
+
+    </div>
 
 </section>
+
+
+<!-- =====================================================
+     ABOUT
+====================================================== -->
+
+<section>
+
+    <div class="about">
+
+        <div class="section-class">
+            CLASSIFIED INFORMATION
+        </div>
+
+        <div class="section-header">
+
+            <h2>
+                O5 COUNCIL
+            </h2>
+
+        </div>
+
+        <p>
+            This interface provides authorized personnel
+            with access to restricted O5 Council information,
+            facility data and strategic system status.
+        </p>
+
+        <p>
+            Unauthorized access, duplication or distribution
+            of Council information is strictly prohibited.
+        </p>
+
+        <div class="classified">
+            SECURITY LEVEL: O5 // CLASSIFIED
+        </div>
+
+    </div>
+
+</section>
+
+
+</main>
 
 
 <footer>
 
-    SECURE CONTAIN PROTECT // SITE-64
+    <span>
+        O5 COUNCIL
+    </span>
+
+    <span>
+        [SITE-64]
+    </span>
+
+    <span>
+        FOUNDATION DATABASE
+    </span>
+
+    <span>
+        CLASSIFIED
+    </span>
 
 </footer>
+
+
+<div id="toast"></div>
 
 
 <script>
@@ -981,60 +2024,41 @@ footer {
    NAVIGATION
 ===================================================== */
 
-const navigationLinks =
-    document.querySelectorAll(
-        ".navigation a"
-    );
-
 const sections =
-    document.querySelectorAll(
-        ".page-section"
-    );
+    document.querySelectorAll("section[id]");
 
+const navLinks =
+    document.querySelectorAll("nav a[href^='#']");
 
 function updateNavigation() {
 
-    let current =
-        "home";
-
+    let current = "home";
 
     sections.forEach(section => {
 
-        if (
-            section.getBoundingClientRect().top
-            <= 120
-        ) {
+        const top =
+            section.getBoundingClientRect().top;
 
-            current =
-                section.id;
-
+        if (top <= 160) {
+            current = section.id;
         }
 
     });
 
+    navLinks.forEach(link => {
 
-    navigationLinks.forEach(link => {
+        const target =
+            link.getAttribute("href")
+                .substring(1);
 
-        const href =
-            link.getAttribute("href");
-
-
-        if (
-            href &&
-            href.startsWith("#")
-        ) {
-
-            link.classList.toggle(
-                "active",
-                href.substring(1) === current
-            );
-
-        }
+        link.classList.toggle(
+            "active",
+            target === current
+        );
 
     });
 
 }
-
 
 window.addEventListener(
     "scroll",
@@ -1045,49 +2069,171 @@ updateNavigation();
 
 
 /* =====================================================
-   REQUEST TYPE
+   DEPARTURE FORM
 ===================================================== */
 
-const typeInput =
+const departureForm =
     document.getElementById(
-        "type"
+        "departureForm"
     );
 
-const scpGroup =
-    document.getElementById(
-        "scpGroup"
-    );
-
-const scpInput =
-    document.getElementById(
-        "scp"
-    );
+const toast =
+    document.getElementById("toast");
 
 
-typeInput.addEventListener(
-    "change",
-    () => {
+function showToast(message) {
 
-        if (
-            typeInput.value === "scp"
-        ) {
+    toast.textContent = message;
 
-            scpGroup.style.display =
-                "flex";
+    toast.classList.add("show");
 
-            scpInput.required =
-                true;
+    setTimeout(() => {
 
-        } else {
+        toast.classList.remove("show");
 
-            scpGroup.style.display =
-                "none";
+    }, 4000);
 
-            scpInput.required =
-                false;
+}
 
-            scpInput.value =
-                "";
+
+departureForm.addEventListener(
+    "submit",
+    async event => {
+
+        event.preventDefault();
+
+        const name =
+            document
+                .getElementById(
+                    "departureName"
+                )
+                .value
+                .trim();
+
+        const rank =
+            document
+                .getElementById(
+                    "departureRank"
+                )
+                .value
+                .trim();
+
+        const id =
+            document
+                .getElementById(
+                    "departureId"
+                )
+                .value
+                .trim();
+
+        const reason =
+            document
+                .getElementById(
+                    "departureReason"
+                )
+                .value
+                .trim();
+
+
+        const payload = {
+
+            name,
+            rank,
+            councilId: id,
+            reason
+
+        };
+
+
+        showToast(
+            "SUBMITTING COUNCIL DEPARTURE REQUEST..."
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/council/departure",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                payload
+                            )
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "REQUEST FAILED."
+                );
+
+            }
+
+
+            showToast(
+                "DEPARTURE REQUEST SUBMITTED."
+            );
+
+
+            departureForm.reset();
+
+
+        } catch (error) {
+
+            /*
+             * The page remains usable even if the
+             * optional Council API has not yet been
+             * added to the server.
+             */
+
+            showToast(
+                "COUNCIL REQUEST QUEUED LOCALLY."
+            );
+
+
+            const requests =
+                JSON.parse(
+                    localStorage.getItem(
+                        "o5_departure_requests"
+                    ) || "[]"
+                );
+
+
+            requests.push({
+
+                ...payload,
+
+                createdAt:
+                    new Date().toISOString(),
+
+                status:
+                    "PENDING"
+
+            });
+
+
+            localStorage.setItem(
+                "o5_departure_requests",
+                JSON.stringify(requests)
+            );
+
+
+            departureForm.reset();
 
         }
 
@@ -1096,544 +2242,53 @@ typeInput.addEventListener(
 
 
 /* =====================================================
-   HTML ESCAPE
+   REVEAL ANIMATION
 ===================================================== */
 
-function escapeHtml(value) {
+const observer =
+    new IntersectionObserver(
+        entries => {
 
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+            entries.forEach(entry => {
 
-}
+                if (
+                    entry.isIntersecting
+                ) {
 
+                    entry.target.style.opacity =
+                        "1";
 
-/* =====================================================
-   SAVE REQUEST
-===================================================== */
-
-function saveMyRequest(request) {
-
-    const requests =
-        JSON.parse(
-            localStorage.getItem(
-                "scp_my_requests"
-            ) || "[]"
-        );
-
-
-    if (
-        !requests.some(
-            item =>
-                item.id === request.id
-        )
-    ) {
-
-        requests.push(request);
-
-        localStorage.setItem(
-            "scp_my_requests",
-            JSON.stringify(requests)
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   REQUEST CARD
-===================================================== */
-
-function createRequestCard(request) {
-
-    const status =
-        String(
-            request.status ||
-            "PENDING"
-        ).toLowerCase();
-
-
-    return `
-
-        <article class="request-card">
-
-            <div class="request-card-top">
-
-                <span class="request-id">
-                    ${escapeHtml(request.id)}
-                </span>
-
-                <span class="request-status ${status}">
-                    ${escapeHtml(
-                        request.status ||
-                        "PENDING"
-                    )}
-                </span>
-
-            </div>
-
-
-            <div class="request-details">
-
-                <div class="request-detail">
-
-                    <span>
-                        TYPE
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            request.typeName ||
-                            request.type ||
-                            "UNKNOWN"
-                        )}
-                    </strong>
-
-                </div>
-
-
-                <div class="request-detail">
-
-                    <span>
-                        SCP
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            request.scp ||
-                            "N/A"
-                        )}
-                    </strong>
-
-                </div>
-
-
-                <div class="request-detail">
-
-                    <span>
-                        TIME
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            request.time ||
-                            "N/A"
-                        )}
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            ${
-                request.adminMessage
-                ?
-                `
-                <div class="admin-message">
-
-                    <strong>
-                        ADMIN MESSAGE
-                    </strong>
-
-                    <br><br>
-
-                    ${escapeHtml(
-                        request.adminMessage
-                    )}
-
-                </div>
-                `
-                :
-                ""
-            }
-
-        </article>
-
-    `;
-
-}
-
-
-/* =====================================================
-   LOAD REQUESTS
-===================================================== */
-
-function loadMyRequests() {
-
-    const container =
-        document.getElementById(
-            "myRequestsList"
-        );
-
-
-    if (!container) {
-        return;
-    }
-
-
-    const requests =
-        JSON.parse(
-            localStorage.getItem(
-                "scp_my_requests"
-            ) || "[]"
-        );
-
-
-    if (!requests.length) {
-
-        container.innerHTML = `
-
-            <div class="empty-state">
-
-                <div>
-                    NO REQUESTS FOUND
-                </div>
-
-                <span>
-                    Submitted requests will appear here.
-                </span>
-
-            </div>
-
-        `;
-
-        return;
-    }
-
-
-    container.innerHTML =
-        requests
-            .map(createRequestCard)
-            .join("");
-
-}
-
-
-/* =====================================================
-   REFRESH REQUEST STATUS
-===================================================== */
-
-async function refreshMyRequests() {
-
-    const localRequests =
-        JSON.parse(
-            localStorage.getItem(
-                "scp_my_requests"
-            ) || "[]"
-        );
-
-
-    if (!localRequests.length) {
-        return;
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/requests"
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !data.success ||
-            !Array.isArray(
-                data.requests
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        const updated =
-            localRequests.map(local => {
-
-                const serverRequest =
-                    data.requests.find(
-                        item =>
-                            item.id ===
-                            local.id
-                    );
-
-
-                if (serverRequest) {
-
-                    return {
-                        ...local,
-                        ...serverRequest
-                    };
+                    entry.target.style.transform =
+                        "translateY(0)";
 
                 }
-
-
-                return local;
 
             });
 
-
-        localStorage.setItem(
-            "scp_my_requests",
-            JSON.stringify(updated)
-        );
-
-
-        loadMyRequests();
-
-    } catch {
-
-        console.log(
-            "REQUEST STATUS REFRESH FAILED."
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   SUBMIT REQUEST
-===================================================== */
-
-document
-    .getElementById(
-        "requestForm"
-    )
-    .addEventListener(
-        "submit",
-        async event => {
-
-            event.preventDefault();
-
-
-            const result =
-                document.getElementById(
-                    "result"
-                );
-
-
-            result.className =
-                "result";
-
-            result.textContent =
-                "SUBMITTING REQUEST...";
-
-
-            const name =
-                document
-                    .getElementById("name")
-                    .value
-                    .trim();
-
-
-            const type =
-                typeInput.value;
-
-
-            const typeName =
-                typeInput
-                    .options[
-                        typeInput.selectedIndex
-                    ]
-                    .text;
-
-
-            const scp =
-                type === "scp"
-                    ? scpInput.value.trim()
-                    : null;
-
-
-            const time =
-                document
-                    .getElementById("time")
-                    .value;
-
-
-            const message =
-                document
-                    .getElementById("message")
-                    .value
-                    .trim();
-
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/api/requests",
-                        {
-
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify({
-                                    name,
-                                    type,
-                                    typeName,
-                                    scp,
-                                    time,
-                                    message
-                                })
-
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (
-                    !response.ok
-                ) {
-
-                    throw new Error(
-                        data.message ||
-                        "REQUEST FAILED."
-                    );
-
-                }
-
-
-                result.className =
-                    "result success";
-
-
-                result.innerHTML = `
-
-                    REQUEST SUBMITTED SUCCESSFULLY.
-
-                    <br>
-
-                    REQUEST ID:
-
-                    <strong>
-                        ${escapeHtml(
-                            data.request.id
-                        )}
-                    </strong>
-
-                `;
-
-
-                saveMyRequest(
-                    data.request
-                );
-
-
-                document
-                    .getElementById(
-                        "requestForm"
-                    )
-                    .reset();
-
-
-                scpGroup.style.display =
-                    "none";
-
-
-                scpInput.required =
-                    false;
-
-
-                loadMyRequests();
-
-
-            } catch (error) {
-
-                result.className =
-                    "result error";
-
-
-                result.textContent =
-                    error.message;
-
-            }
-
+        },
+        {
+            threshold: .12
         }
     );
 
 
-/* =====================================================
-   SERVER STATUS
-===================================================== */
+document
+    .querySelectorAll(
+        ".requirement, .site-card, .status-card, .satellite, .permit-layout"
+    )
+    .forEach(element => {
 
-async function loadServerStatus() {
+        element.style.opacity = "0";
 
-    try {
+        element.style.transform =
+            "translateY(25px)";
 
-        const response =
-            await fetch(
-                "/api/status"
-            );
+        element.style.transition =
+            "opacity .7s ease, transform .7s ease";
 
+        observer.observe(element);
 
-        const data =
-            await response.json();
-
-
-        document
-            .getElementById(
-                "serverStatus"
-            )
-            .textContent =
-                data.server ||
-                "ONLINE";
-
-
-        document
-            .getElementById(
-                "databaseStatus"
-            )
-            .textContent =
-                data.database ||
-                "ONLINE";
-
-
-    } catch {
-
-        document
-            .getElementById(
-                "serverStatus"
-            )
-            .textContent =
-                "OFFLINE";
-
-
-        document
-            .getElementById(
-                "databaseStatus"
-            )
-            .textContent =
-                "OFFLINE";
-
-    }
-
-}
-
-
-loadServerStatus();
-
-loadMyRequests();
-
-refreshMyRequests();
+    });
 
 </script>
 
