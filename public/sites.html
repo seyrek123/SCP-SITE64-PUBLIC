@@ -1,642 +1,281 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+    <title>SITE-64 // FACILITIES</title>
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-<title>SITE-64 // SITES</title>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top, #111827, #030507 65%);
+            color: #e5e7eb;
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
-<style>
+        header {
+            background: #05080d;
+            border-bottom: 1px solid #26313d;
+            padding: 24px 35px;
+        }
 
-body {
-    margin: 0;
-    background: #05080c;
-    color: #e8edf2;
-    font-family: Arial, sans-serif;
-}
+        .title {
+            color: #38bdf8;
+            font-size: 25px;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
 
-main {
-    width: min(1000px, 90%);
-    margin: auto;
-    padding: 60px 0;
-}
+        .subtitle {
+            color: #64748b;
+            font-size: 11px;
+            letter-spacing: 2px;
+            margin-top: 6px;
+        }
 
-h1 {
-    letter-spacing: 4px;
-}
+        main {
+            width: min(1100px, calc(100% - 30px));
+            margin: 35px auto;
+        }
 
-.site {
-    padding: 25px;
-    margin-top: 15px;
+        .sites {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+            gap: 18px;
+        }
 
-    background: #090e13;
+        .site {
+            border: 1px solid #334155;
+            background: #080c12;
+            padding: 25px;
+            min-height: 190px;
+            text-decoration: none;
+            color: white;
+            transition: .2s;
+        }
 
-    border: 1px solid #202a34;
+        .site:hover {
+            border-color: #38bdf8;
+            transform: translateY(-3px);
+        }
 
-    transition:
-        border-color 0.25s ease,
-        background 0.25s ease;
-}
+        .site-name {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
 
-.site strong {
-    display: block;
-    margin-bottom: 8px;
-}
+        .status {
+            margin-top: 20px;
+            color: #22c55e;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
 
-.site span {
-    color: #75818d;
-    font-size: 12px;
-}
+        .description {
+            margin-top: 12px;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.6;
+        }
 
-.site-message {
-    display: block;
-    margin-top: 8px;
+        .return {
+            display: inline-block;
+            margin-top: 30px;
+            border: 1px solid #334155;
+            padding: 13px 18px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 11px;
+            letter-spacing: 2px;
+        }
 
-    color: #a9b4bd;
+        .return:hover {
+            border-color: #38bdf8;
+            color: white;
+        }
 
-    font-size: 12px;
-
-    line-height: 1.5;
-}
-
-.site-time {
-    display: block;
-
-    margin-top: 6px;
-
-    color: #596672;
-
-    font-size: 10px;
-}
-
-.back {
-    display: inline-block;
-    margin-top: 30px;
-
-    color: #8da0b2;
-    text-decoration: none;
-}
-
-.back:hover {
-    color: #ffffff;
-}
-
-
-/* =====================================================
-   INCIDENT STATES
-===================================================== */
-
-.site.normal {
-    border-color: #202a34;
-}
-
-.site.active {
-    border-color: #633838;
-    background: #0d0909;
-}
-
-.site.critical {
-    border-color: #8b3d3d;
-    background: #120909;
-}
-
-.site.lockdown {
-    border-color: #754545;
-    background: #100707;
-}
-
-.site.high {
-    border-color: #685a35;
-    background: #0f0d08;
-}
-
-
-/* STATUS TEXT */
-
-.status-normal {
-    color: #75818d !important;
-}
-
-.status-critical {
-    color: #dc8c8c !important;
-}
-
-.status-lockdown {
-    color: #d98989 !important;
-}
-
-.status-high {
-    color: #c8b47a !important;
-}
-
-
-/* =====================================================
-   CONNECTION STATUS
-===================================================== */
-
-#connectionStatus {
-    margin-top: 15px;
-
-    color: #596672;
-
-    font-size: 10px;
-
-    letter-spacing: 1px;
-}
-
-</style>
-
+        @media(max-width: 750px) {
+            .sites {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-
 
 <body>
 
+<header>
+    <div class="title">
+        SCP FOUNDATION // SITES
+    </div>
+
+    <div class="subtitle">
+        FACILITY STATUS NETWORK
+    </div>
+</header>
+
 <main>
 
-<h1>
-SITE DATABASE
-</h1>
+    <div class="sites">
 
-<p>
-SECURECONTAINPROTECT // CLASSIFIED
-</p>
+        <a class="site" href="/sites#SITE-19">
+            <div class="site-name">
+                SITE-19
+            </div>
 
+            <div
+                id="status19"
+                class="status"
+            >
+                NORMAL
+            </div>
 
-<div
-    class="site normal"
-    id="site-19"
->
-
-<strong>
-SITE-19
-</strong>
-
-<span
-    class="status-normal"
-    id="status-19"
->
-OPERATIONAL
-</span>
-
-<span
-    class="site-message"
-    id="message-19"
-    style="display:none;"
-></span>
-
-<span
-    class="site-time"
-    id="time-19"
-    style="display:none;"
-></span>
-
-</div>
+            <div class="description">
+                PRIMARY SCP CONTAINMENT FACILITY.
+            </div>
+        </a>
 
 
-<div
-    class="site normal"
-    id="site-51"
->
+        <a class="site" href="/sites#SITE-51">
+            <div class="site-name">
+                SITE-51
+            </div>
 
-<strong>
-SITE-51
-</strong>
+            <div
+                id="status51"
+                class="status"
+            >
+                NORMAL
+            </div>
 
-<span
-    class="status-normal"
-    id="status-51"
->
-CLASSIFIED
-</span>
-
-<span
-    class="site-message"
-    id="message-51"
-    style="display:none;"
-></span>
-
-<span
-    class="site-time"
-    id="time-51"
-    style="display:none;"
-></span>
-
-</div>
+            <div class="description">
+                SECURE RESEARCH AND CONTAINMENT FACILITY.
+            </div>
+        </a>
 
 
-<div
-    class="site normal"
-    id="site-64"
->
+        <a class="site" href="/sites#SITE-64">
+            <div class="site-name">
+                SITE-64
+            </div>
 
-<strong>
-SITE-64
-</strong>
+            <div
+                id="status64"
+                class="status"
+            >
+                NORMAL
+            </div>
 
-<span
-    class="status-normal"
-    id="status-64"
->
-UNKNOWN
-</span>
+            <div class="description">
+                SITE-64 ADMINISTRATION FACILITY.
+            </div>
+        </a>
 
-<span
-    class="site-message"
-    id="message-64"
-    style="display:none;"
-></span>
+    </div>
 
-<span
-    class="site-time"
-    id="time-64"
-    style="display:none;"
-></span>
-
-</div>
-
-
-<div class="site">
-
-<strong>
-SITE-██
-</strong>
-
-<span>
-REDACTED
-</span>
-
-</div>
-
-
-<div id="connectionStatus">
-CONNECTING TO SITE CONTROL...
-</div>
-
-
-<a
-    class="back"
-    href="/admin"
->
-RETURN TO ADMIN
-</a>
+    <a
+        class="return"
+        href="/warhead"
+    >
+        ← RETURN TO WARHEAD CONTROL
+    </a>
 
 </main>
 
 
 <script>
 
-/* =====================================================
-   SITE CONTROL
-===================================================== */
+    async function loadSites() {
 
-const siteElements = {
+        try {
 
-    "SITE-19": {
-        card:
-            document.getElementById("site-19"),
+            const response =
+                await fetch(
+                    "/api/sites"
+                );
 
-        status:
-            document.getElementById("status-19"),
+            const data =
+                await response.json();
 
-        message:
-            document.getElementById("message-19"),
+            if (!data.success) {
+                return;
+            }
 
-        time:
-            document.getElementById("time-19")
-    },
-
-    "SITE-51": {
-        card:
-            document.getElementById("site-51"),
-
-        status:
-            document.getElementById("status-51"),
-
-        message:
-            document.getElementById("message-51"),
-
-        time:
-            document.getElementById("time-51")
-    },
-
-    "SITE-64": {
-        card:
-            document.getElementById("site-64"),
-
-        status:
-            document.getElementById("status-64"),
-
-        message:
-            document.getElementById("message-64"),
-
-        time:
-            document.getElementById("time-64")
-    }
-
-};
+            const sites =
+                data.sites;
 
 
-/* =====================================================
-   UPDATE ONE SITE
-===================================================== */
+            updateSite(
+                "status19",
+                sites["SITE-19"]
+            );
 
-function updateSite(
-    siteName,
-    siteData
-) {
+            updateSite(
+                "status51",
+                sites["SITE-51"]
+            );
 
-    const element =
-        siteElements[siteName];
+            updateSite(
+                "status64",
+                sites["SITE-64"]
+            );
 
-    if (!element) {
-        return;
+        } catch {
+
+            console.log(
+                "SITE STATUS CONNECTION ERROR."
+            );
+        }
     }
 
 
-    const status =
-        String(
-            siteData.status ||
+    function updateSite(
+        elementId,
+        site
+    ) {
+
+        const element =
+            document.getElementById(
+                elementId
+            );
+
+        if (!element || !site) {
+            return;
+        }
+
+        element.textContent =
+            site.status ||
+            "NORMAL";
+
+        if (
+            site.status !==
             "NORMAL"
-        ).toUpperCase();
-
-
-    const message =
-        String(
-            siteData.message ||
-            ""
-        );
-
-
-    /* Remove old classes */
-
-    element.card.classList.remove(
-        "normal",
-        "active",
-        "critical",
-        "lockdown",
-        "high"
-    );
-
-    element.status.classList.remove(
-        "status-normal",
-        "status-critical",
-        "status-lockdown",
-        "status-high"
-    );
-
-
-    /* NORMAL */
-
-    if (
-        status === "NORMAL"
-    ) {
-
-        element.card.classList.add(
-            "normal"
-        );
-
-        element.status.classList.add(
-            "status-normal"
-        );
-
-        element.status.textContent =
-            "OPERATIONAL";
-
-        element.message.style.display =
-            "none";
-
-        element.time.style.display =
-            "none";
-
-        return;
-    }
-
-
-    /* CRITICAL */
-
-    if (
-        status.includes("CRITICAL")
-    ) {
-
-        element.card.classList.add(
-            "critical"
-        );
-
-        element.status.classList.add(
-            "status-critical"
-        );
-
-    }
-
-
-    /* LOCKDOWN */
-
-    else if (
-        status.includes("LOCKDOWN")
-    ) {
-
-        element.card.classList.add(
-            "lockdown"
-        );
-
-        element.status.classList.add(
-            "status-lockdown"
-        );
-
-    }
-
-
-    /* HIGH */
-
-    else if (
-        status.includes("HIGH")
-    ) {
-
-        element.card.classList.add(
-            "high"
-        );
-
-        element.status.classList.add(
-            "status-high"
-        );
-
-    }
-
-
-    /* OTHER INCIDENT */
-
-    else {
-
-        element.card.classList.add(
-            "active"
-        );
-
-        element.status.classList.add(
-            "status-critical"
-        );
-    }
-
-
-    element.status.textContent =
-        status;
-
-
-    if (message) {
-
-        element.message.textContent =
-            message;
-
-        element.message.style.display =
-            "block";
-
-    } else {
-
-        element.message.style.display =
-            "none";
-    }
-
-
-    if (siteData.updatedAt) {
-
-        const date =
-            new Date(
-                siteData.updatedAt
-            );
-
-
-        if (
-            !Number.isNaN(
-                date.getTime()
-            )
         ) {
 
-            element.time.textContent =
-                "LAST UPDATE: " +
-                date.toLocaleString();
+            element.style.color =
+                "#ef4444";
 
-            element.time.style.display =
-                "block";
+        } else {
+
+            element.style.color =
+                "#22c55e";
         }
-
-    } else {
-
-        element.time.style.display =
-            "none";
     }
-}
 
 
-/* =====================================================
-   LOAD SITE STATUS
-===================================================== */
-
-async function loadSiteStatus() {
-
-    const connection =
-        document.getElementById(
-            "connectionStatus"
-        );
-
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/sites",
-                {
-                    cache: "no-store"
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !response.ok ||
-            !data.success
-        ) {
-
-            throw new Error(
-                "SITE CONTROL ERROR"
-            );
-        }
-
-
-        if (
-            data.sites &&
-            typeof data.sites ===
-                "object"
-        ) {
-
-            Object.keys(
-                siteElements
-            ).forEach(
-                siteName => {
-
-                    if (
-                        data.sites[
-                            siteName
-                        ]
-                    ) {
-
-                        updateSite(
-                            siteName,
-                            data.sites[
-                                siteName
-                            ]
-                        );
-                    }
-                }
-            );
-        }
-
-
-        connection.textContent =
-            "SITE CONTROL ONLINE // LIVE";
-
-
-        connection.style.color =
-            "#6f927e";
-
-    } catch (error) {
-
-        connection.textContent =
-            "SITE CONTROL CONNECTION ERROR";
-
-
-        connection.style.color =
-            "#8d5959";
-    }
-}
-
-
-/* =====================================================
-   INITIAL LOAD
-===================================================== */
-
-loadSiteStatus();
-
-
-/* =====================================================
-   AUTO REFRESH
-   Every 5 seconds
-===================================================== */
-
-setInterval(
-    loadSiteStatus,
-    5000
-);
+    loadSites();
 
 </script>
 
 </body>
-
 </html>
