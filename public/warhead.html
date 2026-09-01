@@ -1,843 +1,369 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>WARHEAD CONTROL // SITE-64</title>
-
-<style>
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-
-    margin: 0;
-
-    min-height: 100vh;
-
-    background:
-        radial-gradient(
-            circle at center,
-            #151d24,
-            #05080b 65%
-        );
-
-    color: #e6edf2;
-
-    font-family:
-        "Courier New",
-        monospace;
-
-    overflow: hidden;
-}
-
-
-/* =========================
-   SCREEN
-========================= */
-
-.screen {
-
-    position: fixed;
-
-    inset: 0;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    padding: 25px;
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    transform:
-        scale(.97);
-
-    transition:
-        opacity .45s ease,
-        transform .45s ease;
-}
-
-.screen.active {
-
-    opacity: 1;
-
-    pointer-events: auto;
-
-    transform:
-        scale(1);
-}
-
-
-/* =========================
-   WARNING
-========================= */
-
-.warning {
-
-    width: min(760px, 95%);
-
-    padding: 45px;
-
-    background:
-        rgba(5, 9, 13, .97);
-
-    border:
-        1px solid #394650;
-
-    box-shadow:
-        0 0 80px rgba(0,0,0,.8);
-}
-
-.warning h1 {
-
-    margin: 0 0 25px;
-
-    color: #ff5555;
-
-    font-size: 30px;
-
-    letter-spacing: 5px;
-}
-
-.warning p {
-
-    color: #8c99a4;
-
-    line-height: 1.8;
-
-    font-size: 13px;
-}
-
-.warning button {
-
-    margin-top: 25px;
-
-    width: 100%;
-
-    padding: 17px;
-
-    background: #111920;
-
-    border: 1px solid #586671;
-
-    color: white;
-
-    font-family: inherit;
-
-    letter-spacing: 3px;
-
-    cursor: pointer;
-
-    transition: .25s;
-}
-
-.warning button:hover {
-
-    background: #1b2730;
-}
-
-
-/* =========================
-   CONTROL
-========================= */
-
-.control {
-
-    width: min(1050px, 95%);
-
-    max-height: 90vh;
-
-    overflow-y: auto;
-
-    padding: 35px;
-
-    background:
-        rgba(6, 10, 14, .97);
-
-    border: 1px solid #2d3943;
-}
-
-.header {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    padding-bottom: 20px;
-
-    margin-bottom: 25px;
-
-    border-bottom:
-        1px solid #293640;
-}
-
-.header h1 {
-
-    margin: 0;
-
-    letter-spacing: 5px;
-
-    font-size: 25px;
-}
-
-.header span {
-
-    color: #65737e;
-
-    font-size: 11px;
-
-    letter-spacing: 2px;
-}
-
-
-/* =========================
-   WARHEAD GRID
-========================= */
-
-.grid {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
-    gap: 14px;
-}
-
-.card {
-
-    min-height: 145px;
-
-    padding: 22px;
-
-    background: #080d12;
-
-    border: 1px solid #293640;
-
-    cursor: pointer;
-
-    transition:
-        .25s;
-}
-
-.card:hover {
-
-    transform:
-        translateY(-5px);
-
-    background: #101820;
-
-    border-color:
-        #788792;
-}
-
-.card h2 {
-
-    margin: 0 0 15px;
-
-    font-size: 23px;
-
-    letter-spacing: 4px;
-}
-
-.card p {
-
-    margin: 0;
-
-    color: #7e8c97;
-
-    font-size: 11px;
-
-    line-height: 1.6;
-}
-
-
-/* =========================
-   SITE
-========================= */
-
-.site-area {
-
-    margin-top: 30px;
-}
-
-.title {
-
-    margin-bottom: 12px;
-
-    color: #697782;
-
-    font-size: 11px;
-
-    letter-spacing: 3px;
-}
-
-.sites {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 12px;
-}
-
-.site {
-
-    padding: 16px;
-
-    background: #070b0f;
-
-    border: 1px solid #293640;
-
-    color: #dce3e8;
-
-    font-family: inherit;
-
-    cursor: pointer;
-}
-
-.site.selected {
-
-    background: #18232c;
-
-    border-color:
-        #a4b1bb;
-}
-
-
-/* =========================
-   SELECTED
-========================= */
-
-.selected-box {
-
-    margin-top: 25px;
-
-    padding: 20px;
-
-    background: #05090d;
-
-    border: 1px solid #293640;
-}
-
-.selected-box span {
-
-    display: block;
-
-    color: #687681;
-
-    font-size: 9px;
-
-    letter-spacing: 2px;
-
-    margin-bottom: 7px;
-}
-
-.selected-box strong {
-
-    display: block;
-
-    margin-bottom: 15px;
-
-    letter-spacing: 2px;
-}
-
-
-/* =========================
-   CODE
-========================= */
-
-.code-box {
-
-    width: min(620px, 95%);
-
-    padding: 45px;
-
-    background: #070b0f;
-
-    border: 1px solid #394650;
-
-    box-shadow:
-        0 0 80px rgba(0,0,0,.8);
-}
-
-.code-box h1 {
-
-    margin: 0 0 20px;
-
-    color: #ff5555;
-
-    letter-spacing: 5px;
-
-    font-size: 25px;
-}
-
-.code-box p {
-
-    color: #84919b;
-
-    font-size: 12px;
-
-    line-height: 1.8;
-}
-
-.code {
-
-    width: 100%;
-
-    padding: 17px;
-
-    margin-top: 20px;
-
-    background: #030609;
-
-    border: 1px solid #34414b;
-
-    color: white;
-
-    outline: none;
-
-    text-align: center;
-
-    font-family: inherit;
-
-    font-size: 18px;
-
-    letter-spacing: 5px;
-}
-
-.verify {
-
-    width: 100%;
-
-    padding: 16px;
-
-    margin-top: 12px;
-
-    background: #111920;
-
-    border: 1px solid #52616e;
-
-    color: white;
-
-    font-family: inherit;
-
-    letter-spacing: 3px;
-
-    cursor: pointer;
-}
-
-.back {
-
-    width: 100%;
-
-    padding: 13px;
-
-    margin-top: 10px;
-
-    background: transparent;
-
-    border: 1px solid #303c46;
-
-    color: #778590;
-
-    font-family: inherit;
-
-    cursor: pointer;
-}
-
-.error {
-
-    min-height: 20px;
-
-    margin-top: 15px;
-
-    text-align: center;
-
-    color: #ff5555;
-}
-
-
-/* =========================
-   SEQUENCE
-========================= */
-
-.sequence {
-
-    width: min(900px, 95%);
-
-    padding: 35px;
-
-    background: #030609;
-
-    border: 1px solid #394650;
-
-    box-shadow:
-        0 0 100px rgba(0,0,0,.9);
-}
-
-.sequence h1 {
-
-    margin: 0 0 20px;
-
-    letter-spacing: 5px;
-
-    font-size: 22px;
-}
-
-.output {
-
-    height: 330px;
-
-    overflow-y: auto;
-
-    padding: 20px;
-
-    background: #010203;
-
-    border: 1px solid #202a32;
-
-    color: #aeb9c1;
-
-    line-height: 1.8;
-
-    font-size: 13px;
-}
-
-.line {
-
-    animation:
-        lineIn .3s ease forwards;
-}
-
-@keyframes lineIn {
-
-    from {
-        opacity: 0;
-        transform:
-            translateX(-10px);
-    }
-
-    to {
-        opacity: 1;
-        transform:
-            translateX(0);
-    }
-}
-
-.red {
-    color: #ff5555;
-}
-
-.yellow {
-    color: #d4b75c;
-}
-
-.countdown {
-
-    height: 45px;
-
-    margin-top: 15px;
-
-    text-align: center;
-
-    font-size: 30px;
-
-    letter-spacing: 5px;
-}
-
-.cancel {
-
-    width: 100%;
-
-    padding: 17px;
-
-    margin-top: 15px;
-
-    background: #18090a;
-
-    border: 1px solid #753333;
-
-    color: #ff6666;
-
-    font-family: inherit;
-
-    letter-spacing: 3px;
-
-    cursor: pointer;
-}
-
-
-/* =========================
-   FINAL
-========================= */
-
-.final {
-
-    text-align: center;
-
-    width: min(750px, 95%);
-}
-
-.final h1 {
-
-    font-size: 30px;
-
-    letter-spacing: 5px;
-}
-
-.final p {
-
-    color: #84919b;
-
-    line-height: 1.8;
-}
-
-.final button {
-
-    margin-top: 25px;
-
-    padding: 15px 25px;
-
-    background: transparent;
-
-    border: 1px solid #3b4751;
-
-    color: #aab5bd;
-
-    font-family: inherit;
-
-    cursor: pointer;
-}
-
-
-/* =========================
-   MOBILE
-========================= */
-
-@media(max-width: 700px) {
-
-    .grid {
-
-        grid-template-columns:
-            repeat(2, 1fr);
-    }
-
-    .sites {
-
-        grid-template-columns: 1fr;
-    }
-
-    .control,
-    .warning,
-    .code-box,
-    .sequence {
-
-        padding: 22px;
-    }
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SITE-64 // WARHEAD CONTROL</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background:
+                radial-gradient(circle at top, #111827 0%, #05070b 45%, #020305 100%);
+            color: #e5e7eb;
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+        }
+
+        .header {
+            border-bottom: 1px solid #26313d;
+            background: rgba(3, 7, 12, .96);
+            padding: 22px 35px;
+        }
+
+        .header-title {
+            color: #ef4444;
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
+
+        .header-sub {
+            margin-top: 6px;
+            color: #718096;
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            width: min(1100px, calc(100% - 30px));
+            margin: 35px auto;
+        }
+
+        .warning {
+            border: 1px solid #7f1d1d;
+            background: rgba(127, 29, 29, .14);
+            padding: 18px;
+            margin-bottom: 25px;
+        }
+
+        .warning strong {
+            color: #ef4444;
+            display: block;
+            margin-bottom: 7px;
+            letter-spacing: 2px;
+        }
+
+        .status-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #26313d;
+            background: #080c12;
+            padding: 18px 20px;
+            margin-bottom: 25px;
+        }
+
+        .status-label {
+            color: #64748b;
+            font-size: 11px;
+            letter-spacing: 2px;
+        }
+
+        .status-value {
+            color: #22c55e;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .section-title {
+            color: #94a3b8;
+            font-size: 12px;
+            letter-spacing: 3px;
+            margin: 30px 0 12px;
+        }
+
+        .warheads {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .warhead {
+            border: 1px solid #374151;
+            background: #090d13;
+            color: #e5e7eb;
+            padding: 22px;
+            min-height: 145px;
+            cursor: pointer;
+            transition: .2s;
+            text-align: left;
+        }
+
+        .warhead:hover {
+            border-color: #ef4444;
+            background: #11151d;
+            transform: translateY(-2px);
+        }
+
+        .warhead.active {
+            border-color: #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, .15);
+        }
+
+        .warhead-name {
+            color: #ef4444;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
+
+        .warhead-effect {
+            margin-top: 12px;
+            font-size: 11px;
+            color: #cbd5e1;
+            letter-spacing: 1px;
+        }
+
+        .warhead-description {
+            margin-top: 8px;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .site-panel {
+            display: none;
+            border: 1px solid #374151;
+            background: #080c12;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .site-panel.show {
+            display: block;
+        }
+
+        .sites {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .site {
+            padding: 18px;
+            border: 1px solid #374151;
+            background: #0b1017;
+            cursor: pointer;
+            color: #cbd5e1;
+            font-weight: 800;
+            letter-spacing: 2px;
+            transition: .2s;
+        }
+
+        .site:hover {
+            border-color: #ef4444;
+        }
+
+        .site.selected {
+            background: #3b0b0b;
+            border-color: #ef4444;
+            color: #fff;
+        }
+
+        .controls {
+            margin-top: 25px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        .activate {
+            border: 0;
+            background: #b91c1c;
+            color: white;
+            padding: 16px 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+
+        .activate:hover {
+            background: #dc2626;
+        }
+
+        .activate:disabled {
+            opacity: .35;
+            cursor: not-allowed;
+        }
+
+        .deactivate {
+            border: 1px solid #475569;
+            background: transparent;
+            color: #cbd5e1;
+            padding: 16px 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+
+        .deactivate:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            display: none;
+            border: 1px solid #374151;
+            background: #080c12;
+            line-height: 1.6;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.error {
+            border-color: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        .message.success {
+            border-color: #14532d;
+            color: #86efac;
+        }
+
+        .return {
+            display: inline-block;
+            margin-top: 30px;
+            color: #94a3b8;
+            text-decoration: none;
+            border: 1px solid #374151;
+            padding: 12px 18px;
+            font-size: 11px;
+            letter-spacing: 2px;
+        }
+
+        .return:hover {
+            color: white;
+            border-color: #64748b;
+        }
+
+        @media (max-width: 800px) {
+            .warheads {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .sites {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .warheads {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
+<header class="header">
+    <div class="header-title">SITE-64 // WARHEAD CONTROL</div>
+    <div class="header-sub">
+        SECURE CONTAIN PROTECT // AUTHORIZED PERSONNEL ONLY
+    </div>
+</header>
 
-<!-- =====================================================
-     WARNING
-===================================================== -->
+<main class="container">
 
-<section
-    id="warningScreen"
-    class="screen active"
->
-
-<div class="warning">
-
-    <h1>
-        ⚠ WARHEAD CONTROL
-    </h1>
-
-    <p>
-
-        YOU ARE ACCESSING A CLASSIFIED
-        SITE-64 WARHEAD CONTROL TERMINAL.
-
-        <br><br>
-
-        ALL ACTIONS ARE LOGGED.
-
-        <br><br>
-
-        UNAUTHORIZED ACCESS IS PROHIBITED.
-
-        <br><br>
-
-        CONTINUE ONLY IF YOU HAVE
-        APPROPRIATE AUTHORIZATION.
-
-    </p>
-
-    <button
-        onclick="enterControl()"
-    >
-        CONTINUE
-    </button>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     CONTROL
-===================================================== -->
-
-<section
-    id="controlScreen"
-    class="screen"
->
-
-<div class="control">
-
-    <div class="header">
-
-        <h1>
-            WARHEAD CONTROL
-        </h1>
-
-        <span>
-            SITE-64 // O5
-        </span>
-
+    <div class="warning">
+        <strong>⚠ WARHEAD CONTROL SYSTEM</strong>
+        Unauthorized activation of a warhead is strictly prohibited.
+        All activation events are logged by the SITE-64 administration system.
     </div>
 
+    <div class="status-panel">
+        <div>
+            <div class="status-label">CURRENT WARHEAD STATUS</div>
+            <div id="statusMessage" class="status-value">STANDBY</div>
+        </div>
 
-    <div class="title">
+        <div>
+            <div class="status-label">SELECTED WARHEAD</div>
+            <div id="selectedWarhead">NONE</div>
+        </div>
+    </div>
+
+    <div class="section-title">
         SELECT WARHEAD
     </div>
 
+    <div class="warheads">
 
-    <div class="grid">
+        <button class="warhead" data-type="GAMMA">
+            <div class="warhead-name">GAMMA</div>
+            <div class="warhead-effect">GLOBAL TERMINATION</div>
+            <div class="warhead-description">
+                TOTAL GLOBAL DESTRUCTION.
+            </div>
+        </button>
 
+        <button class="warhead" data-type="DELTA">
+            <div class="warhead-name">DELTA</div>
+            <div class="warhead-effect">FACILITY TERMINATION</div>
+            <div class="warhead-description">
+                DESTRUCTION OF THE SELECTED FACILITY.
+            </div>
+        </button>
 
-        <div
-            class="card"
-            onclick="selectWarhead('GAMMA')"
-        >
+        <button class="warhead" data-type="ALPHA">
+            <div class="warhead-name">ALPHA</div>
+            <div class="warhead-effect">FACILITY TERMINATION</div>
+            <div class="warhead-description">
+                DESTRUCTION OF THE SELECTED FACILITY.
+            </div>
+        </button>
 
-            <h2>
-                GAMMA
-            </h2>
-
-            <p>
-                GLOBAL TERMINATION
-                <br>
-                GLOBAL TARGET
-            </p>
-
-        </div>
-
-
-        <div
-            class="card"
-            onclick="selectWarhead('DELTA')"
-        >
-
-            <h2>
-                DELTA
-            </h2>
-
-            <p>
-                FACILITY TERMINATION
-                <br>
-                SELECT TARGET SITE
-            </p>
-
-        </div>
-
-
-        <div
-            class="card"
-            onclick="selectWarhead('ALPHA')"
-        >
-
-            <h2>
-                ALPHA
-            </h2>
-
-            <p>
-                FACILITY TERMINATION
-                <br>
-                SELECT TARGET SITE
-            </p>
-
-        </div>
-
-
-        <div
-            class="card"
-            onclick="selectWarhead('BETA')"
-        >
-
-            <h2>
-                BETA
-            </h2>
-
-            <p>
-                FACILITY TERMINATION
-                <br>
-                SELECT TARGET SITE
-            </p>
-
-        </div>
+        <button class="warhead" data-type="BETA">
+            <div class="warhead-name">BETA</div>
+            <div class="warhead-effect">FACILITY TERMINATION</div>
+            <div class="warhead-description">
+                DESTRUCTION OF THE SELECTED FACILITY.
+            </div>
+        </button>
 
     </div>
 
+    <div id="sitePanel" class="site-panel">
 
-    <div
-        id="siteArea"
-        class="site-area"
-        style="display:none"
-    >
-
-        <div class="title">
+        <div class="section-title">
             SELECT TARGET FACILITY
         </div>
 
         <div class="sites">
 
-            <button
-                class="site"
-                onclick="selectSite('SITE-19')"
-            >
+            <button class="site" data-site="SITE-19">
                 SITE-19
             </button>
 
-            <button
-                class="site"
-                onclick="selectSite('SITE-51')"
-            >
+            <button class="site" data-site="SITE-51">
                 SITE-51
             </button>
 
-            <button
-                class="site"
-                onclick="selectSite('SITE-64')"
-            >
+            <button class="site" data-site="SITE-64">
                 SITE-64
             </button>
 
@@ -845,935 +371,363 @@ body {
 
     </div>
 
+    <div class="controls">
 
-    <div class="selected-box">
+        <button
+            id="activateButton"
+            class="activate"
+            disabled
+        >
+            ACTIVATE WARHEAD
+        </button>
 
-        <span>
-            WARHEAD
-        </span>
-
-        <strong id="selectedWarhead">
-            NONE
-        </strong>
-
-        <span>
-            TARGET
-        </span>
-
-        <strong id="selectedSite">
-            NONE
-        </strong>
+        <button
+            id="deactivateButton"
+            class="deactivate"
+        >
+            DEACTIVATE
+        </button>
 
     </div>
 
-</div>
+    <div id="message" class="message"></div>
 
-</section>
+    <a class="return" href="/admin">
+        ← RETURN TO ADMIN
+    </a>
 
-
-<!-- =====================================================
-     CODE
-===================================================== -->
-
-<section
-    id="codeScreen"
-    class="screen"
->
-
-<div class="code-box">
-
-    <h1>
-        AUTHORIZATION
-    </h1>
-
-    <p>
-
-        WARHEAD:
-
-        <strong id="codeWarhead">
-            NONE
-        </strong>
-
-        <br><br>
-
-        ENTER THE AUTHORIZATION CODE
-        TO CONTINUE.
-
-    </p>
-
-
-    <input
-        id="codeInput"
-        class="code"
-        type="password"
-        placeholder="ENTER CODE"
-        autocomplete="off"
-    >
-
-
-    <button
-        class="verify"
-        onclick="verifyCode()"
-    >
-        VERIFY AUTHORIZATION
-    </button>
-
-
-    <button
-        class="back"
-        onclick="showScreen('controlScreen')"
-    >
-        CANCEL
-    </button>
-
-
-    <div
-        id="codeError"
-        class="error"
-    ></div>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     SEQUENCE
-===================================================== -->
-
-<section
-    id="sequenceScreen"
-    class="screen"
->
-
-<div class="sequence">
-
-    <h1>
-        WARHEAD FIRING SEQUENCE
-    </h1>
-
-
-    <div
-        id="output"
-        class="output"
-    ></div>
-
-
-    <div
-        id="countdown"
-        class="countdown"
-    >
-        --
-    </div>
-
-
-    <button
-        id="cancelButton"
-        class="cancel"
-        onclick="cancelSequence()"
-    >
-        CANCEL WARHEAD
-    </button>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     FINAL
-===================================================== -->
-
-<section
-    id="finalScreen"
-    class="screen"
->
-
-<div class="final">
-
-    <h1 id="finalTitle">
-        SYSTEM
-    </h1>
-
-    <p id="finalText"></p>
-
-    <button
-        onclick="location.reload()"
-    >
-        RETURN TO CONTROL
-    </button>
-
-</div>
-
-</section>
-
+</main>
 
 <script>
 
-/* =====================================================
-   STATE
-===================================================== */
+    let selectedType = null;
+    let selectedSite = null;
 
-let selectedWarhead = null;
+    const warheadButtons =
+        document.querySelectorAll(".warhead");
 
-let selectedSite = null;
+    const siteButtons =
+        document.querySelectorAll(".site");
 
-let sequenceCancelled = false;
+    const sitePanel =
+        document.getElementById("sitePanel");
 
-let sequenceRunning = false;
+    const activateButton =
+        document.getElementById("activateButton");
 
+    const deactivateButton =
+        document.getElementById("deactivateButton");
 
-/* =====================================================
-   SCREEN
-===================================================== */
+    const selectedWarhead =
+        document.getElementById("selectedWarhead");
 
-function showScreen(id) {
+    const statusMessage =
+        document.getElementById("statusMessage");
 
-    document
-        .querySelectorAll(".screen")
-        .forEach(screen => {
-
-            screen.classList.remove(
-                "active"
-            );
-
-        });
+    const message =
+        document.getElementById("message");
 
 
-    setTimeout(() => {
+    function showMessage(text, type) {
 
-        document
-            .getElementById(id)
-            .classList.add(
-                "active"
-            );
-
-    }, 50);
-
-}
-
-
-/* =====================================================
-   ENTER
-===================================================== */
-
-function enterControl() {
-
-    showScreen(
-        "controlScreen"
-    );
-
-}
-
-
-/* =====================================================
-   SELECT WARHEAD
-===================================================== */
-
-function selectWarhead(type) {
-
-    selectedWarhead =
-        type;
-
-
-    document
-        .getElementById(
-            "selectedWarhead"
-        )
-        .textContent =
-            type;
-
-
-    document
-        .getElementById(
-            "codeWarhead"
-        )
-        .textContent =
-            type;
-
-
-    if (
-        type === "GAMMA"
-    ) {
-
-        selectedSite =
-            null;
-
-
-        document
-            .getElementById(
-                "selectedSite"
-            )
-            .textContent =
-                "GLOBAL";
-
-
-        document
-            .getElementById(
-                "siteArea"
-            )
-            .style.display =
-                "none";
-
-    } else {
-
-        document
-            .getElementById(
-                "siteArea"
-            )
-            .style.display =
-                "block";
-
-
-        document
-            .getElementById(
-                "selectedSite"
-            )
-            .textContent =
-                selectedSite ||
-                "NONE";
+        message.textContent = text;
+        message.className =
+            "message show " + (type || "");
 
     }
 
 
-    showScreen(
-        "codeScreen"
-    );
+    function updateButton() {
 
-}
-
-
-/* =====================================================
-   SITE
-===================================================== */
-
-function selectSite(site) {
-
-    selectedSite =
-        site;
-
-
-    document
-        .getElementById(
-            "selectedSite"
-        )
-        .textContent =
-            site;
-
-
-    document
-        .querySelectorAll(
-            ".site"
-        )
-        .forEach(button => {
-
-            button.classList.toggle(
-                "selected",
-                button.textContent.trim()
-                    === site
-            );
-
-        });
-
-}
-
-
-/* =====================================================
-   VERIFY
-===================================================== */
-
-function verifyCode() {
-
-    const input =
-        document.getElementById(
-            "codeInput"
-        );
-
-
-    const error =
-        document.getElementById(
-            "codeError"
-        );
-
-
-    const code =
-        input.value
-            .trim()
-            .toUpperCase();
-
-
-    error.textContent =
-        "";
-
-
-    if (!selectedWarhead) {
-
-        error.textContent =
-            "NO WARHEAD SELECTED.";
-
-        return;
-
-    }
-
-
-    if (
-        selectedWarhead !== "GAMMA" &&
-        !selectedSite
-    ) {
-
-        error.textContent =
-            "TARGET FACILITY REQUIRED.";
-
-        return;
-
-    }
-
-
-    if (
-        code !== "WARHEAD"
-    ) {
-
-        error.textContent =
-            "AUTHORIZATION DENIED.";
-
-        input.value =
-            "";
-
-        return;
-
-    }
-
-
-    input.value =
-        "";
-
-
-    beginWarhead();
-
-}
-
-
-/* =====================================================
-   OUTPUT
-===================================================== */
-
-function addLine(
-    text,
-    className = ""
-) {
-
-    const output =
-        document.getElementById(
-            "output"
-        );
-
-
-    const line =
-        document.createElement(
-            "div"
-        );
-
-
-    line.className =
-        "line " +
-        className;
-
-
-    line.textContent =
-        text;
-
-
-    output.appendChild(
-        line
-    );
-
-
-    output.scrollTop =
-        output.scrollHeight;
-
-}
-
-
-/* =====================================================
-   WAIT
-===================================================== */
-
-function wait(ms) {
-
-    return new Promise(
-        resolve =>
-            setTimeout(
-                resolve,
-                ms
-            )
-    );
-
-}
-
-
-/* =====================================================
-   COUNTDOWN
-===================================================== */
-
-async function countdown(seconds) {
-
-    const display =
-        document.getElementById(
-            "countdown"
-        );
-
-
-    for (
-        let i = seconds;
-        i > 0;
-        i--
-    ) {
-
-        if (
-            sequenceCancelled
-        ) {
-
-            return false;
-
-        }
-
-
-        display.textContent =
-            `${i} SEC`;
-
-
-        await wait(
-            1000
-        );
-
-    }
-
-
-    display.textContent =
-        "0 SEC";
-
-
-    return true;
-
-}
-
-
-/* =====================================================
-   SERVER ACTIVATE
-===================================================== */
-
-async function activateServer() {
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/warhead/activate",
-                {
-
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify({
-                            type:
-                                selectedWarhead
-                        })
-
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !response.ok
-        ) {
-
-            throw new Error(
-                data.message ||
-                "WARHEAD ACTIVATION FAILED."
-            );
-
-        }
-
-
-        return true;
-
-    } catch (error) {
-
-        addLine(
-            "SERVER WARNING: " +
-            error.message,
-            "yellow"
-        );
-
-        return false;
-
-    }
-
-}
-
-
-/* =====================================================
-   WARHEAD SEQUENCE
-===================================================== */
-
-async function beginWarhead() {
-
-    sequenceCancelled =
-        false;
-
-    sequenceRunning =
-        true;
-
-
-    document
-        .getElementById(
-            "output"
-        )
-        .innerHTML =
-            "";
-
-
-    document
-        .getElementById(
-            "countdown"
-        )
-        .textContent =
-            "--";
-
-
-    document
-        .getElementById(
-            "cancelButton"
-        )
-        .style.display =
-            "block";
-
-
-    showScreen(
-        "sequenceScreen"
-    );
-
-
-    await wait(500);
-
-
-    addLine(
-        "WARHEAD SYSTEM INITIALIZING...",
-        "yellow"
-    );
-
-
-    if (
-        !(await countdown(2))
-    ) {
-
-        return;
-
-    }
-
-
-    addLine(
-        "SYSTEM SUCCESSFULLY LOADED"
-    );
-
-
-    await wait(500);
-
-
-    if (
-        sequenceCancelled
-    ) {
-
-        return;
-
-    }
-
-
-    addLine(
-        "AUTHORIZATION VERIFIED."
-    );
-
-
-    addLine(
-        "WARHEAD: " +
-        selectedWarhead
-    );
-
-
-    addLine(
-        "TARGET: " +
-        (
-            selectedWarhead === "GAMMA"
-                ? "GLOBAL"
-                : selectedSite
-        )
-    );
-
-
-    const serverActivated =
-        await activateServer();
-
-
-    if (
-        !serverActivated
-    ) {
-
-        addLine(
-            "LOCAL SEQUENCE CONTINUING...",
-            "yellow"
-        );
-
-    }
-
-
-    if (
-        sequenceCancelled
-    ) {
-
-        return;
-
-    }
-
-
-    addLine(
-        "WARHEAD FIRING SEQUENCE INITIATED...",
-        "red"
-    );
-
-
-    if (
-        !(await countdown(5))
-    ) {
-
-        return;
-
-    }
-
-
-    addLine(
-        "WARHEAD DESCENDING...",
-        "red"
-    );
-
-
-    if (
-        !(await countdown(3))
-    ) {
-
-        return;
-
-    }
-
-
-    addLine(
-        "IMPACT SEQUENCE ACTIVE...",
-        "red"
-    );
-
-
-    await wait(500);
-
-
-    if (
-        sequenceCancelled
-    ) {
-
-        return;
-
-    }
-
-
-    for (
-        let i = 0;
-        i < 18;
-        i++
-    ) {
-
-        if (
-            sequenceCancelled
-        ) {
-
+        if (!selectedType) {
+            activateButton.disabled = true;
             return;
-
         }
 
+        if (
+            selectedType !== "GAMMA" &&
+            !selectedSite
+        ) {
+            activateButton.disabled = true;
+            return;
+        }
 
-        addLine(
-            "########################################",
-            "red"
-        );
-
-
-        await wait(180);
-
+        activateButton.disabled = false;
     }
 
 
-    sequenceRunning =
-        false;
+    warheadButtons.forEach(button => {
 
+        button.addEventListener("click", () => {
 
-    document
-        .getElementById(
-            "cancelButton"
-        )
-        .style.display =
-            "none";
+            warheadButtons.forEach(
+                item =>
+                    item.classList.remove("active")
+            );
 
+            button.classList.add("active");
 
-    document
-        .getElementById(
-            "finalTitle"
-        )
-        .textContent =
-            "WARHEAD SEQUENCE COMPLETE";
+            selectedType =
+                button.dataset.type;
 
+            selectedSite = null;
 
-    document
-        .getElementById(
-            "finalText"
-        )
-        .textContent =
-            "THE WARHEAD FIRING SEQUENCE HAS REACHED ITS FINAL STATE.";
+            siteButtons.forEach(
+                item =>
+                    item.classList.remove("selected")
+            );
 
+            selectedWarhead.textContent =
+                selectedType;
 
-    showScreen(
-        "finalScreen"
-    );
+            if (selectedType === "GAMMA") {
 
-}
+                sitePanel.classList.remove("show");
 
+            } else {
 
-/* =====================================================
-   CANCEL
-===================================================== */
+                sitePanel.classList.add("show");
 
-async function cancelSequence() {
-
-    if (
-        !sequenceRunning
-    ) {
-
-        return;
-
-    }
-
-
-    sequenceCancelled =
-        true;
-
-    sequenceRunning =
-        false;
-
-
-    try {
-
-        await fetch(
-            "/api/warhead/deactivate",
-            {
-                method: "POST"
             }
-        );
 
-    } catch {
+            updateButton();
 
-        console.log(
-            "WARHEAD DEACTIVATION REQUEST FAILED."
-        );
+            showMessage(
+                selectedType +
+                " WARHEAD SELECTED.",
+                "success"
+            );
+        });
 
-    }
-
-
-    document
-        .getElementById(
-            "cancelButton"
-        )
-        .style.display =
-            "none";
+    });
 
 
-    document
-        .getElementById(
-            "countdown"
-        )
-        .textContent =
-            "ABORTED";
+    siteButtons.forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            siteButtons.forEach(
+                item =>
+                    item.classList.remove("selected")
+            );
+
+            button.classList.add("selected");
+
+            selectedSite =
+                button.dataset.site;
+
+            updateButton();
+
+            showMessage(
+                "TARGET SELECTED: " +
+                selectedSite,
+                "success"
+            );
+        });
+
+    });
 
 
-    document
-        .getElementById(
-            "output"
-        )
-        .innerHTML =
-            "";
+    activateButton.addEventListener(
+        "click",
+        async () => {
 
-
-    addLine(
-        "WARHEAD SYSTEM ABORTED.",
-        "yellow"
-    );
-
-
-    await wait(1200);
-
-
-    document
-        .getElementById(
-            "finalTitle"
-        )
-        .textContent =
-            "WARHEAD SYSTEM ABORTED";
-
-
-    document
-        .getElementById(
-            "finalText"
-        )
-        .textContent =
-            "THE WARHEAD FIRING SEQUENCE HAS BEEN TERMINATED.";
-
-
-    showScreen(
-        "finalScreen"
-    );
-
-}
-
-
-/* =====================================================
-   ENTER KEY
-===================================================== */
-
-document
-    .getElementById(
-        "codeInput"
-    )
-    .addEventListener(
-        "keydown",
-        event => {
+            if (!selectedType) {
+                return;
+            }
 
             if (
-                event.key === "Enter"
+                selectedType !== "GAMMA" &&
+                !selectedSite
             ) {
+                showMessage(
+                    "SELECT A TARGET FACILITY FIRST.",
+                    "error"
+                );
+                return;
+            }
 
-                verifyCode();
+            activateButton.disabled = true;
 
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/warhead/activate",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+                            body:
+                                JSON.stringify({
+                                    type:
+                                        selectedType,
+                                    site:
+                                        selectedSite
+                                })
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message ||
+                        "WARHEAD ACTIVATION FAILED."
+                    );
+                }
+
+                statusMessage.textContent =
+                    data.warhead.status ||
+                    "ARMED";
+
+                showMessage(
+                    "WARHEAD ACTIVATED SUCCESSFULLY.",
+                    "success"
+                );
+
+            } catch (error) {
+
+                showMessage(
+                    error.message,
+                    "error"
+                );
+
+                updateButton();
             }
 
         }
     );
+
+
+    deactivateButton.addEventListener(
+        "click",
+        async () => {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/warhead/deactivate",
+                        {
+                            method: "POST"
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message ||
+                        "DEACTIVATION FAILED."
+                    );
+                }
+
+                statusMessage.textContent =
+                    "STANDBY";
+
+                selectedWarhead.textContent =
+                    "NONE";
+
+                selectedType = null;
+                selectedSite = null;
+
+                warheadButtons.forEach(
+                    button =>
+                        button.classList.remove(
+                            "active"
+                        )
+                );
+
+                siteButtons.forEach(
+                    button =>
+                        button.classList.remove(
+                            "selected"
+                        )
+                );
+
+                sitePanel.classList.remove(
+                    "show"
+                );
+
+                updateButton();
+
+                showMessage(
+                    "WARHEAD SYSTEM DEACTIVATED.",
+                    "success"
+                );
+
+            } catch (error) {
+
+                showMessage(
+                    error.message,
+                    "error"
+                );
+            }
+
+        }
+    );
+
+
+    async function loadWarhead() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/warhead"
+                );
+
+            const data =
+                await response.json();
+
+            if (!data.success) {
+                return;
+            }
+
+            const warhead =
+                data.warhead;
+
+            statusMessage.textContent =
+                warhead.status ||
+                "STANDBY";
+
+            if (warhead.active) {
+
+                selectedWarhead.textContent =
+                    warhead.type ||
+                    "UNKNOWN";
+
+                selectedType =
+                    warhead.type;
+
+                if (
+                    warhead.type !== "GAMMA"
+                ) {
+                    sitePanel.classList.add(
+                        "show"
+                    );
+                }
+
+                activateButton.disabled =
+                    true;
+            }
+
+        } catch {
+
+            statusMessage.textContent =
+                "OFFLINE";
+        }
+    }
+
+
+    loadWarhead();
 
 </script>
 
 </body>
-
 </html>
