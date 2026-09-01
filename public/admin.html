@@ -92,6 +92,7 @@ body {
 
 .stats {
     display: grid;
+
     grid-template-columns:
         repeat(4, 1fr);
 
@@ -108,9 +109,13 @@ body {
 
 .stat span {
     display: block;
+
     color: #607684;
+
     font-size: 9px;
+
     letter-spacing: 2px;
+
     margin-bottom: 8px;
 }
 
@@ -170,16 +175,19 @@ body {
 
 .status.pending {
     color: #d9bd79;
+
     border-color: #66552c;
 }
 
 .status.approved {
     color: #8dccaa;
+
     border-color: #315d48;
 }
 
 .status.rejected {
     color: #d98989;
+
     border-color: #633838;
 }
 
@@ -245,7 +253,7 @@ body {
 .time-select {
     flex: 1;
 
-    min-width: 190px;
+    min-width: 200px;
 
     background: #05080b;
 
@@ -456,54 +464,23 @@ body {
 <div class="stats">
 
     <div class="stat">
-
-        <span>
-            TOTAL
-        </span>
-
-        <strong id="total">
-            0
-        </strong>
-
+        <span>TOTAL</span>
+        <strong id="total">0</strong>
     </div>
 
-
     <div class="stat">
-
-        <span>
-            PENDING
-        </span>
-
-        <strong id="pending">
-            0
-        </strong>
-
+        <span>PENDING</span>
+        <strong id="pending">0</strong>
     </div>
 
-
     <div class="stat">
-
-        <span>
-            APPROVED
-        </span>
-
-        <strong id="approved">
-            0
-        </strong>
-
+        <span>APPROVED</span>
+        <strong id="approved">0</strong>
     </div>
 
-
     <div class="stat">
-
-        <span>
-            REJECTED
-        </span>
-
-        <strong id="rejected">
-            0
-        </strong>
-
+        <span>REJECTED</span>
+        <strong id="rejected">0</strong>
     </div>
 
 </div>
@@ -528,9 +505,8 @@ body {
 
 <script>
 
-
 /* =====================================================
-   ADMIN CODE
+   ADMIN ACCESS
 ===================================================== */
 
 const ADMIN_CODE =
@@ -628,11 +604,10 @@ const requestsContainer =
 
 function login() {
 
-    const password =
-        passwordInput.value;
-
-
-    if (password === ADMIN_CODE) {
+    if (
+        passwordInput.value ===
+        ADMIN_CODE
+    ) {
 
         loginBox.style.display =
             "none";
@@ -692,6 +667,7 @@ async function loadRequests() {
         if (!response.ok) {
 
             throw new Error(
+                data.message ||
                 "REQUEST DATABASE ERROR."
             );
         }
@@ -763,7 +739,7 @@ function updateStats() {
 
 
 /* =====================================================
-   RENDER REQUESTS
+   RENDER
 ===================================================== */
 
 function renderRequests() {
@@ -773,9 +749,7 @@ function renderRequests() {
         requestsContainer.innerHTML = `
 
             <div class="no-requests">
-
                 NO REQUESTS FOUND.
-
             </div>
 
         `;
@@ -808,16 +782,21 @@ function createRequestCard(request) {
         ).toLowerCase();
 
 
+    const currentTime =
+        String(
+            request.time ||
+            ""
+        )
+            .trim()
+            .toUpperCase();
+
+
     const options =
         TIME_OPTIONS
             .map(time => {
 
                 const selected =
-                    String(
-                        request.time ||
-                        ""
-                    ).toUpperCase() ===
-                    time;
+                    currentTime === time;
 
                 return `
 
@@ -842,23 +821,19 @@ function createRequestCard(request) {
             <div class="request-top">
 
                 <div class="request-id">
-
                     ${escapeHtml(
                         request.id
                     )}
-
                 </div>
 
 
                 <div
                     class="status ${status}"
                 >
-
                     ${escapeHtml(
                         request.status ||
                         "PENDING"
                     )}
-
                 </div>
 
             </div>
@@ -891,7 +866,8 @@ function createRequestCard(request) {
                     <strong>
                         ${escapeHtml(
                             request.typeName ||
-                            request.type
+                            request.type ||
+                            "UNKNOWN"
                         )}
                     </strong>
 
@@ -976,7 +952,9 @@ function createRequestCard(request) {
 
                     <select
                         class="time-select"
-                        id="time-${request.id}"
+                        id="time-${escapeHtml(
+                            request.id
+                        )}"
                     >
 
                         ${options}
@@ -986,11 +964,11 @@ function createRequestCard(request) {
 
                     <button
                         class="action-button change-time"
-                        onclick="changeTime('${request.id}')"
+                        onclick="changeTime('${escapeJs(
+                            request.id
+                        )}')"
                     >
-
                         CHANGE TIME
-
                     </button>
 
                 </div>
@@ -999,14 +977,15 @@ function createRequestCard(request) {
 
 
             <textarea
-                id="message-${request.id}"
+                id="message-${escapeHtml(
+                    request.id
+                )}"
                 class="message-box"
                 placeholder="ADMIN MESSAGE..."
             ></textarea>
 
 
             <div class="actions">
-
 
                 ${
                     request.status ===
@@ -1016,7 +995,9 @@ function createRequestCard(request) {
 
                     <button
                         class="action-button approve"
-                        onclick="approveRequest('${request.id}')"
+                        onclick="approveRequest('${escapeJs(
+                            request.id
+                        )}')"
                     >
                         APPROVE REQUEST
                     </button>
@@ -1024,7 +1005,9 @@ function createRequestCard(request) {
 
                     <button
                         class="action-button reject"
-                        onclick="rejectRequest('${request.id}')"
+                        onclick="rejectRequest('${escapeJs(
+                            request.id
+                        )}')"
                     >
                         REJECT REQUEST
                     </button>
@@ -1032,9 +1015,7 @@ function createRequestCard(request) {
                     `
 
                     : ""
-
                 }
-
 
             </div>
 
@@ -1087,7 +1068,9 @@ async function changeTime(id) {
 
         const response =
             await fetch(
-                `/api/requests/${encodeURIComponent(id)}/time`,
+                `/api/requests/${encodeURIComponent(
+                    id
+                )}/time`,
                 {
                     method: "POST",
 
@@ -1098,7 +1081,7 @@ async function changeTime(id) {
 
                     body:
                         JSON.stringify({
-                            time
+                            time: time
                         })
                 }
             );
@@ -1118,7 +1101,7 @@ async function changeTime(id) {
 
 
         showResult(
-            `TIME CHANGED TO ${data.request.time}.`,
+            `REQUEST TIME UPDATED TO ${data.request.time}.`,
             false
         );
 
@@ -1141,17 +1124,25 @@ async function changeTime(id) {
 
 async function approveRequest(id) {
 
-    const message =
+    const messageElement =
         document.getElementById(
             `message-${id}`
-        ).value.trim();
+        );
+
+
+    const message =
+        messageElement
+            ? messageElement.value.trim()
+            : "";
 
 
     try {
 
         const response =
             await fetch(
-                `/api/requests/${encodeURIComponent(id)}/approve`,
+                `/api/requests/${encodeURIComponent(
+                    id
+                )}/approve`,
                 {
                     method: "POST",
 
@@ -1205,17 +1196,25 @@ async function approveRequest(id) {
 
 async function rejectRequest(id) {
 
-    const message =
+    const messageElement =
         document.getElementById(
             `message-${id}`
-        ).value.trim();
+        );
+
+
+    const message =
+        messageElement
+            ? messageElement.value.trim()
+            : "";
 
 
     try {
 
         const response =
             await fetch(
-                `/api/requests/${encodeURIComponent(id)}/reject`,
+                `/api/requests/${encodeURIComponent(
+                    id
+                )}/reject`,
                 {
                     method: "POST",
 
@@ -1293,16 +1292,14 @@ function showResult(
 
 
     result.style.border =
-        `1px solid ${
-            error
-                ? "#633838"
-                : "#315d48"
-        }`;
+        error
+            ? "1px solid #633838"
+            : "1px solid #315d48";
 }
 
 
 /* =====================================================
-   ESCAPE
+   ESCAPE HTML
 ===================================================== */
 
 function escapeHtml(value) {
@@ -1327,6 +1324,24 @@ function escapeHtml(value) {
         .replace(
             /'/g,
             "&#039;"
+        );
+}
+
+
+/* =====================================================
+   ESCAPE JS
+===================================================== */
+
+function escapeJs(value) {
+
+    return String(value ?? "")
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+        .replace(
+            /'/g,
+            "\\'"
         );
 }
 

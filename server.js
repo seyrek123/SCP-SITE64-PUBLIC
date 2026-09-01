@@ -1,4 +1,3 @@
-```javascript
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
@@ -9,7 +8,6 @@ const PORT = process.env.PORT || 6464;
 
 const PUBLIC_DIR = path.join(__dirname, "public");
 const DATA_FILE = path.join(__dirname, "data.json");
-
 
 /* =====================================================
    MIDDLEWARE
@@ -30,7 +28,6 @@ function createEmptyDatabase() {
         requests: []
     };
 }
-
 
 function ensureDatabase() {
 
@@ -58,10 +55,14 @@ function ensureDatabase() {
             )
         );
 
+        let changed = false;
+
         if (!Array.isArray(data.requests)) {
-
             data.requests = [];
+            changed = true;
+        }
 
+        if (changed) {
             saveDatabase(data);
         }
 
@@ -84,7 +85,6 @@ function ensureDatabase() {
     }
 }
 
-
 function readDatabase() {
 
     ensureDatabase();
@@ -98,12 +98,16 @@ function readDatabase() {
             )
         );
 
-    } catch {
+    } catch (error) {
+
+        console.error(
+            "DATABASE READ ERROR:",
+            error
+        );
 
         return createEmptyDatabase();
     }
 }
-
 
 function saveDatabase(database) {
 
@@ -120,7 +124,7 @@ function saveDatabase(database) {
 
 
 /* =====================================================
-   REQUEST ID
+   ID
 ===================================================== */
 
 function generateId() {
@@ -150,19 +154,9 @@ function generateId() {
 
 
 /* =====================================================
-   TIME SYSTEM
+   TIME
+   12:00 PM -> 12:00 AM
 ===================================================== */
-
-/*
-    Allowed:
-
-    12:00 PM
-    12:30 PM
-    1:00 PM
-    ...
-    11:30 PM
-    12:00 AM
-*/
 
 function validateTime(time) {
 
@@ -175,30 +169,61 @@ function validateTime(time) {
             .trim()
             .toUpperCase();
 
-    const match =
-        /^((1[0-2])|([1-9])):(00|30)\s?(AM|PM)$/
-            .exec(value);
-
-    if (!match) {
-        return false;
-    }
-
-    return true;
+    return /^(12|1[0-2]|[1-9]):(00|30) (AM|PM)$/.test(
+        value
+    );
 }
 
 
-function getPeriod(time) {
+function normalizeTime(time) {
+
+    if (!time) {
+        return null;
+    }
 
     const value =
         String(time)
             .trim()
             .toUpperCase();
 
-    if (value.endsWith("AM")) {
-        return "AM";
+    if (!validateTime(value)) {
+        return null;
     }
 
-    return "PM";
+    return value;
+}
+
+
+function getPeriod(time) {
+
+    const value =
+        normalizeTime(time);
+
+    if (!value) {
+        return null;
+    }
+
+    const parts =
+        value.split(" ");
+
+    const hour =
+        Number(
+            parts[0].split(":")[0]
+        );
+
+    const meridiem =
+        parts[1];
+
+    /*
+        12 AM - 11:30 AM = MORNING
+        12 PM - 11:30 PM = NIGHT
+    */
+
+    if (meridiem === "AM") {
+        return "MORNING";
+    }
+
+    return "NIGHT";
 }
 
 
@@ -262,9 +287,7 @@ app.get(
             readDatabase();
 
         res.json({
-
             success: true,
-
             requests:
                 database.requests
         });
@@ -319,21 +342,26 @@ app.post(
             }
 
 
-            if (!validateTime(time)) {
+            const normalizedTime =
+                normalizeTime(time);
+
+
+            if (!normalizedTime) {
 
                 return res
                     .status(400)
                     .json({
                         success: false,
                         message:
-                            "INVALID TIME. USE A 30-MINUTE AM/PM TIME."
+                            "INVALID TIME. USE AM/PM WITH 00 OR 30 MINUTES."
                     });
             }
 
 
             if (
                 type === "scp" &&
-                (!scp || !String(scp).trim())
+                (!scp ||
+                    !String(scp).trim())
             ) {
 
                 return res
@@ -371,12 +399,12 @@ app.post(
                         : null,
 
                 time:
-                    String(time)
-                        .trim()
-                        .toUpperCase(),
+                    normalizedTime,
 
                 period:
-                    getPeriod(time),
+                    getPeriod(
+                        normalizedTime
+                    ),
 
                 message:
                     message
@@ -422,31 +450,31 @@ app.post(
                 "========================================"
             );
             console.log(
-                "ID     :",
+                "ID      :",
                 request.id
             );
             console.log(
-                "NAME   :",
+                "NAME    :",
                 request.name
             );
             console.log(
-                "TYPE   :",
+                "TYPE    :",
                 request.typeName
             );
             console.log(
-                "SCP    :",
+                "SCP     :",
                 request.scp || "N/A"
             );
             console.log(
-                "TIME   :",
+                "TIME    :",
                 request.time
             );
             console.log(
-                "PERIOD :",
+                "PERIOD  :",
                 request.period
             );
             console.log(
-                "STATUS :",
+                "STATUS  :",
                 request.status
             );
             console.log(
@@ -458,9 +486,7 @@ app.post(
             res
                 .status(201)
                 .json({
-
                     success: true,
-
                     request:
                         request
                 });
@@ -475,9 +501,7 @@ app.post(
             res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "SERVER ERROR."
                 });
@@ -494,92 +518,109 @@ app.post(
     "/api/requests/:id/approve",
     (req, res) => {
 
-        const database =
-            readDatabase();
+        try {
+
+            const database =
+                readDatabase();
 
 
-        const request =
-            database.requests.find(
-                item =>
-                    item.id ===
-                    req.params.id
-            );
+            const request =
+                database.requests.find(
+                    item =>
+                        item.id ===
+                        req.params.id
+                );
 
 
-        if (!request) {
-
-            return res
-                .status(404)
-                .json({
-
-                    success: false,
-
-                    message:
-                        "REQUEST NOT FOUND."
-                });
-        }
-
-
-        const {
-            message,
-            time
-        } = req.body;
-
-
-        if (time !== undefined) {
-
-            if (!validateTime(time)) {
+            if (!request) {
 
                 return res
-                    .status(400)
+                    .status(404)
                     .json({
-
                         success: false,
-
                         message:
-                            "INVALID TIME."
+                            "REQUEST NOT FOUND."
                     });
             }
 
 
-            request.time =
-                String(time)
-                    .trim()
-                    .toUpperCase();
+            const {
+                message,
+                time
+            } = req.body;
 
-            request.period =
-                getPeriod(
-                    request.time
-                );
+
+            if (time !== undefined) {
+
+                const normalizedTime =
+                    normalizeTime(time);
+
+                if (!normalizedTime) {
+
+                    return res
+                        .status(400)
+                        .json({
+                            success: false,
+                            message:
+                                "INVALID TIME."
+                        });
+                }
+
+                request.time =
+                    normalizedTime;
+
+                request.period =
+                    getPeriod(
+                        normalizedTime
+                    );
+            }
+
+
+            request.status =
+                "APPROVED";
+
+
+            request.adminMessage =
+                message
+                    ? String(message).trim()
+                    : "YOUR REQUEST HAS BEEN ACCEPTED.";
+
+
+            request.updatedAt =
+                new Date().toISOString();
+
+
+            saveDatabase(
+                database
+            );
+
+
+            console.log(
+                `[APPROVED] ${request.id} @ ${request.time}`
+            );
+
+
+            res.json({
+                success: true,
+                request:
+                    request
+            });
+
+        } catch (error) {
+
+            console.error(
+                "APPROVE ERROR:",
+                error
+            );
+
+            res
+                .status(500)
+                .json({
+                    success: false,
+                    message:
+                        "SERVER ERROR."
+                });
         }
-
-
-        request.status =
-            "APPROVED";
-
-
-        request.adminMessage =
-            message
-                ? String(message).trim()
-                : "YOUR REQUEST HAS BEEN ACCEPTED.";
-
-
-        request.updatedAt =
-            new Date().toISOString();
-
-
-        saveDatabase(
-            database
-        );
-
-
-        res.json({
-
-            success: true,
-
-            request:
-                request
-        });
     }
 );
 
@@ -592,58 +633,79 @@ app.post(
     "/api/requests/:id/reject",
     (req, res) => {
 
-        const database =
-            readDatabase();
+        try {
+
+            const database =
+                readDatabase();
 
 
-        const request =
-            database.requests.find(
-                item =>
-                    item.id ===
-                    req.params.id
+            const request =
+                database.requests.find(
+                    item =>
+                        item.id ===
+                        req.params.id
+                );
+
+
+            if (!request) {
+
+                return res
+                    .status(404)
+                    .json({
+                        success: false,
+                        message:
+                            "REQUEST NOT FOUND."
+                    });
+            }
+
+
+            request.status =
+                "REJECTED";
+
+
+            request.adminMessage =
+                req.body.message
+                    ? String(
+                        req.body.message
+                    ).trim()
+                    : "YOUR REQUEST HAS BEEN REJECTED.";
+
+
+            request.updatedAt =
+                new Date().toISOString();
+
+
+            saveDatabase(
+                database
             );
 
 
-        if (!request) {
+            console.log(
+                `[REJECTED] ${request.id}`
+            );
 
-            return res
-                .status(404)
+
+            res.json({
+                success: true,
+                request:
+                    request
+            });
+
+        } catch (error) {
+
+            console.error(
+                "REJECT ERROR:",
+                error
+            );
+
+            res
+                .status(500)
                 .json({
-
                     success: false,
-
                     message:
-                        "REQUEST NOT FOUND."
+                        "SERVER ERROR."
                 });
         }
-
-
-        request.status =
-            "REJECTED";
-
-
-        request.adminMessage =
-            req.body.message
-                ? String(req.body.message).trim()
-                : "YOUR REQUEST HAS BEEN REJECTED.";
-
-
-        request.updatedAt =
-            new Date().toISOString();
-
-
-        saveDatabase(
-            database
-        );
-
-
-        res.json({
-
-            success: true,
-
-            request:
-                request
-        });
     }
 );
 
@@ -663,14 +725,16 @@ app.post(
             } = req.body;
 
 
-            if (!validateTime(time)) {
+            const normalizedTime =
+                normalizeTime(time);
+
+
+            if (!normalizedTime) {
 
                 return res
                     .status(400)
                     .json({
-
                         success: false,
-
                         message:
                             "INVALID TIME."
                     });
@@ -694,9 +758,7 @@ app.post(
                 return res
                     .status(404)
                     .json({
-
                         success: false,
-
                         message:
                             "REQUEST NOT FOUND."
                     });
@@ -704,14 +766,12 @@ app.post(
 
 
             request.time =
-                String(time)
-                    .trim()
-                    .toUpperCase();
+                normalizedTime;
 
 
             request.period =
                 getPeriod(
-                    request.time
+                    normalizedTime
                 );
 
 
@@ -730,9 +790,9 @@ app.post(
 
 
             res.json({
-
                 success: true,
-
+                message:
+                    "REQUEST TIME UPDATED.",
                 request:
                     request
             });
@@ -740,16 +800,14 @@ app.post(
         } catch (error) {
 
             console.error(
-                "TIME UPDATE ERROR:",
+                "TIME CHANGE ERROR:",
                 error
             );
 
             res
                 .status(500)
                 .json({
-
                     success: false,
-
                     message:
                         "SERVER ERROR."
                 });
@@ -766,41 +824,57 @@ app.get(
     "/api/status",
     (req, res) => {
 
-        const database =
-            readDatabase();
+        try {
+
+            const database =
+                readDatabase();
 
 
-        const pending =
-            database.requests.filter(
-                request =>
-                    request.status ===
-                    "PENDING"
-            ).length;
+            const pending =
+                database.requests.filter(
+                    request =>
+                        request.status ===
+                        "PENDING"
+                ).length;
 
 
-        res.json({
+            res.json({
 
-            server:
-                "ONLINE",
+                success:
+                    true,
 
-            site:
-                "SITE-64",
+                server:
+                    "ONLINE",
 
-            database:
-                "ONLINE",
+                site:
+                    "SITE-64",
 
-            requestSystem:
-                "ONLINE",
+                database:
+                    "ONLINE",
 
-            pendingRequests:
-                pending,
+                requestSystem:
+                    "ONLINE",
 
-            totalRequests:
-                database.requests.length,
+                pendingRequests:
+                    pending,
 
-            uptime:
-                process.uptime()
-        });
+                totalRequests:
+                    database.requests.length,
+
+                uptime:
+                    process.uptime()
+            });
+
+        } catch (error) {
+
+            res
+                .status(500)
+                .json({
+                    success: false,
+                    server: "ONLINE",
+                    database: "ERROR"
+                });
+        }
     }
 );
 
@@ -921,12 +995,12 @@ REJECTED   : ${rejected}`
             return res.json({
 
                 output:
-`FOUNDATION SITES
+`SITE-64
 ==============================
 SITE-19   | OPERATIONAL
-SITE-51   | OPERATIONAL
-SITE-64   | ACTIVE
-SITE-██   | CLASSIFIED`
+SITE-51   | CLASSIFIED
+SITE-64   | UNKNOWN
+SITE-██   | REDACTED`
             });
         }
 
@@ -936,7 +1010,7 @@ SITE-██   | CLASSIFIED`
             return res.json({
 
                 output:
-`SECURE CONTAIN PROTECT
+`SECURECONTAINPROTECT
 SITE-64 ADMINISTRATION SYSTEM
 
 CLASSIFICATION: O5
@@ -950,7 +1024,6 @@ Unauthorized access is prohibited.`
         if (command === "clear") {
 
             return res.json({
-
                 output:
                     "__CLEAR__"
             });
@@ -977,9 +1050,7 @@ app.use(
         res
             .status(404)
             .json({
-
                 success: false,
-
                 message:
                     "API ENDPOINT NOT FOUND."
             });
@@ -988,7 +1059,7 @@ app.use(
 
 
 /* =====================================================
-   START SERVER
+   START
 ===================================================== */
 
 ensureDatabase();
@@ -1004,7 +1075,7 @@ app.listen(
             "========================================"
         );
         console.log(
-            "     SECURE CONTAIN PROTECT // SITE-64"
+            "     SECURECONTAINPROTECT // SITE-64"
         );
         console.log(
             "========================================"
@@ -1034,4 +1105,3 @@ app.listen(
         console.log("");
     }
 );
-```
