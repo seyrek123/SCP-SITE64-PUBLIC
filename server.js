@@ -10,49 +10,19 @@ const HOST = "0.0.0.0";
 const PUBLIC_DIR = path.join(__dirname, "public");
 const DATA_FILE = path.join(__dirname, "data.json");
 
-const ROBLOX_API_KEY =
-    process.env.ROBLOX_API_KEY ||
-    "SCPARCHITECTX-64-SECRET-2026";
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 /* =====================================================
    DATABASE
 ===================================================== */
 
-function defaultSites() {
-    return {
-        "SITE-19": {
-            status: "NORMAL",
-            message: "",
-            updatedAt: null
-        },
-
-        "SITE-51": {
-            status: "NORMAL",
-            message: "",
-            updatedAt: null
-        },
-
-        "SITE-64": {
-            status: "NORMAL",
-            message: "",
-            updatedAt: null
-        }
-    };
-}
-
-
 function emptyDatabase() {
     return {
         requests: [],
-        incidents: [],
-        sites: defaultSites()
+        incidents: []
     };
 }
-
 
 function readDatabase() {
 
@@ -87,21 +57,6 @@ function readDatabase() {
             data.incidents = [];
         }
 
-        if (!data.sites) {
-            data.sites = defaultSites();
-        }
-
-        const defaults = defaultSites();
-
-        for (const site of Object.keys(defaults)) {
-
-            if (!data.sites[site]) {
-
-                data.sites[site] =
-                    defaults[site];
-            }
-        }
-
         return data;
 
     } catch (error) {
@@ -114,7 +69,6 @@ function readDatabase() {
         return emptyDatabase();
     }
 }
-
 
 function saveDatabase(data) {
 
@@ -162,7 +116,39 @@ function generateRequestId() {
 
 
 /* =====================================================
+   INCIDENT ID
+===================================================== */
+
+function generateIncidentId() {
+
+    const database =
+        readDatabase();
+
+    let id;
+
+    do {
+
+        id =
+            "INC-" +
+            Math.floor(
+                10000 +
+                Math.random() * 90000
+            );
+
+    } while (
+        database.incidents.some(
+            incident =>
+                incident.id === id
+        )
+    );
+
+    return id;
+}
+
+
+/* =====================================================
    TIME
+   12:00 AM - 11:30 PM
 ===================================================== */
 
 function isValidTime(time) {
@@ -176,18 +162,19 @@ function isValidTime(time) {
     );
 }
 
-
 function getPeriod(time) {
 
     const hour =
         Number(
-            String(time).split(":")[0]
+            String(time)
+                .split(":")[0]
         );
 
     if (
         hour >= 6 &&
         hour < 18
     ) {
+
         return "DAY";
     }
 
@@ -255,7 +242,7 @@ app.get("/term", (req, res) => {
 
 
 /* =====================================================
-   REQUESTS
+   GET ALL REQUESTS
 ===================================================== */
 
 app.get(
@@ -274,6 +261,10 @@ app.get(
 );
 
 
+/* =====================================================
+   CREATE REQUEST
+===================================================== */
+
 app.post(
     "/api/requests",
     (req, res) => {
@@ -289,6 +280,7 @@ app.post(
                 message
             } = req.body;
 
+
             if (
                 !name ||
                 !String(name).trim()
@@ -301,6 +293,7 @@ app.post(
                 });
             }
 
+
             if (!type) {
 
                 return res.status(400).json({
@@ -310,6 +303,7 @@ app.post(
                 });
             }
 
+
             if (!isValidTime(time)) {
 
                 return res.status(400).json({
@@ -318,6 +312,7 @@ app.post(
                         "INVALID TIME. SELECT A 30-MINUTE INTERVAL."
                 });
             }
+
 
             if (
                 type === "scp" &&
@@ -334,8 +329,10 @@ app.post(
                 });
             }
 
+
             const now =
                 new Date().toISOString();
+
 
             const request = {
 
@@ -381,20 +378,71 @@ app.post(
                     now
             };
 
+
             const database =
                 readDatabase();
+
 
             database.requests.push(
                 request
             );
 
+
             saveDatabase(
                 database
             );
 
+
+            console.log("");
+            console.log(
+                "========================================"
+            );
+            console.log(
+                "        NEW SITE-64 REQUEST"
+            );
+            console.log(
+                "========================================"
+            );
+            console.log(
+                "REQUEST ID :",
+                request.id
+            );
+            console.log(
+                "NAME       :",
+                request.name
+            );
+            console.log(
+                "TYPE       :",
+                request.typeName
+            );
+            console.log(
+                "SCP        :",
+                request.scp || "N/A"
+            );
+            console.log(
+                "TIME       :",
+                request.time
+            );
+            console.log(
+                "PERIOD     :",
+                request.period
+            );
+            console.log(
+                "STATUS     :",
+                request.status
+            );
+            console.log(
+                "========================================"
+            );
+            console.log("");
+
+
             res.status(201).json({
+
                 success: true,
-                request
+
+                request:
+                    request
             });
 
         } catch (error) {
@@ -405,7 +453,9 @@ app.post(
             );
 
             res.status(500).json({
+
                 success: false,
+
                 message:
                     "SERVER ERROR."
             });
@@ -415,7 +465,7 @@ app.post(
 
 
 /* =====================================================
-   APPROVE
+   APPROVE REQUEST
 ===================================================== */
 
 app.post(
@@ -425,6 +475,7 @@ app.post(
         const database =
             readDatabase();
 
+
         const request =
             database.requests.find(
                 item =>
@@ -432,19 +483,24 @@ app.post(
                     req.params.id
             );
 
+
         if (!request) {
 
             return res.status(404).json({
+
                 success: false,
+
                 message:
                     "REQUEST NOT FOUND."
             });
         }
 
+
         const {
             message,
             time
         } = req.body;
+
 
         if (
             time !== undefined &&
@@ -454,11 +510,14 @@ app.post(
             if (!isValidTime(time)) {
 
                 return res.status(400).json({
+
                     success: false,
+
                     message:
                         "INVALID TIME."
                 });
             }
+
 
             request.time =
                 time;
@@ -467,30 +526,38 @@ app.post(
                 getPeriod(time);
         }
 
+
         request.status =
             "APPROVED";
+
 
         request.adminMessage =
             message ||
             "YOUR REQUEST HAS BEEN APPROVED.";
 
+
         request.updatedAt =
             new Date().toISOString();
+
 
         saveDatabase(
             database
         );
 
+
         res.json({
+
             success: true,
-            request
+
+            request:
+                request
         });
     }
 );
 
 
 /* =====================================================
-   REJECT
+   REJECT REQUEST
 ===================================================== */
 
 app.post(
@@ -500,6 +567,7 @@ app.post(
         const database =
             readDatabase();
 
+
         const request =
             database.requests.find(
                 item =>
@@ -507,32 +575,43 @@ app.post(
                     req.params.id
             );
 
+
         if (!request) {
 
             return res.status(404).json({
+
                 success: false,
+
                 message:
                     "REQUEST NOT FOUND."
             });
         }
 
+
         request.status =
             "REJECTED";
+
 
         request.adminMessage =
             req.body.message ||
             "YOUR REQUEST HAS BEEN REJECTED.";
 
+
         request.updatedAt =
             new Date().toISOString();
+
 
         saveDatabase(
             database
         );
 
+
         res.json({
+
             success: true,
-            request
+
+            request:
+                request
         });
     }
 );
@@ -550,17 +629,22 @@ app.post(
             time
         } = req.body;
 
+
         if (!isValidTime(time)) {
 
             return res.status(400).json({
+
                 success: false,
+
                 message:
                     "INVALID TIME."
             });
         }
 
+
         const database =
             readDatabase();
+
 
         const request =
             database.requests.find(
@@ -569,123 +653,103 @@ app.post(
                     req.params.id
             );
 
+
         if (!request) {
 
             return res.status(404).json({
+
                 success: false,
+
                 message:
                     "REQUEST NOT FOUND."
             });
         }
 
+
         request.time =
             time;
+
 
         request.period =
             getPeriod(time);
 
+
         request.updatedAt =
             new Date().toISOString();
+
 
         saveDatabase(
             database
         );
 
+
         res.json({
+
             success: true,
-            request
+
+            request:
+                request
         });
     }
 );
 
 
 /* =====================================================
-   SITE CONTROL
+   INCIDENT SYSTEM
 ===================================================== */
 
-const VALID_SITES = [
+const ALLOWED_SITES = [
     "SITE-19",
     "SITE-51",
     "SITE-64"
 ];
 
 
-const VALID_SITE_STATUSES = [
-    "NORMAL",
-    "HIGH ALERT",
-    "CRITICAL",
-    "LOCKDOWN",
-    "EVACUATION",
-    "CLASS-D RIOT"
-];
-
-
-/* =====================================================
-   GET SITE CONTROL
-===================================================== */
+/* GET INCIDENTS */
 
 app.get(
-    "/api/sites/control",
+    "/api/incidents",
     (req, res) => {
 
         const database =
             readDatabase();
 
+
         res.json({
 
-            success:
-                true,
+            success: true,
 
-            sites:
-                database.sites
+            incidents:
+                database.incidents
         });
     }
 );
 
 
-/* =====================================================
-   CHANGE SITE STATUS
-===================================================== */
+/* CREATE INCIDENT */
 
 app.post(
-    "/api/sites/control",
+    "/api/incidents",
     (req, res) => {
 
         try {
 
             const {
                 site,
-                status,
+                type,
                 message
             } = req.body;
 
 
-            const normalizedSite =
-                String(
-                    site || ""
-                )
-                    .trim()
-                    .toUpperCase();
-
-
-            const normalizedStatus =
-                String(
-                    status || ""
-                )
-                    .trim()
-                    .toUpperCase();
-
-
             if (
-                !VALID_SITES.includes(
-                    normalizedSite
+                !ALLOWED_SITES.includes(
+                    String(site)
                 )
             ) {
 
                 return res.status(400).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     message:
                         "INVALID SITE."
@@ -694,18 +758,16 @@ app.post(
 
 
             if (
-                !VALID_SITE_STATUSES.includes(
-                    normalizedStatus
-                )
+                !type ||
+                !String(type).trim()
             ) {
 
                 return res.status(400).json({
 
-                    success:
-                        false,
+                    success: false,
 
                     message:
-                        "INVALID SITE STATUS."
+                        "INCIDENT TYPE IS REQUIRED."
                 });
             }
 
@@ -714,473 +776,80 @@ app.post(
                 readDatabase();
 
 
-            database.sites[
-                normalizedSite
-            ] = {
+            const incident = {
 
-                status:
-                    normalizedStatus,
+                id:
+                    generateIncidentId(),
+
+                site:
+                    String(site),
+
+                type:
+                    String(type)
+                        .trim()
+                        .toUpperCase(),
 
                 message:
                     message
                         ? String(message).trim()
                         : "",
 
-                updatedAt:
-                    new Date()
-                        .toISOString()
+                createdAt:
+                    new Date().toISOString(),
+
+                active:
+                    true
             };
 
 
-            saveDatabase(
-                database
-            );
-
-
-            console.log("");
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "          SITE CONTROL UPDATE"
-            );
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "SITE   :",
-                normalizedSite
-            );
-            console.log(
-                "STATUS :",
-                normalizedStatus
-            );
-            console.log(
-                "MESSAGE:",
-                message || "NONE"
-            );
-            console.log(
-                "========================================"
-            );
-            console.log("");
-
-
-            res.json({
-
-                success:
-                    true,
-
-                site:
-                    normalizedSite,
-
-                control:
-                    database.sites[
-                        normalizedSite
-                    ]
-            });
-
-        } catch (error) {
-
-            console.error(
-                "SITE CONTROL ERROR:",
-                error
-            );
-
-            res.status(500).json({
-
-                success:
-                    false,
-
-                message:
-                    "SITE CONTROL SERVER ERROR."
-            });
-        }
-    }
-);
-
-
-/* =====================================================
-   ROBLOX AUTHENTICATION
-===================================================== */
-
-function checkRobloxKey(req, res) {
-
-    const key =
-        req.headers["x-roblox-key"];
-
-    if (
-        !key ||
-        key !== ROBLOX_API_KEY
-    ) {
-
-        res.status(401).json({
-
-            success:
-                false,
-
-            message:
-                "UNAUTHORIZED ROBLOX REQUEST."
-        });
-
-        return false;
-    }
-
-    return true;
-}
-
-
-/* =====================================================
-   LIVE INCIDENTS
-===================================================== */
-
-app.get(
-    "/api/game/incidents",
-    (req, res) => {
-
-        const database =
-            readDatabase();
-
-        const activeIncidents =
-            database.incidents.filter(
-                incident =>
-                    incident.status ===
-                    "ACTIVE"
-            );
-
-        res.json({
-
-            success:
-                true,
-
-            incidents:
-                activeIncidents
-        });
-    }
-);
-
-
-/* =====================================================
-   ROBLOX GAME STATUS
-===================================================== */
-
-app.post(
-    "/api/game/status",
-    (req, res) => {
-
-        if (
-            !checkRobloxKey(
-                req,
-                res
-            )
-        ) {
-            return;
-        }
-
-        const database =
-            readDatabase();
-
-        database.gameStatus = {
-
-            online:
-                true,
-
-            game:
-                "SCP Architect X",
-
-            serverId:
-                req.body.serverId ||
-                "",
-
-            players:
-                Number(
-                    req.body.playerCount ||
-                    0
-                ),
-
-            updatedAt:
-                new Date()
-                    .toISOString()
-        };
-
-        saveDatabase(
-            database
-        );
-
-        res.json({
-
-            success:
-                true,
-
-            message:
-                "GAME STATUS UPDATED."
-        });
-    }
-);
-
-
-app.get(
-    "/api/game/status",
-    (req, res) => {
-
-        const database =
-            readDatabase();
-
-        const status =
-            database.gameStatus || {
-
-                online:
-                    false,
-
-                game:
-                    "SCP Architect X",
-
-                serverId:
-                    "",
-
-                players:
-                    0,
-
-                updatedAt:
-                    null
-            };
-
-        res.json({
-
-            success:
-                true,
-
-            status
-        });
-    }
-);
-
-
-/* =====================================================
-   CREATE / UPDATE INCIDENT
-===================================================== */
-
-app.post(
-    "/api/game/incident",
-    (req, res) => {
-
-        if (
-            !checkRobloxKey(
-                req,
-                res
-            )
-        ) {
-            return;
-        }
-
-        try {
-
-            const {
-                event,
-                site,
-                status,
-                title,
-                description,
-                serverId,
-                playerCount
-            } = req.body;
-
-
-            if (!event) {
-
-                return res.status(400).json({
-
-                    success:
-                        false,
-
-                    message:
-                        "EVENT IS REQUIRED."
-                });
-            }
-
-
-            const database =
-                readDatabase();
-
-
-            const normalizedEvent =
-                String(event)
-                    .trim()
-                    .toUpperCase();
-
-
-            const normalizedSite =
-                String(
-                    site ||
-                    "SITE-64"
-                )
-                    .trim()
-                    .toUpperCase();
-
-
-            const incidentKey =
-                `${normalizedEvent}-${normalizedSite}`;
-
-
-            let incident =
-                database.incidents.find(
-                    item =>
-                        item.key ===
-                        incidentKey
-                );
-
-
-            if (
-                String(status)
-                    .toUpperCase() ===
-                "RESOLVED"
-            ) {
-
-                if (incident) {
-
-                    incident.status =
-                        "RESOLVED";
-
-                    incident.updatedAt =
-                        new Date()
-                            .toISOString();
-
-                    saveDatabase(
-                        database
-                    );
-                }
-
-                return res.json({
-
-                    success:
-                        true,
-
-                    message:
-                        "INCIDENT RESOLVED.",
-
-                    incident:
-                        incident ||
-                        null
-                });
-            }
-
-
-            if (!incident) {
-
-                const now =
-                    new Date()
-                        .toISOString();
-
-                incident = {
-
-                    id:
-                        "INC-" +
-                        Math.floor(
-                            10000 +
-                            Math.random() *
-                            90000
-                        ),
-
-                    key:
-                        incidentKey,
-
-                    event:
-                        normalizedEvent,
-
-                    site:
-                        normalizedSite,
-
-                    status:
-                        "ACTIVE",
-
-                    title:
-                        title ||
-                        normalizedEvent
-                            .replace(
-                                /_/g,
-                                " "
-                            ),
-
-                    description:
-                        description ||
-                        "",
-
-                    serverId:
-                        serverId ||
-                        "",
-
-                    playerCount:
-                        Number(
-                            playerCount ||
-                            0
-                        ),
-
-                    createdAt:
-                        now,
-
-                    updatedAt:
-                        now
-                };
-
-                database.incidents.push(
-                    incident
-                );
-
-            } else {
-
-                incident.status =
-                    "ACTIVE";
-
-                if (
-                    title !==
-                    undefined
-                ) {
-                    incident.title =
-                        title;
-                }
-
-                if (
-                    description !==
-                    undefined
-                ) {
-                    incident.description =
-                        description;
-                }
-
-                if (
-                    serverId !==
-                    undefined
-                ) {
-                    incident.serverId =
-                        serverId;
-                }
-
-                if (
-                    playerCount !==
-                    undefined
-                ) {
-                    incident.playerCount =
-                        Number(
-                            playerCount
-                        );
-                }
-
-                incident.updatedAt =
-                    new Date()
-                        .toISOString();
-            }
-
-
-            saveDatabase(
-                database
-            );
-
-
-            res.json({
-
-                success:
-                    true,
-
+            database.incidents.push(
                 incident
+            );
+
+
+            saveDatabase(
+                database
+            );
+
+
+            console.log("");
+            console.log(
+                "========================================"
+            );
+            console.log(
+                "        NEW SITE INCIDENT"
+            );
+            console.log(
+                "========================================"
+            );
+            console.log(
+                "ID      :",
+                incident.id
+            );
+            console.log(
+                "SITE    :",
+                incident.site
+            );
+            console.log(
+                "TYPE    :",
+                incident.type
+            );
+            console.log(
+                "MESSAGE :",
+                incident.message
+            );
+            console.log(
+                "========================================"
+            );
+            console.log("");
+
+
+            res.status(201).json({
+
+                success: true,
+
+                incident:
+                    incident
             });
 
         } catch (error) {
@@ -1190,15 +859,148 @@ app.post(
                 error
             );
 
+
             res.status(500).json({
 
-                success:
-                    false,
+                success: false,
 
                 message:
-                    "INCIDENT SERVER ERROR."
+                    "SERVER ERROR."
             });
         }
+    }
+);
+
+
+/* =====================================================
+   RESOLVE INCIDENT
+===================================================== */
+
+app.post(
+    "/api/incidents/:id/resolve",
+    (req, res) => {
+
+        const database =
+            readDatabase();
+
+
+        const incident =
+            database.incidents.find(
+                item =>
+                    item.id ===
+                    req.params.id
+            );
+
+
+        if (!incident) {
+
+            return res.status(404).json({
+
+                success: false,
+
+                message:
+                    "INCIDENT NOT FOUND."
+            });
+        }
+
+
+        incident.active =
+            false;
+
+
+        incident.resolvedAt =
+            new Date().toISOString();
+
+
+        saveDatabase(
+            database
+        );
+
+
+        res.json({
+
+            success: true,
+
+            incident:
+                incident
+        });
+    }
+);
+
+
+/* =====================================================
+   SITE STATUS
+===================================================== */
+
+app.get(
+    "/api/sites",
+    (req, res) => {
+
+        const database =
+            readDatabase();
+
+
+        const sites = {
+
+            "SITE-19": {
+                status: "NORMAL",
+                message: "",
+                updatedAt: null
+            },
+
+            "SITE-51": {
+                status: "NORMAL",
+                message: "",
+                updatedAt: null
+            },
+
+            "SITE-64": {
+                status: "NORMAL",
+                message: "",
+                updatedAt: null
+            }
+        };
+
+
+        database.incidents
+            .filter(
+                incident =>
+                    incident.active === true
+            )
+            .forEach(
+                incident => {
+
+                    if (
+                        sites[
+                            incident.site
+                        ]
+                    ) {
+
+                        sites[
+                            incident.site
+                        ] = {
+
+                            status:
+                                incident.type,
+
+                            message:
+                                incident.message,
+
+                            updatedAt:
+                                incident.createdAt
+                        };
+                    }
+                }
+            );
+
+
+        res.json({
+
+            success: true,
+
+            sites:
+                sites
+        });
     }
 );
 
@@ -1214,12 +1016,14 @@ app.get(
         const database =
             readDatabase();
 
+
         const pending =
             database.requests.filter(
                 request =>
                     request.status ===
                     "PENDING"
             ).length;
+
 
         const approved =
             database.requests.filter(
@@ -1228,6 +1032,7 @@ app.get(
                     "APPROVED"
             ).length;
 
+
         const rejected =
             database.requests.filter(
                 request =>
@@ -1235,17 +1040,17 @@ app.get(
                     "REJECTED"
             ).length;
 
+
         const activeIncidents =
             database.incidents.filter(
                 incident =>
-                    incident.status ===
-                    "ACTIVE"
+                    incident.active === true
             ).length;
+
 
         res.json({
 
-            success:
-                true,
+            success: true,
 
             server:
                 "ONLINE",
@@ -1257,6 +1062,9 @@ app.get(
                 "SITE-64",
 
             requestSystem:
+                "ONLINE",
+
+            incidentSystem:
                 "ONLINE",
 
             totalRequests:
@@ -1282,7 +1090,7 @@ app.get(
 
 
 /* =====================================================
-   TERMINAL
+   TERMINAL API
 ===================================================== */
 
 app.post(
@@ -1291,11 +1099,11 @@ app.post(
 
         const command =
             String(
-                req.body.command ||
-                ""
+                req.body.command || ""
             )
                 .trim()
                 .toLowerCase();
+
 
         const database =
             readDatabase();
@@ -1315,6 +1123,7 @@ app.post(
         ) {
 
             return res.json({
+
                 output:
                     "__CLEAR__"
             });
@@ -1337,9 +1146,8 @@ AVAILABLE COMMANDS
 help       Show available commands
 status     Show system status
 requests   Show request statistics
-incidents  Show live incidents
-sites      Show site status
-game       Show SCP Architect X status
+incidents  Show active incidents
+sites      Show registered sites
 about      Show SITE-64 information
 clear      Clear terminal`
             });
@@ -1358,12 +1166,13 @@ clear      Clear terminal`
                         "PENDING"
                 ).length;
 
-            const incidents =
+
+            const activeIncidents =
                 database.incidents.filter(
-                    i =>
-                        i.status ===
-                        "ACTIVE"
+                    r =>
+                        r.active === true
                 ).length;
+
 
             return res.json({
 
@@ -1375,7 +1184,7 @@ DATABASE     : ONLINE
 SITE         : SITE-64
 REQUESTS     : ${database.requests.length}
 PENDING      : ${pending}
-INCIDENTS    : ${incidents}`
+INCIDENTS    : ${activeIncidents}`
             });
         }
 
@@ -1392,6 +1201,7 @@ INCIDENTS    : ${incidents}`
                         "PENDING"
                 ).length;
 
+
             const approved =
                 database.requests.filter(
                     r =>
@@ -1399,12 +1209,14 @@ INCIDENTS    : ${incidents}`
                         "APPROVED"
                 ).length;
 
+
             const rejected =
                 database.requests.filter(
                     r =>
                         r.status ===
                         "REJECTED"
                 ).length;
+
 
             return res.json({
 
@@ -1426,9 +1238,9 @@ REJECTED   : ${rejected}`
 
             const active =
                 database.incidents.filter(
-                    i =>
-                        i.status ===
-                        "ACTIVE"
+                    incident =>
+                        incident.active ===
+                        true
                 );
 
 
@@ -1437,9 +1249,9 @@ REJECTED   : ${rejected}`
                 return res.json({
 
                     output:
-`LIVE INCIDENTS
+`ACTIVE INCIDENTS
 ==============================
-NO ACTIVE INCIDENTS.`
+NONE`
                 });
             }
 
@@ -1448,22 +1260,16 @@ NO ACTIVE INCIDENTS.`
                 active
                     .map(
                         incident =>
-`${incident.id}
-EVENT      : ${incident.event}
-SITE       : ${incident.site}
-STATUS     : ${incident.status}
-PLAYERS    : ${incident.playerCount}`
+                            `${incident.site} | ${incident.type}`
                     )
-                    .join(
-                        "\n\n"
-                    );
+                    .join("\n");
 
 
             return res.json({
 
                 output:
-`LIVE INCIDENTS
-
+`ACTIVE INCIDENTS
+==============================
 ${output}`
             });
         }
@@ -1474,57 +1280,38 @@ ${output}`
             "sites"
         ) {
 
-            const siteLines =
-                VALID_SITES
-                    .map(site => {
-
-                        const control =
-                            database.sites[site];
-
-                        return `${site.padEnd(10)} | ${control.status}`;
-                    })
-                    .join("\n");
-
-            return res.json({
-
-                output:
-`SCP FOUNDATION SITES
-==============================
-${siteLines}`
-            });
-        }
+            const activeIncidents =
+                database.incidents.filter(
+                    incident =>
+                        incident.active ===
+                        true
+                );
 
 
-        if (
-            command ===
-            "game"
-        ) {
+            const siteStatus =
+                site => {
 
-            const game =
-                database.gameStatus || {
+                    const incident =
+                        activeIncidents.find(
+                            item =>
+                                item.site ===
+                                site
+                        );
 
-                    online:
-                        false,
-
-                    game:
-                        "SCP Architect X",
-
-                    players:
-                        0,
-
-                    serverId:
-                        ""
+                    return incident
+                        ? incident.type
+                        : "NORMAL";
                 };
 
 
             return res.json({
 
                 output:
-`SCP ARCHITECT X
+`SCP FOUNDATION SITES
 ==============================
-STATUS       : ${game.online ? "ONLINE" : "OFFLINE"}
-PLAYERS      : ${game.players}
-SERVER ID    : ${game.serverId || "N/A"}`
+SITE-19    | ${siteStatus("SITE-19")}
+SITE-51    | ${siteStatus("SITE-51")}
+SITE-64    | ${siteStatus("SITE-64")}`
             });
         }
 
@@ -1542,7 +1329,7 @@ SITE-64 ADMINISTRATION SYSTEM
 
 CLASSIFICATION : O5
 FACILITY        : SITE-64
-GAME            : SCP Architect X
+STATUS          : OPERATIONAL
 
 Unauthorized access is prohibited.`
             });
@@ -1552,8 +1339,7 @@ Unauthorized access is prohibited.`
         return res.json({
 
             output:
-`COMMAND NOT FOUND: ${command}
-Type "help" for available commands.`
+                `COMMAND NOT FOUND: ${command}\nType "help" for available commands.`
         });
     }
 );
@@ -1569,8 +1355,7 @@ app.use(
 
         res.status(404).json({
 
-            success:
-                false,
+            success: false,
 
             message:
                 "API ENDPOINT NOT FOUND."
@@ -1580,7 +1365,7 @@ app.use(
 
 
 /* =====================================================
-   DATABASE INIT
+   START SERVER
 ===================================================== */
 
 if (
@@ -1592,10 +1377,6 @@ if (
     );
 }
 
-
-/* =====================================================
-   START SERVER
-===================================================== */
 
 app.listen(
     PORT,
@@ -1630,15 +1411,6 @@ app.listen(
         );
         console.log(
             "TERM   : /term"
-        );
-        console.log(
-            "ROBLOX : /api/game/incident"
-        );
-        console.log(
-            "LIVE   : /api/game/incidents"
-        );
-        console.log(
-            "CONTROL: /api/sites/control"
         );
         console.log(
             "========================================"
