@@ -38,6 +38,10 @@ h1 {
     background: #090e13;
 
     border: 1px solid #202a34;
+
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease;
 }
 
 .site strong {
@@ -50,6 +54,27 @@ h1 {
     font-size: 12px;
 }
 
+.site-message {
+    display: block;
+    margin-top: 8px;
+
+    color: #a9b4bd;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+.site-time {
+    display: block;
+
+    margin-top: 6px;
+
+    color: #596672;
+
+    font-size: 10px;
+}
+
 .back {
     display: inline-block;
     margin-top: 30px;
@@ -58,9 +83,77 @@ h1 {
     text-decoration: none;
 }
 
+.back:hover {
+    color: #ffffff;
+}
+
+
+/* =====================================================
+   INCIDENT STATES
+===================================================== */
+
+.site.normal {
+    border-color: #202a34;
+}
+
+.site.active {
+    border-color: #633838;
+    background: #0d0909;
+}
+
+.site.critical {
+    border-color: #8b3d3d;
+    background: #120909;
+}
+
+.site.lockdown {
+    border-color: #754545;
+    background: #100707;
+}
+
+.site.high {
+    border-color: #685a35;
+    background: #0f0d08;
+}
+
+
+/* STATUS TEXT */
+
+.status-normal {
+    color: #75818d !important;
+}
+
+.status-critical {
+    color: #dc8c8c !important;
+}
+
+.status-lockdown {
+    color: #d98989 !important;
+}
+
+.status-high {
+    color: #c8b47a !important;
+}
+
+
+/* =====================================================
+   CONNECTION STATUS
+===================================================== */
+
+#connectionStatus {
+    margin-top: 15px;
+
+    color: #596672;
+
+    font-size: 10px;
+
+    letter-spacing: 1px;
+}
+
 </style>
 
 </head>
+
 
 <body>
 
@@ -75,41 +168,95 @@ SECURECONTAINPROTECT // CLASSIFIED
 </p>
 
 
-<div class="site">
+<div
+    class="site normal"
+    id="site-19"
+>
 
 <strong>
 SITE-19
 </strong>
 
-<span>
+<span
+    class="status-normal"
+    id="status-19"
+>
 OPERATIONAL
 </span>
+
+<span
+    class="site-message"
+    id="message-19"
+    style="display:none;"
+></span>
+
+<span
+    class="site-time"
+    id="time-19"
+    style="display:none;"
+></span>
 
 </div>
 
 
-<div class="site">
+<div
+    class="site normal"
+    id="site-51"
+>
 
 <strong>
 SITE-51
 </strong>
 
-<span>
+<span
+    class="status-normal"
+    id="status-51"
+>
 CLASSIFIED
 </span>
+
+<span
+    class="site-message"
+    id="message-51"
+    style="display:none;"
+></span>
+
+<span
+    class="site-time"
+    id="time-51"
+    style="display:none;"
+></span>
 
 </div>
 
 
-<div class="site">
+<div
+    class="site normal"
+    id="site-64"
+>
 
 <strong>
 SITE-64
 </strong>
 
-<span>
+<span
+    class="status-normal"
+    id="status-64"
+>
 UNKNOWN
 </span>
+
+<span
+    class="site-message"
+    id="message-64"
+    style="display:none;"
+></span>
+
+<span
+    class="site-time"
+    id="time-64"
+    style="display:none;"
+></span>
 
 </div>
 
@@ -127,6 +274,11 @@ REDACTED
 </div>
 
 
+<div id="connectionStatus">
+CONNECTING TO SITE CONTROL...
+</div>
+
+
 <a
     class="back"
     href="/admin"
@@ -135,6 +287,355 @@ RETURN TO ADMIN
 </a>
 
 </main>
+
+
+<script>
+
+/* =====================================================
+   SITE CONTROL
+===================================================== */
+
+const siteElements = {
+
+    "SITE-19": {
+        card:
+            document.getElementById("site-19"),
+
+        status:
+            document.getElementById("status-19"),
+
+        message:
+            document.getElementById("message-19"),
+
+        time:
+            document.getElementById("time-19")
+    },
+
+    "SITE-51": {
+        card:
+            document.getElementById("site-51"),
+
+        status:
+            document.getElementById("status-51"),
+
+        message:
+            document.getElementById("message-51"),
+
+        time:
+            document.getElementById("time-51")
+    },
+
+    "SITE-64": {
+        card:
+            document.getElementById("site-64"),
+
+        status:
+            document.getElementById("status-64"),
+
+        message:
+            document.getElementById("message-64"),
+
+        time:
+            document.getElementById("time-64")
+    }
+
+};
+
+
+/* =====================================================
+   UPDATE ONE SITE
+===================================================== */
+
+function updateSite(
+    siteName,
+    siteData
+) {
+
+    const element =
+        siteElements[siteName];
+
+    if (!element) {
+        return;
+    }
+
+
+    const status =
+        String(
+            siteData.status ||
+            "NORMAL"
+        ).toUpperCase();
+
+
+    const message =
+        String(
+            siteData.message ||
+            ""
+        );
+
+
+    /* Remove old classes */
+
+    element.card.classList.remove(
+        "normal",
+        "active",
+        "critical",
+        "lockdown",
+        "high"
+    );
+
+    element.status.classList.remove(
+        "status-normal",
+        "status-critical",
+        "status-lockdown",
+        "status-high"
+    );
+
+
+    /* NORMAL */
+
+    if (
+        status === "NORMAL"
+    ) {
+
+        element.card.classList.add(
+            "normal"
+        );
+
+        element.status.classList.add(
+            "status-normal"
+        );
+
+        element.status.textContent =
+            "OPERATIONAL";
+
+        element.message.style.display =
+            "none";
+
+        element.time.style.display =
+            "none";
+
+        return;
+    }
+
+
+    /* CRITICAL */
+
+    if (
+        status.includes("CRITICAL")
+    ) {
+
+        element.card.classList.add(
+            "critical"
+        );
+
+        element.status.classList.add(
+            "status-critical"
+        );
+
+    }
+
+
+    /* LOCKDOWN */
+
+    else if (
+        status.includes("LOCKDOWN")
+    ) {
+
+        element.card.classList.add(
+            "lockdown"
+        );
+
+        element.status.classList.add(
+            "status-lockdown"
+        );
+
+    }
+
+
+    /* HIGH */
+
+    else if (
+        status.includes("HIGH")
+    ) {
+
+        element.card.classList.add(
+            "high"
+        );
+
+        element.status.classList.add(
+            "status-high"
+        );
+
+    }
+
+
+    /* OTHER INCIDENT */
+
+    else {
+
+        element.card.classList.add(
+            "active"
+        );
+
+        element.status.classList.add(
+            "status-critical"
+        );
+    }
+
+
+    element.status.textContent =
+        status;
+
+
+    if (message) {
+
+        element.message.textContent =
+            message;
+
+        element.message.style.display =
+            "block";
+
+    } else {
+
+        element.message.style.display =
+            "none";
+    }
+
+
+    if (siteData.updatedAt) {
+
+        const date =
+            new Date(
+                siteData.updatedAt
+            );
+
+
+        if (
+            !Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            element.time.textContent =
+                "LAST UPDATE: " +
+                date.toLocaleString();
+
+            element.time.style.display =
+                "block";
+        }
+
+    } else {
+
+        element.time.style.display =
+            "none";
+    }
+}
+
+
+/* =====================================================
+   LOAD SITE STATUS
+===================================================== */
+
+async function loadSiteStatus() {
+
+    const connection =
+        document.getElementById(
+            "connectionStatus"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/sites",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                "SITE CONTROL ERROR"
+            );
+        }
+
+
+        if (
+            data.sites &&
+            typeof data.sites ===
+                "object"
+        ) {
+
+            Object.keys(
+                siteElements
+            ).forEach(
+                siteName => {
+
+                    if (
+                        data.sites[
+                            siteName
+                        ]
+                    ) {
+
+                        updateSite(
+                            siteName,
+                            data.sites[
+                                siteName
+                            ]
+                        );
+                    }
+                }
+            );
+        }
+
+
+        connection.textContent =
+            "SITE CONTROL ONLINE // LIVE";
+
+
+        connection.style.color =
+            "#6f927e";
+
+    } catch (error) {
+
+        connection.textContent =
+            "SITE CONTROL CONNECTION ERROR";
+
+
+        connection.style.color =
+            "#8d5959";
+    }
+}
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+loadSiteStatus();
+
+
+/* =====================================================
+   AUTO REFRESH
+   Every 5 seconds
+===================================================== */
+
+setInterval(
+    loadSiteStatus,
+    5000
+);
+
+</script>
 
 </body>
 
