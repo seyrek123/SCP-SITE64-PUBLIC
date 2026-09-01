@@ -1,412 +1,475 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>WARHEAD // SITE-64</title>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            background: #050505;
-            color: #e8e8e8;
-            font-family: "Courier New", monospace;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-
-            background:
-                linear-gradient(
-                    rgba(255,255,255,0.015) 50%,
-                    transparent 50%
-                );
-
-            background-size: 100% 4px;
-            opacity: .35;
-            z-index: 999;
-        }
-
-        .page {
-            min-height: 100vh;
-            padding: 50px;
-        }
-
-        .header {
-            border-bottom: 1px solid #333;
-            padding-bottom: 20px;
-            margin-bottom: 35px;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 32px;
-            letter-spacing: 5px;
-        }
-
-        .header p {
-            margin-top: 10px;
-            color: #777;
-            letter-spacing: 2px;
-        }
-
-        .warheads {
-            display: grid;
-            grid-template-columns:
-                repeat(auto-fit, minmax(240px, 1fr));
-
-            gap: 20px;
-            max-width: 1000px;
-        }
-
-        .warhead {
-            border: 1px solid #333;
-            background: #090909;
-            padding: 25px;
-            cursor: pointer;
-            transition: .2s;
-        }
-
-        .warhead:hover {
-            border-color: #777;
-            background: #0d0d0d;
-            transform: translateY(-2px);
-        }
-
-        .warhead h2 {
-            margin: 0 0 12px;
-            letter-spacing: 4px;
-        }
-
-        .warhead .effect {
-            color: #888;
-            font-size: 13px;
-            margin-bottom: 20px;
-        }
-
-        .warhead .status {
-            color: #777;
-            font-size: 12px;
-        }
-
-        /* =====================================================
-           CODE WINDOW
-        ====================================================== */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>WARHEAD // SITE-64</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #050505;
+    color: #ddd;
+    font-family: "Courier New", monospace;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        rgba(255,255,255,.015) 50%,
+        transparent 50%
+    );
+    background-size: 100% 4px;
+    opacity: .3;
+    z-index: 9999;
+}
+
+.page {
+    min-height: 100vh;
+    padding: 45px;
+}
+
+.header {
+    border-bottom: 1px solid #333;
+    padding-bottom: 20px;
+    margin-bottom: 35px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 32px;
+    letter-spacing: 5px;
+}
+
+.header p {
+    margin: 10px 0 0;
+    color: #666;
+    letter-spacing: 2px;
+}
+
+.warheads {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(240px, 1fr)
+    );
+    gap: 20px;
+    max-width: 1000px;
+}
+
+.warhead {
+    background: #090909;
+    border: 1px solid #333;
+    padding: 25px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.warhead:hover {
+    background: #0e0e0e;
+    border-color: #777;
+    transform: translateY(-2px);
+}
+
+.warhead h2 {
+    margin: 0 0 12px;
+    letter-spacing: 4px;
+}
+
+.effect {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.status {
+    color: #666;
+    font-size: 12px;
+}
+
+
+/* =====================================================
+   OVERLAY
+===================================================== */
+
+.overlay {
+    position: fixed;
+    inset: 0;
 
-        .overlay {
-            position: fixed;
-            inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
 
-            display: none;
-            align-items: center;
-            justify-content: center;
+    background: rgba(0,0,0,.82);
 
-            background: rgba(0,0,0,.78);
+    z-index: 1000;
+}
 
-            z-index: 1000;
-        }
+.overlay.show {
+    display: flex;
+    animation: fadeIn .25s ease;
+}
 
-        .overlay.show {
-            display: flex;
-            animation: fadeIn .25s ease;
-        }
 
-        .code-window {
-            width: 50%;
-            min-width: 420px;
+/* =====================================================
+   PANEL
+===================================================== */
 
-            background: #030303;
-            border: 1px solid #444;
+.panel {
+    width: 55%;
+    max-width: 850px;
+    min-width: 450px;
 
-            box-shadow:
-                0 0 50px rgba(255,255,255,.04);
+    background: #030303;
+    border: 1px solid #3a3a3a;
 
-            animation: windowIn .3s ease;
-        }
+    box-shadow:
+        0 0 60px rgba(0,0,0,.9);
 
-        .window-header {
-            height: 42px;
+    animation: panelIn .3s ease;
+}
 
-            display: flex;
-            align-items: center;
+.panel-header {
+    height: 43px;
 
-            padding: 0 15px;
+    display: flex;
+    align-items: center;
 
-            border-bottom: 1px solid #333;
+    padding: 0 16px;
 
-            color: #777;
-            font-size: 12px;
-            letter-spacing: 2px;
-        }
+    border-bottom: 1px solid #292929;
 
-        .window-body {
-            padding: 35px;
-        }
+    color: #777;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
 
-        .window-title {
-            font-size: 16px;
-            letter-spacing: 3px;
-            margin-bottom: 25px;
-        }
+.panel-body {
+    padding: 32px;
+}
 
-        .code-input {
-            width: 100%;
+.panel-title {
+    font-size: 17px;
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+}
 
-            background: #000;
-            border: 1px solid #333;
+.panel-text {
+    color: #999;
+    font-size: 13px;
+    line-height: 1.8;
+}
 
-            color: #fff;
+.panel-text strong {
+    color: #ddd;
+}
 
-            padding: 15px;
+.warning {
+    margin-top: 20px;
+    padding: 18px;
 
-            outline: none;
+    border: 1px solid #333;
+    background: #080808;
 
-            font-family:
-                "Courier New",
-                monospace;
+    color: #aaa;
 
-            letter-spacing: 4px;
-            font-size: 16px;
-        }
+    line-height: 1.8;
+    font-size: 12px;
+}
 
-        .code-input:focus {
-            border-color: #777;
-        }
+.input {
+    width: 100%;
 
-        .buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
+    background: #000;
+    border: 1px solid #333;
 
-        button {
-            font-family:
-                "Courier New",
-                monospace;
+    color: white;
 
-            background: #090909;
-            color: #ddd;
+    padding: 14px;
 
-            border: 1px solid #333;
+    outline: none;
 
-            padding: 12px 20px;
+    font-family: "Courier New", monospace;
 
-            cursor: pointer;
-            letter-spacing: 2px;
-        }
+    letter-spacing: 4px;
+    font-size: 15px;
+}
 
-        button:hover {
-            background: #151515;
-            border-color: #666;
-        }
+.input:focus {
+    border-color: #777;
+}
 
-        .error {
-            margin-top: 15px;
-            color: #aaa;
-            display: none;
-        }
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
 
-        /* =====================================================
-           TERMINAL
-        ====================================================== */
+button {
+    background: #090909;
+    color: #ddd;
 
-        .terminal-overlay {
-            position: fixed;
-            inset: 0;
+    border: 1px solid #333;
 
-            display: none;
-            align-items: center;
-            justify-content: center;
+    padding: 12px 18px;
 
-            background: rgba(0,0,0,.88);
+    font-family: "Courier New", monospace;
 
-            z-index: 1100;
-        }
+    cursor: pointer;
 
-        .terminal-overlay.show {
-            display: flex;
-            animation: fadeIn .3s ease;
-        }
+    letter-spacing: 1px;
+}
 
-        .terminal {
-            width: 55%;
-            min-width: 500px;
-            max-width: 900px;
+button:hover {
+    background: #151515;
+    border-color: #777;
+}
 
-            height: 48vh;
-            min-height: 350px;
+.primary {
+    border-color: #555;
+}
 
-            background: #020202;
+.danger {
+    border-color: #555;
+}
 
-            border: 1px solid #333;
+.error {
+    display: none;
 
-            box-shadow:
-                0 0 70px rgba(0,0,0,.9);
+    margin-top: 15px;
 
-            animation: terminalIn .35s ease;
-        }
+    color: #aaa;
 
-        .terminal-header {
-            height: 40px;
+    font-size: 12px;
+}
 
-            border-bottom: 1px solid #292929;
 
-            display: flex;
-            align-items: center;
+/* =====================================================
+   SITE SELECTION
+===================================================== */
 
-            padding-left: 15px;
+.site-grid {
+    display: grid;
 
-            color: #666;
+    grid-template-columns:
+        repeat(3, 1fr);
 
-            font-size: 11px;
-            letter-spacing: 2px;
-        }
+    gap: 12px;
 
-        .terminal-content {
-            height: calc(100% - 40px);
+    margin-top: 20px;
+}
 
-            padding: 25px;
+.site-button {
+    padding: 20px 10px;
 
-            overflow-y: auto;
+    background: #080808;
 
-            font-size: 14px;
-            line-height: 1.9;
+    border: 1px solid #333;
 
-            color: #cfcfcf;
-        }
+    color: #ddd;
 
-        .terminal-line {
-            opacity: 0;
+    text-align: center;
 
-            animation:
-                terminalLine .4s
-                forwards;
-        }
+    cursor: pointer;
 
-        .terminal-line.system {
-            color: #ddd;
-        }
+    transition: .2s;
 
-        .terminal-line.hash {
-            color: #777;
-            letter-spacing: 2px;
-        }
+    letter-spacing: 2px;
+}
 
-        .terminal-cursor {
-            display: inline-block;
+.site-button:hover {
+    border-color: #777;
+    background: #111;
+}
 
-            width: 8px;
-            height: 15px;
+.site-button.selected {
+    border-color: #aaa;
+    background: #151515;
+}
 
-            background: #aaa;
 
-            margin-left: 5px;
+/* =====================================================
+   TERMINAL
+===================================================== */
 
-            animation: blink 1s infinite;
-        }
+.terminal-overlay {
+    position: fixed;
+    inset: 0;
 
-        .cancel-button {
-            position: absolute;
+    display: none;
 
-            bottom: 30px;
-            right: 30px;
+    align-items: center;
+    justify-content: center;
 
-            display: none;
-        }
+    background: rgba(0,0,0,.91);
 
-        .cancel-button.show {
-            display: block;
-        }
+    z-index: 2000;
+}
 
-        /* =====================================================
-           ANIMATIONS
-        ====================================================== */
+.terminal-overlay.show {
+    display: flex;
+    animation: fadeIn .3s ease;
+}
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
+.terminal {
+    width: 58%;
+    min-width: 500px;
+    max-width: 900px;
 
-            to {
-                opacity: 1;
-            }
-        }
+    height: 48vh;
+    min-height: 350px;
 
-        @keyframes windowIn {
-            from {
-                opacity: 0;
-                transform:
-                    scale(.96)
-                    translateY(15px);
-            }
+    background: #020202;
 
-            to {
-                opacity: 1;
-                transform:
-                    scale(1)
-                    translateY(0);
-            }
-        }
+    border: 1px solid #333;
 
-        @keyframes terminalIn {
-            from {
-                opacity: 0;
-                transform:
-                    scale(.97)
-                    translateY(20px);
-            }
+    box-shadow:
+        0 0 70px rgba(0,0,0,.95);
 
-            to {
-                opacity: 1;
-                transform:
-                    scale(1)
-                    translateY(0);
-            }
-        }
+    animation: panelIn .35s ease;
+}
 
-        @keyframes terminalLine {
-            to {
-                opacity: 1;
-            }
-        }
+.terminal-header {
+    height: 40px;
 
-        @keyframes blink {
-            50% {
-                opacity: 0;
-            }
-        }
+    display: flex;
+    align-items: center;
 
-        @media(max-width: 800px) {
+    padding-left: 15px;
 
-            .page {
-                padding: 25px;
-            }
+    border-bottom: 1px solid #292929;
 
-            .code-window,
-            .terminal {
-                width: 90%;
-                min-width: 0;
-            }
+    color: #666;
 
-            .terminal {
-                height: 55vh;
-            }
-        }
+    font-size: 11px;
 
-    </style>
+    letter-spacing: 2px;
+}
+
+.terminal-content {
+    height: calc(100% - 40px);
+
+    padding: 25px;
+
+    overflow-y: auto;
+
+    font-size: 14px;
+
+    line-height: 1.9;
+
+    color: #ccc;
+}
+
+.terminal-line {
+    opacity: 0;
+
+    animation: terminalLine .4s forwards;
+}
+
+.hash {
+    color: #777;
+    letter-spacing: 2px;
+}
+
+.terminal-cursor {
+    display: inline-block;
+
+    width: 8px;
+    height: 15px;
+
+    background: #aaa;
+
+    margin-left: 4px;
+
+    animation: blink 1s infinite;
+}
+
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes panelIn {
+    from {
+        opacity: 0;
+        transform:
+            scale(.96)
+            translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            scale(1)
+            translateY(0);
+    }
+}
+
+@keyframes terminalLine {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width: 800px) {
+
+    .page {
+        padding: 25px;
+    }
+
+    .panel,
+    .terminal {
+        width: 90%;
+        min-width: 0;
+    }
+
+    .site-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .terminal {
+        height: 55vh;
+    }
+}
+
+</style>
 </head>
 
+
 <body>
+
 
 <div class="page">
 
@@ -423,10 +486,12 @@
 
     <div class="warheads">
 
+
         <div
             class="warhead"
             onclick="selectWarhead('GAMMA')"
         >
+
             <h2>GAMMA</h2>
 
             <div class="effect">
@@ -436,6 +501,7 @@
             <div class="status">
                 STATUS : STANDBY
             </div>
+
         </div>
 
 
@@ -443,6 +509,7 @@
             class="warhead"
             onclick="selectWarhead('DELTA')"
         >
+
             <h2>DELTA</h2>
 
             <div class="effect">
@@ -452,6 +519,7 @@
             <div class="status">
                 STATUS : STANDBY
             </div>
+
         </div>
 
 
@@ -459,6 +527,7 @@
             class="warhead"
             onclick="selectWarhead('ALPHA')"
         >
+
             <h2>ALPHA</h2>
 
             <div class="effect">
@@ -468,6 +537,7 @@
             <div class="status">
                 STATUS : STANDBY
             </div>
+
         </div>
 
 
@@ -475,6 +545,7 @@
             class="warhead"
             onclick="selectWarhead('BETA')"
         >
+
             <h2>BETA</h2>
 
             <div class="effect">
@@ -484,57 +555,54 @@
             <div class="status">
                 STATUS : STANDBY
             </div>
+
         </div>
+
 
     </div>
 
 </div>
 
 
-<!-- =========================================================
-     CODE WINDOW
-========================================================= -->
+<!-- =====================================================
+     AUTHORIZATION CODE
+===================================================== -->
 
 <div
     class="overlay"
     id="codeOverlay"
 >
 
-    <div class="code-window">
+    <div class="panel">
 
-        <div class="window-header">
+        <div class="panel-header">
             WARHEAD AUTHORIZATION TERMINAL
         </div>
 
-        <div class="window-body">
+        <div class="panel-body">
 
-            <div class="window-title">
+            <div class="panel-title">
                 ENTER AUTHORIZATION CODE
             </div>
 
+            <div class="panel-text">
+
+                WARHEAD SELECTED :
+                <strong id="selectedWarheadText">
+                    UNKNOWN
+                </strong>
+
+            </div>
+
+            <br>
+
             <input
                 id="codeInput"
-                class="code-input"
+                class="input"
                 type="password"
                 autocomplete="off"
                 placeholder="AUTHORIZATION CODE"
             >
-
-            <div class="buttons">
-
-                <button
-                    onclick="verifyCode()"
-                >
-                    CONFIRM
-                </button>
-
-                <button
-                    onclick="closeCode()"
-                >
-                    CANCEL
-                </button>
-
-            </div>
 
             <div
                 class="error"
@@ -543,6 +611,23 @@
                 INVALID AUTHORIZATION CODE.
             </div>
 
+            <div class="buttons">
+
+                <button
+                    class="primary"
+                    onclick="verifyCode()"
+                >
+                    CONFIRM
+                </button>
+
+                <button
+                    onclick="closeAll()"
+                >
+                    CANCEL
+                </button>
+
+            </div>
+
         </div>
 
     </div>
@@ -550,9 +635,251 @@
 </div>
 
 
-<!-- =========================================================
+<!-- =====================================================
+     RULES / WARNING
+===================================================== -->
+
+<div
+    class="overlay"
+    id="rulesOverlay"
+>
+
+    <div class="panel">
+
+        <div class="panel-header">
+            WARHEAD SYSTEM // AUTHORIZATION
+        </div>
+
+        <div class="panel-body">
+
+            <div class="panel-title">
+                WARHEAD ACTIVATION RULES
+            </div>
+
+            <div class="panel-text">
+
+                <strong>WARNING:</strong>
+                WARHEAD ACTIVATION IS A FINAL SECURITY
+                PROCEDURE.
+
+                <br><br>
+
+                The selected warhead may cause catastrophic
+                damage to the designated target.
+
+            </div>
+
+            <div class="warning">
+
+                • Verify the selected warhead before continuing.<br>
+                • Verify the target site when required.<br>
+                • Unauthorized activation is prohibited.<br>
+                • Once the firing sequence begins, the operation
+                cannot be cancelled.<br>
+                • Confirm all information before proceeding.
+
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    class="primary"
+                    onclick="continueFromRules()"
+                >
+                    I UNDERSTAND / CONTINUE
+                </button>
+
+                <button
+                    onclick="closeAll()"
+                >
+                    CANCEL
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SITE SELECTION
+===================================================== -->
+
+<div
+    class="overlay"
+    id="siteOverlay"
+>
+
+    <div class="panel">
+
+        <div class="panel-header">
+            WARHEAD SYSTEM // TARGET SELECTION
+        </div>
+
+        <div class="panel-body">
+
+            <div class="panel-title">
+                SELECT TARGET SITE
+            </div>
+
+            <div class="panel-text">
+
+                WARHEAD :
+                <strong id="siteWarheadText">
+                    UNKNOWN
+                </strong>
+
+                <br><br>
+
+                Select the facility targeted by the
+                warhead.
+
+            </div>
+
+
+            <div class="site-grid">
+
+                <div
+                    class="site-button"
+                    onclick="selectSite('SITE-19', this)"
+                >
+                    SITE-19
+                </div>
+
+                <div
+                    class="site-button"
+                    onclick="selectSite('SITE-51', this)"
+                >
+                    SITE-51
+                </div>
+
+                <div
+                    class="site-button"
+                    onclick="selectSite('SITE-64', this)"
+                >
+                    SITE-64
+                </div>
+
+            </div>
+
+
+            <div class="buttons">
+
+                <button
+                    class="primary"
+                    onclick="confirmSite()"
+                >
+                    CONTINUE
+                </button>
+
+                <button
+                    onclick="closeAll()"
+                >
+                    CANCEL
+                </button>
+
+            </div>
+
+
+            <div
+                class="error"
+                id="siteError"
+            >
+                TARGET SITE MUST BE SELECTED.
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     FINAL WARNING
+===================================================== -->
+
+<div
+    class="overlay"
+    id="finalOverlay"
+>
+
+    <div class="panel">
+
+        <div class="panel-header">
+            CRITICAL AUTHORIZATION
+        </div>
+
+        <div class="panel-body">
+
+            <div class="panel-title">
+                FINAL CONFIRMATION
+            </div>
+
+            <div class="panel-text">
+
+                WARHEAD :
+                <strong id="finalWarhead">
+                    UNKNOWN
+                </strong>
+
+                <br>
+
+                TARGET :
+                <strong id="finalTarget">
+                    GLOBAL
+                </strong>
+
+            </div>
+
+
+            <div class="warning">
+
+                FINAL WARNING
+
+                <br><br>
+
+                ACTIVATING THIS WARHEAD WILL BEGIN
+                THE FIRING SEQUENCE.
+
+                <br><br>
+
+                THIS ACTION CANNOT BE UNDONE
+                AFTER FIRING BEGINS.
+
+            </div>
+
+
+            <div class="buttons">
+
+                <button
+                    class="danger"
+                    onclick="activateWarhead()"
+                >
+                    CONFIRM WARHEAD ACTIVATION
+                </button>
+
+                <button
+                    onclick="closeAll()"
+                >
+                    CANCEL
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
      TERMINAL
-========================================================= -->
+===================================================== -->
 
 <div
     class="terminal-overlay"
@@ -572,329 +899,431 @@
 
     </div>
 
-    <button
-        class="cancel-button"
-        id="cancelButton"
-        onclick="cancelSequence()"
-    >
-        CANCEL
-    </button>
-
 </div>
 
 
 <script>
 
-    let selectedWarhead = null;
+let selectedWarhead = null;
+let selectedSite = null;
 
-    let sequenceCancelled = false;
-
-    let firingStarted = false;
-
-
-    /* =====================================================
-       SELECT WARHEAD
-    ====================================================== */
-
-    function selectWarhead(type) {
-
-        selectedWarhead = type;
-
-        document
-            .getElementById("codeOverlay")
-            .classList.add("show");
-
-        const input =
-            document.getElementById("codeInput");
-
-        const error =
-            document.getElementById("codeError");
-
-        input.value = "";
-
-        error.style.display = "none";
-
-        setTimeout(() => {
-            input.focus();
-        }, 100);
-
-    }
+let sequenceCancelled = false;
+let firingStarted = false;
 
 
-    /* =====================================================
-       CLOSE CODE
-    ====================================================== */
+/* =====================================================
+   SELECT WARHEAD
+===================================================== */
 
-    function closeCode() {
+function selectWarhead(type) {
 
-        document
-            .getElementById("codeOverlay")
-            .classList.remove("show");
+    selectedWarhead = type;
+    selectedSite = null;
 
-        selectedWarhead = null;
-    }
+    document
+        .getElementById("selectedWarheadText")
+        .textContent = type;
 
-
-    /* =====================================================
-       VERIFY CODE
-    ====================================================== */
-
-    function verifyCode() {
-
-        const input =
-            document
-                .getElementById("codeInput")
-                .value
-                .trim()
-                .toUpperCase();
-
-        const error =
-            document.getElementById("codeError");
-
-
-        if (input !== "WARHEAD") {
-
-            error.style.display = "block";
-
-            return;
-        }
-
-
-        document
-            .getElementById("codeOverlay")
-            .classList.remove("show");
-
-
-        startWarheadSequence();
-    }
-
-
-    /* =====================================================
-       ENTER KEY
-    ====================================================== */
+    document
+        .getElementById("codeOverlay")
+        .classList.add("show");
 
     document
         .getElementById("codeInput")
-        .addEventListener(
-            "keydown",
-            event => {
+        .value = "";
 
-                if (event.key === "Enter") {
-                    verifyCode();
-                }
+    document
+        .getElementById("codeError")
+        .style.display = "none";
 
-            }
-        );
+    setTimeout(() => {
+
+        document
+            .getElementById("codeInput")
+            .focus();
+
+    }, 100);
+}
 
 
-    /* =====================================================
-       TERMINAL
-    ====================================================== */
+/* =====================================================
+   VERIFY CODE
+===================================================== */
 
-    function addTerminalLine(
-        text,
-        className = "system"
-    ) {
+function verifyCode() {
 
-        const terminal =
-            document.getElementById(
-                "terminalContent"
-            );
+    const code =
+        document
+            .getElementById("codeInput")
+            .value
+            .trim()
+            .toUpperCase();
 
-        const line =
-            document.createElement("div");
+    const error =
+        document.getElementById("codeError");
 
-        line.className =
-            "terminal-line " +
-            className;
 
-        line.textContent = text;
+    if (code !== "WARHEAD") {
 
-        terminal.appendChild(line);
+        error.style.display = "block";
 
-        terminal.scrollTop =
-            terminal.scrollHeight;
-
+        return;
     }
 
 
-    function wait(ms) {
+    document
+        .getElementById("codeOverlay")
+        .classList.remove("show");
 
-        return new Promise(
-            resolve => setTimeout(
+
+    /*
+     * IMPORTANT:
+     * CODE DOES NOT START THE WARHEAD.
+     *
+     * RULES COME FIRST.
+     */
+
+    document
+        .getElementById("rulesOverlay")
+        .classList.add("show");
+}
+
+
+/* =====================================================
+   RULES
+===================================================== */
+
+function continueFromRules() {
+
+    document
+        .getElementById("rulesOverlay")
+        .classList.remove("show");
+
+
+    /*
+     * GAMMA IS GLOBAL.
+     * NO SITE SELECTION.
+     */
+
+    if (selectedWarhead === "GAMMA") {
+
+        openFinalConfirmation();
+
+        return;
+    }
+
+
+    /*
+     * DELTA / ALPHA / BETA
+     * REQUIRE A TARGET SITE.
+     */
+
+    document
+        .getElementById("siteWarheadText")
+        .textContent = selectedWarhead;
+
+    document
+        .getElementById("siteOverlay")
+        .classList.add("show");
+}
+
+
+/* =====================================================
+   SELECT SITE
+===================================================== */
+
+function selectSite(site, element) {
+
+    selectedSite = site;
+
+
+    document
+        .querySelectorAll(".site-button")
+        .forEach(button => {
+
+            button.classList.remove(
+                "selected"
+            );
+
+        });
+
+
+    element.classList.add("selected");
+
+
+    document
+        .getElementById("siteError")
+        .style.display = "none";
+}
+
+
+/* =====================================================
+   CONFIRM SITE
+===================================================== */
+
+function confirmSite() {
+
+    if (!selectedSite) {
+
+        document
+            .getElementById("siteError")
+            .style.display = "block";
+
+        return;
+    }
+
+
+    document
+        .getElementById("siteOverlay")
+        .classList.remove("show");
+
+
+    openFinalConfirmation();
+}
+
+
+/* =====================================================
+   FINAL CONFIRMATION
+===================================================== */
+
+function openFinalConfirmation() {
+
+    document
+        .getElementById("finalWarhead")
+        .textContent = selectedWarhead;
+
+
+    document
+        .getElementById("finalTarget")
+        .textContent =
+            selectedWarhead === "GAMMA"
+                ? "GLOBAL"
+                : selectedSite;
+
+
+    document
+        .getElementById("finalOverlay")
+        .classList.add("show");
+}
+
+
+/* =====================================================
+   ACTIVATE
+===================================================== */
+
+function activateWarhead() {
+
+    document
+        .getElementById("finalOverlay")
+        .classList.remove("show");
+
+
+    startTerminalSequence();
+}
+
+
+/* =====================================================
+   TERMINAL LINE
+===================================================== */
+
+function addTerminalLine(
+    text,
+    className = ""
+) {
+
+    const terminal =
+        document.getElementById(
+            "terminalContent"
+        );
+
+
+    const line =
+        document.createElement("div");
+
+
+    line.className =
+        "terminal-line " +
+        className;
+
+
+    line.textContent = text;
+
+
+    terminal.appendChild(line);
+
+
+    terminal.scrollTop =
+        terminal.scrollHeight;
+}
+
+
+/* =====================================================
+   WAIT
+===================================================== */
+
+function wait(ms) {
+
+    return new Promise(
+        resolve =>
+            setTimeout(
                 resolve,
                 ms
             )
+    );
+}
+
+
+/* =====================================================
+   TERMINAL SEQUENCE
+===================================================== */
+
+async function startTerminalSequence() {
+
+    sequenceCancelled = false;
+    firingStarted = false;
+
+
+    const overlay =
+        document.getElementById(
+            "terminalOverlay"
         );
 
+
+    const terminal =
+        document.getElementById(
+            "terminalContent"
+        );
+
+
+    terminal.innerHTML = "";
+
+    overlay.classList.add("show");
+
+
+    addTerminalLine(
+        "WARHEAD SYSTEM INITIALIZING..."
+    );
+
+
+    /*
+     * TIME EXISTS ONLY IN CODE.
+     * NOTHING IS DISPLAYED TO USER.
+     */
+
+    await wait(2000);
+
+
+    addTerminalLine(
+        "SYSTEM SUCCESSFULLY LOADED"
+    );
+
+
+    await wait(1000);
+
+
+    /*
+     * FIRING BEGINS.
+     * CANCELLATION IS NO LONGER POSSIBLE.
+     */
+
+    firingStarted = true;
+
+
+    addTerminalLine(
+        "WARHEAD FIRING..."
+    );
+
+
+    await wait(5000);
+
+
+    addTerminalLine(
+        "WARHEAD DROPPING..."
+    );
+
+
+    await wait(3000);
+
+
+    for (
+        let i = 0;
+        i < 8;
+        i++
+    ) {
+
+        addTerminalLine(
+            "#############",
+            "hash"
+        );
+
+        await wait(180);
     }
 
 
-    /* =====================================================
-       WARHEAD SEQUENCE
-    ====================================================== */
-
-    async function startWarheadSequence() {
-
-        sequenceCancelled = false;
-        firingStarted = false;
+    await wait(700);
 
 
-        const overlay =
-            document.getElementById(
-                "terminalOverlay"
-            );
+    addTerminalLine(
+        "WARHEAD DETONATION COMPLETE."
+    );
 
-        const terminal =
-            document.getElementById(
-                "terminalContent"
-            );
-
-        const cancel =
-            document.getElementById(
-                "cancelButton"
-            );
+}
 
 
-        terminal.innerHTML = "";
+/* =====================================================
+   CLOSE ALL
+===================================================== */
 
-        overlay.classList.add("show");
+function closeAll() {
 
-        cancel.classList.add("show");
-
-
-        addTerminalLine(
-            "WARHEAD SYSTEM INITIALIZING..."
-        );
-
-
-        await wait(2000);
-
-
-        if (sequenceCancelled) {
-            return;
-        }
-
-
-        addTerminalLine(
-            "SYSTEM SUCCESSFULLY LOADED"
-        );
-
-
-        await wait(1000);
-
-
-        if (sequenceCancelled) {
-            return;
-        }
-
-
-        /*
-         * FIRING STARTS HERE.
-         * AFTER THIS POINT CANCELLATION
-         * IS NO LONGER ALLOWED.
-         */
-
-        firingStarted = true;
-
-        cancel.classList.remove("show");
-
-
-        addTerminalLine(
-            "WARHEAD FIRING..."
-        );
-
-
-        await wait(5000);
-
-
-        if (sequenceCancelled) {
-            return;
-        }
-
-
-        addTerminalLine(
-            "WARHEAD DROPPING..."
-        );
-
-
-        await wait(3000);
-
-
-        if (sequenceCancelled) {
-            return;
-        }
-
-
-        for (
-            let i = 0;
-            i < 7;
-            i++
-        ) {
-
-            addTerminalLine(
-                "#############",
-                "hash"
-            );
-
-            await wait(180);
-
-        }
-
-
-        await wait(700);
-
-
-        addTerminalLine(
-            "WARHEAD DETONATION COMPLETE."
-        );
-
+    if (firingStarted) {
+        return;
     }
 
 
-    /* =====================================================
-       CANCEL
-    ====================================================== */
+    document
+        .querySelectorAll(".overlay")
+        .forEach(element => {
 
-    function cancelSequence() {
-
-        if (firingStarted) {
-            return;
-        }
-
-
-        sequenceCancelled = true;
-
-
-        document
-            .getElementById("cancelButton")
-            .classList.remove("show");
-
-
-        const terminal =
-            document.getElementById(
-                "terminalContent"
+            element.classList.remove(
+                "show"
             );
 
-        terminal.innerHTML = "";
+        });
 
 
-        addTerminalLine(
-            "WARHEAD SYSTEM DEACTIVATED."
-        );
+    selectedWarhead = null;
+    selectedSite = null;
 
 
-        setTimeout(() => {
+    document
+        .querySelectorAll(".site-button")
+        .forEach(button => {
 
-            document
-                .getElementById(
-                    "terminalOverlay"
-                )
-                .classList.remove("show");
+            button.classList.remove(
+                "selected"
+            );
 
-        }, 1800);
+        });
+}
 
-    }
+
+/* =====================================================
+   ENTER KEY
+===================================================== */
+
+document
+    .getElementById("codeInput")
+    .addEventListener(
+        "keydown",
+        event => {
+
+            if (event.key === "Enter") {
+                verifyCode();
+            }
+
+        }
+    );
 
 </script>
 
