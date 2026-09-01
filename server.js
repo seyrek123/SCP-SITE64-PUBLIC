@@ -10,8 +10,17 @@ const HOST = "0.0.0.0";
 const PUBLIC_DIR = path.join(__dirname, "public");
 const DATA_FILE = path.join(__dirname, "data.json");
 
+/* =====================================================
+   SCP ARCHITECT X API KEY
+===================================================== */
+
+const ROBLOX_API_KEY =
+    process.env.ROBLOX_API_KEY ||
+    "SCPARCHITECTX-64-SECRET-2026";
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 /* =====================================================
    DATABASE
@@ -20,108 +29,102 @@ app.use(express.urlencoded({ extended: true }));
 function emptyDatabase() {
     return {
         requests: [],
-        sites: {
-            "SITE-19": {
-                status: "NORMAL",
-                message: ""
-            },
-            "SITE-51": {
-                status: "NORMAL",
-                message: ""
-            },
-            "SITE-64": {
-                status: "NORMAL",
-                message: ""
-            }
-        },
-        personnel: []
+        incidents: []
     };
 }
 
+
 function readDatabase() {
+
     try {
+
         if (!fs.existsSync(DATA_FILE)) {
-            const database = emptyDatabase();
 
             fs.writeFileSync(
                 DATA_FILE,
-                JSON.stringify(database, null, 2),
+                JSON.stringify(
+                    emptyDatabase(),
+                    null,
+                    2
+                ),
                 "utf8"
             );
-
-            return database;
         }
 
-        const data = JSON.parse(
-            fs.readFileSync(DATA_FILE, "utf8")
-        );
+        const data =
+            JSON.parse(
+                fs.readFileSync(
+                    DATA_FILE,
+                    "utf8"
+                )
+            );
 
         if (!Array.isArray(data.requests)) {
             data.requests = [];
         }
 
-        if (!data.sites || typeof data.sites !== "object") {
-            data.sites = {};
-        }
-
-        for (const site of ["SITE-19", "SITE-51", "SITE-64"]) {
-            if (!data.sites[site]) {
-                data.sites[site] = {
-                    status: "NORMAL",
-                    message: ""
-                };
-            }
-
-            if (!data.sites[site].status) {
-                data.sites[site].status = "NORMAL";
-            }
-
-            if (typeof data.sites[site].message !== "string") {
-                data.sites[site].message = "";
-            }
-        }
-
-        if (!Array.isArray(data.personnel)) {
-            data.personnel = [];
+        if (!Array.isArray(data.incidents)) {
+            data.incidents = [];
         }
 
         return data;
 
     } catch (error) {
-        console.error("DATABASE ERROR:", error);
+
+        console.error(
+            "DATABASE ERROR:",
+            error
+        );
+
         return emptyDatabase();
     }
 }
 
+
 function saveDatabase(data) {
+
     fs.writeFileSync(
         DATA_FILE,
-        JSON.stringify(data, null, 2),
+        JSON.stringify(
+            data,
+            null,
+            2
+        ),
         "utf8"
     );
 }
+
 
 /* =====================================================
    REQUEST ID
 ===================================================== */
 
-function generateRequestId(database) {
+function generateRequestId() {
+
+    const database =
+        readDatabase();
 
     let id;
 
     do {
+
         id =
             "SITE64-" +
-            Math.floor(10000 + Math.random() * 90000);
+            Math.floor(
+                10000 +
+                Math.random() * 90000
+            );
 
     } while (
         database.requests.some(
-            request => request.id === id
+            request =>
+                request.id === id
         )
     );
 
     return id;
 }
+
 
 /* =====================================================
    TIME
@@ -138,242 +141,290 @@ function isValidTime(time) {
     );
 }
 
+
 function getPeriod(time) {
 
-    const hour = Number(
-        String(time).split(":")[0]
-    );
+    const hour =
+        Number(
+            String(time).split(":")[0]
+        );
 
-    if (hour >= 6 && hour < 18) {
+    if (
+        hour >= 6 &&
+        hour < 18
+    ) {
+
         return "DAY";
     }
 
     return "NIGHT";
 }
 
-/* =====================================================
-   SITE SECURITY
-===================================================== */
-
-const VALID_SITE_STATUSES = [
-    "NORMAL",
-    "ELEVATED",
-    "HIGH",
-    "CRITICAL",
-    "LOCKDOWN"
-];
-
-function isValidSite(site) {
-    return [
-        "SITE-19",
-        "SITE-51",
-        "SITE-64"
-    ].includes(site);
-}
-
-function isValidSiteStatus(status) {
-    return VALID_SITE_STATUSES.includes(
-        String(status).toUpperCase()
-    );
-}
-
-/* =====================================================
-   PERSONNEL
-===================================================== */
-
-const VALID_PERSONNEL_DEPARTMENTS = [
-    "O5 COUNCIL",
-    "SITE DIRECTOR",
-    "RESEARCH",
-    "SECURITY",
-    "MTF",
-    "MEDICAL",
-    "D-CLASS"
-];
 
 /* =====================================================
    STATIC FILES
 ===================================================== */
 
-app.use(express.static(PUBLIC_DIR));
+app.use(
+    express.static(
+        PUBLIC_DIR
+    )
+);
+
 
 /* =====================================================
    PAGES
 ===================================================== */
 
 app.get("/", (req, res) => {
+
     res.sendFile(
-        path.join(PUBLIC_DIR, "index.html")
+        path.join(
+            PUBLIC_DIR,
+            "index.html"
+        )
     );
 });
+
 
 app.get("/admin", (req, res) => {
+
     res.sendFile(
-        path.join(PUBLIC_DIR, "admin.html")
+        path.join(
+            PUBLIC_DIR,
+            "admin.html"
+        )
     );
 });
+
 
 app.get("/sites", (req, res) => {
+
     res.sendFile(
-        path.join(PUBLIC_DIR, "sites.html")
+        path.join(
+            PUBLIC_DIR,
+            "sites.html"
+        )
     );
 });
+
 
 app.get("/term", (req, res) => {
+
     res.sendFile(
-        path.join(PUBLIC_DIR, "term.html")
+        path.join(
+            PUBLIC_DIR,
+            "term.html"
+        )
     );
 });
 
+
 /* =====================================================
-   REQUESTS
+   REQUEST SYSTEM
 ===================================================== */
 
-app.get("/api/requests", (req, res) => {
+app.get(
+    "/api/requests",
+    (req, res) => {
 
-    const database = readDatabase();
+        const database =
+            readDatabase();
 
-    res.json({
-        success: true,
-        requests: database.requests
-    });
-});
-
-
-app.post("/api/requests", (req, res) => {
-
-    try {
-
-        const {
-            name,
-            type,
-            typeName,
-            scp,
-            time,
-            message
-        } = req.body;
-
-        if (!name || !String(name).trim()) {
-            return res.status(400).json({
-                success: false,
-                message: "FULL NAME IS REQUIRED."
-            });
-        }
-
-        if (!type) {
-            return res.status(400).json({
-                success: false,
-                message: "REQUEST TYPE IS REQUIRED."
-            });
-        }
-
-        if (!isValidTime(time)) {
-            return res.status(400).json({
-                success: false,
-                message:
-                    "INVALID TIME. SELECT A 30-MINUTE INTERVAL."
-            });
-        }
-
-        if (
-            type === "scp" &&
-            (!scp || !String(scp).trim())
-        ) {
-            return res.status(400).json({
-                success: false,
-                message: "SCP SELECTION IS REQUIRED."
-            });
-        }
-
-        const database = readDatabase();
-
-        const now =
-            new Date().toISOString();
-
-        const request = {
-
-            id:
-                generateRequestId(database),
-
-            name:
-                String(name).trim(),
-
-            type:
-                String(type),
-
-            typeName:
-                typeName ||
-                String(type).toUpperCase(),
-
-            scp:
-                scp
-                    ? String(scp).trim()
-                    : null,
-
-            time:
-                String(time),
-
-            period:
-                getPeriod(time),
-
-            message:
-                message
-                    ? String(message).trim()
-                    : "",
-
-            status:
-                "PENDING",
-
-            adminMessage:
-                "",
-
-            createdAt:
-                now,
-
-            updatedAt:
-                now
-        };
-
-        database.requests.push(request);
-
-        saveDatabase(database);
-
-        console.log("");
-        console.log("========================================");
-        console.log("        NEW SITE-64 REQUEST");
-        console.log("========================================");
-        console.log("REQUEST ID :", request.id);
-        console.log("NAME       :", request.name);
-        console.log("TYPE       :", request.typeName);
-        console.log("SCP        :", request.scp || "N/A");
-        console.log("TIME       :", request.time);
-        console.log("PERIOD     :", request.period);
-        console.log("STATUS     :", request.status);
-        console.log("========================================");
-        console.log("");
-
-        res.status(201).json({
+        res.json({
             success: true,
-            request
-        });
-
-    } catch (error) {
-
-        console.error(
-            "REQUEST ERROR:",
-            error
-        );
-
-        res.status(500).json({
-            success: false,
-            message: "SERVER ERROR."
+            requests:
+                database.requests
         });
     }
-});
+);
+
+
+app.post(
+    "/api/requests",
+    (req, res) => {
+
+        try {
+
+            const {
+                name,
+                type,
+                typeName,
+                scp,
+                time,
+                message
+            } = req.body;
+
+            if (
+                !name ||
+                !String(name).trim()
+            ) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "FULL NAME IS REQUIRED."
+                });
+            }
+
+            if (!type) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "REQUEST TYPE IS REQUIRED."
+                });
+            }
+
+            if (!isValidTime(time)) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "INVALID TIME. SELECT A 30-MINUTE INTERVAL."
+                });
+            }
+
+            if (
+                type === "scp" &&
+                (
+                    !scp ||
+                    !String(scp).trim()
+                )
+            ) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "SCP SELECTION IS REQUIRED."
+                });
+            }
+
+            const now =
+                new Date().toISOString();
+
+            const request = {
+
+                id:
+                    generateRequestId(),
+
+                name:
+                    String(name).trim(),
+
+                type:
+                    String(type),
+
+                typeName:
+                    typeName ||
+                    String(type).toUpperCase(),
+
+                scp:
+                    scp
+                        ? String(scp).trim()
+                        : null,
+
+                time:
+                    String(time),
+
+                period:
+                    getPeriod(time),
+
+                message:
+                    message
+                        ? String(message).trim()
+                        : "",
+
+                status:
+                    "PENDING",
+
+                adminMessage:
+                    "",
+
+                createdAt:
+                    now,
+
+                updatedAt:
+                    now
+            };
+
+            const database =
+                readDatabase();
+
+            database.requests.push(
+                request
+            );
+
+            saveDatabase(
+                database
+            );
+
+            console.log("");
+            console.log(
+                "========================================"
+            );
+            console.log(
+                "        NEW SITE-64 REQUEST"
+            );
+            console.log(
+                "========================================"
+            );
+            console.log(
+                "REQUEST ID :",
+                request.id
+            );
+            console.log(
+                "NAME       :",
+                request.name
+            );
+            console.log(
+                "TYPE       :",
+                request.typeName
+            );
+            console.log(
+                "SCP        :",
+                request.scp || "N/A"
+            );
+            console.log(
+                "TIME       :",
+                request.time
+            );
+            console.log(
+                "PERIOD     :",
+                request.period
+            );
+            console.log(
+                "STATUS     :",
+                request.status
+            );
+            console.log(
+                "========================================"
+            );
+            console.log("");
+
+            res.status(201).json({
+                success: true,
+                request
+            });
+
+        } catch (error) {
+
+            console.error(
+                "REQUEST ERROR:",
+                error
+            );
+
+            res.status(500).json({
+                success: false,
+                message:
+                    "SERVER ERROR."
+            });
+        }
+    }
+);
 
 
 /* =====================================================
-   APPROVE
+   APPROVE REQUEST
 ===================================================== */
 
 app.post(
@@ -386,13 +437,16 @@ app.post(
         const request =
             database.requests.find(
                 item =>
-                    item.id === req.params.id
+                    item.id ===
+                    req.params.id
             );
 
         if (!request) {
+
             return res.status(404).json({
                 success: false,
-                message: "REQUEST NOT FOUND."
+                message:
+                    "REQUEST NOT FOUND."
             });
         }
 
@@ -407,14 +461,16 @@ app.post(
         ) {
 
             if (!isValidTime(time)) {
+
                 return res.status(400).json({
                     success: false,
-                    message: "INVALID TIME."
+                    message:
+                        "INVALID TIME."
                 });
             }
 
             request.time =
-                String(time);
+                time;
 
             request.period =
                 getPeriod(time);
@@ -424,14 +480,15 @@ app.post(
             "APPROVED";
 
         request.adminMessage =
-            message
-                ? String(message).trim()
-                : "YOUR REQUEST HAS BEEN APPROVED.";
+            message ||
+            "YOUR REQUEST HAS BEEN APPROVED.";
 
         request.updatedAt =
             new Date().toISOString();
 
-        saveDatabase(database);
+        saveDatabase(
+            database
+        );
 
         res.json({
             success: true,
@@ -442,7 +499,7 @@ app.post(
 
 
 /* =====================================================
-   REJECT
+   REJECT REQUEST
 ===================================================== */
 
 app.post(
@@ -455,13 +512,16 @@ app.post(
         const request =
             database.requests.find(
                 item =>
-                    item.id === req.params.id
+                    item.id ===
+                    req.params.id
             );
 
         if (!request) {
+
             return res.status(404).json({
                 success: false,
-                message: "REQUEST NOT FOUND."
+                message:
+                    "REQUEST NOT FOUND."
             });
         }
 
@@ -469,14 +529,15 @@ app.post(
             "REJECTED";
 
         request.adminMessage =
-            req.body.message
-                ? String(req.body.message).trim()
-                : "YOUR REQUEST HAS BEEN REJECTED.";
+            req.body.message ||
+            "YOUR REQUEST HAS BEEN REJECTED.";
 
         request.updatedAt =
             new Date().toISOString();
 
-        saveDatabase(database);
+        saveDatabase(
+            database
+        );
 
         res.json({
             success: true,
@@ -499,9 +560,11 @@ app.post(
         } = req.body;
 
         if (!isValidTime(time)) {
+
             return res.status(400).json({
                 success: false,
-                message: "INVALID TIME."
+                message:
+                    "INVALID TIME."
             });
         }
 
@@ -511,18 +574,21 @@ app.post(
         const request =
             database.requests.find(
                 item =>
-                    item.id === req.params.id
+                    item.id ===
+                    req.params.id
             );
 
         if (!request) {
+
             return res.status(404).json({
                 success: false,
-                message: "REQUEST NOT FOUND."
+                message:
+                    "REQUEST NOT FOUND."
             });
         }
 
         request.time =
-            String(time);
+            time;
 
         request.period =
             getPeriod(time);
@@ -530,7 +596,9 @@ app.post(
         request.updatedAt =
             new Date().toISOString();
 
-        saveDatabase(database);
+        saveDatabase(
+            database
+        );
 
         res.json({
             success: true,
@@ -541,246 +609,477 @@ app.post(
 
 
 /* =====================================================
-   SITE CONTROL - GET
+   SCP ARCHITECT X
+   ROBLOX LIVE INCIDENT SYSTEM
+===================================================== */
+
+
+/* =====================================================
+   ROBLOX AUTHENTICATION
+===================================================== */
+
+function checkRobloxKey(req, res) {
+
+    const key =
+        req.headers["x-roblox-key"];
+
+    if (
+        !key ||
+        key !== ROBLOX_API_KEY
+    ) {
+
+        res.status(401).json({
+
+            success: false,
+
+            message:
+                "UNAUTHORIZED ROBLOX REQUEST."
+        });
+
+        return false;
+    }
+
+    return true;
+}
+
+
+/* =====================================================
+   GET LIVE INCIDENTS
 ===================================================== */
 
 app.get(
-    "/api/sites",
+    "/api/game/incidents",
     (req, res) => {
 
         const database =
             readDatabase();
 
+        const activeIncidents =
+            database.incidents.filter(
+                incident =>
+                    incident.status ===
+                    "ACTIVE"
+            );
+
         res.json({
+
             success: true,
-            sites: database.sites
+
+            incidents:
+                activeIncidents
         });
     }
 );
 
 
 /* =====================================================
-   SITE CONTROL - UPDATE
+   ROBLOX SERVER STATUS
 ===================================================== */
 
 app.post(
-    "/api/sites/:site",
+    "/api/game/status",
     (req, res) => {
 
-        const site =
-            String(
-                req.params.site
-            ).toUpperCase();
+        if (
+            !checkRobloxKey(
+                req,
+                res
+            )
+        ) {
 
-        if (!isValidSite(site)) {
-            return res.status(400).json({
-                success: false,
-                message: "INVALID SITE."
-            });
-        }
-
-        const status =
-            String(
-                req.body.status || ""
-            ).toUpperCase();
-
-        if (!isValidSiteStatus(status)) {
-            return res.status(400).json({
-                success: false,
-                message: "INVALID SECURITY STATUS."
-            });
+            return;
         }
 
         const database =
             readDatabase();
 
-        database.sites[site] = {
+        database.gameStatus = {
 
-            status,
+            online:
+                true,
 
-            message:
-                req.body.message
-                    ? String(
-                        req.body.message
-                    ).trim()
-                    : "",
+            game:
+                "SCP Architect X",
+
+            serverId:
+                req.body.serverId ||
+                "",
+
+            players:
+                Number(
+                    req.body.playerCount ||
+                    0
+                ),
 
             updatedAt:
-                new Date().toISOString()
+                new Date()
+                    .toISOString()
         };
 
-        saveDatabase(database);
-
-        console.log(
-            `[SITE CONTROL] ${site} -> ${status}`
+        saveDatabase(
+            database
         );
 
         res.json({
+
             success: true,
-            site,
-            data:
-                database.sites[site]
+
+            message:
+                "GAME STATUS UPDATED."
         });
     }
 );
 
 
 /* =====================================================
-   PERSONNEL - GET
+   GET ROBLOX SERVER STATUS
 ===================================================== */
 
 app.get(
-    "/api/personnel",
+    "/api/game/status",
     (req, res) => {
 
         const database =
             readDatabase();
 
+        const status =
+            database.gameStatus || {
+
+                online:
+                    false,
+
+                game:
+                    "SCP Architect X",
+
+                serverId:
+                    "",
+
+                players:
+                    0,
+
+                updatedAt:
+                    null
+            };
+
         res.json({
+
             success: true,
-            personnel:
-                database.personnel
+
+            status
         });
     }
 );
 
 
 /* =====================================================
-   PERSONNEL - CREATE
+   CREATE / UPDATE LIVE INCIDENT
 ===================================================== */
 
 app.post(
-    "/api/personnel",
+    "/api/game/incident",
     (req, res) => {
 
-        const {
-            name,
-            rank,
-            department,
-            site,
-            clearance,
-            status
-        } = req.body;
-
-        if (!name || !String(name).trim()) {
-            return res.status(400).json({
-                success: false,
-                message: "NAME IS REQUIRED."
-            });
-        }
-
-        if (!rank || !String(rank).trim()) {
-            return res.status(400).json({
-                success: false,
-                message: "RANK IS REQUIRED."
-            });
-        }
-
         if (
-            department &&
-            !VALID_PERSONNEL_DEPARTMENTS.includes(
-                String(department).toUpperCase()
+            !checkRobloxKey(
+                req,
+                res
             )
         ) {
-            return res.status(400).json({
-                success: false,
-                message: "INVALID DEPARTMENT."
-            });
+
+            return;
         }
 
-        const database =
-            readDatabase();
+        try {
 
-        const id =
-            "P-" +
-            Math.floor(
-                10000 +
-                Math.random() * 90000
+            const {
+
+                event,
+
+                site,
+
+                status,
+
+                title,
+
+                description,
+
+                serverId,
+
+                playerCount
+
+            } = req.body;
+
+
+            if (!event) {
+
+                return res.status(400).json({
+
+                    success:
+                        false,
+
+                    message:
+                        "EVENT IS REQUIRED."
+                });
+            }
+
+
+            const database =
+                readDatabase();
+
+
+            const normalizedEvent =
+                String(
+                    event
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            const normalizedSite =
+                String(
+                    site ||
+                    "SITE-64"
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            const incidentKey =
+                `${normalizedEvent}-${normalizedSite}`;
+
+
+            let incident =
+                database.incidents.find(
+                    item =>
+                        item.key ===
+                        incidentKey
+                );
+
+
+            /* =================================================
+               RESOLVE INCIDENT
+            ================================================= */
+
+            if (
+                String(status)
+                    .toUpperCase() ===
+                "RESOLVED"
+            ) {
+
+                if (incident) {
+
+                    incident.status =
+                        "RESOLVED";
+
+                    incident.updatedAt =
+                        new Date()
+                            .toISOString();
+
+                    saveDatabase(
+                        database
+                    );
+
+                    console.log(
+                        "[SCP ARCHITECT X]",
+                        normalizedEvent,
+                        "RESOLVED"
+                    );
+                }
+
+                return res.json({
+
+                    success:
+                        true,
+
+                    message:
+                        "INCIDENT RESOLVED.",
+
+                    incident:
+                        incident ||
+                        null
+                });
+            }
+
+
+            /* =================================================
+               CREATE INCIDENT
+            ================================================= */
+
+            if (!incident) {
+
+                const now =
+                    new Date()
+                        .toISOString();
+
+                incident = {
+
+                    id:
+                        "INC-" +
+                        Math.floor(
+                            10000 +
+                            Math.random() *
+                            90000
+                        ),
+
+                    key:
+                        incidentKey,
+
+                    event:
+                        normalizedEvent,
+
+                    site:
+                        normalizedSite,
+
+                    status:
+                        "ACTIVE",
+
+                    title:
+                        title ||
+                        normalizedEvent
+                            .replace(
+                                /_/g,
+                                " "
+                            ),
+
+                    description:
+                        description ||
+                        "",
+
+                    serverId:
+                        serverId ||
+                        "",
+
+                    playerCount:
+                        Number(
+                            playerCount ||
+                            0
+                        ),
+
+                    createdAt:
+                        now,
+
+                    updatedAt:
+                        now
+                };
+
+                database.incidents.push(
+                    incident
+                );
+
+            } else {
+
+                incident.status =
+                    "ACTIVE";
+
+                if (
+                    title !==
+                    undefined
+                ) {
+
+                    incident.title =
+                        title;
+                }
+
+                if (
+                    description !==
+                    undefined
+                ) {
+
+                    incident.description =
+                        description;
+                }
+
+                if (
+                    serverId !==
+                    undefined
+                ) {
+
+                    incident.serverId =
+                        serverId;
+                }
+
+                if (
+                    playerCount !==
+                    undefined
+                ) {
+
+                    incident.playerCount =
+                        Number(
+                            playerCount
+                        );
+                }
+
+                incident.updatedAt =
+                    new Date()
+                        .toISOString();
+            }
+
+
+            saveDatabase(
+                database
             );
 
-        const person = {
 
-            id,
-
-            name:
-                String(name).trim(),
-
-            rank:
-                String(rank).trim(),
-
-            department:
-                department
-                    ? String(
-                        department
-                    ).toUpperCase()
-                    : "RESEARCH",
-
-            site:
-                site
-                    ? String(site).toUpperCase()
-                    : "SITE-64",
-
-            clearance:
-                clearance
-                    ? String(clearance).toUpperCase()
-                    : "LEVEL 2",
-
-            status:
-                status
-                    ? String(status).toUpperCase()
-                    : "ACTIVE",
-
-            createdAt:
-                new Date().toISOString()
-        };
-
-        database.personnel.push(person);
-
-        saveDatabase(database);
-
-        res.status(201).json({
-            success: true,
-            personnel: person
-        });
-    }
-);
+            console.log("");
+            console.log(
+                "========================================"
+            );
+            console.log(
+                "      SCP ARCHITECT X // INCIDENT"
+            );
+            console.log(
+                "========================================"
+            );
+            console.log(
+                "EVENT   :",
+                incident.event
+            );
+            console.log(
+                "SITE    :",
+                incident.site
+            );
+            console.log(
+                "STATUS  :",
+                incident.status
+            );
+            console.log(
+                "PLAYERS :",
+                incident.playerCount
+            );
+            console.log(
+                "SERVER  :",
+                incident.serverId
+            );
+            console.log(
+                "========================================"
+            );
+            console.log("");
 
 
-/* =====================================================
-   PERSONNEL - DELETE
-===================================================== */
+            res.json({
 
-app.delete(
-    "/api/personnel/:id",
-    (req, res) => {
+                success:
+                    true,
 
-        const database =
-            readDatabase();
+                incident
+            });
 
-        const before =
-            database.personnel.length;
+        } catch (error) {
 
-        database.personnel =
-            database.personnel.filter(
-                person =>
-                    person.id !== req.params.id
+            console.error(
+                "INCIDENT ERROR:",
+                error
             );
 
-        if (
-            database.personnel.length ===
-            before
-        ) {
-            return res.status(404).json({
-                success: false,
-                message: "PERSONNEL NOT FOUND."
+            res.status(500).json({
+
+                success:
+                    false,
+
+                message:
+                    "INCIDENT SERVER ERROR."
             });
         }
-
-        saveDatabase(database);
-
-        res.json({
-            success: true
-        });
     }
 );
 
@@ -799,24 +1098,35 @@ app.get(
         const pending =
             database.requests.filter(
                 request =>
-                    request.status === "PENDING"
+                    request.status ===
+                    "PENDING"
             ).length;
 
         const approved =
             database.requests.filter(
                 request =>
-                    request.status === "APPROVED"
+                    request.status ===
+                    "APPROVED"
             ).length;
 
         const rejected =
             database.requests.filter(
                 request =>
-                    request.status === "REJECTED"
+                    request.status ===
+                    "REJECTED"
+            ).length;
+
+        const activeIncidents =
+            database.incidents.filter(
+                incident =>
+                    incident.status ===
+                    "ACTIVE"
             ).length;
 
         res.json({
 
-            success: true,
+            success:
+                true,
 
             server:
                 "ONLINE",
@@ -842,11 +1152,8 @@ app.get(
             rejectedRequests:
                 rejected,
 
-            sites:
-                database.sites,
-
-            personnel:
-                database.personnel.length,
+            activeIncidents:
+                activeIncidents,
 
             uptime:
                 process.uptime()
@@ -856,7 +1163,7 @@ app.get(
 
 
 /* =====================================================
-   TERMINAL
+   TERMINAL API
 ===================================================== */
 
 app.post(
@@ -865,29 +1172,44 @@ app.post(
 
         const command =
             String(
-                req.body.command || ""
+                req.body.command ||
+                ""
             )
-            .trim()
-            .toLowerCase();
+                .trim()
+                .toLowerCase();
 
         const database =
             readDatabase();
 
+
         if (!command) {
+
             return res.json({
-                output: ""
+                output:
+                    ""
             });
         }
 
-        if (command === "clear") {
+
+        if (
+            command ===
+            "clear"
+        ) {
+
             return res.json({
-                output: "__CLEAR__"
+                output:
+                    "__CLEAR__"
             });
         }
 
-        if (command === "help") {
+
+        if (
+            command ===
+            "help"
+        ) {
 
             return res.json({
+
                 output:
 `SITE-64 TERMINAL
 ==============================
@@ -897,22 +1219,36 @@ AVAILABLE COMMANDS
 help       Show available commands
 status     Show system status
 requests   Show request statistics
+incidents  Show live incidents
+game       Show SCP Architect X status
 sites      Show registered sites
-personnel  Show personnel count
 about      Show SITE-64 information
 clear      Clear terminal`
             });
         }
 
-        if (command === "status") {
+
+        if (
+            command ===
+            "status"
+        ) {
 
             const pending =
                 database.requests.filter(
                     r =>
-                        r.status === "PENDING"
+                        r.status ===
+                        "PENDING"
+                ).length;
+
+            const incidents =
+                database.incidents.filter(
+                    i =>
+                        i.status ===
+                        "ACTIVE"
                 ).length;
 
             return res.json({
+
                 output:
 `SYSTEM STATUS
 ==============================
@@ -920,31 +1256,40 @@ SERVER       : ONLINE
 DATABASE     : ONLINE
 SITE         : SITE-64
 REQUESTS     : ${database.requests.length}
-PENDING      : ${pending}`
+PENDING      : ${pending}
+INCIDENTS    : ${incidents}`
             });
         }
 
-        if (command === "requests") {
+
+        if (
+            command ===
+            "requests"
+        ) {
 
             const pending =
                 database.requests.filter(
                     r =>
-                        r.status === "PENDING"
+                        r.status ===
+                        "PENDING"
                 ).length;
 
             const approved =
                 database.requests.filter(
                     r =>
-                        r.status === "APPROVED"
+                        r.status ===
+                        "APPROVED"
                 ).length;
 
             const rejected =
                 database.requests.filter(
                     r =>
-                        r.status === "REJECTED"
+                        r.status ===
+                        "REJECTED"
                 ).length;
 
             return res.json({
+
                 output:
 `REQUEST DATABASE
 ==============================
@@ -955,42 +1300,115 @@ REJECTED   : ${rejected}`
             });
         }
 
-        if (command === "sites") {
 
-            const site19 =
-                database.sites["SITE-19"];
+        if (
+            command ===
+            "incidents"
+        ) {
 
-            const site51 =
-                database.sites["SITE-51"];
+            const active =
+                database.incidents.filter(
+                    i =>
+                        i.status ===
+                        "ACTIVE"
+                );
 
-            const site64 =
-                database.sites["SITE-64"];
+
+            if (!active.length) {
+
+                return res.json({
+
+                    output:
+`LIVE INCIDENTS
+==============================
+NO ACTIVE INCIDENTS.`
+                });
+            }
+
+
+            const output =
+                active
+                    .map(
+                        incident =>
+`${incident.id}
+EVENT      : ${incident.event}
+SITE       : ${incident.site}
+STATUS     : ${incident.status}
+PLAYERS    : ${incident.playerCount}`
+                    )
+                    .join(
+                        "\n\n"
+                    );
+
 
             return res.json({
+
+                output:
+`LIVE INCIDENTS
+==============================
+
+${output}`
+            });
+        }
+
+
+        if (
+            command ===
+            "game"
+        ) {
+
+            const game =
+                database.gameStatus || {
+
+                    online:
+                        false,
+
+                    game:
+                        "SCP Architect X",
+
+                    players:
+                        0
+                };
+
+
+            return res.json({
+
+                output:
+`SCP ARCHITECT X
+==============================
+STATUS       : ${game.online ? "ONLINE" : "OFFLINE"}
+PLAYERS      : ${game.players}
+SERVER ID    : ${game.serverId || "N/A"}
+LAST UPDATE  : ${game.updatedAt || "N/A"}`
+            });
+        }
+
+
+        if (
+            command ===
+            "sites"
+        ) {
+
+            return res.json({
+
                 output:
 `SCP FOUNDATION SITES
 ==============================
-SITE-19    | ${site19.status}
-SITE-51    | ${site51.status}
-SITE-64    | ${site64.status}
+SITE-19    | ACTIVE
+SITE-51    | ACTIVE
+SITE-64    | ACTIVE
 SITE-██    | CLASSIFIED`
             });
         }
 
-        if (command === "personnel") {
+
+        if (
+            command ===
+            "about"
+        ) {
 
             return res.json({
-                output:
-`PERSONNEL DATABASE
-==============================
-TOTAL PERSONNEL : ${database.personnel.length}
-DATABASE STATUS : ONLINE`
-            });
-        }
 
-        if (command === "about") {
-
-            return res.json({
                 output:
 `SECURE CONTAIN PROTECT
 SITE-64 ADMINISTRATION SYSTEM
@@ -998,14 +1416,18 @@ SITE-64 ADMINISTRATION SYSTEM
 CLASSIFICATION : O5
 FACILITY        : SITE-64
 STATUS          : OPERATIONAL
+GAME            : SCP Architect X
 
 Unauthorized access is prohibited.`
             });
         }
 
+
         return res.json({
+
             output:
-                `COMMAND NOT FOUND: ${command}\nType "help" for available commands.`
+`COMMAND NOT FOUND: ${command}
+Type "help" for available commands.`
         });
     }
 );
@@ -1020,18 +1442,25 @@ app.use(
     (req, res) => {
 
         res.status(404).json({
-            success: false,
-            message: "API ENDPOINT NOT FOUND."
+
+            success:
+                false,
+
+            message:
+                "API ENDPOINT NOT FOUND."
         });
     }
 );
 
 
 /* =====================================================
-   DATABASE INIT
+   DATABASE INITIALIZATION
 ===================================================== */
 
-if (!fs.existsSync(DATA_FILE)) {
+if (
+    !fs.existsSync(DATA_FILE)
+) {
+
     saveDatabase(
         emptyDatabase()
     );
@@ -1048,16 +1477,56 @@ app.listen(
     () => {
 
         console.log("");
-        console.log("========================================");
-        console.log("     SECURE CONTAIN PROTECT // SITE-64");
-        console.log("========================================");
-        console.log("SERVER : ONLINE");
-        console.log("PORT   :", PORT);
-        console.log("PUBLIC : /");
-        console.log("ADMIN  : /admin");
-        console.log("SITES  : /sites");
-        console.log("TERM   : /term");
-        console.log("========================================");
+
+        console.log(
+            "========================================"
+        );
+
+        console.log(
+            "     SECURE CONTAIN PROTECT // SITE-64"
+        );
+
+        console.log(
+            "========================================"
+        );
+
+        console.log(
+            "SERVER : ONLINE"
+        );
+
+        console.log(
+            "PORT   :",
+            PORT
+        );
+
+        console.log(
+            "PUBLIC : /"
+        );
+
+        console.log(
+            "ADMIN  : /admin"
+        );
+
+        console.log(
+            "SITES  : /sites"
+        );
+
+        console.log(
+            "TERM   : /term"
+        );
+
+        console.log(
+            "ROBLOX : /api/game/incident"
+        );
+
+        console.log(
+            "LIVE   : /api/game/incidents"
+        );
+
+        console.log(
+            "========================================"
+        );
+
         console.log("");
     }
 );
