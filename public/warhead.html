@@ -1,1190 +1,1260 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SITE-64 // WARHEAD CONTROL</title>
+<title>WARHEAD CONTROL // SITE-64</title>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
 
-html,
 body {
+
     margin: 0;
-    width: 100%;
-    height: 100%;
+
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #151d24,
+            #05080b 65%
+        );
+
+    color: #e6edf2;
+
+    font-family:
+        "Courier New",
+        monospace;
+
     overflow: hidden;
 }
 
-body {
-    background:
-        radial-gradient(circle at center, #101820 0%, #05080c 65%);
-    color: #dfe7ee;
-    font-family: Arial, Helvetica, sans-serif;
-}
 
-/* =====================================================
-   SCANLINES
-===================================================== */
+/* =========================
+   SCREEN
+========================= */
 
-body::before {
-    content: "";
+.screen {
+
     position: fixed;
+
     inset: 0;
-    pointer-events: none;
-    z-index: 9999;
-
-    background:
-        repeating-linear-gradient(
-            to bottom,
-            transparent 0px,
-            transparent 3px,
-            rgba(255,255,255,.025) 4px
-        );
-}
-
-/* =====================================================
-   START SCREEN
-===================================================== */
-
-#startScreen {
-    position: fixed;
-    inset: 0;
-    z-index: 5000;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
-    background: #030507;
+    padding: 25px;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transform:
+        scale(.97);
+
+    transition:
+        opacity .45s ease,
+        transform .45s ease;
 }
 
-.warning {
-    width: min(760px, 90%);
-    padding: 50px;
+.screen.active {
 
-    border: 1px solid #4b5964;
-    background: rgba(7,11,15,.96);
+    opacity: 1;
+
+    pointer-events: auto;
+
+    transform:
+        scale(1);
+}
+
+
+/* =========================
+   WARNING
+========================= */
+
+.warning {
+
+    width: min(760px, 95%);
+
+    padding: 45px;
+
+    background:
+        rgba(5, 9, 13, .97);
+
+    border:
+        1px solid #394650;
 
     box-shadow:
-        0 0 60px rgba(255,255,255,.03);
-
-    text-align: center;
-
-    animation: appear .8s ease;
+        0 0 80px rgba(0,0,0,.8);
 }
 
 .warning h1 {
-    margin: 0 0 15px;
 
-    letter-spacing: 8px;
-    font-size: 34px;
-}
+    margin: 0 0 25px;
 
-.warning .classification {
-    color: #ff4d4d;
+    color: #ff5555;
+
+    font-size: 30px;
+
     letter-spacing: 5px;
-    font-weight: bold;
 }
 
 .warning p {
-    color: #8996a2;
-    line-height: 1.7;
-    font-size: 14px;
+
+    color: #8c99a4;
+
+    line-height: 1.8;
+
+    font-size: 13px;
 }
 
 .warning button {
+
     margin-top: 25px;
+
+    width: 100%;
+
+    padding: 17px;
+
+    background: #111920;
+
+    border: 1px solid #586671;
+
+    color: white;
+
+    font-family: inherit;
+
+    letter-spacing: 3px;
+
+    cursor: pointer;
+
+    transition: .25s;
 }
 
-/* =====================================================
-   BUTTONS
-===================================================== */
+.warning button:hover {
 
-button {
-    border: 1px solid #566570;
-    background: #0c1319;
-    color: #e9eef2;
+    background: #1b2730;
+}
 
-    padding: 13px 25px;
 
-    font-weight: bold;
+/* =========================
+   CONTROL
+========================= */
+
+.control {
+
+    width: min(1050px, 95%);
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    padding: 35px;
+
+    background:
+        rgba(6, 10, 14, .97);
+
+    border: 1px solid #2d3943;
+}
+
+.header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding-bottom: 20px;
+
+    margin-bottom: 25px;
+
+    border-bottom:
+        1px solid #293640;
+}
+
+.header h1 {
+
+    margin: 0;
+
+    letter-spacing: 5px;
+
+    font-size: 25px;
+}
+
+.header span {
+
+    color: #65737e;
+
+    font-size: 11px;
+
     letter-spacing: 2px;
+}
+
+
+/* =========================
+   WARHEAD GRID
+========================= */
+
+.grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 14px;
+}
+
+.card {
+
+    min-height: 145px;
+
+    padding: 22px;
+
+    background: #080d12;
+
+    border: 1px solid #293640;
 
     cursor: pointer;
 
     transition:
-        background .2s,
-        border .2s,
-        transform .2s;
+        .25s;
 }
 
-button:hover {
-    background: #16222b;
-    border-color: #9aaab6;
-}
+.card:hover {
 
-button:active {
-    transform: scale(.97);
-}
+    transform:
+        translateY(-5px);
 
-button.danger {
-    border-color: #8b3030;
-}
-
-button.danger:hover {
-    background: #301313;
-}
-
-/* =====================================================
-   MAIN
-===================================================== */
-
-#app {
-    display: none;
-
-    width: 100%;
-    height: 100%;
-    padding: 35px;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    border-bottom: 1px solid #202b34;
-    padding-bottom: 20px;
-}
-
-.logo {
-    letter-spacing: 5px;
-    font-weight: bold;
-}
-
-.status {
-    font-size: 12px;
-    color: #77d69b;
-}
-
-.layout {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 20px;
-
-    height: calc(100% - 90px);
-    padding-top: 20px;
-}
-
-/* =====================================================
-   SIDEBAR
-===================================================== */
-
-.sidebar {
-    border: 1px solid #202b34;
-    background: rgba(7,11,15,.9);
-
-    padding: 20px;
-}
-
-.sidebar-title {
-    font-size: 11px;
-    letter-spacing: 3px;
-    color: #71808d;
-    margin-bottom: 15px;
-}
-
-.warhead-item {
-    padding: 18px;
-    margin-bottom: 10px;
-
-    border: 1px solid #202b34;
-
-    cursor: pointer;
-
-    transition: .25s;
-}
-
-.warhead-item:hover,
-.warhead-item.selected {
-    border-color: #738491;
     background: #101820;
+
+    border-color:
+        #788792;
 }
 
-.warhead-item strong {
-    display: block;
-    letter-spacing: 3px;
+.card h2 {
+
+    margin: 0 0 15px;
+
+    font-size: 23px;
+
+    letter-spacing: 4px;
 }
 
-.warhead-item span {
-    display: block;
-    margin-top: 7px;
+.card p {
 
-    color: #687783;
+    margin: 0;
+
+    color: #7e8c97;
+
     font-size: 11px;
+
+    line-height: 1.6;
 }
 
-/* =====================================================
-   CONTENT
-===================================================== */
 
-.content {
-    border: 1px solid #202b34;
-    background: rgba(5,9,13,.9);
+/* =========================
+   SITE
+========================= */
 
-    padding: 30px;
+.site-area {
 
-    overflow: auto;
+    margin-top: 30px;
 }
 
 .title {
-    font-size: 26px;
-    letter-spacing: 5px;
-}
 
-.subtitle {
-    color: #687783;
-    font-size: 12px;
-    margin-top: 8px;
-}
+    margin-bottom: 12px;
 
-/* =====================================================
-   PANELS
-===================================================== */
+    color: #697782;
 
-.panel {
-    margin-top: 25px;
-
-    border: 1px solid #202b34;
-    background: #080d12;
-
-    padding: 22px;
-}
-
-.panel-title {
     font-size: 11px;
+
     letter-spacing: 3px;
-    color: #778692;
-
-    margin-bottom: 18px;
 }
-
-/* =====================================================
-   SITE SELECT
-===================================================== */
 
 .sites {
+
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
     gap: 12px;
 }
 
 .site {
-    padding: 22px;
 
-    border: 1px solid #202b34;
-    background: #0a1015;
+    padding: 16px;
+
+    background: #070b0f;
+
+    border: 1px solid #293640;
+
+    color: #dce3e8;
+
+    font-family: inherit;
 
     cursor: pointer;
-
-    transition: .25s;
-}
-
-.site:hover {
-    background: #111b22;
 }
 
 .site.selected {
-    border-color: #8293a0;
-    box-shadow:
-        0 0 20px rgba(120,150,170,.08);
+
+    background: #18232c;
+
+    border-color:
+        #a4b1bb;
 }
 
-.site strong {
-    display: block;
-    letter-spacing: 3px;
+
+/* =========================
+   SELECTED
+========================= */
+
+.selected-box {
+
+    margin-top: 25px;
+
+    padding: 20px;
+
+    background: #05090d;
+
+    border: 1px solid #293640;
 }
 
-.site span {
-    display: block;
-    margin-top: 8px;
+.selected-box span {
 
-    font-size: 11px;
-    color: #687783;
-}
-
-/* =====================================================
-   INFO
-===================================================== */
-
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
-
-.info {
-    border: 1px solid #202b34;
-    padding: 17px;
-}
-
-.info span {
     display: block;
 
-    color: #65737e;
-    font-size: 10px;
+    color: #687681;
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 7px;
+}
+
+.selected-box strong {
+
+    display: block;
+
+    margin-bottom: 15px;
+
     letter-spacing: 2px;
 }
 
-.info strong {
-    display: block;
-    margin-top: 7px;
-}
 
-/* =====================================================
-   ACTION
-===================================================== */
+/* =========================
+   CODE
+========================= */
 
-.action {
-    margin-top: 25px;
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
+.code-box {
 
-/* =====================================================
-   MODAL
-===================================================== */
+    width: min(620px, 95%);
 
-#modal {
-    position: fixed;
-    inset: 0;
-
-    display: none;
-    align-items: center;
-    justify-content: center;
-
-    background: rgba(0,0,0,.82);
-
-    z-index: 3000;
-}
-
-.modal-box {
-    width: min(520px, 90%);
-
-    padding: 35px;
+    padding: 45px;
 
     background: #070b0f;
-    border: 1px solid #4a5964;
 
-    animation: modalIn .3s ease;
+    border: 1px solid #394650;
+
+    box-shadow:
+        0 0 80px rgba(0,0,0,.8);
 }
 
-.modal-box h2 {
-    letter-spacing: 4px;
+.code-box h1 {
+
+    margin: 0 0 20px;
+
+    color: #ff5555;
+
+    letter-spacing: 5px;
+
+    font-size: 25px;
 }
 
-.modal-box p {
-    color: #75828c;
-    font-size: 13px;
+.code-box p {
+
+    color: #84919b;
+
+    font-size: 12px;
+
+    line-height: 1.8;
 }
 
-.code-input {
+.code {
+
     width: 100%;
 
-    margin-top: 15px;
-    padding: 15px;
+    padding: 17px;
 
-    background: #030507;
-    border: 1px solid #36434d;
+    margin-top: 20px;
+
+    background: #030609;
+
+    border: 1px solid #34414b;
 
     color: white;
 
     outline: none;
 
-    letter-spacing: 5px;
     text-align: center;
+
+    font-family: inherit;
+
+    font-size: 18px;
+
+    letter-spacing: 5px;
 }
 
-.code-input:focus {
-    border-color: #9aa9b4;
+.verify {
+
+    width: 100%;
+
+    padding: 16px;
+
+    margin-top: 12px;
+
+    background: #111920;
+
+    border: 1px solid #52616e;
+
+    color: white;
+
+    font-family: inherit;
+
+    letter-spacing: 3px;
+
+    cursor: pointer;
 }
 
-.modal-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 18px;
+.back {
+
+    width: 100%;
+
+    padding: 13px;
+
+    margin-top: 10px;
+
+    background: transparent;
+
+    border: 1px solid #303c46;
+
+    color: #778590;
+
+    font-family: inherit;
+
+    cursor: pointer;
 }
 
-/* =====================================================
+.error {
+
+    min-height: 20px;
+
+    margin-top: 15px;
+
+    text-align: center;
+
+    color: #ff5555;
+}
+
+
+/* =========================
    SEQUENCE
-===================================================== */
+========================= */
 
-#sequence {
-    position: fixed;
-    inset: 0;
+.sequence {
 
-    z-index: 4000;
+    width: min(900px, 95%);
 
-    display: none;
+    padding: 35px;
 
-    background: #020405;
+    background: #030609;
 
-    padding: 45px;
+    border: 1px solid #394650;
 
-    font-family: Consolas, monospace;
+    box-shadow:
+        0 0 100px rgba(0,0,0,.9);
 }
 
-.sequence-header {
-    color: #84929d;
-    border-bottom: 1px solid #26323a;
-    padding-bottom: 15px;
+.sequence h1 {
+
+    margin: 0 0 20px;
+
+    letter-spacing: 5px;
+
+    font-size: 22px;
 }
 
-#sequenceOutput {
+.output {
+
+    height: 330px;
+
+    overflow-y: auto;
+
+    padding: 20px;
+
+    background: #010203;
+
+    border: 1px solid #202a32;
+
+    color: #aeb9c1;
+
+    line-height: 1.8;
+
+    font-size: 13px;
+}
+
+.line {
+
+    animation:
+        lineIn .3s ease forwards;
+}
+
+@keyframes lineIn {
+
+    from {
+        opacity: 0;
+        transform:
+            translateX(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateX(0);
+    }
+}
+
+.red {
+    color: #ff5555;
+}
+
+.yellow {
+    color: #d4b75c;
+}
+
+.countdown {
+
+    height: 45px;
+
+    margin-top: 15px;
+
+    text-align: center;
+
+    font-size: 30px;
+
+    letter-spacing: 5px;
+}
+
+.cancel {
+
+    width: 100%;
+
+    padding: 17px;
+
+    margin-top: 15px;
+
+    background: #18090a;
+
+    border: 1px solid #753333;
+
+    color: #ff6666;
+
+    font-family: inherit;
+
+    letter-spacing: 3px;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   FINAL
+========================= */
+
+.final {
+
+    text-align: center;
+
+    width: min(750px, 95%);
+}
+
+.final h1 {
+
+    font-size: 30px;
+
+    letter-spacing: 5px;
+}
+
+.final p {
+
+    color: #84919b;
+
+    line-height: 1.8;
+}
+
+.final button {
+
     margin-top: 25px;
 
-    height: calc(100% - 110px);
+    padding: 15px 25px;
 
-    overflow: hidden;
+    background: transparent;
 
-    color: #c8d0d6;
+    border: 1px solid #3b4751;
 
-    line-height: 1.7;
+    color: #aab5bd;
+
+    font-family: inherit;
+
+    cursor: pointer;
 }
 
-.sequence-line {
-    animation: terminalLine .3s ease;
-}
 
-.sequence-line.warning {
-    color: #e46d6d;
-}
+/* =========================
+   MOBILE
+========================= */
 
-.sequence-line.success {
-    color: #76d39a;
-}
+@media(max-width: 700px) {
 
-#cancelSequence {
-    position: absolute;
-    right: 45px;
-    top: 30px;
-}
+    .grid {
 
-/* =====================================================
-   PROGRESS
-===================================================== */
-
-.progress {
-    height: 5px;
-
-    margin-top: 20px;
-
-    background: #10171d;
-
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    width: 0%;
-
-    background: #9aaab5;
-
-    transition: width .3s linear;
-}
-
-/* =====================================================
-   ANIMATIONS
-===================================================== */
-
-@keyframes appear {
-    from {
-        opacity: 0;
-        transform: scale(.96);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes modalIn {
-    from {
-        opacity: 0;
-        transform: translateY(30px) scale(.96);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes terminalLine {
-    from {
-        opacity: 0;
-        transform: translateX(-10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@media(max-width: 800px) {
-
-    #app {
-        padding: 15px;
-    }
-
-    .layout {
-        grid-template-columns: 1fr;
-    }
-
-    .sidebar {
-        max-height: 220px;
-        overflow: auto;
+        grid-template-columns:
+            repeat(2, 1fr);
     }
 
     .sites {
+
         grid-template-columns: 1fr;
     }
 
-    .info-grid {
-        grid-template-columns: 1fr;
+    .control,
+    .warning,
+    .code-box,
+    .sequence {
+
+        padding: 22px;
     }
+
 }
+
 </style>
+
 </head>
 
 <body>
 
+
 <!-- =====================================================
-     START
+     WARNING
 ===================================================== -->
 
-<div id="startScreen">
+<section
+    id="warningScreen"
+    class="screen active"
+>
 
-    <div class="warning">
+<div class="warning">
 
-        <div class="classification">
-            CLASSIFIED SYSTEM
-        </div>
+    <h1>
+        ⚠ WARHEAD CONTROL
+    </h1>
 
-        <h1>WARHEAD CONTROL</h1>
+    <p>
 
-        <p>
-            THIS SYSTEM IS RESTRICTED TO AUTHORIZED
-            SITE-64 PERSONNEL.
-        </p>
+        YOU ARE ACCESSING A CLASSIFIED
+        SITE-64 WARHEAD CONTROL TERMINAL.
 
-        <p>
-            ALL ACTIONS ARE LOGGED.
-            UNAUTHORIZED ACCESS IS PROHIBITED.
-        </p>
+        <br><br>
 
-        <button id="continueButton">
-            CONTINUE
-        </button>
+        ALL ACTIONS ARE LOGGED.
 
-    </div>
+        <br><br>
+
+        UNAUTHORIZED ACCESS IS PROHIBITED.
+
+        <br><br>
+
+        CONTINUE ONLY IF YOU HAVE
+        APPROPRIATE AUTHORIZATION.
+
+    </p>
+
+    <button
+        onclick="enterControl()"
+    >
+        CONTINUE
+    </button>
 
 </div>
 
+</section>
+
 
 <!-- =====================================================
-     MAIN APP
+     CONTROL
 ===================================================== -->
 
-<div id="app">
+<section
+    id="controlScreen"
+    class="screen"
+>
+
+<div class="control">
 
     <div class="header">
 
-        <div class="logo">
-            SCP FOUNDATION // SITE-64
+        <h1>
+            WARHEAD CONTROL
+        </h1>
+
+        <span>
+            SITE-64 // O5
+        </span>
+
+    </div>
+
+
+    <div class="title">
+        SELECT WARHEAD
+    </div>
+
+
+    <div class="grid">
+
+
+        <div
+            class="card"
+            onclick="selectWarhead('GAMMA')"
+        >
+
+            <h2>
+                GAMMA
+            </h2>
+
+            <p>
+                GLOBAL TERMINATION
+                <br>
+                GLOBAL TARGET
+            </p>
+
         </div>
 
-        <div class="status">
-            ● CONTROL SYSTEM ONLINE
+
+        <div
+            class="card"
+            onclick="selectWarhead('DELTA')"
+        >
+
+            <h2>
+                DELTA
+            </h2>
+
+            <p>
+                FACILITY TERMINATION
+                <br>
+                SELECT TARGET SITE
+            </p>
+
+        </div>
+
+
+        <div
+            class="card"
+            onclick="selectWarhead('ALPHA')"
+        >
+
+            <h2>
+                ALPHA
+            </h2>
+
+            <p>
+                FACILITY TERMINATION
+                <br>
+                SELECT TARGET SITE
+            </p>
+
+        </div>
+
+
+        <div
+            class="card"
+            onclick="selectWarhead('BETA')"
+        >
+
+            <h2>
+                BETA
+            </h2>
+
+            <p>
+                FACILITY TERMINATION
+                <br>
+                SELECT TARGET SITE
+            </p>
+
         </div>
 
     </div>
 
 
-    <div class="layout">
+    <div
+        id="siteArea"
+        class="site-area"
+        style="display:none"
+    >
 
-        <aside class="sidebar">
+        <div class="title">
+            SELECT TARGET FACILITY
+        </div>
 
-            <div class="sidebar-title">
-                WARHEAD SYSTEMS
-            </div>
+        <div class="sites">
 
-            <div
-                class="warhead-item selected"
-                data-type="GAMMA"
+            <button
+                class="site"
+                onclick="selectSite('SITE-19')"
             >
-                <strong>GAMMA</strong>
-                <span>GLOBAL SIMULATION</span>
-            </div>
+                SITE-19
+            </button>
 
-            <div
-                class="warhead-item"
-                data-type="DELTA"
+            <button
+                class="site"
+                onclick="selectSite('SITE-51')"
             >
-                <strong>DELTA</strong>
-                <span>FACILITY SIMULATION</span>
-            </div>
+                SITE-51
+            </button>
 
-            <div
-                class="warhead-item"
-                data-type="ALPHA"
+            <button
+                class="site"
+                onclick="selectSite('SITE-64')"
             >
-                <strong>ALPHA</strong>
-                <span>FACILITY SIMULATION</span>
-            </div>
+                SITE-64
+            </button>
 
-            <div
-                class="warhead-item"
-                data-type="BETA"
-            >
-                <strong>BETA</strong>
-                <span>FACILITY SIMULATION</span>
-            </div>
+        </div>
 
-        </aside>
+    </div>
 
 
-        <main class="content">
+    <div class="selected-box">
 
-            <div class="title">
-                WARHEAD CONTROL
-            </div>
+        <span>
+            WARHEAD
+        </span>
 
-            <div class="subtitle">
-                SITE-64 SIMULATION CONTROL INTERFACE
-            </div>
+        <strong id="selectedWarhead">
+            NONE
+        </strong>
 
+        <span>
+            TARGET
+        </span>
 
-            <section class="panel">
-
-                <div class="panel-title">
-                    SELECTED SYSTEM
-                </div>
-
-                <div class="info-grid">
-
-                    <div class="info">
-                        <span>WARHEAD</span>
-                        <strong id="selectedWarhead">
-                            GAMMA
-                        </strong>
-                    </div>
-
-                    <div class="info">
-                        <span>EFFECT</span>
-                        <strong id="selectedEffect">
-                            GLOBAL SIMULATION
-                        </strong>
-                    </div>
-
-                    <div class="info">
-                        <span>STATUS</span>
-                        <strong id="systemStatus">
-                            STANDBY
-                        </strong>
-                    </div>
-
-                    <div class="info">
-                        <span>TARGET</span>
-                        <strong id="selectedTarget">
-                            GLOBAL
-                        </strong>
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <section class="panel">
-
-                <div class="panel-title">
-                    TARGET FACILITY
-                </div>
-
-                <div class="sites">
-
-                    <div
-                        class="site selected"
-                        data-site="SITE-19"
-                    >
-                        <strong>SITE-19</strong>
-                        <span>FACILITY ONLINE</span>
-                    </div>
-
-                    <div
-                        class="site"
-                        data-site="SITE-51"
-                    >
-                        <strong>SITE-51</strong>
-                        <span>FACILITY ONLINE</span>
-                    </div>
-
-                    <div
-                        class="site"
-                        data-site="SITE-64"
-                    >
-                        <strong>SITE-64</strong>
-                        <span>FACILITY ONLINE</span>
-                    </div>
-
-                </div>
-
-                <div class="progress">
-                    <div
-                        class="progress-bar"
-                        id="targetProgress"
-                    ></div>
-                </div>
-
-            </section>
-
-
-            <section class="panel">
-
-                <div class="panel-title">
-                    SYSTEM DESCRIPTION
-                </div>
-
-                <p id="description">
-                    GAMMA simulation selected.
-                    Global termination scenario.
-                </p>
-
-                <div class="action">
-
-                    <button id="activateButton">
-                        START SIMULATION
-                    </button>
-
-                    <button
-                        id="refreshButton"
-                    >
-                        REFRESH STATUS
-                    </button>
-
-                    <button
-                        class="danger"
-                        id="resetButton"
-                    >
-                        RESET SYSTEM
-                    </button>
-
-                </div>
-
-            </section>
-
-        </main>
+        <strong id="selectedSite">
+            NONE
+        </strong>
 
     </div>
 
 </div>
+
+</section>
 
 
 <!-- =====================================================
-     CODE MODAL
+     CODE
 ===================================================== -->
 
-<div id="modal">
+<section
+    id="codeScreen"
+    class="screen"
+>
 
-    <div class="modal-box">
+<div class="code-box">
 
-        <h2>AUTHORIZATION</h2>
+    <h1>
+        AUTHORIZATION
+    </h1>
 
-        <p>
-            ENTER THE AUTHORIZATION CODE TO
-            CONTINUE THE SIMULATION.
-        </p>
+    <p>
 
-        <input
-            id="codeInput"
-            class="code-input"
-            type="password"
-            autocomplete="off"
-            placeholder="ENTER CODE"
-        >
+        WARHEAD:
 
-        <div class="modal-actions">
+        <strong id="codeWarhead">
+            NONE
+        </strong>
 
-            <button id="verifyButton">
-                VERIFY
-            </button>
+        <br><br>
 
-            <button id="closeModal">
-                CANCEL
-            </button>
+        ENTER THE AUTHORIZATION CODE
+        TO CONTINUE.
 
-        </div>
+    </p>
 
-    </div>
+
+    <input
+        id="codeInput"
+        class="code"
+        type="password"
+        placeholder="ENTER CODE"
+        autocomplete="off"
+    >
+
+
+    <button
+        class="verify"
+        onclick="verifyCode()"
+    >
+        VERIFY AUTHORIZATION
+    </button>
+
+
+    <button
+        class="back"
+        onclick="showScreen('controlScreen')"
+    >
+        CANCEL
+    </button>
+
+
+    <div
+        id="codeError"
+        class="error"
+    ></div>
 
 </div>
+
+</section>
 
 
 <!-- =====================================================
      SEQUENCE
 ===================================================== -->
 
-<div id="sequence">
+<section
+    id="sequenceScreen"
+    class="screen"
+>
 
-    <div class="sequence-header">
-        SITE-64 // SIMULATION SEQUENCE
+<div class="sequence">
+
+    <h1>
+        WARHEAD FIRING SEQUENCE
+    </h1>
+
+
+    <div
+        id="output"
+        class="output"
+    ></div>
+
+
+    <div
+        id="countdown"
+        class="countdown"
+    >
+        --
     </div>
 
-    <button
-        id="cancelSequence"
-        class="danger"
-    >
-        CANCEL
-    </button>
 
-    <div id="sequenceOutput"></div>
+    <button
+        id="cancelButton"
+        class="cancel"
+        onclick="cancelSequence()"
+    >
+        CANCEL WARHEAD
+    </button>
 
 </div>
 
+</section>
+
+
+<!-- =====================================================
+     FINAL
+===================================================== -->
+
+<section
+    id="finalScreen"
+    class="screen"
+>
+
+<div class="final">
+
+    <h1 id="finalTitle">
+        SYSTEM
+    </h1>
+
+    <p id="finalText"></p>
+
+    <button
+        onclick="location.reload()"
+    >
+        RETURN TO CONTROL
+    </button>
+
+</div>
+
+</section>
+
 
 <script>
-const startScreen =
-    document.getElementById("startScreen");
 
-const app =
-    document.getElementById("app");
+/* =====================================================
+   STATE
+===================================================== */
 
-const continueButton =
-    document.getElementById("continueButton");
+let selectedWarhead = null;
 
-const modal =
-    document.getElementById("modal");
+let selectedSite = null;
 
-const codeInput =
-    document.getElementById("codeInput");
+let sequenceCancelled = false;
 
-const verifyButton =
-    document.getElementById("verifyButton");
-
-const closeModal =
-    document.getElementById("closeModal");
-
-const sequence =
-    document.getElementById("sequence");
-
-const sequenceOutput =
-    document.getElementById("sequenceOutput");
-
-const cancelSequence =
-    document.getElementById("cancelSequence");
-
-const selectedWarhead =
-    document.getElementById("selectedWarhead");
-
-const selectedEffect =
-    document.getElementById("selectedEffect");
-
-const selectedTarget =
-    document.getElementById("selectedTarget");
-
-const systemStatus =
-    document.getElementById("systemStatus");
-
-const description =
-    document.getElementById("description");
-
-const targetProgress =
-    document.getElementById("targetProgress");
-
-
-let currentWarhead = "GAMMA";
-let currentSite = "SITE-19";
 let sequenceRunning = false;
 
 
 /* =====================================================
-   WARHEAD DATA
+   SCREEN
 ===================================================== */
 
-const WARHEADS = {
+function showScreen(id) {
 
-    GAMMA: {
-        effect: "GLOBAL SIMULATION",
-        description:
-            "GAMMA simulation selected. Global termination scenario."
-    },
+    document
+        .querySelectorAll(".screen")
+        .forEach(screen => {
 
-    DELTA: {
-        effect: "FACILITY SIMULATION",
-        description:
-            "DELTA simulation selected. Facility termination scenario."
-    },
+            screen.classList.remove(
+                "active"
+            );
 
-    ALPHA: {
-        effect: "FACILITY SIMULATION",
-        description:
-            "ALPHA simulation selected. Facility termination scenario."
-    },
-
-    BETA: {
-        effect: "FACILITY SIMULATION",
-        description:
-            "BETA simulation selected. Facility termination scenario."
-    }
-
-};
+        });
 
 
-/* =====================================================
-   START
-===================================================== */
+    setTimeout(() => {
 
-continueButton.addEventListener(
-    "click",
-    () => {
+        document
+            .getElementById(id)
+            .classList.add(
+                "active"
+            );
 
-        startScreen.style.opacity = "0";
-
-        setTimeout(() => {
-
-            startScreen.style.display = "none";
-
-            app.style.display = "block";
-
-        }, 500);
-
-    }
-);
-
-
-/* =====================================================
-   WARHEAD SELECT
-===================================================== */
-
-document
-    .querySelectorAll(".warhead-item")
-    .forEach(item => {
-
-        item.addEventListener(
-            "click",
-            () => {
-
-                document
-                    .querySelectorAll(".warhead-item")
-                    .forEach(x =>
-                        x.classList.remove("selected")
-                    );
-
-                item.classList.add("selected");
-
-                currentWarhead =
-                    item.dataset.type;
-
-                updateInterface();
-
-            }
-        );
-
-    });
-
-
-/* =====================================================
-   SITE SELECT
-===================================================== */
-
-document
-    .querySelectorAll(".site")
-    .forEach(site => {
-
-        site.addEventListener(
-            "click",
-            () => {
-
-                document
-                    .querySelectorAll(".site")
-                    .forEach(x =>
-                        x.classList.remove("selected")
-                    );
-
-                site.classList.add("selected");
-
-                currentSite =
-                    site.dataset.site;
-
-                selectedTarget.textContent =
-                    currentSite;
-
-                targetProgress.style.width =
-                    "100%";
-
-                setTimeout(() => {
-
-                    targetProgress.style.width =
-                        "0%";
-
-                }, 400);
-
-            }
-        );
-
-    });
-
-
-/* =====================================================
-   INTERFACE
-===================================================== */
-
-function updateInterface() {
-
-    const data =
-        WARHEADS[currentWarhead];
-
-    selectedWarhead.textContent =
-        currentWarhead;
-
-    selectedEffect.textContent =
-        data.effect;
-
-    description.textContent =
-        data.description;
-
-    if (
-        currentWarhead === "GAMMA"
-    ) {
-
-        selectedTarget.textContent =
-            "GLOBAL";
-
-    } else {
-
-        selectedTarget.textContent =
-            currentSite;
-
-    }
+    }, 50);
 
 }
 
 
 /* =====================================================
-   MODAL
+   ENTER
 ===================================================== */
 
-document
-    .getElementById("activateButton")
-    .addEventListener(
-        "click",
-        () => {
+function enterControl() {
 
-            if (sequenceRunning) {
-                return;
-            }
-
-            modal.style.display =
-                "flex";
-
-            codeInput.value = "";
-
-            setTimeout(() => {
-                codeInput.focus();
-            }, 100);
-
-        }
+    showScreen(
+        "controlScreen"
     );
 
+}
 
-closeModal.addEventListener(
-    "click",
-    () => {
 
-        modal.style.display =
-            "none";
+/* =====================================================
+   SELECT WARHEAD
+===================================================== */
+
+function selectWarhead(type) {
+
+    selectedWarhead =
+        type;
+
+
+    document
+        .getElementById(
+            "selectedWarhead"
+        )
+        .textContent =
+            type;
+
+
+    document
+        .getElementById(
+            "codeWarhead"
+        )
+        .textContent =
+            type;
+
+
+    if (
+        type === "GAMMA"
+    ) {
+
+        selectedSite =
+            null;
+
+
+        document
+            .getElementById(
+                "selectedSite"
+            )
+            .textContent =
+                "GLOBAL";
+
+
+        document
+            .getElementById(
+                "siteArea"
+            )
+            .style.display =
+                "none";
+
+    } else {
+
+        document
+            .getElementById(
+                "siteArea"
+            )
+            .style.display =
+                "block";
+
+
+        document
+            .getElementById(
+                "selectedSite"
+            )
+            .textContent =
+                selectedSite ||
+                "NONE";
 
     }
-);
+
+
+    showScreen(
+        "codeScreen"
+    );
+
+}
+
+
+/* =====================================================
+   SITE
+===================================================== */
+
+function selectSite(site) {
+
+    selectedSite =
+        site;
+
+
+    document
+        .getElementById(
+            "selectedSite"
+        )
+        .textContent =
+            site;
+
+
+    document
+        .querySelectorAll(
+            ".site"
+        )
+        .forEach(button => {
+
+            button.classList.toggle(
+                "selected",
+                button.textContent.trim()
+                    === site
+            );
+
+        });
+
+}
 
 
 /* =====================================================
    VERIFY
 ===================================================== */
 
-verifyButton.addEventListener(
-    "click",
-    () => {
+function verifyCode() {
 
-        /*
-         * THIS IS ONLY A FICTIONAL GAME CODE.
-         */
-
-        if (
-            codeInput.value.trim() !==
-            "WARHEAD"
-        ) {
-
-            codeInput.value = "";
-
-            codeInput.placeholder =
-                "INVALID CODE";
-
-            codeInput.style.borderColor =
-                "#a33";
-
-            setTimeout(() => {
-
-                codeInput.style.borderColor =
-                    "";
-
-                codeInput.placeholder =
-                    "ENTER CODE";
-
-            }, 1000);
-
-            return;
-        }
+    const input =
+        document.getElementById(
+            "codeInput"
+        );
 
 
-        modal.style.display =
-            "none";
+    const error =
+        document.getElementById(
+            "codeError"
+        );
 
-        startSimulation();
+
+    const code =
+        input.value
+            .trim()
+            .toUpperCase();
+
+
+    error.textContent =
+        "";
+
+
+    if (!selectedWarhead) {
+
+        error.textContent =
+            "NO WARHEAD SELECTED.";
+
+        return;
 
     }
-);
+
+
+    if (
+        selectedWarhead !== "GAMMA" &&
+        !selectedSite
+    ) {
+
+        error.textContent =
+            "TARGET FACILITY REQUIRED.";
+
+        return;
+
+    }
+
+
+    if (
+        code !== "WARHEAD"
+    ) {
+
+        error.textContent =
+            "AUTHORIZATION DENIED.";
+
+        input.value =
+            "";
+
+        return;
+
+    }
+
+
+    input.value =
+        "";
+
+
+    beginWarhead();
+
+}
 
 
 /* =====================================================
-   ENTER KEY
-===================================================== */
-
-codeInput.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key === "Enter"
-        ) {
-
-            verifyButton.click();
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   SEQUENCE HELPERS
+   OUTPUT
 ===================================================== */
 
 function addLine(
@@ -1192,172 +1262,393 @@ function addLine(
     className = ""
 ) {
 
+    const output =
+        document.getElementById(
+            "output"
+        );
+
+
     const line =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     line.className =
-        "sequence-line " +
+        "line " +
         className;
+
 
     line.textContent =
         text;
 
-    sequenceOutput.appendChild(
+
+    output.appendChild(
         line
     );
 
-    sequenceOutput.scrollTop =
-        sequenceOutput.scrollHeight;
+
+    output.scrollTop =
+        output.scrollHeight;
 
 }
 
+
+/* =====================================================
+   WAIT
+===================================================== */
 
 function wait(ms) {
 
     return new Promise(
         resolve =>
-            setTimeout(resolve, ms)
+            setTimeout(
+                resolve,
+                ms
+            )
     );
 
 }
 
 
 /* =====================================================
-   SIMULATION
+   COUNTDOWN
 ===================================================== */
 
-async function startSimulation() {
+async function countdown(seconds) {
 
-    sequenceRunning =
-        true;
-
-    sequence.style.display =
-        "block";
-
-    sequenceOutput.innerHTML =
-        "";
-
-    systemStatus.textContent =
-        "INITIALIZING";
-
-
-    addLine(
-        "WARHEAD SYSTEM INITIALIZING..."
-    );
-
-    await wait(2000);
-
-    if (!sequenceRunning)
-        return;
-
-    addLine(
-        "SYSTEM SUCCESSFULLY LOADED.",
-        "success"
-    );
-
-    await wait(1000);
-
-    addLine(
-        "AUTHORIZATION VERIFIED.",
-        "success"
-    );
-
-    await wait(1000);
-
-    addLine(
-        "TARGET DATA LOADED."
-    );
-
-    await wait(1000);
-
-    if (
-        currentWarhead === "GAMMA"
-    ) {
-
-        addLine(
-            "TARGET: GLOBAL SIMULATION."
+    const display =
+        document.getElementById(
+            "countdown"
         );
 
-    } else {
-
-        addLine(
-            "TARGET: " + currentSite
-        );
-
-    }
-
-    await wait(1500);
-
-    addLine(
-        "WARHEAD FIRING SEQUENCE INITIATED...",
-        "warning"
-    );
-
-    await wait(1500);
-
-    addLine(
-        "SIMULATION COUNTDOWN STARTING..."
-    );
 
     for (
-        let i = 5;
+        let i = seconds;
         i > 0;
         i--
     ) {
 
-        if (!sequenceRunning)
-            return;
+        if (
+            sequenceCancelled
+        ) {
 
-        addLine(
-            "T-" + i + "..."
+            return false;
+
+        }
+
+
+        display.textContent =
+            `${i} SEC`;
+
+
+        await wait(
+            1000
         );
 
-        await wait(1000);
+    }
+
+
+    display.textContent =
+        "0 SEC";
+
+
+    return true;
+
+}
+
+
+/* =====================================================
+   SERVER ACTIVATE
+===================================================== */
+
+async function activateServer() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/warhead/activate",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            type:
+                                selectedWarhead
+                        })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok
+        ) {
+
+            throw new Error(
+                data.message ||
+                "WARHEAD ACTIVATION FAILED."
+            );
+
+        }
+
+
+        return true;
+
+    } catch (error) {
+
+        addLine(
+            "SERVER WARNING: " +
+            error.message,
+            "yellow"
+        );
+
+        return false;
+
+    }
+
+}
+
+
+/* =====================================================
+   WARHEAD SEQUENCE
+===================================================== */
+
+async function beginWarhead() {
+
+    sequenceCancelled =
+        false;
+
+    sequenceRunning =
+        true;
+
+
+    document
+        .getElementById(
+            "output"
+        )
+        .innerHTML =
+            "";
+
+
+    document
+        .getElementById(
+            "countdown"
+        )
+        .textContent =
+            "--";
+
+
+    document
+        .getElementById(
+            "cancelButton"
+        )
+        .style.display =
+            "block";
+
+
+    showScreen(
+        "sequenceScreen"
+    );
+
+
+    await wait(500);
+
+
+    addLine(
+        "WARHEAD SYSTEM INITIALIZING...",
+        "yellow"
+    );
+
+
+    if (
+        !(await countdown(2))
+    ) {
+
+        return;
 
     }
 
 
     addLine(
-        "SIMULATION EVENT EXECUTED.",
-        "warning"
+        "SYSTEM SUCCESSFULLY LOADED"
     );
 
-    await wait(1000);
 
-    let hashes = "";
+    await wait(500);
+
+
+    if (
+        sequenceCancelled
+    ) {
+
+        return;
+
+    }
+
+
+    addLine(
+        "AUTHORIZATION VERIFIED."
+    );
+
+
+    addLine(
+        "WARHEAD: " +
+        selectedWarhead
+    );
+
+
+    addLine(
+        "TARGET: " +
+        (
+            selectedWarhead === "GAMMA"
+                ? "GLOBAL"
+                : selectedSite
+        )
+    );
+
+
+    const serverActivated =
+        await activateServer();
+
+
+    if (
+        !serverActivated
+    ) {
+
+        addLine(
+            "LOCAL SEQUENCE CONTINUING...",
+            "yellow"
+        );
+
+    }
+
+
+    if (
+        sequenceCancelled
+    ) {
+
+        return;
+
+    }
+
+
+    addLine(
+        "WARHEAD FIRING SEQUENCE INITIATED...",
+        "red"
+    );
+
+
+    if (
+        !(await countdown(5))
+    ) {
+
+        return;
+
+    }
+
+
+    addLine(
+        "WARHEAD DESCENDING...",
+        "red"
+    );
+
+
+    if (
+        !(await countdown(3))
+    ) {
+
+        return;
+
+    }
+
+
+    addLine(
+        "IMPACT SEQUENCE ACTIVE...",
+        "red"
+    );
+
+
+    await wait(500);
+
+
+    if (
+        sequenceCancelled
+    ) {
+
+        return;
+
+    }
+
 
     for (
         let i = 0;
-        i < 120;
+        i < 18;
         i++
     ) {
 
-        if (!sequenceRunning)
+        if (
+            sequenceCancelled
+        ) {
+
             return;
 
-        hashes += "#";
+        }
+
 
         addLine(
-            hashes
+            "########################################",
+            "red"
         );
 
-        await wait(70);
+
+        await wait(180);
 
     }
 
 
-    addLine(
-        "##############################",
-        "warning"
-    );
+    sequenceRunning =
+        false;
 
-    addLine(
-        "SIMULATION COMPLETE.",
-        "success"
-    );
 
-    systemStatus.textContent =
-        "SIMULATION COMPLETE";
+    document
+        .getElementById(
+            "cancelButton"
+        )
+        .style.display =
+            "none";
+
+
+    document
+        .getElementById(
+            "finalTitle"
+        )
+        .textContent =
+            "WARHEAD SEQUENCE COMPLETE";
+
+
+    document
+        .getElementById(
+            "finalText"
+        )
+        .textContent =
+            "THE WARHEAD FIRING SEQUENCE HAS REACHED ITS FINAL STATE.";
+
+
+    showScreen(
+        "finalScreen"
+    );
 
 }
 
@@ -1366,114 +1657,123 @@ async function startSimulation() {
    CANCEL
 ===================================================== */
 
-cancelSequence.addEventListener(
-    "click",
-    async () => {
+async function cancelSequence() {
 
-        if (!sequenceRunning) {
-            return;
-        }
+    if (
+        !sequenceRunning
+    ) {
 
-        sequenceRunning =
-            false;
-
-        addLine(
-            "CANCELLATION REQUEST RECEIVED.",
-            "warning"
-        );
-
-        await wait(1000);
-
-        addLine(
-            "WARHEAD SYSTEM HALTED.",
-            "success"
-        );
-
-        await wait(1500);
-
-        sequence.style.display =
-            "none";
-
-        systemStatus.textContent =
-            "STANDBY";
+        return;
 
     }
-);
+
+
+    sequenceCancelled =
+        true;
+
+    sequenceRunning =
+        false;
+
+
+    try {
+
+        await fetch(
+            "/api/warhead/deactivate",
+            {
+                method: "POST"
+            }
+        );
+
+    } catch {
+
+        console.log(
+            "WARHEAD DEACTIVATION REQUEST FAILED."
+        );
+
+    }
+
+
+    document
+        .getElementById(
+            "cancelButton"
+        )
+        .style.display =
+            "none";
+
+
+    document
+        .getElementById(
+            "countdown"
+        )
+        .textContent =
+            "ABORTED";
+
+
+    document
+        .getElementById(
+            "output"
+        )
+        .innerHTML =
+            "";
+
+
+    addLine(
+        "WARHEAD SYSTEM ABORTED.",
+        "yellow"
+    );
+
+
+    await wait(1200);
+
+
+    document
+        .getElementById(
+            "finalTitle"
+        )
+        .textContent =
+            "WARHEAD SYSTEM ABORTED";
+
+
+    document
+        .getElementById(
+            "finalText"
+        )
+        .textContent =
+            "THE WARHEAD FIRING SEQUENCE HAS BEEN TERMINATED.";
+
+
+    showScreen(
+        "finalScreen"
+    );
+
+}
 
 
 /* =====================================================
-   REFRESH
+   ENTER KEY
 ===================================================== */
 
 document
-    .getElementById("refreshButton")
+    .getElementById(
+        "codeInput"
+    )
     .addEventListener(
-        "click",
-        async () => {
+        "keydown",
+        event => {
 
-            try {
+            if (
+                event.key === "Enter"
+            ) {
 
-                const response =
-                    await fetch(
-                        "/api/warhead"
-                    );
-
-                const data =
-                    await response.json();
-
-                if (
-                    data.success &&
-                    data.warhead
-                ) {
-
-                    systemStatus.textContent =
-                        data.warhead.status ||
-                        "STANDBY";
-
-                }
-
-            } catch {
-
-                systemStatus.textContent =
-                    "OFFLINE";
+                verifyCode();
 
             }
 
         }
     );
 
-
-/* =====================================================
-   RESET
-===================================================== */
-
-document
-    .getElementById("resetButton")
-    .addEventListener(
-        "click",
-        () => {
-
-            sequenceRunning =
-                false;
-
-            sequence.style.display =
-                "none";
-
-            modal.style.display =
-                "none";
-
-            systemStatus.textContent =
-                "STANDBY";
-
-            sequenceOutput.innerHTML =
-                "";
-
-        }
-    );
-
-
-updateInterface();
 </script>
 
 </body>
+
 </html>
