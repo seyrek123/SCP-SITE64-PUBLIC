@@ -1,156 +1,69 @@
+/* =========================================================
+   SECURECONTAINPROTECT // SITE-64
+   PUBLIC CLIENT SCRIPT
+========================================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
        NAVIGATION
-    ====================================================== */
+    ===================================================== */
 
-    const navigationLinks =
+    const navLinks =
         document.querySelectorAll(".navigation a");
 
     const sections =
-        document.querySelectorAll("section[id]");
+        document.querySelectorAll(".page-section");
 
-    function updateNavigation() {
+    function updateActiveNavigation() {
 
-        let current = "home";
+        let currentSection = "home";
 
         sections.forEach(section => {
 
-            const top =
-                section.getBoundingClientRect().top;
+            const rect =
+                section.getBoundingClientRect();
 
-            if (top <= 180) {
-                current = section.id;
+            if (
+                rect.top <= 180 &&
+                rect.bottom >= 180
+            ) {
+                currentSection =
+                    section.id;
             }
 
         });
 
-        navigationLinks.forEach(link => {
-
-            const href =
-                link.getAttribute("href");
-
-            if (!href || !href.startsWith("#")) {
-                return;
-            }
+        navLinks.forEach(link => {
 
             const target =
-                href.substring(1);
+                link.getAttribute("href");
 
             link.classList.toggle(
                 "active",
-                target === current
+                target === `#${currentSection}`
             );
 
         });
-
     }
 
     window.addEventListener(
         "scroll",
-        updateNavigation
+        updateActiveNavigation
     );
 
-    updateNavigation();
+    updateActiveNavigation();
 
 
     /* =====================================================
-       REQUEST SYSTEM
-    ====================================================== */
+       REQUEST FORM
+    ===================================================== */
 
     const requestForm =
         document.getElementById("requestForm");
 
-    const typeInput =
-        document.getElementById("type");
-
-    const scpGroup =
-        document.getElementById("scpGroup");
-
-    const scpInput =
-        document.getElementById("scp");
-
     const result =
         document.getElementById("result");
-
-
-    /* =====================================================
-       REQUEST TYPE
-    ====================================================== */
-
-    function updateSCPField() {
-
-        if (!typeInput) {
-            return;
-        }
-
-        const selectedType =
-            typeInput.value;
-
-        const isSCP =
-            selectedType === "scp";
-
-        if (scpGroup) {
-
-            scpGroup.style.display =
-                isSCP
-                    ? "block"
-                    : "none";
-        }
-
-        if (scpInput) {
-
-            scpInput.required =
-                isSCP;
-
-            if (!isSCP) {
-                scpInput.value = "";
-            }
-
-        }
-
-    }
-
-
-    if (typeInput) {
-
-        typeInput.addEventListener(
-            "change",
-            updateSCPField
-        );
-
-        updateSCPField();
-
-    }
-
-
-    /* =====================================================
-       SHOW RESULT
-    ====================================================== */
-
-    function showResult(
-        message,
-        type = ""
-    ) {
-
-        if (!result) {
-            return;
-        }
-
-        result.className =
-            type
-                ? `result ${type}`
-                : "result";
-
-        result.textContent =
-            message;
-
-    }
-
-
-    /* =====================================================
-       SUBMIT REQUEST
-    ====================================================== */
 
     if (requestForm) {
 
@@ -160,149 +73,114 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 event.preventDefault();
 
-
-                /* -----------------------------------------
-                   BASIC DATA
-                ------------------------------------------ */
-
-                const nameInput =
-                    document.getElementById("name");
-
-                const dateInput =
-                    document.getElementById("date");
-
-                const timeInput =
-                    document.getElementById("time");
-
-                const messageInput =
-                    document.getElementById("message");
-
-
                 const name =
-                    nameInput?.value.trim() || "";
+                    document
+                        .getElementById("name")
+                        ?.value
+                        .trim();
 
                 const type =
-                    typeInput?.value || "";
-
-                const date =
-                    dateInput?.value || "";
+                    document
+                        .getElementById("type")
+                        ?.value;
 
                 const time =
-                    timeInput?.value || "";
+                    document
+                        .getElementById("time")
+                        ?.value;
 
                 const message =
-                    messageInput?.value.trim() || "";
+                    document
+                        .getElementById("message")
+                        ?.value
+                        .trim();
 
-
-                let typeName = "";
-
-                if (
-                    typeInput &&
-                    typeInput.selectedIndex >= 0
-                ) {
-
-                    typeName =
-                        typeInput.options[
-                            typeInput.selectedIndex
-                        ].text.trim();
-
-                }
-
-
-                const scp =
-                    type === "scp"
-                        ? scpInput?.value || ""
-                        : null;
-
-
-                /* -----------------------------------------
-                   VALIDATION
-                ------------------------------------------ */
 
                 if (!name) {
-
                     showResult(
-                        "PLEASE ENTER YOUR NAME.",
+                        "PLEASE ENTER YOUR FULL NAME.",
                         "error"
                     );
-
                     return;
                 }
 
-
                 if (!type) {
-
                     showResult(
                         "PLEASE SELECT A REQUEST TYPE.",
                         "error"
                     );
-
                     return;
                 }
-
-
-                if (type === "auto_inspection") {
-
-                    showResult(
-                        "AUTO INSPECTION CANNOT BE SELECTED.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-
-                if (!date) {
-
-                    showResult(
-                        "PLEASE SELECT A DATE.",
-                        "error"
-                    );
-
-                    return;
-                }
-
 
                 if (!time) {
-
                     showResult(
                         "PLEASE SELECT A TIME.",
                         "error"
                     );
-
                     return;
                 }
-
-
-                if (type === "scp" && !scp) {
-
-                    showResult(
-                        "PLEASE SELECT AN SCP.",
-                        "error"
-                    );
-
-                    return;
-                }
-
 
                 if (!message) {
-
                     showResult(
                         "PLEASE ENTER REQUEST DETAILS.",
                         "error"
                     );
+                    return;
+                }
+
+
+                const hour =
+                    parseInt(
+                        time.split(":")[0],
+                        10
+                    );
+
+
+                if (
+                    Number.isNaN(hour) ||
+                    hour < 1 ||
+                    hour > 22
+                ) {
+
+                    showResult(
+                        "PLEASE SELECT A VALID TIME BETWEEN 01:00 AND 22:00.",
+                        "error"
+                    );
 
                     return;
                 }
 
 
-                /* -----------------------------------------
-                   SUBMITTING
-                ------------------------------------------ */
+                const period =
+                    hour <= 12
+                        ? "NIGHT"
+                        : "DAY";
 
-                showResult(
-                    "SUBMITTING REQUEST..."
-                );
+
+                const requestData = {
+
+                    type:
+                        type,
+
+                    typeName:
+                        type.toUpperCase(),
+
+                    scp:
+                        null,
+
+                    time:
+                        time,
+
+                    period:
+                        period,
+
+                    name:
+                        name,
+
+                    message:
+                        message
+
+                };
 
 
                 try {
@@ -319,93 +197,26 @@ document.addEventListener("DOMContentLoaded", () => {
                                 },
 
                                 body:
-                                    JSON.stringify({
-
-                                        name:
-                                            name,
-
-                                        type:
-                                            type,
-
-                                        typeName:
-                                            typeName,
-
-                                        scp:
-                                            scp,
-
-                                        date:
-                                            date,
-
-                                        time:
-                                            time,
-
-                                        message:
-                                            message
-
-                                    })
+                                    JSON.stringify(
+                                        requestData
+                                    )
                             }
                         );
 
 
-                    let data;
-
-                    try {
-
-                        data =
-                            await response.json();
-
-                    } catch {
-
-                        throw new Error(
-                            "SERVER RETURNED INVALID DATA."
-                        );
-
-                    }
+                    const data =
+                        await response.json();
 
 
                     if (!response.ok) {
 
-                        throw new Error(
+                        showResult(
                             data.message ||
-                            "REQUEST FAILED."
+                            "REQUEST COULD NOT BE SUBMITTED.",
+                            "error"
                         );
 
-                    }
-
-
-                    if (
-                        !data.request ||
-                        !data.request.id
-                    ) {
-
-                        throw new Error(
-                            "REQUEST WAS NOT CREATED."
-                        );
-
-                    }
-
-
-                    /* -------------------------------------
-                       SUCCESS
-                    -------------------------------------- */
-
-                    if (result) {
-
-                        result.className =
-                            "result success";
-
-                        result.innerHTML =
-                            `
-                            REQUEST SUBMITTED SUCCESSFULLY.<br><br>
-
-                            REQUEST ID:
-                            <strong>
-                                ${escapeHtml(
-                                    data.request.id
-                                )}
-                            </strong>
-                            `;
-
+                        return;
                     }
 
 
@@ -414,13 +225,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
 
+                    showResult(
+                        `
+                        REQUEST SUBMITTED SUCCESSFULLY.<br><br>
+                        REQUEST ID:
+                        <strong>${escapeHtml(data.request.id)}</strong><br>
+                        STATUS:
+                        <strong>PENDING</strong>
+                        `,
+                        "success"
+                    );
+
+
                     requestForm.reset();
 
-
-                    updateSCPField();
-
-
-                    loadMyRequests();
+                    loadRequests();
 
                 } catch (error) {
 
@@ -429,156 +248,249 @@ document.addEventListener("DOMContentLoaded", () => {
                         error
                     );
 
-
                     showResult(
-                        error.message ||
-                        "REQUEST FAILED.",
+                        "SERVER CONNECTION FAILED.",
                         "error"
                     );
-
                 }
 
             }
         );
-
     }
 
 
     /* =====================================================
-       SAVE MY REQUEST
-    ====================================================== */
+       RESULT
+    ===================================================== */
+
+    function showResult(
+        message,
+        type
+    ) {
+
+        if (!result) {
+            return;
+        }
+
+        result.innerHTML =
+            message;
+
+        result.className =
+            `result ${type}`;
+
+        result.classList.remove(
+            "hidden"
+        );
+    }
+
+
+    /* =====================================================
+       MY REQUESTS
+    ===================================================== */
+
+    const requestsList =
+        document.getElementById(
+            "requestsList"
+        );
+
 
     function saveMyRequest(request) {
 
-        let requests = [];
-
-
-        try {
-
-            requests =
-                JSON.parse(
-                    localStorage.getItem(
-                        "scp_my_requests"
-                    ) || "[]"
-                );
-
-        } catch {
-
-            requests = [];
-
+        if (!request) {
+            return;
         }
 
+        let stored =
+            getMyRequests();
 
-        const existingIndex =
-            requests.findIndex(
+        if (
+            !stored.some(
                 item =>
-                    item.id === request.id
+                    item.id ===
+                    request.id
+            )
+        ) {
+
+            stored.push(request);
+
+            localStorage.setItem(
+                "scp_site64_requests",
+                JSON.stringify(stored)
             );
-
-
-        if (existingIndex === -1) {
-
-            requests.push(
-                request
-            );
-
-        } else {
-
-            requests[existingIndex] =
-                {
-                    ...requests[existingIndex],
-                    ...request
-                };
-
         }
-
-
-        localStorage.setItem(
-            "scp_my_requests",
-            JSON.stringify(requests)
-        );
-
     }
 
 
-    /* =====================================================
-       LOAD MY REQUESTS
-    ====================================================== */
+    function getMyRequests() {
 
-    function loadMyRequests() {
+        try {
 
-        const container =
-            document.getElementById(
-                "myRequestsList"
-            );
+            const data =
+                localStorage.getItem(
+                    "scp_site64_requests"
+                );
+
+            if (!data) {
+                return [];
+            }
+
+            const parsed =
+                JSON.parse(data);
+
+            return Array.isArray(parsed)
+                ? parsed
+                : [];
+
+        } catch {
+
+            return [];
+        }
+    }
 
 
-        if (!container) {
+    async function loadRequests() {
+
+        if (!requestsList) {
+            return;
+        }
+
+        const myRequests =
+            getMyRequests();
+
+
+        if (!myRequests.length) {
+
+            renderEmptyRequests();
+
             return;
         }
 
 
-        let requests = [];
-
-
         try {
 
-            requests =
-                JSON.parse(
-                    localStorage.getItem(
-                        "scp_my_requests"
-                    ) || "[]"
+            const response =
+                await fetch(
+                    "/api/requests"
                 );
+
+            if (!response.ok) {
+                renderRequests(
+                    myRequests
+                );
+                return;
+            }
+
+            const data =
+                await response.json();
+
+            if (
+                !data.success ||
+                !Array.isArray(
+                    data.requests
+                )
+            ) {
+
+                renderRequests(
+                    myRequests
+                );
+
+                return;
+            }
+
+
+            const updated =
+                [];
+
+
+            myRequests.forEach(local => {
+
+                const serverRequest =
+                    data.requests.find(
+                        server =>
+                            server.id ===
+                            local.id
+                    );
+
+                if (
+                    serverRequest
+                ) {
+                    updated.push(
+                        serverRequest
+                    );
+                } else {
+                    updated.push(
+                        local
+                    );
+                }
+
+            });
+
+
+            localStorage.setItem(
+                "scp_site64_requests",
+                JSON.stringify(updated)
+            );
+
+
+            renderRequests(
+                updated
+            );
 
         } catch {
 
-            requests = [];
-
+            renderRequests(
+                myRequests
+            );
         }
+    }
 
+
+    function renderEmptyRequests() {
+
+        requestsList.innerHTML = `
+
+            <div class="empty-state">
+
+                <div>
+                    NO REQUESTS FOUND
+                </div>
+
+                <span>
+                    SUBMITTED REQUESTS WILL APPEAR HERE.
+                </span>
+
+            </div>
+
+        `;
+    }
+
+
+    function renderRequests(
+        requests
+    ) {
 
         if (!requests.length) {
 
-            container.innerHTML =
-                `
-                <div class="empty-state">
-
-                    <div>
-                        NO REQUESTS FOUND
-                    </div>
-
-                    <span>
-                        Submitted requests will appear here.
-                    </span>
-
-                </div>
-                `;
+            renderEmptyRequests();
 
             return;
         }
 
 
-        container.innerHTML =
+        requestsList.innerHTML =
             requests
+                .slice()
+                .reverse()
                 .map(
-                    request =>
-                        createRequestCard(
-                            request
-                        )
+                    createRequestCard
                 )
                 .join("");
-
-
-        refreshMyRequests();
-
     }
 
 
-    /* =====================================================
-       CREATE REQUEST CARD
-    ====================================================== */
-
-    function createRequestCard(request) {
+    function createRequestCard(
+        request
+    ) {
 
         const status =
             String(
@@ -587,23 +499,36 @@ document.addEventListener("DOMContentLoaded", () => {
             ).toLowerCase();
 
 
+        const type =
+            request.typeName ||
+            request.type ||
+            "UNKNOWN";
+
+
+        const message =
+            request.adminMessage ||
+            "NO ADMINISTRATIVE MESSAGE.";
+
+
         return `
-            <article class="request-card">
+
+            <div class="request-card">
 
                 <div class="request-card-top">
 
-                    <span class="request-id">
+                    <div class="request-id">
                         ${escapeHtml(
-                            request.id
+                            request.id ||
+                            "UNKNOWN"
                         )}
-                    </span>
+                    </div>
 
-                    <span class="request-status ${escapeHtml(status)}">
+                    <div class="request-status ${escapeHtml(status)}">
                         ${escapeHtml(
                             request.status ||
                             "PENDING"
                         )}
-                    </span>
+                    </div>
 
                 </div>
 
@@ -617,11 +542,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         </span>
 
                         <strong>
-                            ${escapeHtml(
-                                request.typeName ||
-                                request.type ||
-                                "UNKNOWN"
-                            )}
+                            ${escapeHtml(type)}
                         </strong>
 
                     </div>
@@ -630,23 +551,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="request-detail">
 
                         <span>
-                            DATE
-                        </span>
-
-                        <strong>
-                            ${escapeHtml(
-                                request.date ||
-                                "N/A"
-                            )}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="request-detail">
-
-                        <span>
-                            TIME
+                            PREFERRED TIME
                         </span>
 
                         <strong>
@@ -662,12 +567,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="request-detail">
 
                         <span>
-                            SCP
+                            PERIOD
                         </span>
 
                         <strong>
                             ${escapeHtml(
-                                request.scp ||
+                                request.period ||
                                 "N/A"
                             )}
                         </strong>
@@ -677,193 +582,32 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
 
 
-                ${
-                    request.message
-                        ? `
-                        <div class="admin-message">
+                <div class="admin-message">
 
-                            <strong>
-                                REQUEST DETAILS
-                            </strong>
+                    ${escapeHtml(
+                        message
+                    )}
 
-                            <br><br>
+                </div>
 
-                            ${escapeHtml(
-                                request.message
-                            )}
+            </div>
 
-                        </div>
-                        `
-                        : ""
-                }
-
-
-                ${
-                    request.adminMessage
-                        ? `
-                        <div class="admin-message">
-
-                            <strong>
-                                ADMIN MESSAGE
-                            </strong>
-
-                            <br><br>
-
-                            ${escapeHtml(
-                                request.adminMessage
-                            )}
-
-                        </div>
-                        `
-                        : ""
-                }
-
-            </article>
         `;
-
     }
-
-
-    /* =====================================================
-       REFRESH REQUESTS FROM SERVER
-    ====================================================== */
-
-    async function refreshMyRequests() {
-
-        let localRequests = [];
-
-
-        try {
-
-            localRequests =
-                JSON.parse(
-                    localStorage.getItem(
-                        "scp_my_requests"
-                    ) || "[]"
-                );
-
-        } catch {
-
-            return;
-
-        }
-
-
-        if (!localRequests.length) {
-            return;
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    "/api/requests"
-                );
-
-
-            if (!response.ok) {
-                return;
-            }
-
-
-            const data =
-                await response.json();
-
-
-            if (
-                !data.success ||
-                !Array.isArray(
-                    data.requests
-                )
-            ) {
-
-                return;
-
-            }
-
-
-            const updated =
-                localRequests.map(
-                    localRequest => {
-
-                        const serverRequest =
-                            data.requests.find(
-                                serverItem =>
-                                    serverItem.id ===
-                                    localRequest.id
-                            );
-
-
-                        if (serverRequest) {
-
-                            return {
-                                ...localRequest,
-                                ...serverRequest
-                            };
-
-                        }
-
-
-                        return localRequest;
-
-                    }
-                );
-
-
-            localStorage.setItem(
-                "scp_my_requests",
-                JSON.stringify(updated)
-            );
-
-
-            const container =
-                document.getElementById(
-                    "myRequestsList"
-                );
-
-
-            if (container) {
-
-                container.innerHTML =
-                    updated
-                        .map(
-                            request =>
-                                createRequestCard(
-                                    request
-                                )
-                        )
-                        .join("");
-
-            }
-
-        } catch (error) {
-
-            console.warn(
-                "REQUEST REFRESH ERROR:",
-                error
-            );
-
-        }
-
-    }
-
-
-    loadMyRequests();
 
 
     /* =====================================================
        TERMINAL
-    ====================================================== */
+    ===================================================== */
 
     const terminalForm =
         document.getElementById(
             "terminalForm"
         );
 
-    const terminalCommand =
+    const terminalInput =
         document.getElementById(
-            "terminalCommand"
+            "terminalInput"
         );
 
     const terminalOutput =
@@ -872,38 +616,25 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-    function addTerminalOutput(text) {
+    function terminalPrint(
+        text
+    ) {
 
         if (!terminalOutput) {
             return;
         }
 
-
-        const line =
-            document.createElement(
-                "div"
-            );
-
-
-        line.textContent =
-            text;
-
-
-        terminalOutput.appendChild(
-            line
-        );
-
+        terminalOutput.innerHTML +=
+            `\n${escapeHtml(text)}`;
 
         terminalOutput.scrollTop =
             terminalOutput.scrollHeight;
-
     }
 
 
     if (
         terminalForm &&
-        terminalCommand &&
-        terminalOutput
+        terminalInput
     ) {
 
         terminalForm.addEventListener(
@@ -912,22 +643,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 event.preventDefault();
 
-
                 const command =
-                    terminalCommand.value.trim();
-
+                    terminalInput.value.trim();
 
                 if (!command) {
                     return;
                 }
 
 
-                addTerminalOutput(
-                    "> " + command
+                terminalPrint(
+                    `> ${command}`
                 );
 
 
-                terminalCommand.value =
+                terminalInput.value =
                     "";
 
 
@@ -946,7 +675,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                                 body:
                                     JSON.stringify({
-                                        command
+                                        command:
+                                            command
                                     })
                             }
                         );
@@ -965,45 +695,31 @@ document.addEventListener("DOMContentLoaded", () => {
                             "";
 
                         return;
-
                     }
 
 
-                    addTerminalOutput(
+                    terminalPrint(
                         data.output ||
                         "NO OUTPUT."
                     );
 
                 } catch {
 
-                    addTerminalOutput(
+                    terminalPrint(
                         "TERMINAL CONNECTION ERROR."
                     );
-
                 }
 
             }
         );
-
     }
 
 
     /* =====================================================
-       SERVER STATUS
-    ====================================================== */
+       SITE STATUS
+    ===================================================== */
 
-    async function loadServerStatus() {
-
-        const serverStatus =
-            document.getElementById(
-                "serverStatus"
-            );
-
-        const databaseStatus =
-            document.getElementById(
-                "databaseStatus"
-            );
-
+    async function loadSystemStatus() {
 
         try {
 
@@ -1012,88 +728,83 @@ document.addEventListener("DOMContentLoaded", () => {
                     "/api/status"
                 );
 
-
             if (!response.ok) {
-                throw new Error(
-                    "STATUS REQUEST FAILED"
-                );
+                return;
             }
-
 
             const data =
                 await response.json();
 
 
-            if (serverStatus) {
+            const statusBoxes =
+                document.querySelectorAll(
+                    ".status-box strong"
+                );
 
-                serverStatus.textContent =
+
+            if (
+                statusBoxes.length >= 3
+            ) {
+
+                statusBoxes[0].textContent =
                     data.server ||
                     "ONLINE";
 
-            }
-
-
-            if (databaseStatus) {
-
-                databaseStatus.textContent =
+                statusBoxes[1].textContent =
                     data.database ||
                     "ONLINE";
 
+                statusBoxes[2].textContent =
+                    "OPERATIONAL";
             }
 
         } catch {
 
-            if (serverStatus) {
-
-                serverStatus.textContent =
-                    "OFFLINE";
-
-            }
-
-
-            if (databaseStatus) {
-
-                databaseStatus.textContent =
-                    "OFFLINE";
-
-            }
-
+            console.warn(
+                "STATUS SERVER UNAVAILABLE."
+            );
         }
-
     }
-
-
-    loadServerStatus();
 
 
     /* =====================================================
-       HTML ESCAPE
-    ====================================================== */
+       HTML SECURITY
+    ===================================================== */
 
-    function escapeHtml(value) {
+    function escapeHtml(
+        value
+    ) {
 
-        return String(value ?? "")
-            .replace(
-                /&/g,
+        return String(value)
+            .replaceAll(
+                "&",
                 "&amp;"
             )
-            .replace(
-                /</g,
+            .replaceAll(
+                "<",
                 "&lt;"
             )
-            .replace(
-                />/g,
+            .replaceAll(
+                ">",
                 "&gt;"
             )
-            .replace(
-                /"/g,
+            .replaceAll(
+                '"',
                 "&quot;"
             )
-            .replace(
-                /'/g,
+            .replaceAll(
+                "'",
                 "&#039;"
             );
-
     }
+
+
+    /* =====================================================
+       START
+    ===================================================== */
+
+    loadRequests();
+
+    loadSystemStatus();
 
 });
