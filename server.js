@@ -12,6 +12,8 @@ const DATA_FILE = path.join(__dirname, "data.json");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(PUBLIC_DIR));
+
 
 /* =====================================================
    DATABASE
@@ -24,6 +26,7 @@ function emptyDatabase() {
         warhead: {
             active: false,
             type: null,
+            site: null,
             status: "STANDBY",
             message: "",
             activatedAt: null
@@ -31,26 +34,25 @@ function emptyDatabase() {
     };
 }
 
+
 function readDatabase() {
+
     try {
 
         if (!fs.existsSync(DATA_FILE)) {
+            const fresh = emptyDatabase();
+
             fs.writeFileSync(
                 DATA_FILE,
-                JSON.stringify(
-                    emptyDatabase(),
-                    null,
-                    2
-                ),
+                JSON.stringify(fresh, null, 2),
                 "utf8"
             );
+
+            return fresh;
         }
 
         const data = JSON.parse(
-            fs.readFileSync(
-                DATA_FILE,
-                "utf8"
-            )
+            fs.readFileSync(DATA_FILE, "utf8")
         );
 
         if (!Array.isArray(data.requests)) {
@@ -62,65 +64,50 @@ function readDatabase() {
         }
 
         if (!data.warhead) {
-            data.warhead = {
-                active: false,
-                type: null,
-                status: "STANDBY",
-                message: "",
-                activatedAt: null
-            };
+            data.warhead = emptyDatabase().warhead;
         }
 
         return data;
 
     } catch (error) {
 
-        console.error(
-            "DATABASE ERROR:",
-            error
-        );
+        console.error("DATABASE ERROR:", error);
 
         return emptyDatabase();
     }
 }
 
+
 function saveDatabase(data) {
+
     fs.writeFileSync(
         DATA_FILE,
-        JSON.stringify(
-            data,
-            null,
-            2
-        ),
+        JSON.stringify(data, null, 2),
         "utf8"
     );
 }
 
 
 /* =====================================================
-   REQUEST ID
+   IDS
 ===================================================== */
 
 function generateRequestId() {
 
-    const database =
-        readDatabase();
+    const database = readDatabase();
 
     let id;
 
     do {
-
         id =
             "SITE64-" +
             Math.floor(
-                10000 +
-                Math.random() * 90000
+                10000 + Math.random() * 90000
             );
-
-    } while (
+    }
+    while (
         database.requests.some(
-            request =>
-                request.id === id
+            request => request.id === id
         )
     );
 
@@ -128,30 +115,22 @@ function generateRequestId() {
 }
 
 
-/* =====================================================
-   INCIDENT ID
-===================================================== */
-
 function generateIncidentId() {
 
-    const database =
-        readDatabase();
+    const database = readDatabase();
 
     let id;
 
     do {
-
         id =
             "INC-" +
             Math.floor(
-                10000 +
-                Math.random() * 90000
+                10000 + Math.random() * 90000
             );
-
-    } while (
+    }
+    while (
         database.incidents.some(
-            incident =>
-                incident.id === id
+            incident => incident.id === id
         )
     );
 
@@ -174,6 +153,7 @@ function isValidTime(time) {
     );
 }
 
+
 function getPeriod(time) {
 
     const hour =
@@ -181,26 +161,10 @@ function getPeriod(time) {
             String(time).split(":")[0]
         );
 
-    if (
-        hour >= 6 &&
-        hour < 18
-    ) {
-        return "DAY";
-    }
-
-    return "NIGHT";
+    return hour >= 6 && hour < 18
+        ? "DAY"
+        : "NIGHT";
 }
-
-
-/* =====================================================
-   STATIC FILES
-===================================================== */
-
-app.use(
-    express.static(
-        PUBLIC_DIR
-    )
-);
 
 
 /* =====================================================
@@ -208,504 +172,293 @@ app.use(
 ===================================================== */
 
 app.get("/", (req, res) => {
-
     res.sendFile(
-        path.join(
-            PUBLIC_DIR,
-            "index.html"
-        )
+        path.join(PUBLIC_DIR, "index.html")
     );
 });
+
 
 app.get("/admin", (req, res) => {
-
     res.sendFile(
-        path.join(
-            PUBLIC_DIR,
-            "admin.html"
-        )
+        path.join(PUBLIC_DIR, "admin.html")
     );
 });
+
 
 app.get("/sites", (req, res) => {
-
     res.sendFile(
-        path.join(
-            PUBLIC_DIR,
-            "sites.html"
-        )
+        path.join(PUBLIC_DIR, "sites.html")
     );
 });
+
 
 app.get("/term", (req, res) => {
-
     res.sendFile(
-        path.join(
-            PUBLIC_DIR,
-            "term.html"
-        )
+        path.join(PUBLIC_DIR, "term.html")
     );
 });
+
 
 app.get("/warhead", (req, res) => {
-
     res.sendFile(
-        path.join(
-            PUBLIC_DIR,
-            "warhead.html"
-        )
+        path.join(PUBLIC_DIR, "warhead.html")
     );
 });
 
 
 /* =====================================================
-   REQUEST API
+   REQUEST SYSTEM
 ===================================================== */
 
-app.get(
-    "/api/requests",
-    (req, res) => {
+app.get("/api/requests", (req, res) => {
 
-        const database =
-            readDatabase();
+    const database = readDatabase();
 
-        res.json({
-            success: true,
-            requests:
-                database.requests
-        });
-    }
-);
+    res.json({
+        success: true,
+        requests: database.requests
+    });
+});
 
 
-app.post(
-    "/api/requests",
-    (req, res) => {
+app.post("/api/requests", (req, res) => {
 
-        try {
-
-            const {
-                name,
-                type,
-                typeName,
-                scp,
-                time,
-                message
-            } = req.body;
-
-
-            if (
-                !name ||
-                !String(name).trim()
-            ) {
-
-                return res.status(400).json({
-
-                    success: false,
-
-                    message:
-                        "FULL NAME IS REQUIRED."
-                });
-            }
-
-
-            if (!type) {
-
-                return res.status(400).json({
-
-                    success: false,
-
-                    message:
-                        "REQUEST TYPE IS REQUIRED."
-                });
-            }
-
-
-            if (!isValidTime(time)) {
-
-                return res.status(400).json({
-
-                    success: false,
-
-                    message:
-                        "INVALID TIME. SELECT A 30-MINUTE INTERVAL."
-                });
-            }
-
-
-            if (
-                type === "scp" &&
-                (
-                    !scp ||
-                    !String(scp).trim()
-                )
-            ) {
-
-                return res.status(400).json({
-
-                    success: false,
-
-                    message:
-                        "SCP SELECTION IS REQUIRED."
-                });
-            }
-
-
-            const now =
-                new Date().toISOString();
-
-
-            const request = {
-
-                id:
-                    generateRequestId(),
-
-                name:
-                    String(name).trim(),
-
-                type:
-                    String(type),
-
-                typeName:
-                    typeName ||
-                    String(type).toUpperCase(),
-
-                scp:
-                    scp
-                        ? String(scp).trim()
-                        : null,
-
-                time:
-                    String(time),
-
-                period:
-                    getPeriod(time),
-
-                message:
-                    message
-                        ? String(message).trim()
-                        : "",
-
-                status:
-                    "PENDING",
-
-                adminMessage:
-                    "",
-
-                createdAt:
-                    now,
-
-                updatedAt:
-                    now
-            };
-
-
-            const database =
-                readDatabase();
-
-
-            database.requests.push(
-                request
-            );
-
-
-            saveDatabase(
-                database
-            );
-
-
-            console.log("");
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "        NEW SITE-64 REQUEST"
-            );
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "REQUEST ID :",
-                request.id
-            );
-            console.log(
-                "NAME       :",
-                request.name
-            );
-            console.log(
-                "TYPE       :",
-                request.typeName
-            );
-            console.log(
-                "SCP        :",
-                request.scp || "N/A"
-            );
-            console.log(
-                "TIME       :",
-                request.time
-            );
-            console.log(
-                "PERIOD     :",
-                request.period
-            );
-            console.log(
-                "STATUS     :",
-                request.status
-            );
-            console.log(
-                "========================================"
-            );
-            console.log("");
-
-            res.status(201).json({
-                success: true,
-                request
-            });
-
-        } catch (error) {
-
-            console.error(
-                "REQUEST ERROR:",
-                error
-            );
-
-            res.status(500).json({
-
-                success: false,
-
-                message:
-                    "SERVER ERROR."
-            });
-        }
-    }
-);
-
-
-/* =====================================================
-   APPROVE REQUEST
-===================================================== */
-
-app.post(
-    "/api/requests/:id/approve",
-    (req, res) => {
-
-        const database =
-            readDatabase();
-
-
-        const request =
-            database.requests.find(
-                item =>
-                    item.id ===
-                    req.params.id
-            );
-
-
-        if (!request) {
-
-            return res.status(404).json({
-
-                success: false,
-
-                message:
-                    "REQUEST NOT FOUND."
-            });
-        }
-
+    try {
 
         const {
-            message,
-            time
+            name,
+            type,
+            typeName,
+            scp,
+            time,
+            message
         } = req.body;
-
 
         if (
-            time !== undefined &&
-            time !== ""
+            !name ||
+            !String(name).trim()
         ) {
-
-            if (!isValidTime(time)) {
-
-                return res.status(400).json({
-
-                    success: false,
-
-                    message:
-                        "INVALID TIME."
-                });
-            }
-
-
-            request.time =
-                time;
-
-            request.period =
-                getPeriod(time);
-        }
-
-
-        request.status =
-            "APPROVED";
-
-
-        request.adminMessage =
-            message ||
-            "YOUR REQUEST HAS BEEN APPROVED.";
-
-
-        request.updatedAt =
-            new Date().toISOString();
-
-
-        saveDatabase(
-            database
-        );
-
-
-        res.json({
-
-            success: true,
-
-            request
-        });
-    }
-);
-
-
-/* =====================================================
-   REJECT REQUEST
-===================================================== */
-
-app.post(
-    "/api/requests/:id/reject",
-    (req, res) => {
-
-        const database =
-            readDatabase();
-
-
-        const request =
-            database.requests.find(
-                item =>
-                    item.id ===
-                    req.params.id
-            );
-
-
-        if (!request) {
-
-            return res.status(404).json({
-
+            return res.status(400).json({
                 success: false,
-
-                message:
-                    "REQUEST NOT FOUND."
+                message: "FULL NAME IS REQUIRED."
             });
         }
 
-
-        request.status =
-            "REJECTED";
-
-
-        request.adminMessage =
-            req.body.message ||
-            "YOUR REQUEST HAS BEEN REJECTED.";
-
-
-        request.updatedAt =
-            new Date().toISOString();
-
-
-        saveDatabase(
-            database
-        );
-
-
-        res.json({
-
-            success: true,
-
-            request
-        });
-    }
-);
-
-
-/* =====================================================
-   CHANGE REQUEST TIME
-===================================================== */
-
-app.post(
-    "/api/requests/:id/time",
-    (req, res) => {
-
-        const {
-            time
-        } = req.body;
-
+        if (!type) {
+            return res.status(400).json({
+                success: false,
+                message: "REQUEST TYPE IS REQUIRED."
+            });
+        }
 
         if (!isValidTime(time)) {
-
             return res.status(400).json({
-
                 success: false,
-
-                message:
-                    "INVALID TIME."
+                message: "INVALID TIME."
             });
         }
 
-
-        const database =
-            readDatabase();
-
-
-        const request =
-            database.requests.find(
-                item =>
-                    item.id ===
-                    req.params.id
-            );
-
-
-        if (!request) {
-
-            return res.status(404).json({
-
+        if (
+            type === "scp" &&
+            (
+                !scp ||
+                !String(scp).trim()
+            )
+        ) {
+            return res.status(400).json({
                 success: false,
-
-                message:
-                    "REQUEST NOT FOUND."
+                message: "SCP SELECTION IS REQUIRED."
             });
         }
 
-
-        request.time =
-            time;
-
-
-        request.period =
-            getPeriod(time);
-
-
-        request.updatedAt =
+        const now =
             new Date().toISOString();
 
+        const request = {
+            id: generateRequestId(),
+            name: String(name).trim(),
+            type: String(type),
+            typeName:
+                typeName ||
+                String(type).toUpperCase(),
+            scp:
+                scp
+                    ? String(scp).trim()
+                    : null,
+            time: String(time),
+            period: getPeriod(time),
+            message:
+                message
+                    ? String(message).trim()
+                    : "",
+            status: "PENDING",
+            adminMessage: "",
+            createdAt: now,
+            updatedAt: now
+        };
 
-        saveDatabase(
-            database
-        );
+        const database = readDatabase();
 
+        database.requests.push(request);
 
-        res.json({
+        saveDatabase(database);
 
+        console.log("");
+        console.log("========================================");
+        console.log("        NEW SITE-64 REQUEST");
+        console.log("========================================");
+        console.log("REQUEST ID :", request.id);
+        console.log("NAME       :", request.name);
+        console.log("TYPE       :", request.typeName);
+        console.log("SCP        :", request.scp || "N/A");
+        console.log("TIME       :", request.time);
+        console.log("PERIOD     :", request.period);
+        console.log("STATUS     :", request.status);
+        console.log("========================================");
+        console.log("");
+
+        res.status(201).json({
             success: true,
-
             request
         });
+
+    } catch (error) {
+
+        console.error("REQUEST ERROR:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "SERVER ERROR."
+        });
     }
-);
+});
+
+
+app.post("/api/requests/:id/approve", (req, res) => {
+
+    const database = readDatabase();
+
+    const request =
+        database.requests.find(
+            item => item.id === req.params.id
+        );
+
+    if (!request) {
+        return res.status(404).json({
+            success: false,
+            message: "REQUEST NOT FOUND."
+        });
+    }
+
+    const {
+        message,
+        time
+    } = req.body;
+
+    if (time !== undefined && time !== "") {
+
+        if (!isValidTime(time)) {
+            return res.status(400).json({
+                success: false,
+                message: "INVALID TIME."
+            });
+        }
+
+        request.time = time;
+        request.period = getPeriod(time);
+    }
+
+    request.status = "APPROVED";
+
+    request.adminMessage =
+        message ||
+        "YOUR REQUEST HAS BEEN APPROVED.";
+
+    request.updatedAt =
+        new Date().toISOString();
+
+    saveDatabase(database);
+
+    res.json({
+        success: true,
+        request
+    });
+});
+
+
+app.post("/api/requests/:id/reject", (req, res) => {
+
+    const database = readDatabase();
+
+    const request =
+        database.requests.find(
+            item => item.id === req.params.id
+        );
+
+    if (!request) {
+        return res.status(404).json({
+            success: false,
+            message: "REQUEST NOT FOUND."
+        });
+    }
+
+    request.status = "REJECTED";
+
+    request.adminMessage =
+        req.body.message ||
+        "YOUR REQUEST HAS BEEN REJECTED.";
+
+    request.updatedAt =
+        new Date().toISOString();
+
+    saveDatabase(database);
+
+    res.json({
+        success: true,
+        request
+    });
+});
+
+
+app.post("/api/requests/:id/time", (req, res) => {
+
+    const {
+        time
+    } = req.body;
+
+    if (!isValidTime(time)) {
+        return res.status(400).json({
+            success: false,
+            message: "INVALID TIME."
+        });
+    }
+
+    const database = readDatabase();
+
+    const request =
+        database.requests.find(
+            item => item.id === req.params.id
+        );
+
+    if (!request) {
+        return res.status(404).json({
+            success: false,
+            message: "REQUEST NOT FOUND."
+        });
+    }
+
+    request.time = time;
+    request.period = getPeriod(time);
+    request.updatedAt =
+        new Date().toISOString();
+
+    saveDatabase(database);
+
+    res.json({
+        success: true,
+        request
+    });
+});
 
 
 /* =====================================================
@@ -719,211 +472,125 @@ const ALLOWED_SITES = [
 ];
 
 
-app.get(
-    "/api/incidents",
-    (req, res) => {
+app.get("/api/incidents", (req, res) => {
 
-        const database =
-            readDatabase();
+    const database = readDatabase();
 
-        res.json({
-
-            success: true,
-
-            incidents:
-                database.incidents
-        });
-    }
-);
+    res.json({
+        success: true,
+        incidents: database.incidents
+    });
+});
 
 
-app.post(
-    "/api/incidents",
-    (req, res) => {
+app.post("/api/incidents", (req, res) => {
 
-        try {
+    try {
 
-            const {
-                site,
-                type,
-                message
-            } = req.body;
+        const {
+            site,
+            type,
+            message
+        } = req.body;
 
-
-            if (
-                !ALLOWED_SITES.includes(
-                    String(site)
-                )
-            ) {
-
-                return res.status(400).json({
-
-                    success: false,
-
-                    message:
-                        "INVALID SITE."
-                });
-            }
-
-
-            if (
-                !type ||
-                !String(type).trim()
-            ) {
-
-                return res.status(400).json({
-
-                    success: false,
-
-                    message:
-                        "INCIDENT TYPE IS REQUIRED."
-                });
-            }
-
-
-            const database =
-                readDatabase();
-
-
-            const incident = {
-
-                id:
-                    generateIncidentId(),
-
-                site:
-                    String(site),
-
-                type:
-                    String(type)
-                        .trim()
-                        .toUpperCase(),
-
-                message:
-                    message
-                        ? String(message).trim()
-                        : "",
-
-                createdAt:
-                    new Date().toISOString(),
-
-                active:
-                    true
-            };
-
-
-            database.incidents.push(
-                incident
-            );
-
-
-            saveDatabase(
-                database
-            );
-
-
-            console.log("");
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "        NEW SITE INCIDENT"
-            );
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "ID      :",
-                incident.id
-            );
-            console.log(
-                "SITE    :",
-                incident.site
-            );
-            console.log(
-                "TYPE    :",
-                incident.type
-            );
-            console.log(
-                "MESSAGE :",
-                incident.message
-            );
-            console.log(
-                "========================================"
-            );
-            console.log("");
-
-
-            res.status(201).json({
-
-                success: true,
-
-                incident
-            });
-
-        } catch (error) {
-
-            console.error(
-                "INCIDENT ERROR:",
-                error
-            );
-
-            res.status(500).json({
-
+        if (
+            !ALLOWED_SITES.includes(
+                String(site)
+            )
+        ) {
+            return res.status(400).json({
                 success: false,
-
-                message:
-                    "SERVER ERROR."
+                message: "INVALID SITE."
             });
         }
+
+        if (
+            !type ||
+            !String(type).trim()
+        ) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "INCIDENT TYPE IS REQUIRED."
+            });
+        }
+
+        const database = readDatabase();
+
+        const incident = {
+
+            id: generateIncidentId(),
+
+            site: String(site),
+
+            type:
+                String(type)
+                    .trim()
+                    .toUpperCase(),
+
+            message:
+                message
+                    ? String(message).trim()
+                    : "",
+
+            createdAt:
+                new Date().toISOString(),
+
+            active: true
+        };
+
+        database.incidents.push(incident);
+
+        saveDatabase(database);
+
+        res.status(201).json({
+            success: true,
+            incident
+        });
+
+    } catch (error) {
+
+        console.error(
+            "INCIDENT ERROR:",
+            error
+        );
+
+        res.status(500).json({
+            success: false,
+            message: "SERVER ERROR."
+        });
     }
-);
+});
 
 
 app.post(
     "/api/incidents/:id/resolve",
     (req, res) => {
 
-        const database =
-            readDatabase();
-
+        const database = readDatabase();
 
         const incident =
             database.incidents.find(
                 item =>
-                    item.id ===
-                    req.params.id
+                    item.id === req.params.id
             );
 
-
         if (!incident) {
-
             return res.status(404).json({
-
                 success: false,
-
-                message:
-                    "INCIDENT NOT FOUND."
+                message: "INCIDENT NOT FOUND."
             });
         }
 
-
-        incident.active =
-            false;
-
+        incident.active = false;
 
         incident.resolvedAt =
             new Date().toISOString();
 
-
-        saveDatabase(
-            database
-        );
-
+        saveDatabase(database);
 
         res.json({
-
             success: true,
-
             incident
         });
     }
@@ -931,513 +598,377 @@ app.post(
 
 
 /* =====================================================
-   SITE STATUS
+   SITES
 ===================================================== */
 
-app.get(
-    "/api/sites",
-    (req, res) => {
+app.get("/api/sites", (req, res) => {
 
-        const database =
-            readDatabase();
+    const database = readDatabase();
 
+    const sites = {
 
-        const sites = {
+        "SITE-19": {
+            status: "NORMAL",
+            message: "",
+            updatedAt: null
+        },
 
-            "SITE-19": {
-                status: "NORMAL",
-                message: "",
-                updatedAt: null
-            },
+        "SITE-51": {
+            status: "NORMAL",
+            message: "",
+            updatedAt: null
+        },
 
-            "SITE-51": {
-                status: "NORMAL",
-                message: "",
-                updatedAt: null
-            },
+        "SITE-64": {
+            status: "NORMAL",
+            message: "",
+            updatedAt: null
+        }
 
-            "SITE-64": {
-                status: "NORMAL",
-                message: "",
-                updatedAt: null
+    };
+
+    database.incidents
+        .filter(
+            incident =>
+                incident.active === true
+        )
+        .forEach(incident => {
+
+            if (sites[incident.site]) {
+
+                sites[incident.site] = {
+
+                    status: incident.type,
+
+                    message:
+                        incident.message,
+
+                    updatedAt:
+                        incident.createdAt
+                };
             }
-        };
 
-
-        database.incidents
-            .filter(
-                incident =>
-                    incident.active === true
-            )
-            .forEach(
-                incident => {
-
-                    if (
-                        sites[
-                            incident.site
-                        ]
-                    ) {
-
-                        sites[
-                            incident.site
-                        ] = {
-
-                            status:
-                                incident.type,
-
-                            message:
-                                incident.message,
-
-                            updatedAt:
-                                incident.createdAt
-                        };
-                    }
-                }
-            );
-
-
-        res.json({
-
-            success: true,
-
-            sites
         });
-    }
-);
+
+    res.json({
+        success: true,
+        sites
+    });
+});
 
 
 /* =====================================================
-   WARHEAD SYSTEM
+   WARHEAD SIMULATION
 ===================================================== */
 
 const WARHEAD_TYPES = {
 
     GAMMA: {
-
-        name:
-            "GAMMA",
-
-        effect:
-            "GLOBAL TERMINATION",
-
+        name: "GAMMA",
+        effect: "GLOBAL SIMULATION",
         description:
-            "TOTAL GLOBAL DESTRUCTION."
+            "GLOBAL TERMINATION SCENARIO SIMULATION."
     },
 
     DELTA: {
-
-        name:
-            "DELTA",
-
-        effect:
-            "FACILITY TERMINATION",
-
+        name: "DELTA",
+        effect: "FACILITY SIMULATION",
         description:
-            "DESTRUCTION OF THE SELECTED FACILITY."
+            "SELECTED FACILITY TERMINATION SCENARIO."
     },
 
     ALPHA: {
-
-        name:
-            "ALPHA",
-
-        effect:
-            "FACILITY TERMINATION",
-
+        name: "ALPHA",
+        effect: "FACILITY SIMULATION",
         description:
-            "DESTRUCTION OF THE SELECTED FACILITY."
+            "SELECTED FACILITY TERMINATION SCENARIO."
     },
 
     BETA: {
-
-        name:
-            "BETA",
-
-        effect:
-            "FACILITY TERMINATION",
-
+        name: "BETA",
+        effect: "FACILITY SIMULATION",
         description:
-            "DESTRUCTION OF THE SELECTED FACILITY."
+            "SELECTED FACILITY TERMINATION SCENARIO."
     }
+
 };
 
 
-/* GET WARHEAD */
+app.get("/api/warhead", (req, res) => {
 
-app.get(
-    "/api/warhead",
-    (req, res) => {
+    const database = readDatabase();
 
-        const database =
-            readDatabase();
+    res.json({
 
-        res.json({
+        success: true,
 
-            success: true,
+        warhead:
+            database.warhead,
 
-            warhead:
-                database.warhead,
+        types:
+            WARHEAD_TYPES
 
-            types:
-                WARHEAD_TYPES
+    });
+});
+
+
+app.post("/api/warhead/activate", (req, res) => {
+
+    const {
+        type,
+        site
+    } = req.body;
+
+    const selectedType =
+        String(type || "")
+            .trim()
+            .toUpperCase();
+
+    const selectedSite =
+        String(site || "")
+            .trim()
+            .toUpperCase();
+
+    if (!WARHEAD_TYPES[selectedType]) {
+
+        return res.status(400).json({
+            success: false,
+            message: "INVALID WARHEAD TYPE."
         });
     }
-);
 
+    if (
+        selectedType !== "GAMMA" &&
+        !ALLOWED_SITES.includes(selectedSite)
+    ) {
 
-/* ACTIVATE WARHEAD */
-
-app.post(
-    "/api/warhead/activate",
-    (req, res) => {
-
-        try {
-
-            const type =
-                String(
-                    req.body.type || ""
-                )
-                    .trim()
-                    .toUpperCase();
-
-
-            if (
-                !WARHEAD_TYPES[type]
-            ) {
-
-                return res.status(400).json({
-
-                    success: false,
-
-                    message:
-                        "INVALID WARHEAD TYPE."
-                });
-            }
-
-
-            const database =
-                readDatabase();
-
-
-            if (
-                database.warhead.active
-            ) {
-
-                return res.status(400).json({
-
-                    success: false,
-
-                    message:
-                        "A WARHEAD IS ALREADY ACTIVE."
-                });
-            }
-
-
-            const now =
-                new Date().toISOString();
-
-
-            database.warhead = {
-
-                active:
-                    true,
-
-                type:
-                    type,
-
-                status:
-                    "ARMED",
-
-                message:
-                    WARHEAD_TYPES[type]
-                        .description,
-
-                activatedAt:
-                    now
-            };
-
-
-            saveDatabase(
-                database
-            );
-
-
-            console.log("");
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "          WARHEAD ACTIVATED"
-            );
-            console.log(
-                "========================================"
-            );
-            console.log(
-                "TYPE   :",
-                type
-            );
-            console.log(
-                "EFFECT :",
-                WARHEAD_TYPES[type]
-                    .effect
-            );
-            console.log(
-                "STATUS : ARMED"
-            );
-            console.log(
-                "========================================"
-            );
-            console.log("");
-
-
-            res.json({
-
-                success: true,
-
-                warhead:
-                    database.warhead
-            });
-
-        } catch (error) {
-
-            console.error(
-                "WARHEAD ERROR:",
-                error
-            );
-
-            res.status(500).json({
-
-                success: false,
-
-                message:
-                    "WARHEAD SYSTEM ERROR."
-            });
-        }
+        return res.status(400).json({
+            success: false,
+            message: "INVALID TARGET SITE."
+        });
     }
-);
 
+    const database = readDatabase();
 
-/* DEACTIVATE WARHEAD */
+    if (database.warhead.active) {
 
-app.post(
-    "/api/warhead/deactivate",
-    (req, res) => {
-
-        const database =
-            readDatabase();
-
-
-        database.warhead = {
-
-            active:
-                false,
-
-            type:
-                null,
-
-            status:
-                "STANDBY",
-
+        return res.status(400).json({
+            success: false,
             message:
-                "",
-
-            activatedAt:
-                null
-        };
-
-
-        saveDatabase(
-            database
-        );
-
-
-        res.json({
-
-            success: true,
-
-            warhead:
-                database.warhead
+                "A SIMULATION IS ALREADY ACTIVE."
         });
     }
-);
+
+    const now =
+        new Date().toISOString();
+
+    database.warhead = {
+
+        active: true,
+
+        type: selectedType,
+
+        site:
+            selectedType === "GAMMA"
+                ? "GLOBAL"
+                : selectedSite,
+
+        status: "ARMED",
+
+        message:
+            WARHEAD_TYPES[selectedType]
+                .description,
+
+        activatedAt: now
+
+    };
+
+    saveDatabase(database);
+
+    res.json({
+
+        success: true,
+
+        warhead:
+            database.warhead
+
+    });
+});
+
+
+app.post("/api/warhead/deactivate", (req, res) => {
+
+    const database = readDatabase();
+
+    database.warhead = {
+
+        active: false,
+
+        type: null,
+
+        site: null,
+
+        status: "STANDBY",
+
+        message: "",
+
+        activatedAt: null
+
+    };
+
+    saveDatabase(database);
+
+    res.json({
+
+        success: true,
+
+        warhead:
+            database.warhead
+
+    });
+});
 
 
 /* =====================================================
    SERVER STATUS
 ===================================================== */
 
-app.get(
-    "/api/status",
-    (req, res) => {
+app.get("/api/status", (req, res) => {
 
-        const database =
-            readDatabase();
+    const database = readDatabase();
 
+    const pending =
+        database.requests.filter(
+            request =>
+                request.status === "PENDING"
+        ).length;
 
-        const pending =
-            database.requests.filter(
-                request =>
-                    request.status ===
-                    "PENDING"
-            ).length;
+    const approved =
+        database.requests.filter(
+            request =>
+                request.status === "APPROVED"
+        ).length;
 
+    const rejected =
+        database.requests.filter(
+            request =>
+                request.status === "REJECTED"
+        ).length;
 
-        const approved =
-            database.requests.filter(
-                request =>
-                    request.status ===
-                    "APPROVED"
-            ).length;
+    const activeIncidents =
+        database.incidents.filter(
+            incident =>
+                incident.active === true
+        ).length;
 
+    res.json({
 
-        const rejected =
-            database.requests.filter(
-                request =>
-                    request.status ===
-                    "REJECTED"
-            ).length;
+        success: true,
 
+        server: "ONLINE",
 
-        const activeIncidents =
-            database.incidents.filter(
-                incident =>
-                    incident.active === true
-            ).length;
+        database: "ONLINE",
 
+        site: "SITE-64",
 
-        res.json({
+        requestSystem: "ONLINE",
 
-            success:
-                true,
+        incidentSystem: "ONLINE",
 
-            server:
-                "ONLINE",
+        warheadSystem: "ONLINE",
 
-            database:
-                "ONLINE",
+        totalRequests:
+            database.requests.length,
 
-            site:
-                "SITE-64",
+        pendingRequests:
+            pending,
 
-            requestSystem:
-                "ONLINE",
+        approvedRequests:
+            approved,
 
-            incidentSystem:
-                "ONLINE",
+        rejectedRequests:
+            rejected,
 
-            warheadSystem:
-                "ONLINE",
+        activeIncidents:
+            activeIncidents,
 
-            totalRequests:
-                database.requests.length,
+        warhead:
+            database.warhead,
 
-            pendingRequests:
-                pending,
+        uptime:
+            process.uptime()
 
-            approvedRequests:
-                approved,
-
-            rejectedRequests:
-                rejected,
-
-            activeIncidents:
-                activeIncidents,
-
-            warhead:
-                database.warhead,
-
-            uptime:
-                process.uptime()
-        });
-    }
-);
+    });
+});
 
 
 /* =====================================================
-   TERMINAL API
+   TERMINAL
 ===================================================== */
 
-app.post(
-    "/api/terminal",
-    (req, res) => {
+app.post("/api/terminal", (req, res) => {
 
-        const command =
-            String(
-                req.body.command || ""
-            )
-                .trim()
-                .toLowerCase();
+    const command =
+        String(
+            req.body.command || ""
+        )
+            .trim()
+            .toLowerCase();
 
+    const database =
+        readDatabase();
 
-        const database =
-            readDatabase();
+    if (!command) {
+        return res.json({
+            output: ""
+        });
+    }
 
+    if (command === "clear") {
+        return res.json({
+            output: "__CLEAR__"
+        });
+    }
 
-        if (!command) {
+    if (command === "help") {
 
-            return res.json({
-                output: ""
-            });
-        }
+        return res.json({
 
-
-        if (
-            command === "clear"
-        ) {
-
-            return res.json({
-                output:
-                    "__CLEAR__"
-            });
-        }
-
-
-        if (
-            command === "help"
-        ) {
-
-            return res.json({
-
-                output:
+            output:
 `SITE-64 TERMINAL
 ==============================
 
 AVAILABLE COMMANDS
 
-help       Show available commands
-status     Show system status
-requests   Show request statistics
-incidents  Show active incidents
-sites      Show registered sites
-warhead    Show warhead status
-about      Show SITE-64 information
+help       Show commands
+status     System status
+requests   Request statistics
+incidents  Active incidents
+sites      Site status
+warhead    Simulation status
+about      Site information
 clear      Clear terminal`
-            });
-        }
 
+        });
+    }
 
-        if (
-            command === "status"
-        ) {
+    if (command === "status") {
 
-            const pending =
-                database.requests.filter(
-                    r =>
-                        r.status ===
-                        "PENDING"
-                ).length;
+        const pending =
+            database.requests.filter(
+                r =>
+                    r.status === "PENDING"
+            ).length;
 
+        const activeIncidents =
+            database.incidents.filter(
+                r =>
+                    r.active === true
+            ).length;
 
-            const activeIncidents =
-                database.incidents.filter(
-                    r =>
-                        r.active === true
-                ).length;
+        return res.json({
 
-
-            return res.json({
-
-                output:
+            output:
 `SYSTEM STATUS
 ==============================
 SERVER       : ONLINE
@@ -1447,162 +978,118 @@ REQUESTS     : ${database.requests.length}
 PENDING      : ${pending}
 INCIDENTS    : ${activeIncidents}
 WARHEAD      : ${database.warhead.status}`
-            });
-        }
 
+        });
+    }
 
-        if (
-            command === "requests"
-        ) {
+    if (command === "requests") {
 
-            const pending =
-                database.requests.filter(
-                    r =>
-                        r.status ===
-                        "PENDING"
-                ).length;
+        const pending =
+            database.requests.filter(
+                r =>
+                    r.status === "PENDING"
+            ).length;
 
+        const approved =
+            database.requests.filter(
+                r =>
+                    r.status === "APPROVED"
+            ).length;
 
-            const approved =
-                database.requests.filter(
-                    r =>
-                        r.status ===
-                        "APPROVED"
-                ).length;
+        const rejected =
+            database.requests.filter(
+                r =>
+                    r.status === "REJECTED"
+            ).length;
 
+        return res.json({
 
-            const rejected =
-                database.requests.filter(
-                    r =>
-                        r.status ===
-                        "REJECTED"
-                ).length;
-
-
-            return res.json({
-
-                output:
+            output:
 `REQUEST DATABASE
 ==============================
 TOTAL      : ${database.requests.length}
 PENDING    : ${pending}
 APPROVED   : ${approved}
 REJECTED   : ${rejected}`
-            });
-        }
 
+        });
+    }
 
-        if (
-            command === "incidents"
-        ) {
+    if (command === "incidents") {
 
-            const active =
-                database.incidents.filter(
-                    incident =>
-                        incident.active ===
-                        true
-                );
+        const active =
+            database.incidents.filter(
+                incident =>
+                    incident.active === true
+            );
 
+        if (!active.length) {
 
-            if (!active.length) {
+            return res.json({
 
-                return res.json({
-
-                    output:
+                output:
 `ACTIVE INCIDENTS
 ==============================
 NONE`
-                });
-            }
 
+            });
+        }
 
-            const output =
-                active
-                    .map(
-                        incident =>
-                            `${incident.site} | ${incident.type}`
-                    )
-                    .join("\n");
+        return res.json({
 
-
-            return res.json({
-
-                output:
+            output:
 `ACTIVE INCIDENTS
 ==============================
-${output}`
-            });
-        }
+${
+    active
+        .map(
+            incident =>
+                `${incident.site} | ${incident.type}`
+        )
+        .join("\n")
+}`
 
+        });
+    }
 
-        if (
-            command === "sites"
-        ) {
+    if (command === "sites") {
 
-            const activeIncidents =
-                database.incidents.filter(
-                    incident =>
-                        incident.active ===
-                        true
-                );
+        return res.json({
 
-
-            const siteStatus =
-                site => {
-
-                    const incident =
-                        activeIncidents.find(
-                            item =>
-                                item.site ===
-                                site
-                        );
-
-                    return incident
-                        ? incident.type
-                        : "NORMAL";
-                };
-
-
-            return res.json({
-
-                output:
+            output:
 `SCP FOUNDATION SITES
 ==============================
-SITE-19    | ${siteStatus("SITE-19")}
-SITE-51    | ${siteStatus("SITE-51")}
-SITE-64    | ${siteStatus("SITE-64")}`
-            });
-        }
+SITE-19    | ${siteStatus(database, "SITE-19")}
+SITE-51    | ${siteStatus(database, "SITE-51")}
+SITE-64    | ${siteStatus(database, "SITE-64")}`
 
+        });
+    }
 
-        if (
-            command === "warhead"
-        ) {
+    if (command === "warhead") {
 
-            const warhead =
-                database.warhead;
+        const warhead =
+            database.warhead;
 
+        return res.json({
 
-            return res.json({
-
-                output:
-`WARHEAD CONTROL
+            output:
+`WARHEAD SIMULATION
 ==============================
 STATUS     : ${warhead.status}
 TYPE       : ${warhead.type || "NONE"}
+TARGET     : ${warhead.site || "NONE"}
 ACTIVATED  : ${warhead.activatedAt || "N/A"}
 MESSAGE    : ${warhead.message || "NONE"}`
-            });
-        }
 
+        });
+    }
 
-        if (
-            command === "about"
-        ) {
+    if (command === "about") {
 
-            return res.json({
+        return res.json({
 
-                output:
+            output:
 `SECURE CONTAIN PROTECT
 SITE-64 ADMINISTRATION SYSTEM
 
@@ -1611,46 +1098,57 @@ FACILITY        : SITE-64
 STATUS          : OPERATIONAL
 
 Unauthorized access is prohibited.`
-            });
-        }
 
-
-        return res.json({
-
-            output:
-                `COMMAND NOT FOUND: ${command}\nType "help" for available commands.`
         });
     }
-);
+
+    return res.json({
+
+        output:
+`COMMAND NOT FOUND: ${command}
+Type "help" for available commands.`
+
+    });
+});
+
+
+function siteStatus(database, site) {
+
+    const incident =
+        database.incidents.find(
+            item =>
+                item.site === site &&
+                item.active === true
+        );
+
+    return incident
+        ? incident.type
+        : "NORMAL";
+}
 
 
 /* =====================================================
    API 404
 ===================================================== */
 
-app.use(
-    "/api",
-    (req, res) => {
+app.use("/api", (req, res) => {
 
-        res.status(404).json({
+    res.status(404).json({
 
-            success:
-                false,
+        success: false,
 
-            message:
-                "API ENDPOINT NOT FOUND."
-        });
-    }
-);
+        message:
+            "API ENDPOINT NOT FOUND."
+
+    });
+});
 
 
 /* =====================================================
-   START SERVER
+   START
 ===================================================== */
 
-if (
-    !fs.existsSync(DATA_FILE)
-) {
+if (!fs.existsSync(DATA_FILE)) {
 
     saveDatabase(
         emptyDatabase()
@@ -1664,40 +1162,18 @@ app.listen(
     () => {
 
         console.log("");
-        console.log(
-            "========================================"
-        );
-        console.log(
-            "     SECURE CONTAIN PROTECT // SITE-64"
-        );
-        console.log(
-            "========================================"
-        );
-        console.log(
-            "SERVER : ONLINE"
-        );
-        console.log(
-            "PORT   :",
-            PORT
-        );
-        console.log(
-            "PUBLIC : /"
-        );
-        console.log(
-            "ADMIN  : /admin"
-        );
-        console.log(
-            "SITES  : /sites"
-        );
-        console.log(
-            "TERM   : /term"
-        );
-        console.log(
-            "WARHEAD: /warhead"
-        );
-        console.log(
-            "========================================"
-        );
+        console.log("========================================");
+        console.log("     SECURE CONTAIN PROTECT // SITE-64");
+        console.log("========================================");
+        console.log("SERVER : ONLINE");
+        console.log("PORT   :", PORT);
+        console.log("PUBLIC : /");
+        console.log("ADMIN  : /admin");
+        console.log("SITES  : /sites");
+        console.log("TERM   : /term");
+        console.log("WARHEAD: /warhead");
+        console.log("========================================");
         console.log("");
+
     }
 );
