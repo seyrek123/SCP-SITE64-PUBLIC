@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>WARHEAD // SITE-64</title>
+<title>WARHEAD CONTROL // SITE-64</title>
 
 <style>
 
@@ -12,27 +12,22 @@
     box-sizing: border-box;
 }
 
+html,
 body {
     margin: 0;
+    min-height: 100%;
     background: #050505;
     color: #ddd;
     font-family: "Courier New", monospace;
+}
+
+body {
     overflow-x: hidden;
 }
 
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(
-        rgba(255,255,255,.015) 50%,
-        transparent 50%
-    );
-    background-size: 100% 4px;
-    opacity: .3;
-    z-index: 9999;
-}
+/* =====================================================
+   PAGE
+===================================================== */
 
 .page {
     min-height: 100vh;
@@ -55,46 +50,73 @@ body::before {
     margin: 10px 0 0;
     color: #666;
     letter-spacing: 2px;
+    font-size: 12px;
 }
+
+/* =====================================================
+   WARHEAD BUTTONS
+===================================================== */
 
 .warheads {
     display: grid;
     grid-template-columns: repeat(
         auto-fit,
-        minmax(240px, 1fr)
+        minmax(230px, 1fr)
     );
-    gap: 20px;
-    max-width: 1000px;
+
+    gap: 18px;
+    max-width: 1050px;
 }
 
-.warhead {
+.warhead-button {
+    display: block;
+
+    width: 100%;
+    min-height: 170px;
+
+    padding: 25px;
+
     background: #090909;
     border: 1px solid #333;
-    padding: 25px;
+
+    color: #ddd;
+
+    text-align: left;
+
+    font-family: "Courier New", monospace;
+
     cursor: pointer;
-    transition: .2s;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        transform .2s ease;
 }
 
-.warhead:hover {
-    background: #0e0e0e;
+.warhead-button:hover {
+    background: #101010;
     border-color: #777;
     transform: translateY(-2px);
 }
 
-.warhead h2 {
-    margin: 0 0 12px;
-    letter-spacing: 4px;
+.warhead-name {
+    font-size: 25px;
+    font-weight: bold;
+    letter-spacing: 5px;
 }
 
-.effect {
+.warhead-effect {
+    margin-top: 12px;
     color: #888;
-    font-size: 13px;
-    margin-bottom: 20px;
+    font-size: 12px;
+    letter-spacing: 1px;
 }
 
-.status {
+.warhead-status {
+    margin-top: 28px;
     color: #666;
-    font-size: 12px;
+    font-size: 11px;
+    letter-spacing: 2px;
 }
 
 
@@ -107,16 +129,20 @@ body::before {
     inset: 0;
 
     display: none;
+
     align-items: center;
     justify-content: center;
 
-    background: rgba(0,0,0,.82);
+    padding: 20px;
+
+    background: rgba(0,0,0,.84);
 
     z-index: 1000;
 }
 
-.overlay.show {
+.overlay.active {
     display: flex;
+
     animation: fadeIn .25s ease;
 }
 
@@ -126,12 +152,11 @@ body::before {
 ===================================================== */
 
 .panel {
-    width: 55%;
-    max-width: 850px;
-    min-width: 450px;
+    width: min(760px, 95vw);
 
     background: #030303;
-    border: 1px solid #3a3a3a;
+
+    border: 1px solid #3b3b3b;
 
     box-shadow:
         0 0 60px rgba(0,0,0,.9);
@@ -149,8 +174,10 @@ body::before {
 
     border-bottom: 1px solid #292929;
 
-    color: #777;
+    color: #666;
+
     font-size: 11px;
+
     letter-spacing: 2px;
 }
 
@@ -159,14 +186,18 @@ body::before {
 }
 
 .panel-title {
-    font-size: 17px;
+    margin-bottom: 22px;
+
+    font-size: 18px;
+
     letter-spacing: 3px;
-    margin-bottom: 25px;
 }
 
 .panel-text {
     color: #999;
+
     font-size: 13px;
+
     line-height: 1.8;
 }
 
@@ -174,55 +205,81 @@ body::before {
     color: #ddd;
 }
 
+
+/* =====================================================
+   WARNING
+===================================================== */
+
 .warning {
     margin-top: 20px;
+
     padding: 18px;
 
-    border: 1px solid #333;
     background: #080808;
 
-    color: #aaa;
-
-    line-height: 1.8;
-    font-size: 12px;
-}
-
-.input {
-    width: 100%;
-
-    background: #000;
     border: 1px solid #333;
 
-    color: white;
+    color: #999;
 
-    padding: 14px;
+    font-size: 12px;
+
+    line-height: 1.9;
+}
+
+
+/* =====================================================
+   INPUT
+===================================================== */
+
+.code-input {
+    width: 100%;
+
+    margin-top: 20px;
+
+    padding: 15px;
+
+    background: #000;
+
+    border: 1px solid #333;
+
+    color: #fff;
 
     outline: none;
 
     font-family: "Courier New", monospace;
 
-    letter-spacing: 4px;
     font-size: 15px;
+
+    letter-spacing: 4px;
 }
 
-.input:focus {
+.code-input:focus {
     border-color: #777;
 }
 
-.buttons {
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.button-row {
     display: flex;
-    gap: 10px;
-    margin-top: 20px;
+
     flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-top: 20px;
 }
 
-button {
+.control-button {
+    padding: 12px 18px;
+
     background: #090909;
-    color: #ddd;
 
     border: 1px solid #333;
 
-    padding: 12px 18px;
+    color: #ddd;
 
     font-family: "Courier New", monospace;
 
@@ -231,23 +288,21 @@ button {
     letter-spacing: 1px;
 }
 
-button:hover {
+.control-button:hover {
     background: #151515;
+
     border-color: #777;
 }
 
-.primary {
-    border-color: #555;
-}
 
-.danger {
-    border-color: #555;
-}
+/* =====================================================
+   ERROR
+===================================================== */
 
 .error {
     display: none;
 
-    margin-top: 15px;
+    margin-top: 14px;
 
     color: #aaa;
 
@@ -267,11 +322,11 @@ button:hover {
 
     gap: 12px;
 
-    margin-top: 20px;
+    margin-top: 25px;
 }
 
 .site-button {
-    padding: 20px 10px;
+    padding: 22px 10px;
 
     background: #080808;
 
@@ -279,23 +334,30 @@ button:hover {
 
     color: #ddd;
 
-    text-align: center;
+    font-family: "Courier New", monospace;
 
     cursor: pointer;
 
-    transition: .2s;
+    text-align: center;
 
     letter-spacing: 2px;
+
+    transition: .2s;
 }
 
 .site-button:hover {
-    border-color: #777;
     background: #111;
+
+    border-color: #777;
 }
 
 .site-button.selected {
-    border-color: #aaa;
     background: #151515;
+
+    border-color: #aaa;
+
+    box-shadow:
+        inset 0 0 20px rgba(255,255,255,.025);
 }
 
 
@@ -312,20 +374,19 @@ button:hover {
     align-items: center;
     justify-content: center;
 
-    background: rgba(0,0,0,.91);
+    background: rgba(0,0,0,.92);
 
     z-index: 2000;
 }
 
-.terminal-overlay.show {
+.terminal-overlay.active {
     display: flex;
+
     animation: fadeIn .3s ease;
 }
 
 .terminal {
-    width: 58%;
-    min-width: 500px;
-    max-width: 900px;
+    width: min(900px, 90vw);
 
     height: 48vh;
     min-height: 350px;
@@ -335,7 +396,7 @@ button:hover {
     border: 1px solid #333;
 
     box-shadow:
-        0 0 70px rgba(0,0,0,.95);
+        0 0 80px rgba(0,0,0,.95);
 
     animation: panelIn .35s ease;
 }
@@ -364,35 +425,27 @@ button:hover {
 
     overflow-y: auto;
 
+    color: #ccc;
+
     font-size: 14px;
 
     line-height: 1.9;
-
-    color: #ccc;
 }
 
 .terminal-line {
+    margin-bottom: 3px;
+
     opacity: 0;
 
-    animation: terminalLine .4s forwards;
+    animation:
+        terminalLine .35s
+        forwards;
 }
 
-.hash {
+.terminal-line.hash {
     color: #777;
+
     letter-spacing: 2px;
-}
-
-.terminal-cursor {
-    display: inline-block;
-
-    width: 8px;
-    height: 15px;
-
-    background: #aaa;
-
-    margin-left: 4px;
-
-    animation: blink 1s infinite;
 }
 
 
@@ -401,6 +454,7 @@ button:hover {
 ===================================================== */
 
 @keyframes fadeIn {
+
     from {
         opacity: 0;
     }
@@ -408,34 +462,35 @@ button:hover {
     to {
         opacity: 1;
     }
+
 }
 
 @keyframes panelIn {
+
     from {
         opacity: 0;
+
         transform:
-            scale(.96)
-            translateY(20px);
+            translateY(20px)
+            scale(.97);
     }
 
     to {
         opacity: 1;
+
         transform:
-            scale(1)
-            translateY(0);
+            translateY(0)
+            scale(1);
     }
+
 }
 
 @keyframes terminalLine {
+
     to {
         opacity: 1;
     }
-}
 
-@keyframes blink {
-    50% {
-        opacity: 0;
-    }
 }
 
 
@@ -443,25 +498,20 @@ button:hover {
    MOBILE
 ===================================================== */
 
-@media(max-width: 800px) {
+@media(max-width: 700px) {
 
     .page {
         padding: 25px;
-    }
-
-    .panel,
-    .terminal {
-        width: 90%;
-        min-width: 0;
     }
 
     .site-grid {
         grid-template-columns: 1fr;
     }
 
-    .terminal {
-        height: 55vh;
+    .panel-body {
+        padding: 22px;
     }
+
 }
 
 </style>
@@ -470,6 +520,10 @@ button:hover {
 
 <body>
 
+
+<!-- =====================================================
+     MAIN WARHEAD PAGE
+===================================================== -->
 
 <div class="page">
 
@@ -487,76 +541,92 @@ button:hover {
     <div class="warheads">
 
 
-        <div
-            class="warhead"
+        <!-- GAMMA -->
+
+        <button
+            class="warhead-button"
             onclick="selectWarhead('GAMMA')"
         >
 
-            <h2>GAMMA</h2>
+            <div class="warhead-name">
+                GAMMA
+            </div>
 
-            <div class="effect">
+            <div class="warhead-effect">
                 GLOBAL TERMINATION
             </div>
 
-            <div class="status">
+            <div class="warhead-status">
                 STATUS : STANDBY
             </div>
 
-        </div>
+        </button>
 
 
-        <div
-            class="warhead"
+        <!-- DELTA -->
+
+        <button
+            class="warhead-button"
             onclick="selectWarhead('DELTA')"
         >
 
-            <h2>DELTA</h2>
+            <div class="warhead-name">
+                DELTA
+            </div>
 
-            <div class="effect">
+            <div class="warhead-effect">
                 FACILITY TERMINATION
             </div>
 
-            <div class="status">
+            <div class="warhead-status">
                 STATUS : STANDBY
             </div>
 
-        </div>
+        </button>
 
 
-        <div
-            class="warhead"
+        <!-- ALPHA -->
+
+        <button
+            class="warhead-button"
             onclick="selectWarhead('ALPHA')"
         >
 
-            <h2>ALPHA</h2>
+            <div class="warhead-name">
+                ALPHA
+            </div>
 
-            <div class="effect">
+            <div class="warhead-effect">
                 FACILITY TERMINATION
             </div>
 
-            <div class="status">
+            <div class="warhead-status">
                 STATUS : STANDBY
             </div>
 
-        </div>
+        </button>
 
 
-        <div
-            class="warhead"
+        <!-- BETA -->
+
+        <button
+            class="warhead-button"
             onclick="selectWarhead('BETA')"
         >
 
-            <h2>BETA</h2>
+            <div class="warhead-name">
+                BETA
+            </div>
 
-            <div class="effect">
+            <div class="warhead-effect">
                 FACILITY TERMINATION
             </div>
 
-            <div class="status">
+            <div class="warhead-status">
                 STATUS : STANDBY
             </div>
 
-        </div>
+        </button>
 
 
     </div>
@@ -565,7 +635,7 @@ button:hover {
 
 
 <!-- =====================================================
-     AUTHORIZATION CODE
+     CODE PANEL
 ===================================================== -->
 
 <div
@@ -576,7 +646,7 @@ button:hover {
     <div class="panel">
 
         <div class="panel-header">
-            WARHEAD AUTHORIZATION TERMINAL
+            WARHEAD AUTHORIZATION SYSTEM
         </div>
 
         <div class="panel-body">
@@ -587,18 +657,16 @@ button:hover {
 
             <div class="panel-text">
 
-                WARHEAD SELECTED :
-                <strong id="selectedWarheadText">
+                SELECTED WARHEAD :
+                <strong id="codeWarhead">
                     UNKNOWN
                 </strong>
 
             </div>
 
-            <br>
-
             <input
                 id="codeInput"
-                class="input"
+                class="code-input"
                 type="password"
                 autocomplete="off"
                 placeholder="AUTHORIZATION CODE"
@@ -611,17 +679,18 @@ button:hover {
                 INVALID AUTHORIZATION CODE.
             </div>
 
-            <div class="buttons">
+            <div class="button-row">
 
                 <button
-                    class="primary"
+                    class="control-button"
                     onclick="verifyCode()"
                 >
                     CONFIRM
                 </button>
 
                 <button
-                    onclick="closeAll()"
+                    class="control-button"
+                    onclick="closePanels()"
                 >
                     CANCEL
                 </button>
@@ -636,7 +705,7 @@ button:hover {
 
 
 <!-- =====================================================
-     RULES / WARNING
+     RULES
 ===================================================== -->
 
 <div
@@ -647,7 +716,7 @@ button:hover {
     <div class="panel">
 
         <div class="panel-header">
-            WARHEAD SYSTEM // AUTHORIZATION
+            WARHEAD SYSTEM // SECURITY NOTICE
         </div>
 
         <div class="panel-body">
@@ -658,39 +727,48 @@ button:hover {
 
             <div class="panel-text">
 
-                <strong>WARNING:</strong>
-                WARHEAD ACTIVATION IS A FINAL SECURITY
-                PROCEDURE.
+                <strong>CRITICAL WARNING</strong>
 
                 <br><br>
 
-                The selected warhead may cause catastrophic
-                damage to the designated target.
+                Warhead activation is a restricted
+                Foundation procedure.
+
+                <br><br>
+
+                Verify the selected warhead and target
+                information before continuing.
 
             </div>
 
             <div class="warning">
 
-                • Verify the selected warhead before continuing.<br>
-                • Verify the target site when required.<br>
                 • Unauthorized activation is prohibited.<br>
-                • Once the firing sequence begins, the operation
-                cannot be cancelled.<br>
-                • Confirm all information before proceeding.
+
+                • Verify the selected warhead.<br>
+
+                • Verify the target facility when required.<br>
+
+                • Do not continue if the target information
+                is incorrect.<br>
+
+                • Once the firing sequence begins,
+                cancellation will no longer be available.
 
             </div>
 
-            <div class="buttons">
+            <div class="button-row">
 
                 <button
-                    class="primary"
-                    onclick="continueFromRules()"
+                    class="control-button"
+                    onclick="continueRules()"
                 >
                     I UNDERSTAND / CONTINUE
                 </button>
 
                 <button
-                    onclick="closeAll()"
+                    class="control-button"
+                    onclick="closePanels()"
                 >
                     CANCEL
                 </button>
@@ -728,13 +806,13 @@ button:hover {
             <div class="panel-text">
 
                 WARHEAD :
-                <strong id="siteWarheadText">
+                <strong id="siteWarhead">
                     UNKNOWN
                 </strong>
 
                 <br><br>
 
-                Select the facility targeted by the
+                Select the facility targeted by this
                 warhead.
 
             </div>
@@ -742,43 +820,25 @@ button:hover {
 
             <div class="site-grid">
 
-                <div
+                <button
                     class="site-button"
                     onclick="selectSite('SITE-19', this)"
                 >
                     SITE-19
-                </div>
+                </button>
 
-                <div
+                <button
                     class="site-button"
                     onclick="selectSite('SITE-51', this)"
                 >
                     SITE-51
-                </div>
+                </button>
 
-                <div
+                <button
                     class="site-button"
                     onclick="selectSite('SITE-64', this)"
                 >
                     SITE-64
-                </div>
-
-            </div>
-
-
-            <div class="buttons">
-
-                <button
-                    class="primary"
-                    onclick="confirmSite()"
-                >
-                    CONTINUE
-                </button>
-
-                <button
-                    onclick="closeAll()"
-                >
-                    CANCEL
                 </button>
 
             </div>
@@ -789,6 +849,25 @@ button:hover {
                 id="siteError"
             >
                 TARGET SITE MUST BE SELECTED.
+            </div>
+
+
+            <div class="button-row">
+
+                <button
+                    class="control-button"
+                    onclick="confirmSite()"
+                >
+                    CONTINUE
+                </button>
+
+                <button
+                    class="control-button"
+                    onclick="closePanels()"
+                >
+                    CANCEL
+                </button>
+
             </div>
 
         </div>
@@ -810,7 +889,7 @@ button:hover {
     <div class="panel">
 
         <div class="panel-header">
-            CRITICAL AUTHORIZATION
+            WARHEAD SYSTEM // FINAL AUTHORIZATION
         </div>
 
         <div class="panel-body">
@@ -842,28 +921,29 @@ button:hover {
 
                 <br><br>
 
-                ACTIVATING THIS WARHEAD WILL BEGIN
-                THE FIRING SEQUENCE.
+                Confirming this operation will begin
+                the warhead firing sequence.
 
                 <br><br>
 
-                THIS ACTION CANNOT BE UNDONE
-                AFTER FIRING BEGINS.
+                Cancellation will not be available
+                after firing begins.
 
             </div>
 
 
-            <div class="buttons">
+            <div class="button-row">
 
                 <button
-                    class="danger"
+                    class="control-button"
                     onclick="activateWarhead()"
                 >
                     CONFIRM WARHEAD ACTIVATION
                 </button>
 
                 <button
-                    onclick="closeAll()"
+                    class="control-button"
+                    onclick="closePanels()"
                 >
                     CANCEL
                 </button>
@@ -904,10 +984,14 @@ button:hover {
 
 <script>
 
+/* =====================================================
+   VARIABLES
+===================================================== */
+
 let selectedWarhead = null;
+
 let selectedSite = null;
 
-let sequenceCancelled = false;
 let firingStarted = false;
 
 
@@ -918,15 +1002,12 @@ let firingStarted = false;
 function selectWarhead(type) {
 
     selectedWarhead = type;
+
     selectedSite = null;
 
     document
-        .getElementById("selectedWarheadText")
+        .getElementById("codeWarhead")
         .textContent = type;
-
-    document
-        .getElementById("codeOverlay")
-        .classList.add("show");
 
     document
         .getElementById("codeInput")
@@ -935,6 +1016,10 @@ function selectWarhead(type) {
     document
         .getElementById("codeError")
         .style.display = "none";
+
+    document
+        .getElementById("codeOverlay")
+        .classList.add("active");
 
     setTimeout(() => {
 
@@ -960,7 +1045,9 @@ function verifyCode() {
             .toUpperCase();
 
     const error =
-        document.getElementById("codeError");
+        document.getElementById(
+            "codeError"
+        );
 
 
     if (code !== "WARHEAD") {
@@ -973,19 +1060,19 @@ function verifyCode() {
 
     document
         .getElementById("codeOverlay")
-        .classList.remove("show");
+        .classList.remove("active");
 
 
     /*
-     * IMPORTANT:
-     * CODE DOES NOT START THE WARHEAD.
-     *
-     * RULES COME FIRST.
-     */
+       IMPORTANT:
+       WARHEAD DOES NOT START HERE.
+
+       RULES ARE SHOWN FIRST.
+    */
 
     document
         .getElementById("rulesOverlay")
-        .classList.add("show");
+        .classList.add("active");
 }
 
 
@@ -993,62 +1080,65 @@ function verifyCode() {
    RULES
 ===================================================== */
 
-function continueFromRules() {
+function continueRules() {
 
     document
         .getElementById("rulesOverlay")
-        .classList.remove("show");
+        .classList.remove("active");
 
 
     /*
-     * GAMMA IS GLOBAL.
-     * NO SITE SELECTION.
-     */
+       GAMMA = GLOBAL
+       NO TARGET SITE.
+    */
 
     if (selectedWarhead === "GAMMA") {
 
-        openFinalConfirmation();
+        openFinalWarning();
 
         return;
     }
 
 
     /*
-     * DELTA / ALPHA / BETA
-     * REQUIRE A TARGET SITE.
-     */
+       ALPHA / BETA / DELTA
+       REQUIRE SITE SELECTION.
+    */
 
     document
-        .getElementById("siteWarheadText")
+        .getElementById("siteWarhead")
         .textContent = selectedWarhead;
+
 
     document
         .getElementById("siteOverlay")
-        .classList.add("show");
+        .classList.add("active");
 }
 
 
 /* =====================================================
-   SELECT SITE
+   SITE SELECTION
 ===================================================== */
 
-function selectSite(site, element) {
+function selectSite(site, button) {
 
     selectedSite = site;
 
 
     document
         .querySelectorAll(".site-button")
-        .forEach(button => {
+        .forEach(item => {
 
-            button.classList.remove(
+            item.classList.remove(
                 "selected"
             );
 
         });
 
 
-    element.classList.add("selected");
+    button.classList.add(
+        "selected"
+    );
 
 
     document
@@ -1075,18 +1165,18 @@ function confirmSite() {
 
     document
         .getElementById("siteOverlay")
-        .classList.remove("show");
+        .classList.remove("active");
 
 
-    openFinalConfirmation();
+    openFinalWarning();
 }
 
 
 /* =====================================================
-   FINAL CONFIRMATION
+   FINAL WARNING
 ===================================================== */
 
-function openFinalConfirmation() {
+function openFinalWarning() {
 
     document
         .getElementById("finalWarhead")
@@ -1103,32 +1193,32 @@ function openFinalConfirmation() {
 
     document
         .getElementById("finalOverlay")
-        .classList.add("show");
+        .classList.add("active");
 }
 
 
 /* =====================================================
-   ACTIVATE
+   ACTIVATE WARHEAD
 ===================================================== */
 
 function activateWarhead() {
 
     document
         .getElementById("finalOverlay")
-        .classList.remove("show");
+        .classList.remove("active");
 
 
-    startTerminalSequence();
+    startTerminal();
 }
 
 
 /* =====================================================
-   TERMINAL LINE
+   TERMINAL
 ===================================================== */
 
-function addTerminalLine(
+function terminalLine(
     text,
-    className = ""
+    type = ""
 ) {
 
     const terminal =
@@ -1138,12 +1228,13 @@ function addTerminalLine(
 
 
     const line =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     line.className =
-        "terminal-line " +
-        className;
+        "terminal-line " + type;
 
 
     line.textContent = text;
@@ -1174,12 +1265,11 @@ function wait(ms) {
 
 
 /* =====================================================
-   TERMINAL SEQUENCE
+   START TERMINAL
 ===================================================== */
 
-async function startTerminalSequence() {
+async function startTerminal() {
 
-    sequenceCancelled = false;
     firingStarted = false;
 
 
@@ -1189,31 +1279,32 @@ async function startTerminalSequence() {
         );
 
 
-    const terminal =
+    const content =
         document.getElementById(
             "terminalContent"
         );
 
 
-    terminal.innerHTML = "";
+    content.innerHTML = "";
 
-    overlay.classList.add("show");
+    overlay.classList.add(
+        "active"
+    );
 
 
-    addTerminalLine(
+    terminalLine(
         "WARHEAD SYSTEM INITIALIZING..."
     );
 
 
     /*
-     * TIME EXISTS ONLY IN CODE.
-     * NOTHING IS DISPLAYED TO USER.
-     */
+       USER DOES NOT SEE THIS TIME.
+    */
 
     await wait(2000);
 
 
-    addTerminalLine(
+    terminalLine(
         "SYSTEM SUCCESSFULLY LOADED"
     );
 
@@ -1222,14 +1313,14 @@ async function startTerminalSequence() {
 
 
     /*
-     * FIRING BEGINS.
-     * CANCELLATION IS NO LONGER POSSIBLE.
-     */
+       FIRING STARTS.
+       CANCELLATION IS NO LONGER POSSIBLE.
+    */
 
     firingStarted = true;
 
 
-    addTerminalLine(
+    terminalLine(
         "WARHEAD FIRING..."
     );
 
@@ -1237,7 +1328,7 @@ async function startTerminalSequence() {
     await wait(5000);
 
 
-    addTerminalLine(
+    terminalLine(
         "WARHEAD DROPPING..."
     );
 
@@ -1251,7 +1342,7 @@ async function startTerminalSequence() {
         i++
     ) {
 
-        addTerminalLine(
+        terminalLine(
             "#############",
             "hash"
         );
@@ -1263,7 +1354,7 @@ async function startTerminalSequence() {
     await wait(700);
 
 
-    addTerminalLine(
+    terminalLine(
         "WARHEAD DETONATION COMPLETE."
     );
 
@@ -1271,10 +1362,10 @@ async function startTerminalSequence() {
 
 
 /* =====================================================
-   CLOSE ALL
+   CLOSE PANELS
 ===================================================== */
 
-function closeAll() {
+function closePanels() {
 
     if (firingStarted) {
         return;
@@ -1283,16 +1374,17 @@ function closeAll() {
 
     document
         .querySelectorAll(".overlay")
-        .forEach(element => {
+        .forEach(panel => {
 
-            element.classList.remove(
-                "show"
+            panel.classList.remove(
+                "active"
             );
 
         });
 
 
     selectedWarhead = null;
+
     selectedSite = null;
 
 
@@ -1318,8 +1410,12 @@ document
         "keydown",
         event => {
 
-            if (event.key === "Enter") {
+            if (
+                event.key === "Enter"
+            ) {
+
                 verifyCode();
+
             }
 
         }
