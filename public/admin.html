@@ -1,524 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>SITE-64 // ADMINISTRATION</title>
-
-    <link rel="stylesheet" href="script.css">
-
-    <style>
-        body {
-            background:
-                radial-gradient(
-                    circle at top,
-                    #101820 0%,
-                    #05070a 55%
-                );
-        }
-
-        .admin-page {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 130px 6% 80px;
-        }
-
-        .admin-header {
-            margin-bottom: 35px;
-        }
-
-        .admin-header span {
-            color: #5f778a;
-            font-size: 11px;
-            letter-spacing: 3px;
-        }
-
-        .admin-header h1 {
-            margin-top: 10px;
-            font-size: 42px;
-        }
-
-        .admin-header p {
-            color: #71818d;
-            margin-top: 8px;
-        }
-
-        .admin-login {
-            max-width: 500px;
-            margin: 100px auto;
-            padding: 35px;
-            background: #090e13;
-            border: 1px solid #263440;
-        }
-
-        .admin-login h2 {
-            margin-bottom: 25px;
-        }
-
-        .admin-login input {
-            margin-bottom: 15px;
-        }
-
-        .dashboard {
-            display: none;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns:
-                repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .stat {
-            padding: 22px;
-            background: #090e13;
-            border: 1px solid #202d38;
-        }
-
-        .stat span {
-            display: block;
-            color: #5d7180;
-            font-size: 10px;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-        }
-
-        .stat strong {
-            font-size: 28px;
-        }
-
-        .admin-card {
-            background: #090e13;
-            border: 1px solid #202d38;
-            padding: 24px;
-            margin-bottom: 18px;
-        }
-
-        .admin-card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .admin-card h3 {
-            font-family: monospace;
-            font-size: 15px;
-        }
-
-        .admin-info {
-            display: grid;
-            grid-template-columns:
-                repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 18px;
-        }
-
-        .admin-info div {
-            border: 1px solid #1e2a33;
-            padding: 13px;
-        }
-
-        .admin-info span {
-            display: block;
-            color: #596b78;
-            font-size: 9px;
-            letter-spacing: 2px;
-            margin-bottom: 6px;
-        }
-
-        .admin-info strong {
-            font-size: 13px;
-        }
-
-        .admin-message-input {
-            margin-bottom: 15px;
-        }
-
-        .admin-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .approve-button,
-        .reject-button {
-            padding: 12px 18px;
-            border: 1px solid;
-            background: transparent;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 900;
-            letter-spacing: 1px;
-        }
-
-        .approve-button {
-            color: #8dccaa;
-            border-color: #315d48;
-        }
-
-        .reject-button {
-            color: #dc8c8c;
-            border-color: #633838;
-        }
-
-        .approve-button:hover {
-            background: #102219;
-        }
-
-        .reject-button:hover {
-            background: #210d0d;
-        }
-
-        .admin-result {
-            margin-bottom: 20px;
-            padding: 12px;
-            display: none;
-            font-size: 12px;
-        }
-
-        @media (max-width: 800px) {
-
-            .stats {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .admin-info {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-<header class="topbar">
-
-    <div class="brand">
-
-        <div class="brand-title">
-            SCP FOUNDATION
-        </div>
-
-        <div class="brand-subtitle">
-            SITE-64 ADMINISTRATION
-        </div>
-
-    </div>
-
-    <nav class="navigation">
-
-        <a href="/">
-            HOME
-        </a>
-
-        <a href="/sites">
-            SITES
-        </a>
-
-        <a href="/term">
-            TERMINAL
-        </a>
-
-    </nav>
-
-</header>
-
-
-<main class="admin-page">
-
-    <div class="admin-login" id="loginBox">
-
-        <h2>
-            ADMINISTRATION ACCESS
-        </h2>
-
-        <p style="color:#71818d;margin-bottom:20px;">
-            Authorized personnel only.
-        </p>
-
-        <input
-            id="adminPassword"
-            type="password"
-            placeholder="ACCESS CODE"
-        >
-
-        <button
-            class="primary-button"
-            onclick="login()"
-        >
-            ACCESS SYSTEM
-        </button>
-
-        <div
-            id="loginError"
-            style="
-                color:#d98989;
-                margin-top:15px;
-                display:none;
-            "
-        >
-            ACCESS DENIED.
-        </div>
-
-    </div>
-
-
-    <div
-        class="dashboard"
-        id="dashboard"
-    >
-
-        <div class="admin-header">
-
-            <span>
-                SECURE CONTAIN PROTECT / O5 ADMINISTRATION
-            </span>
-
-            <h1>
-                SITE-64 CONTROL
-            </h1>
-
-            <p>
-                Request management and facility monitoring.
-            </p>
-
-        </div>
-
-
-        <div class="stats">
-
-            <div class="stat">
-                <span>
-                    TOTAL REQUESTS
-                </span>
-
-                <strong id="totalRequests">
-                    0
-                </strong>
-            </div>
-
-
-            <div class="stat">
-                <span>
-                    PENDING
-                </span>
-
-                <strong id="pendingRequests">
-                    0
-                </strong>
-            </div>
-
-
-            <div class="stat">
-                <span>
-                    APPROVED
-                </span>
-
-                <strong id="approvedRequests">
-                    0
-                </strong>
-            </div>
-
-
-            <div class="stat">
-                <span>
-                    REJECTED
-                </span>
-
-                <strong id="rejectedRequests">
-                    0
-                </strong>
-            </div>
-
-        </div>
-
-
-        <div
-            id="adminResult"
-            class="admin-result"
-        ></div>
-
-
-        <div id="requestsContainer"></div>
-
-    </div>
-
-</main>
-
-
-<script>
-
-const ADMIN_CODE = "SITE64-O5";
-
-let requests = [];
-
-
-/* =====================================================
-   LOGIN
-===================================================== */
-
-function login() {
-
-    const password =
-        document
-            .getElementById("adminPassword")
-            .value;
-
-    if (password === ADMIN_CODE) {
-
-        document
-            .getElementById("loginBox")
-            .style.display = "none";
-
-        document
-            .getElementById("dashboard")
-            .style.display = "block";
-
-        loadRequests();
-
-    } else {
-
-        document
-            .getElementById("loginError")
-            .style.display = "block";
-    }
-}
-
-
-document
-    .getElementById("adminPassword")
-    .addEventListener(
-        "keydown",
-        event => {
-
-            if (event.key === "Enter") {
-                login();
-            }
-
-        }
-    );
-
-
-/* =====================================================
-   LOAD REQUESTS
-===================================================== */
-
-async function loadRequests() {
-
-    try {
-
-        const response =
-            await fetch("/api/requests");
-
-        const data =
-            await response.json();
-
-        if (!data.success) {
-            return;
-        }
-
-        requests =
-            data.requests || [];
-
-        updateStats();
-
-        renderRequests();
-
-    } catch {
-
-        showResult(
-            "Unable to connect to request database.",
-            true
-        );
-    }
-}
-
-
-/* =====================================================
-   STATS
-===================================================== */
-
-function updateStats() {
-
-    document.getElementById(
-        "totalRequests"
-    ).textContent =
-        requests.length;
-
-
-    document.getElementById(
-        "pendingRequests"
-    ).textContent =
-        requests.filter(
-            r => r.status === "PENDING"
-        ).length;
-
-
-    document.getElementById(
-        "approvedRequests"
-    ).textContent =
-        requests.filter(
-            r => r.status === "APPROVED"
-        ).length;
-
-
-    document.getElementById(
-        "rejectedRequests"
-    ).textContent =
-        requests.filter(
-            r => r.status === "REJECTED"
-        ).length;
-}
-
-
-/* =====================================================
-   RENDER
-===================================================== */
-
-function renderRequests() {
-
-    const container =
-        document.getElementById(
-            "requestsContainer"
-        );
-
-
-    if (!requests.length) {
-
-        container.innerHTML = `
-            <div class="admin-card">
-                <strong>
-                    NO REQUESTS IN DATABASE.
-                </strong>
-            </div>
-        `;
-
-        return;
-    }
-
-
-    container.innerHTML =
-        requests
-            .slice()
-            .reverse()
-            .map(request =>
-                createRequest(request)
-            )
-            .join("");
-}
-
-
+```javascript
 function createRequest(request) {
 
     const status =
         String(
             request.status || "PENDING"
         ).toLowerCase();
+
+
+    const times = [
+
+        "12:00 PM",
+        "12:30 PM",
+
+        "1:00 PM",
+        "1:30 PM",
+
+        "2:00 PM",
+        "2:30 PM",
+
+        "3:00 PM",
+        "3:30 PM",
+
+        "4:00 PM",
+        "4:30 PM",
+
+        "5:00 PM",
+        "5:30 PM",
+
+        "6:00 PM",
+        "6:30 PM",
+
+        "7:00 PM",
+        "7:30 PM",
+
+        "8:00 PM",
+        "8:30 PM",
+
+        "9:00 PM",
+        "9:30 PM",
+
+        "10:00 PM",
+        "10:30 PM",
+
+        "11:00 PM",
+        "11:30 PM",
+
+        "12:00 AM"
+    ];
+
+
+    const timeOptions =
+        times
+            .map(time => {
+
+                return `
+                    <option
+                        value="${time}"
+                        ${
+                            String(
+                                request.time
+                            ).toUpperCase() ===
+                            time
+                                ? "selected"
+                                : ""
+                        }
+                    >
+                        ${time}
+                    </option>
+                `;
+
+            })
+            .join("");
 
 
     return `
@@ -534,7 +86,8 @@ function createRequest(request) {
                     class="request-status ${status}"
                 >
                     ${escapeHtml(
-                        request.status
+                        request.status ||
+                        "PENDING"
                     )}
                 </span>
 
@@ -566,7 +119,8 @@ function createRequest(request) {
 
                     <strong>
                         ${escapeHtml(
-                            request.typeName
+                            request.typeName ||
+                            request.type
                         )}
                     </strong>
 
@@ -581,7 +135,8 @@ function createRequest(request) {
 
                     <strong>
                         ${escapeHtml(
-                            request.scp || "N/A"
+                            request.scp ||
+                            "N/A"
                         )}
                     </strong>
 
@@ -591,7 +146,7 @@ function createRequest(request) {
                 <div>
 
                     <span>
-                        REQUEST TIME
+                        CURRENT TIME
                     </span>
 
                     <strong>
@@ -611,7 +166,8 @@ function createRequest(request) {
 
                     <strong>
                         ${escapeHtml(
-                            request.period
+                            request.period ||
+                            "N/A"
                         )}
                     </strong>
 
@@ -621,14 +177,12 @@ function createRequest(request) {
                 <div>
 
                     <span>
-                        CREATED
+                        STATUS
                     </span>
 
                     <strong>
                         ${escapeHtml(
-                            new Date(
-                                request.createdAt
-                            ).toLocaleString()
+                            request.status
                         )}
                     </strong>
 
@@ -646,12 +200,42 @@ function createRequest(request) {
                 "
             >
 
-                ${
-                    escapeHtml(
-                        request.message ||
-                        "NO ADDITIONAL DETAILS."
-                    )
-                }
+                ${escapeHtml(
+                    request.message ||
+                    "NO ADDITIONAL DETAILS."
+                )}
+
+            </div>
+
+
+            <div
+                style="
+                    display:flex;
+                    gap:10px;
+                    flex-wrap:wrap;
+                    margin-bottom:20px;
+                "
+            >
+
+                <select
+                    id="time-${request.id}"
+                    style="
+                        flex:1;
+                        min-width:180px;
+                    "
+                >
+
+                    ${timeOptions}
+
+                </select>
+
+
+                <button
+                    class="approve-button"
+                    onclick="changeRequestTime('${request.id}')"
+                >
+                    CHANGE TIME
+                </button>
 
             </div>
 
@@ -696,11 +280,13 @@ function createRequest(request) {
                             font-size:12px;
                         "
                     >
+
                         ADMIN MESSAGE:
                         ${escapeHtml(
                             request.adminMessage ||
                             "NONE"
                         )}
+
                     </div>
 
                     `
@@ -712,70 +298,31 @@ function createRequest(request) {
 
 
 /* =====================================================
-   APPROVE
+   CHANGE TIME
 ===================================================== */
 
-async function approveRequest(id) {
+async function changeRequestTime(id) {
 
-    const input =
+    const select =
         document.getElementById(
-            `message-${id}`
+            `time-${id}`
         );
 
-    const message =
-        input
-            ? input.value.trim()
-            : "";
+
+    if (!select) {
+        return;
+    }
 
 
-    await updateRequest(
-        id,
-        "approve",
-        message
-    );
-}
+    const time =
+        select.value;
 
-
-/* =====================================================
-   REJECT
-===================================================== */
-
-async function rejectRequest(id) {
-
-    const input =
-        document.getElementById(
-            `message-${id}`
-        );
-
-    const message =
-        input
-            ? input.value.trim()
-            : "";
-
-
-    await updateRequest(
-        id,
-        "reject",
-        message
-    );
-}
-
-
-/* =====================================================
-   UPDATE
-===================================================== */
-
-async function updateRequest(
-    id,
-    action,
-    message
-) {
 
     try {
 
         const response =
             await fetch(
-                `/api/requests/${id}/${action}`,
+                `/api/requests/${id}/time`,
                 {
                     method: "POST",
 
@@ -786,7 +333,7 @@ async function updateRequest(
 
                     body:
                         JSON.stringify({
-                            message
+                            time
                         })
                 }
             );
@@ -800,7 +347,7 @@ async function updateRequest(
 
             showResult(
                 data.message ||
-                "REQUEST UPDATE FAILED.",
+                "TIME CHANGE FAILED.",
                 true
             );
 
@@ -809,7 +356,7 @@ async function updateRequest(
 
 
         showResult(
-            `REQUEST ${action.toUpperCase()}D SUCCESSFULLY.`,
+            `TIME CHANGED TO ${data.request.time}.`,
             false
         );
 
@@ -824,56 +371,4 @@ async function updateRequest(
         );
     }
 }
-
-
-/* =====================================================
-   RESULT
-===================================================== */
-
-function showResult(
-    message,
-    error
-) {
-
-    const box =
-        document.getElementById(
-            "adminResult"
-        );
-
-    box.style.display = "block";
-
-    box.textContent = message;
-
-    box.style.border =
-        "1px solid " +
-        (
-            error
-                ? "#633838"
-                : "#315d48"
-        );
-
-    box.style.color =
-        error
-            ? "#d98989"
-            : "#8dccaa";
-}
-
-
-/* =====================================================
-   ESCAPE
-===================================================== */
-
-function escapeHtml(value) {
-
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-</script>
-
-</body>
-</html>
+```
