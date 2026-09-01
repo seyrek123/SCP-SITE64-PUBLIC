@@ -808,3 +808,355 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSystemStatus();
 
 });
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        /* =================================================
+           NAVIGATION
+        ================================================= */
+
+        const navigationLinks =
+            document.querySelectorAll(
+                "nav a"
+            );
+
+        const sections =
+            document.querySelectorAll(
+                ".page-section"
+            );
+
+
+        function updateNavigation() {
+
+            let current =
+                "home";
+
+            sections.forEach(
+                section => {
+
+                    if (
+                        section.getBoundingClientRect()
+                            .top <= 180
+                    ) {
+
+                        current =
+                            section.id;
+                    }
+                }
+            );
+
+
+            navigationLinks.forEach(
+                link => {
+
+                    const target =
+                        link
+                            .getAttribute("href")
+                            .substring(1);
+
+                    link.classList.toggle(
+                        "active",
+                        target === current
+                    );
+                }
+            );
+        }
+
+
+        window.addEventListener(
+            "scroll",
+            updateNavigation
+        );
+
+        updateNavigation();
+
+
+        /* =================================================
+           REQUEST FORM
+        ================================================= */
+
+        const requestForm =
+            document.getElementById(
+                "requestForm"
+            );
+
+        const typeInput =
+            document.getElementById(
+                "type"
+            );
+
+        const scpGroup =
+            document.getElementById(
+                "scpGroup"
+            );
+
+        const scpInput =
+            document.getElementById(
+                "scp"
+            );
+
+        const result =
+            document.getElementById(
+                "result"
+            );
+
+
+        if (typeInput) {
+
+            typeInput.addEventListener(
+                "change",
+                () => {
+
+                    if (
+                        typeInput.value ===
+                        "scp"
+                    ) {
+
+                        scpGroup.style.display =
+                            "block";
+
+                        scpInput.required =
+                            true;
+
+                    } else {
+
+                        scpGroup.style.display =
+                            "none";
+
+                        scpInput.required =
+                            false;
+
+                        scpInput.value =
+                            "";
+                    }
+                }
+            );
+        }
+
+
+        if (requestForm) {
+
+            requestForm.addEventListener(
+                "submit",
+                async event => {
+
+                    event.preventDefault();
+
+
+                    result.className =
+                        "result";
+
+                    result.textContent =
+                        "SUBMITTING REQUEST...";
+
+
+                    const name =
+                        document
+                            .getElementById("name")
+                            .value
+                            .trim();
+
+
+                    const type =
+                        typeInput.value;
+
+
+                    const typeName =
+                        typeInput
+                            .options[
+                                typeInput
+                                    .selectedIndex
+                            ]
+                            .text;
+
+
+                    const scp =
+                        type === "scp"
+                            ? scpInput.value
+                            : null;
+
+
+                    const time =
+                        document
+                            .getElementById("time")
+                            .value;
+
+
+                    const message =
+                        document
+                            .getElementById("message")
+                            .value
+                            .trim();
+
+
+                    try {
+
+                        const response =
+                            await fetch(
+                                "/api/requests",
+                                {
+                                    method:
+                                        "POST",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    body:
+                                        JSON.stringify({
+                                            name,
+                                            type,
+                                            typeName,
+                                            scp,
+                                            time,
+                                            message
+                                        })
+                                }
+                            );
+
+
+                        const data =
+                            await response.json();
+
+
+                        if (!response.ok) {
+
+                            throw new Error(
+                                data.message ||
+                                "REQUEST FAILED."
+                            );
+                        }
+
+
+                        result.className =
+                            "result success";
+
+
+                        result.textContent =
+                            "REQUEST SUBMITTED SUCCESSFULLY. REQUEST ID: " +
+                            data.request.id;
+
+
+                        requestForm.reset();
+
+
+                        scpGroup.style.display =
+                            "none";
+
+                        scpInput.required =
+                            false;
+
+
+                    } catch (error) {
+
+                        result.className =
+                            "result error";
+
+                        result.textContent =
+                            error.message;
+                    }
+                }
+            );
+        }
+
+
+        /* =================================================
+           STATUS
+        ================================================= */
+
+        async function loadStatus() {
+
+            const serverStatus =
+                document.getElementById(
+                    "serverStatus"
+                );
+
+            const databaseStatus =
+                document.getElementById(
+                    "databaseStatus"
+                );
+
+            const requestStatus =
+                document.getElementById(
+                    "requestStatus"
+                );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/status"
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    !response.ok ||
+                    !data.success
+                ) {
+
+                    throw new Error(
+                        "STATUS ERROR"
+                    );
+                }
+
+
+                if (serverStatus) {
+
+                    serverStatus.textContent =
+                        data.server ||
+                        "ONLINE";
+                }
+
+
+                if (databaseStatus) {
+
+                    databaseStatus.textContent =
+                        data.database ||
+                        "ONLINE";
+                }
+
+
+                if (requestStatus) {
+
+                    requestStatus.textContent =
+                        data.requestSystem ||
+                        "ONLINE";
+                }
+
+
+            } catch {
+
+                if (serverStatus) {
+
+                    serverStatus.textContent =
+                        "OFFLINE";
+                }
+
+
+                if (databaseStatus) {
+
+                    databaseStatus.textContent =
+                        "OFFLINE";
+                }
+
+
+                if (requestStatus) {
+
+                    requestStatus.textContent =
+                        "OFFLINE";
+                }
+            }
+        }
+
+
+        loadStatus();
+
+    }
+);

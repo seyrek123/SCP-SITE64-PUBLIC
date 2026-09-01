@@ -14,55 +14,70 @@ const ADMIN_PASSWORD =
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-function createEmptyDatabase() {
+/* =====================================================
+   DATABASE
+===================================================== */
+
+function createDatabase() {
     return {
         requests: []
     };
 }
 
 function ensureDatabase() {
+
     if (!fs.existsSync(DATA_FILE)) {
+
         fs.writeFileSync(
             DATA_FILE,
-            JSON.stringify(createEmptyDatabase(), null, 4),
+            JSON.stringify(createDatabase(), null, 4),
             "utf8"
         );
+
         return;
     }
 
     try {
+
         const data = JSON.parse(
             fs.readFileSync(DATA_FILE, "utf8")
         );
 
         if (!Array.isArray(data.requests)) {
+
             data.requests = [];
+
             saveDatabase(data);
         }
-    } catch (error) {
-        console.error("DATABASE ERROR:", error);
+
+    } catch {
 
         fs.writeFileSync(
             DATA_FILE,
-            JSON.stringify(createEmptyDatabase(), null, 4),
+            JSON.stringify(createDatabase(), null, 4),
             "utf8"
         );
     }
 }
 
 function readDatabase() {
+
     ensureDatabase();
 
     try {
+
         return JSON.parse(
             fs.readFileSync(DATA_FILE, "utf8")
         );
+
     } catch {
-        return createEmptyDatabase();
+
+        return createDatabase();
     }
 }
 
 function saveDatabase(database) {
+
     fs.writeFileSync(
         DATA_FILE,
         JSON.stringify(database, null, 4),
@@ -70,19 +85,30 @@ function saveDatabase(database) {
     );
 }
 
+/* =====================================================
+   ID
+===================================================== */
+
 function generateId() {
+
     let id;
 
     do {
+
         id =
             "SITE64-" +
             Math.floor(
-                10000 + Math.random() * 90000
+                10000 +
+                Math.random() * 90000
             );
+
     } while (
-        readDatabase().requests.some(
-            request => request.id === id
-        )
+        readDatabase()
+            .requests
+            .some(
+                request =>
+                    request.id === id
+            )
     );
 
     return id;
@@ -90,29 +116,36 @@ function generateId() {
 
 /* =====================================================
    TIME
-   12:00 - 23:30
-   00:00
-   30 MINUTE INTERVAL
 ===================================================== */
 
 function validateTime(time) {
-    if (!time) return false;
+
+    if (!time) {
+        return false;
+    }
 
     const match =
-        /^([0-9]{1,2}):([0-9]{2})$/.exec(
-            String(time)
-        );
+        /^([0-9]{1,2}):([0-9]{2})$/
+            .exec(String(time));
 
-    if (!match) return false;
+    if (!match) {
+        return false;
+    }
 
     const hour = Number(match[1]);
     const minute = Number(match[2]);
 
-    if (hour < 0 || hour > 23) {
+    if (
+        hour < 0 ||
+        hour > 23
+    ) {
         return false;
     }
 
-    if (minute !== 0 && minute !== 30) {
+    if (
+        minute !== 0 &&
+        minute !== 30
+    ) {
         return false;
     }
 
@@ -124,9 +157,11 @@ function validateTime(time) {
 }
 
 function getPeriod(time) {
-    const hour = Number(
-        String(time).split(":")[0]
-    );
+
+    const hour =
+        Number(
+            String(time).split(":")[0]
+        );
 
     if (hour === 0) {
         return "NIGHT";
@@ -140,10 +175,11 @@ function getPeriod(time) {
 }
 
 /* =====================================================
-   ADMIN AUTHENTICATION
+   ADMIN AUTH
 ===================================================== */
 
 function checkAdmin(req) {
+
     const password =
         req.headers["x-admin-password"];
 
@@ -154,6 +190,7 @@ function checkAdmin(req) {
 }
 
 function requireAdmin(req, res, next) {
+
     if (checkAdmin(req)) {
         return next();
     }
@@ -173,9 +210,15 @@ app.post(
     (req, res) => {
 
         const password =
-            String(req.body.password || "");
+            String(
+                req.body.password || ""
+            );
 
-        if (password === ADMIN_PASSWORD) {
+        if (
+            password ===
+            ADMIN_PASSWORD
+        ) {
+
             return res.json({
                 success: true
             });
@@ -192,48 +235,64 @@ app.post(
    PUBLIC HOME
 ===================================================== */
 
-app.get("/", (req, res) => {
-    res.sendFile(
-        path.join(
-            PUBLIC_DIR,
-            "index.html"
-        )
-    );
-});
+app.get(
+    "/",
+    (req, res) => {
+
+        res.sendFile(
+            path.join(
+                PUBLIC_DIR,
+                "index.html"
+            )
+        );
+    }
+);
 
 /* =====================================================
    PROTECTED PAGES
 ===================================================== */
 
-app.get("/admin", (req, res) => {
+app.get(
+    "/admin",
+    requireAdmin,
+    (req, res) => {
 
-    res.sendFile(
-        path.join(
-            PUBLIC_DIR,
-            "admin.html"
-        )
-    );
-});
+        res.sendFile(
+            path.join(
+                PUBLIC_DIR,
+                "admin.html"
+            )
+        );
+    }
+);
 
-app.get("/sites", (req, res) => {
+app.get(
+    "/sites",
+    requireAdmin,
+    (req, res) => {
 
-    res.sendFile(
-        path.join(
-            PUBLIC_DIR,
-            "sites.html"
-        )
-    );
-});
+        res.sendFile(
+            path.join(
+                PUBLIC_DIR,
+                "sites.html"
+            )
+        );
+    }
+);
 
-app.get("/term", (req, res) => {
+app.get(
+    "/term",
+    requireAdmin,
+    (req, res) => {
 
-    res.sendFile(
-        path.join(
-            PUBLIC_DIR,
-            "term.html"
-        )
-    );
-});
+        res.sendFile(
+            path.join(
+                PUBLIC_DIR,
+                "term.html"
+            )
+        );
+    }
+);
 
 /* =====================================================
    STATIC FILES
@@ -244,26 +303,53 @@ app.use(
 );
 
 /* =====================================================
-   GET REQUESTS
+   PUBLIC STATUS
 ===================================================== */
 
 app.get(
-    "/api/requests",
-    requireAdmin,
+    "/api/status",
     (req, res) => {
 
         const database =
             readDatabase();
 
+        const pending =
+            database.requests.filter(
+                r =>
+                    r.status ===
+                    "PENDING"
+            ).length;
+
         res.json({
+
             success: true,
-            requests: database.requests
+
+            server:
+                "ONLINE",
+
+            site:
+                "SITE-64",
+
+            database:
+                "ONLINE",
+
+            requestSystem:
+                "ONLINE",
+
+            pendingRequests:
+                pending,
+
+            totalRequests:
+                database.requests.length,
+
+            uptime:
+                process.uptime()
         });
     }
 );
 
 /* =====================================================
-   CREATE REQUEST
+   PUBLIC CREATE REQUEST
 ===================================================== */
 
 app.post(
@@ -311,6 +397,11 @@ app.post(
                 });
             }
 
+            /*
+                SCP DENETİMİ
+                seçildiyse SCP zorunlu
+            */
+
             if (
                 type === "scp" &&
                 (
@@ -331,7 +422,8 @@ app.post(
 
             const request = {
 
-                id: generateId(),
+                id:
+                    generateId(),
 
                 name:
                     String(name).trim(),
@@ -340,11 +432,15 @@ app.post(
                     String(type),
 
                 typeName:
-                    typeName ||
-                    String(type).toUpperCase(),
+                    String(
+                        typeName ||
+                        type
+                    ),
 
                 scp:
-                    scp || null,
+                    scp
+                        ? String(scp)
+                        : null,
 
                 time:
                     String(time),
@@ -353,7 +449,9 @@ app.post(
                     getPeriod(time),
 
                 message:
-                    String(message || ""),
+                    String(
+                        message || ""
+                    ),
 
                 status:
                     "PENDING",
@@ -401,6 +499,26 @@ app.post(
                     "SERVER ERROR."
             });
         }
+    }
+);
+
+/* =====================================================
+   ADMIN REQUESTS
+===================================================== */
+
+app.get(
+    "/api/requests/admin",
+    requireAdmin,
+    (req, res) => {
+
+        const database =
+            readDatabase();
+
+        res.json({
+            success: true,
+            requests:
+                database.requests
+        });
     }
 );
 
@@ -591,65 +709,6 @@ app.post(
 );
 
 /* =====================================================
-   STATUS
-===================================================== */
-
-app.get(
-    "/api/status",
-    requireAdmin,
-    (req, res) => {
-
-        const database =
-            readDatabase();
-
-        const pending =
-            database.requests.filter(
-                r => r.status === "PENDING"
-            ).length;
-
-        const approved =
-            database.requests.filter(
-                r => r.status === "APPROVED"
-            ).length;
-
-        const rejected =
-            database.requests.filter(
-                r => r.status === "REJECTED"
-            ).length;
-
-        res.json({
-
-            server:
-                "ONLINE",
-
-            site:
-                "SITE-64",
-
-            database:
-                "ONLINE",
-
-            requestSystem:
-                "ONLINE",
-
-            pendingRequests:
-                pending,
-
-            approvedRequests:
-                approved,
-
-            rejectedRequests:
-                rejected,
-
-            totalRequests:
-                database.requests.length,
-
-            uptime:
-                process.uptime()
-        });
-    }
-);
-
-/* =====================================================
    TERMINAL
 ===================================================== */
 
@@ -669,6 +728,7 @@ app.post(
             readDatabase();
 
         if (!command) {
+
             return res.json({
                 output: ""
             });
@@ -681,8 +741,6 @@ app.post(
                 output:
 `SITE-64 TERMINAL
 ==============================
-
-AVAILABLE COMMANDS
 
 help       Show available commands
 status     Show system status
@@ -773,23 +831,22 @@ SITE-██   | REDACTED`
 SITE-64 ADMINISTRATION SYSTEM
 
 CLASSIFICATION: O5
-ACCESS LEVEL: ADMIN
-
-Unauthorized access is prohibited.`
+ACCESS LEVEL: ADMIN`
             });
         }
 
         if (command === "clear") {
 
             return res.json({
-                output: "__CLEAR__"
+                output:
+                    "__CLEAR__"
             });
         }
 
         return res.json({
 
             output:
-                `COMMAND NOT FOUND: ${command}\nType "help" for available commands.`
+                `COMMAND NOT FOUND: ${command}`
         });
     }
 );

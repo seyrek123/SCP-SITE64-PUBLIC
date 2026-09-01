@@ -1,235 +1,181 @@
 <!DOCTYPE html>
-
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
-<title>SITE-64 // Administration</title>
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>SITE-64 // ADMIN</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
 
-    body {
-        margin: 0;
-        background: #070a0f;
-        color: #e8edf2;
-        font-family: Arial, Helvetica, sans-serif;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    header {
-        padding: 22px 30px;
-        border-bottom: 1px solid #202832;
-        background: #0b1017;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+body {
+    margin: 0;
+    background: #05080c;
+    color: #e8edf2;
+    font-family: Arial, sans-serif;
+}
 
-    .brand {
-        font-weight: 800;
-        letter-spacing: 2px;
-    }
+header {
+    padding: 22px 6%;
+    border-bottom: 1px solid #202832;
 
-    .brand span {
-        color: #4aa3ff;
-    }
+    display: flex;
+    justify-content: space-between;
+}
 
-    .online {
-        color: #55d98a;
-        font-size: 13px;
-        font-weight: bold;
-    }
+header strong {
+    letter-spacing: 2px;
+}
 
-    main {
-        max-width: 1400px;
-        margin: auto;
-        padding: 30px;
-    }
+header span {
+    color: #6d7986;
+    font-size: 11px;
+}
 
-    .title {
-        margin-bottom: 25px;
-    }
+main {
+    width: min(1100px, 92%);
+    margin: auto;
+    padding: 50px 0;
+}
 
-    .title h1 {
-        margin: 0 0 8px;
-        font-size: 30px;
-        letter-spacing: 2px;
-    }
+.login {
+    width: min(420px, 100%);
+    margin: 100px auto;
+}
 
-    .title p {
-        margin: 0;
-        color: #7f8a98;
-    }
+h1 {
+    letter-spacing: 3px;
+}
 
-    .stats {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 15px;
-        margin-bottom: 25px;
-    }
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 13px;
+    margin-top: 8px;
 
-    .stat {
-        background: #0c121a;
-        border: 1px solid #202832;
-        padding: 20px;
-    }
+    background: #090e13;
+    border: 1px solid #29333e;
 
-    .stat span {
-        display: block;
-        color: #758090;
-        font-size: 11px;
-        letter-spacing: 1.5px;
-        margin-bottom: 8px;
-    }
+    color: white;
+}
 
-    .stat strong {
-        font-size: 28px;
-    }
+button {
+    padding: 12px 20px;
+    margin-top: 10px;
 
-    .requests {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
+    background: #111923;
+    border: 1px solid #354454;
 
-    .request {
-        background: #0c121a;
-        border: 1px solid #202832;
-        padding: 20px;
-    }
+    color: white;
 
-    .request-top {
-        display: flex;
-        justify-content: space-between;
-        gap: 15px;
-        align-items: center;
-        margin-bottom: 18px;
-    }
+    cursor: pointer;
+}
 
-    .request-id {
-        color: #4aa3ff;
-        font-family: monospace;
-        font-size: 14px;
-    }
+button:hover {
+    border-color: #66829d;
+}
 
-    .status {
-        padding: 6px 10px;
-        border: 1px solid #303944;
-        font-size: 11px;
-        font-weight: bold;
-    }
+.hidden {
+    display: none;
+}
 
-    .pending {
-        color: #f0c674;
-    }
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
 
-    .approved {
-        color: #55d98a;
-    }
+.card {
+    background: #090e13;
+    border: 1px solid #202a34;
+    padding: 22px;
+    margin-bottom: 15px;
+}
 
-    .rejected {
-        color: #ff6868;
-    }
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
 
-    .details {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 15px;
-    }
+.id {
+    font-weight: bold;
+    letter-spacing: 1px;
+}
 
-    .detail {
-        background: #080d13;
-        padding: 13px;
-        border: 1px solid #1b232d;
-    }
+.status {
+    font-size: 11px;
+    padding: 5px 9px;
+    border: 1px solid #354454;
+}
 
-    .detail span {
-        display: block;
-        color: #687483;
-        font-size: 10px;
-        letter-spacing: 1px;
-        margin-bottom: 7px;
-    }
+.info {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
 
-    .detail strong {
-        font-size: 14px;
-    }
+.info div {
+    border-top: 1px solid #202832;
+    padding-top: 10px;
+}
 
-    .message {
-        margin-top: 15px;
-        background: #080d13;
-        border-left: 3px solid #4aa3ff;
-        padding: 14px;
-        color: #b9c2cd;
-    }
+.info span {
+    display: block;
+    color: #65717e;
+    font-size: 9px;
+    margin-bottom: 5px;
+}
 
-    .message strong {
-        color: #e8edf2;
-        font-size: 11px;
-        display: block;
-        margin-bottom: 7px;
-    }
+.info strong {
+    font-size: 12px;
+}
 
-    .actions {
-        margin-top: 18px;
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
+.message {
+    margin-top: 20px;
+    padding: 15px;
+    background: #070b10;
+    color: #9aa5b0;
+    line-height: 1.6;
+}
 
-    button {
-        border: 1px solid #303944;
-        background: #111821;
-        color: #e8edf2;
-        padding: 10px 15px;
-        cursor: pointer;
-        font-weight: bold;
-    }
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+}
 
-    button:hover {
-        border-color: #4aa3ff;
-    }
+#error {
+    color: #ff7474;
+    margin-top: 10px;
+}
 
-    .approve {
-        border-color: #286a48;
-        color: #55d98a;
-    }
+#success {
+    color: #85d69e;
+    margin-top: 10px;
+}
 
-    .reject {
-        border-color: #713333;
-        color: #ff6868;
-    }
+@media (max-width: 700px) {
 
-    .empty {
-        text-align: center;
-        padding: 60px;
-        border: 1px dashed #27313d;
-        color: #697483;
+    .info {
+        grid-template-columns: 1fr 1fr;
     }
+}
 
-    @media (max-width: 800px) {
-        .stats,
-        .details {
-            grid-template-columns: 1fr 1fr;
-        }
-    }
-
-    @media (max-width: 500px) {
-        .stats,
-        .details {
-            grid-template-columns: 1fr;
-        }
-
-        main {
-            padding: 18px;
-        }
-    }
 </style>
-```
 
 </head>
 
@@ -237,271 +183,393 @@
 
 <header>
 
-```
-<div class="brand">
-    SECURECONTAINPROTECT
-    <span>// SITE-64 ADMIN</span>
-</div>
+<strong>
+SECURECONTAINPROTECT // ADMIN
+</strong>
 
-<div class="online">
-    ● ADMIN SYSTEM ONLINE
-</div>
-```
+<span>
+SITE-64
+</span>
 
 </header>
 
+
 <main>
 
-```
-<div class="title">
-    <h1>ADMINISTRATION</h1>
-    <p>Request management and SITE-64 operations.</p>
+<div
+    id="loginPanel"
+    class="login"
+>
+
+<h1>
+ADMIN ACCESS
+</h1>
+
+<p>
+AUTHORIZED PERSONNEL ONLY.
+</p>
+
+<input
+    id="password"
+    type="password"
+    placeholder="ADMIN PASSWORD"
+>
+
+<button onclick="login()">
+AUTHENTICATE
+</button>
+
+<div id="error"></div>
+
 </div>
 
-<section class="stats">
 
-    <div class="stat">
-        <span>TOTAL REQUESTS</span>
-        <strong id="total">0</strong>
-    </div>
+<div
+    id="adminPanel"
+    class="hidden"
+>
 
-    <div class="stat">
-        <span>PENDING</span>
-        <strong id="pending">0</strong>
-    </div>
+<div class="toolbar">
 
-    <div class="stat">
-        <span>APPROVED</span>
-        <strong id="approved">0</strong>
-    </div>
+<div>
 
-    <div class="stat">
-        <span>REJECTED</span>
-        <strong id="rejected">0</strong>
-    </div>
+<h1>
+REQUEST DATABASE
+</h1>
 
-</section>
+<span id="count">
+0 REQUESTS
+</span>
 
-<section id="requests" class="requests">
+</div>
 
-    <div class="empty">
-        LOADING REQUEST DATABASE...
-    </div>
+<div>
 
-</section>
-```
+<button onclick="loadRequests()">
+REFRESH
+</button>
+
+<button onclick="logout()">
+LOGOUT
+</button>
+
+</div>
+
+</div>
+
+
+<div id="requests">
+LOADING...
+</div>
+
+</div>
 
 </main>
 
+
 <script>
 
-async function loadRequests() {
+let adminPassword =
+    sessionStorage.getItem(
+        "SITE64_ADMIN_PASSWORD"
+    );
 
-    const container =
-        document.getElementById("requests");
+
+async function login() {
+
+    const password =
+        document
+            .getElementById("password")
+            .value;
+
+    const error =
+        document.getElementById(
+            "error"
+        );
+
+    error.textContent = "";
+
+    if (!password) {
+
+        error.textContent =
+            "PASSWORD REQUIRED.";
+
+        return;
+    }
 
     try {
 
         const response =
-            await fetch("/api/requests");
+            await fetch(
+                "/api/admin/login",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            password
+                        })
+                }
+            );
 
         const data =
             await response.json();
 
         if (
-            !data.success ||
-            !Array.isArray(data.requests)
+            !response.ok ||
+            !data.success
         ) {
-            throw new Error("Invalid response");
+
+            throw new Error(
+                "ACCESS DENIED."
+            );
+        }
+
+        adminPassword =
+            password;
+
+        sessionStorage.setItem(
+            "SITE64_ADMIN_PASSWORD",
+            password
+        );
+
+        showAdmin();
+
+    } catch (error) {
+
+        errorElement =
+            document.getElementById(
+                "error"
+            );
+
+        errorElement.textContent =
+            error.message;
+    }
+}
+
+
+function showAdmin() {
+
+    document
+        .getElementById(
+            "loginPanel"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+    document
+        .getElementById(
+            "adminPanel"
+        )
+        .classList.remove(
+            "hidden"
+        );
+
+    loadRequests();
+}
+
+
+function logout() {
+
+    sessionStorage.removeItem(
+        "SITE64_ADMIN_PASSWORD"
+    );
+
+    location.reload();
+}
+
+
+async function loadRequests() {
+
+    const container =
+        document.getElementById(
+            "requests"
+        );
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/requests/admin",
+                {
+                    headers: {
+                        "x-admin-password":
+                            adminPassword
+                    }
+                }
+            );
+
+        if (
+            response.status === 401
+        ) {
+
+            logout();
+            return;
+        }
+
+        const data =
+            await response.json();
+
+        if (!data.success) {
+            throw new Error(
+                "FAILED TO LOAD REQUESTS."
+            );
         }
 
         const requests =
-            data.requests;
+            data.requests || [];
 
-        document.getElementById("total")
-            .textContent = requests.length;
-
-        document.getElementById("pending")
+        document
+            .getElementById(
+                "count"
+            )
             .textContent =
-                requests.filter(
-                    r => r.status === "PENDING"
-                ).length;
-
-        document.getElementById("approved")
-            .textContent =
-                requests.filter(
-                    r => r.status === "APPROVED"
-                ).length;
-
-        document.getElementById("rejected")
-            .textContent =
-                requests.filter(
-                    r => r.status === "REJECTED"
-                ).length;
+                requests.length +
+                " REQUESTS";
 
         if (!requests.length) {
 
-            container.innerHTML = `
-                <div class="empty">
-                    NO REQUESTS FOUND.
-                </div>
-            `;
+            container.innerHTML =
+                "<p>NO REQUESTS FOUND.</p>";
 
             return;
         }
 
         container.innerHTML =
             requests
-                .slice()
-                .reverse()
-                .map(createRequest)
+                .map(
+                    createCard
+                )
                 .join("");
 
     } catch (error) {
 
-        container.innerHTML = `
-            <div class="empty">
-                REQUEST DATABASE OFFLINE.
-            </div>
-        `;
+        container.innerHTML =
+            `<p style="color:#ff7474">
+                ${escapeHtml(
+                    error.message
+                )}
+            </p>`;
     }
 }
 
 
-function escapeHtml(value) {
-
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-
-function createRequest(request) {
-
-    const status =
-        String(
-            request.status || "PENDING"
-        ).toLowerCase();
+function createCard(request) {
 
     return `
+        <article class="card">
 
-        <article class="request">
+            <div class="card-top">
 
-            <div class="request-top">
-
-                <div class="request-id">
-                    ${escapeHtml(request.id)}
-                </div>
-
-                <div class="status ${status}">
+                <span class="id">
                     ${escapeHtml(
-                        request.status || "PENDING"
+                        request.id
                     )}
-                </div>
+                </span>
+
+                <span class="status">
+                    ${escapeHtml(
+                        request.status
+                    )}
+                </span>
 
             </div>
 
-            <div class="details">
 
-                <div class="detail">
+            <div class="info">
+
+                <div>
                     <span>NAME</span>
                     <strong>
-                        ${escapeHtml(request.name)}
-                    </strong>
-                </div>
-
-                <div class="detail">
-                    <span>REQUEST TYPE</span>
-                    <strong>
                         ${escapeHtml(
-                            request.typeName ||
-                            request.type ||
-                            "UNKNOWN"
+                            request.name
                         )}
                     </strong>
                 </div>
 
-                <div class="detail">
+                <div>
+                    <span>TYPE</span>
+                    <strong>
+                        ${escapeHtml(
+                            request.typeName
+                        )}
+                    </strong>
+                </div>
+
+                <div>
                     <span>SCP</span>
                     <strong>
                         ${escapeHtml(
-                            request.scp || "N/A"
+                            request.scp ||
+                            "N/A"
                         )}
                     </strong>
                 </div>
 
-                <div class="detail">
+                <div>
                     <span>TIME</span>
                     <strong>
                         ${escapeHtml(
-                            request.time || "N/A"
+                            request.time
                         )}
                     </strong>
                 </div>
 
             </div>
 
-            ${
-                request.message
-                ? `
-                    <div class="message">
-                        <strong>REQUEST MESSAGE</strong>
-                        ${escapeHtml(request.message)}
-                    </div>
-                `
-                : ""
-            }
 
-            ${
-                request.adminMessage
-                ? `
-                    <div class="message">
-                        <strong>ADMIN MESSAGE</strong>
-                        ${escapeHtml(
-                            request.adminMessage
-                        )}
-                    </div>
-                `
-                : ""
-            }
+            <div class="message">
+
+                ${escapeHtml(
+                    request.message ||
+                    "NO MESSAGE."
+                )}
+
+            </div>
+
 
             <div class="actions">
 
-                ${
-                    request.status === "PENDING"
-                    ? `
-                        <button
-                            class="approve"
-                            onclick="approveRequest('${escapeHtml(request.id)}')">
-                            APPROVE
-                        </button>
+                <button
+                    onclick="approve(
+                        '${request.id}'
+                    )"
+                >
+                    APPROVE
+                </button>
 
-                        <button
-                            class="reject"
-                            onclick="rejectRequest('${escapeHtml(request.id)}')">
-                            REJECT
-                        </button>
-                    `
-                    : ""
-                }
 
                 <button
-                    onclick="changeTime('${escapeHtml(request.id)}')">
+                    onclick="reject(
+                        '${request.id}'
+                    )"
+                >
+                    REJECT
+                </button>
+
+
+                <button
+                    onclick="changeTime(
+                        '${request.id}'
+                    )"
+                >
                     CHANGE TIME
                 </button>
 
             </div>
 
         </article>
-
     `;
 }
 
 
-async function approveRequest(id) {
+async function approve(id) {
 
     const message =
         prompt(
@@ -513,48 +581,16 @@ async function approveRequest(id) {
         return;
     }
 
-    try {
-
-        const response =
-            await fetch(
-                `/api/requests/${encodeURIComponent(id)}/approve`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-                    body: JSON.stringify({
-                        message
-                    })
-                }
-            );
-
-        const data =
-            await response.json();
-
-        if (!response.ok) {
-
-            alert(
-                data.message ||
-                "APPROVAL FAILED."
-            );
-
-            return;
+    await sendAction(
+        `/api/requests/${id}/approve`,
+        {
+            message
         }
-
-        loadRequests();
-
-    } catch {
-
-        alert(
-            "SERVER CONNECTION ERROR."
-        );
-    }
+    );
 }
 
 
-async function rejectRequest(id) {
+async function reject(id) {
 
     const message =
         prompt(
@@ -566,44 +602,12 @@ async function rejectRequest(id) {
         return;
     }
 
-    try {
-
-        const response =
-            await fetch(
-                `/api/requests/${encodeURIComponent(id)}/reject`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-                    body: JSON.stringify({
-                        message
-                    })
-                }
-            );
-
-        const data =
-            await response.json();
-
-        if (!response.ok) {
-
-            alert(
-                data.message ||
-                "REJECTION FAILED."
-            );
-
-            return;
+    await sendAction(
+        `/api/requests/${id}/reject`,
+        {
+            message
         }
-
-        loadRequests();
-
-    } catch {
-
-        alert(
-            "SERVER CONNECTION ERROR."
-        );
-    }
+    );
 }
 
 
@@ -611,62 +615,114 @@ async function changeTime(id) {
 
     const time =
         prompt(
-            "NEW TIME (01:00 - 22:00):"
+            "NEW TIME (12:00 - 00:00):",
+            "12:00"
         );
 
     if (time === null) {
         return;
     }
 
+    await sendAction(
+        `/api/requests/${id}/time`,
+        {
+            time
+        }
+    );
+}
+
+
+async function sendAction(
+    url,
+    body
+) {
+
     try {
 
         const response =
             await fetch(
-                `/api/requests/${encodeURIComponent(id)}/time`,
+                url,
                 {
                     method: "POST",
+
                     headers: {
                         "Content-Type":
-                            "application/json"
+                            "application/json",
+
+                        "x-admin-password":
+                            adminPassword
                     },
-                    body: JSON.stringify({
-                        time
-                    })
+
+                    body:
+                        JSON.stringify(body)
                 }
             );
 
         const data =
             await response.json();
 
+        if (
+            response.status === 401
+        ) {
+
+            logout();
+            return;
+        }
+
         if (!response.ok) {
 
-            alert(
+            throw new Error(
                 data.message ||
-                "TIME CHANGE FAILED."
+                "ACTION FAILED."
             );
-
-            return;
         }
 
         loadRequests();
 
-    } catch {
+    } catch (error) {
 
         alert(
-            "SERVER CONNECTION ERROR."
+            error.message
         );
     }
 }
 
 
-loadRequests();
+function escapeHtml(value) {
 
-setInterval(
-    loadRequests,
-    10000
-);
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+}
+
+
+if (adminPassword) {
+
+    showAdmin();
+}
 
 </script>
 
 </body>
+
 </html>

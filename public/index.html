@@ -1,642 +1,415 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>SECURECONTAINPROTECT | SITE-64</title>
+<meta charset="UTF-8">
 
-    <link rel="stylesheet" href="script.css">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>SITE-64</title>
+
+<link
+    rel="stylesheet"
+    href="/script.css"
+>
+
 </head>
 
 <body>
 
-<div class="background-logo"></div>
-
-<!-- HEADER -->
 <header class="topbar">
 
-    <div class="brand">
-
-        <img
-            src="assets/scp-logo.png"
-            alt="SCP Foundation Logo"
-        >
-
-        <div class="brand-text">
-
-            <h1>SECURECONTAINPROTECT</h1>
-
-            <span>
-                [THIS SITE WAS PREPARED FOR SCP ARCHITECT X REQUESTS]
-            </span>
-
-        </div>
-
+    <div class="logo">
+        SECURECONTAINPROTECT
     </div>
 
-    <div class="site-code">
-        SITE-64
-    </div>
+    <nav>
+
+        <a href="#home">
+            HOME
+        </a>
+
+        <a href="#request">
+            REQUEST
+        </a>
+
+        <a href="#status">
+            STATUS
+        </a>
+
+    </nav>
 
 </header>
 
 
-<!-- NAVIGATION -->
-<nav class="navigation">
+<main>
 
-    <a href="#home">HOME</a>
-    <a href="#sites">SITES</a>
-    <a href="#requests">REQUESTS</a>
-    <a href="#site51">SITE-51</a>
-    <a href="#site64">SITE-64</a>
-    <a href="#about">ABOUT</a>
-
-</nav>
-
-
-<!-- HERO -->
-<section class="hero page-section" id="home">
+<section
+    id="home"
+    class="hero page-section"
+>
 
     <div class="hero-content">
 
         <div class="classification">
-            SECURE • CONTAIN • PROTECT
+            CLASSIFIED // SITE-64
         </div>
 
-        <h2>SITE-64</h2>
+        <h1>
+            SITE-64
+        </h1>
 
         <p>
-            SCP FOUNDATION FACILITY
+            SECURE CONTAIN PROTECT
         </p>
 
-        <div class="warning">
-            THIS SITE IS PROTECTED BY UNKNOWN PERSONNEL.
-        </div>
-
-        <div class="home-status">
-
-            <div class="status-box">
-                <span>SERVER</span>
-                <strong id="serverStatus">CHECKING...</strong>
-            </div>
-
-            <div class="status-box">
-                <span>DATABASE</span>
-                <strong id="databaseStatus">CHECKING...</strong>
-            </div>
-
-            <div class="status-box">
-                <span>FACILITY</span>
-                <strong>OPERATIONAL</strong>
-            </div>
-
-        </div>
+        <a
+            href="#request"
+            class="button"
+        >
+            SUBMIT REQUEST
+        </a>
 
     </div>
 
 </section>
 
 
-<main>
-
-
-<!-- SITES -->
-<section class="page-section" id="sites">
-
-    <div class="section-title">
-
-        <span></span>
-
-        <h2>FOUNDATION SITES</h2>
-
-        <span></span>
-
-    </div>
-
-    <p class="section-description">
-        REGISTERED FOUNDATION FACILITIES
-    </p>
-
-
-    <div class="site-grid">
-
-        <div class="site-card">
-
-            <div class="site-number">
-                SITE-19
-            </div>
-
-            <h3>
-                MAIN CONTAINMENT FACILITY
-            </h3>
-
-            <p>
-                One of the Foundation's largest known
-                containment and research facilities.
-            </p>
-
-            <span class="status">
-                STATUS: OPERATIONAL
-            </span>
-
-        </div>
-
-
-        <div class="site-card">
-
-            <div class="site-number">
-                SITE-51
-            </div>
-
-            <h3>
-                CARLSON FACILITY
-            </h3>
-
-            <p>
-                A classified facility connected to the
-                early research of Eric and Sophia Carlson.
-            </p>
-
-            <span class="status">
-                STATUS: CLASSIFIED
-            </span>
-
-        </div>
-
-
-        <div class="site-card active">
-
-            <div class="site-number">
-                SITE-64
-            </div>
-
-            <h3>
-                UNKNOWN FACILITY
-            </h3>
-
-            <p>
-                The exact location and operational purpose
-                of this facility remain restricted.
-            </p>
-
-            <span class="status">
-                STATUS: UNKNOWN
-            </span>
-
-        </div>
-
-
-        <div class="site-card">
-
-            <div class="site-number">
-                SITE-██
-            </div>
-
-            <h3>
-                REDACTED FACILITY
-            </h3>
-
-            <p>
-                Information regarding this facility has
-                been removed from accessible Foundation records.
-            </p>
-
-            <span class="status redacted">
-                STATUS: REDACTED
-            </span>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- REQUEST SYSTEM -->
-<section class="page-section" id="requests">
+<section
+    id="request"
+    class="page-section section"
+>
 
     <div class="section-title">
 
-        <span></span>
+        <span>
+            REQUEST SYSTEM
+        </span>
 
-        <h2>FACILITY REQUEST SYSTEM</h2>
-
-        <span></span>
+        <h2>
+            ACCESS REQUEST
+        </h2>
 
     </div>
 
-    <p class="section-description">
-        AUTHORIZED PERSONNEL ONLY
-    </p>
 
+    <form
+        id="requestForm"
+        class="request-form"
+    >
 
-    <div class="panel">
+        <label>
+            FULL NAME
 
-        <div class="panel-header">
-
-            <h2>
-                SUBMIT FACILITY REQUEST
-            </h2>
-
-            <span>
-                SECURE CONNECTION
-            </span>
-
-        </div>
-
-
-        <form id="requestForm">
-
-
-            <!-- NAME -->
-            <div class="input-group">
-
-                <label for="name">
-                    FULL NAME
-                </label>
-
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder="Enter your name..."
-                    autocomplete="name"
-                    required
-                >
-
-            </div>
-
-
-            <!-- REQUEST TYPE -->
-            <div class="input-group">
-
-                <label for="type">
-                    REQUEST TYPE
-                </label>
-
-                <select
-                    id="type"
-                    name="type"
-                    required
-                >
-
-                    <option value="">
-                        SELECT REQUEST TYPE
-                    </option>
-
-                    <option value="hygiene">
-                        HYGIENE
-                    </option>
-
-                    <option value="personnel">
-                        PERSONNEL RECRUITMENT
-                    </option>
-
-                    <option value="inspection">
-                        INSPECTION
-                    </option>
-
-                    <option value="security">
-                        SECURITY
-                    </option>
-
-                    <option value="basic">
-                        BASIC DEPARTMENT INSPECTION
-                    </option>
-
-                    <option value="scp">
-                        SCP INSPECTION
-                    </option>
-
-                    <option value="auto" disabled>
-                        AUTO INSPECTION [CANNOT BE SELECTED]
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- SCP -->
-            <div
-                class="input-group"
-                id="scpGroup"
-                style="display: none;"
+            <input
+                id="name"
+                type="text"
+                required
+                autocomplete="name"
             >
 
-                <label for="scp">
-                    SCP DESIGNATION
-                </label>
-
-                <input
-                    type="text"
-                    id="scp"
-                    name="scp"
-                    placeholder="Example: SCP-173"
-                    autocomplete="off"
-                >
-
-            </div>
+        </label>
 
 
-            <!-- DATE -->
-            <div class="input-group">
+        <label>
+            REQUEST TYPE
 
-                <label for="date">
-                    PREFERRED DATE
-                </label>
-
-                <input
-                    type="date"
-                    id="date"
-                    name="date"
-                    required
-                >
-
-            </div>
-
-
-            <!-- TIME -->
-            <div class="input-group">
-
-                <label for="time">
-                    PREFERRED TIME
-                </label>
-
-                <input
-                    type="time"
-                    id="time"
-                    name="time"
-                    required
-                >
-
-            </div>
-
-
-            <!-- MESSAGE -->
-            <div class="input-group">
-
-                <label for="message">
-                    REQUEST DETAILS
-                </label>
-
-                <textarea
-                    id="message"
-                    name="message"
-                    rows="6"
-                    placeholder="Describe your request..."
-                    required
-                ></textarea>
-
-            </div>
-
-
-            <button
-                type="submit"
-                class="submit-button"
+            <select
+                id="type"
+                required
             >
-                SUBMIT REQUEST
-            </button>
 
-        </form>
+                <option value="">
+                    SELECT REQUEST TYPE
+                </option>
+
+                <option value="scp">
+                    SCP DENETİMİ
+                </option>
+
+                <option value="facility">
+                    FACILITY ACCESS
+                </option>
+
+                <option value="research">
+                    RESEARCH REQUEST
+                </option>
+
+                <option value="personnel">
+                    PERSONNEL REQUEST
+                </option>
+
+                <option value="security">
+                    SECURITY REQUEST
+                </option>
+
+                <option value="equipment">
+                    EQUIPMENT REQUEST
+                </option>
+
+                <option value="other">
+                    OTHER
+                </option>
+
+            </select>
+
+        </label>
+
+
+        <label
+            id="scpGroup"
+            style="display:none;"
+        >
+
+            SCP
+
+            <select id="scp">
+
+                <option value="">
+                    SELECT SCP
+                </option>
+
+                <option value="SCP-049">
+                    SCP-049
+                </option>
+
+                <option value="SCP-096">
+                    SCP-096
+                </option>
+
+                <option value="SCP-173">
+                    SCP-173
+                </option>
+
+                <option value="SCP-682">
+                    SCP-682
+                </option>
+
+                <option value="SCP-939">
+                    SCP-939
+                </option>
+
+                <option value="SCP-106">
+                    SCP-106
+                </option>
+
+                <option value="SCP-3008">
+                    SCP-3008
+                </option>
+
+            </select>
+
+        </label>
+
+
+        <label>
+            TIME
+
+            <select
+                id="time"
+                required
+            >
+
+                <option value="">
+                    SELECT TIME
+                </option>
+
+                <option value="12:00">
+                    12:00
+                </option>
+
+                <option value="12:30">
+                    12:30
+                </option>
+
+                <option value="13:00">
+                    13:00
+                </option>
+
+                <option value="13:30">
+                    13:30
+                </option>
+
+                <option value="14:00">
+                    14:00
+                </option>
+
+                <option value="14:30">
+                    14:30
+                </option>
+
+                <option value="15:00">
+                    15:00
+                </option>
+
+                <option value="15:30">
+                    15:30
+                </option>
+
+                <option value="16:00">
+                    16:00
+                </option>
+
+                <option value="16:30">
+                    16:30
+                </option>
+
+                <option value="17:00">
+                    17:00
+                </option>
+
+                <option value="17:30">
+                    17:30
+                </option>
+
+                <option value="18:00">
+                    18:00
+                </option>
+
+                <option value="18:30">
+                    18:30
+                </option>
+
+                <option value="19:00">
+                    19:00
+                </option>
+
+                <option value="19:30">
+                    19:30
+                </option>
+
+                <option value="20:00">
+                    20:00
+                </option>
+
+                <option value="20:30">
+                    20:30
+                </option>
+
+                <option value="21:00">
+                    21:00
+                </option>
+
+                <option value="21:30">
+                    21:30
+                </option>
+
+                <option value="22:00">
+                    22:00
+                </option>
+
+                <option value="22:30">
+                    22:30
+                </option>
+
+                <option value="23:00">
+                    23:00
+                </option>
+
+                <option value="23:30">
+                    23:30
+                </option>
+
+                <option value="00:00">
+                    00:00
+                </option>
+
+            </select>
+
+        </label>
+
+
+        <label>
+            MESSAGE
+
+            <textarea
+                id="message"
+                rows="6"
+                placeholder="REQUEST DETAILS..."
+            ></textarea>
+
+        </label>
+
+
+        <button
+            type="submit"
+            class="button"
+        >
+            SUBMIT REQUEST
+        </button>
 
 
         <div
             id="result"
-            class="result hidden"
+            class="result"
         ></div>
 
-    </div>
+    </form>
 
 </section>
 
 
-<!-- MY REQUESTS -->
-<section class="page-section" id="my-requests">
+<section
+    id="status"
+    class="page-section section"
+>
 
     <div class="section-title">
 
-        <span></span>
+        <span>
+            SYSTEM
+        </span>
 
-        <h2>MY REQUESTS</h2>
-
-        <span></span>
+        <h2>
+            SYSTEM STATUS
+        </h2>
 
     </div>
 
-    <p class="section-description">
-        REQUEST STATUS DATABASE
-    </p>
 
-    <div
-        id="myRequestsList"
-        class="requests-list"
-    >
+    <div class="status-grid">
 
-        <div class="empty-state">
-
-            <div>
-                NO REQUESTS FOUND
-            </div>
+        <div class="status-box">
 
             <span>
-                Submitted requests will appear here.
+                SERVER
             </span>
+
+            <strong id="serverStatus">
+                SYSTEMS CHECKING...
+            </strong>
 
         </div>
 
-    </div>
 
-</section>
+        <div class="status-box">
 
+            <span>
+                DATABASE
+            </span>
 
-<!-- SITE 51 -->
-<section
-    class="about page-section"
-    id="site51"
->
+            <strong id="databaseStatus">
+                SYSTEMS CHECKING...
+            </strong>
 
-    <div class="section-title">
-
-        <span></span>
-
-        <h2>SITE-51</h2>
-
-        <span></span>
-
-    </div>
+        </div>
 
 
-    <div class="about-card">
+        <div class="status-box">
 
-        <h3>
-            THE CARLSON BROTHERS
-        </h3>
+            <span>
+                REQUEST SYSTEM
+            </span>
 
-        <p>
-            Before Site-51 became known as a Foundation
-            facility, its history began with two young
-            researchers: Eric Carlson and his younger
-            sister, Sophia Carlson.
-        </p>
+            <strong id="requestStatus">
+                SYSTEMS CHECKING...
+            </strong>
 
-        <p>
-            Their younger brother was suffering from
-            cancer. Determined to help him, Eric and
-            Sophia established a small laboratory in the
-            basement of their mother's house.
-        </p>
-
-        <p>
-            Their earliest experiments focused on cancer
-            cells, cellular destruction, atomic structures
-            and other research that did not require human
-            subjects.
-        </p>
-
-        <p>
-            The laboratory was originally known as
-            <strong>
-                Carlson Brothers Cancer Research
-            </strong>.
-        </p>
-
-        <p>
-            Because they were too young to legally
-            establish the laboratory themselves, the
-            facility was registered under their mother's
-            name.
-        </p>
-
-        <p>
-            Their research progressed until their mother
-            died unexpectedly. Without her support,
-            Eric and Sophia faced severe financial
-            difficulties.
-        </p>
-
-        <p>
-            Three months later, their younger brother
-            died. Eric and Sophia were left with almost
-            nothing.
-        </p>
-
-        <p>
-            One evening, while the two were resting on
-            a bench, two men wearing black suits
-            approached them.
-        </p>
-
-        <p class="classified-text">
-            "ARE YOU SOPHIA CARLSON AND ERIC CARLSON?"
-        </p>
-
-        <p>
-            The two men presented a classified document
-            connected to an organization known only as
-            the O5 Council.
-        </p>
-
-        <p>
-            Eric and Sophia discovered that their work
-            had been monitored for a considerable amount
-            of time.
-        </p>
-
-        <p>
-            They were offered access to a Foundation
-            facility where their research could continue
-            under the protection and resources of the
-            SCP Foundation.
-        </p>
-
-        <p>
-            This marked the beginning of what would
-            eventually become known as
-            <strong>SITE-51</strong>.
-        </p>
-
-    </div>
-
-</section>
-
-
-<!-- SITE 64 -->
-<section
-    class="site64 page-section"
-    id="site64"
->
-
-    <div class="red-line"></div>
-
-    <h2>
-        SITE-64
-    </h2>
-
-    <p>
-        LOCATION UNKNOWN.
-    </p>
-
-    <p>
-        SITE-64 IS NOT LISTED IN PUBLIC FOUNDATION RECORDS.
-    </p>
-
-    <p>
-        ACCESS IS RESTRICTED TO AUTHORIZED PERSONNEL.
-    </p>
-
-    <div class="classified">
-        LOCATION STATUS: UNKNOWN
-    </div>
-
-</section>
-
-
-<!-- ABOUT -->
-<section
-    class="about page-section"
-    id="about"
->
-
-    <div class="section-title">
-
-        <span></span>
-
-        <h2>
-            ABOUT SECURECONTAINPROTECT
-        </h2>
-
-        <span></span>
-
-    </div>
-
-
-    <div class="about-card">
-
-        <p>
-            SecureContainProtect is an internal interface
-            designed for Foundation personnel and
-            authorized users.
-        </p>
-
-        <p>
-            Through this system, personnel may submit
-            facility requests, access classified site
-            information and communicate with the
-            appropriate administrative department.
-        </p>
-
-        <p>
-            Unauthorized access, duplication or
-            distribution of Foundation information is
-            strictly prohibited.
-        </p>
-
-        <p class="classified-text">
-            SECURITY LEVEL: CLASSIFIED
-        </p>
+        </div>
 
     </div>
 
@@ -645,30 +418,15 @@
 </main>
 
 
-<!-- FOOTER -->
 <footer>
 
-    <span>
-        SECURECONTAINPROTECT
-    </span>
-
-    <span>
-        SITE-64
-    </span>
-
-    <span>
-        FOUNDATION DATABASE
-    </span>
-
-    <span>
-        © SCP FOUNDATION
-    </span>
+    SECURECONTAINPROTECT // SITE-64
 
 </footer>
 
 
-<script src="script.js"></script>
+<script src="/script.js"></script>
 
 </body>
+
 </html>
-```
