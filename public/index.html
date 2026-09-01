@@ -1,181 +1,1641 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SITE-64 // SCP FOUNDATION</title>
+<title>SITE-64 // SECURE CONTAIN PROTECT</title>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
 
-body {
-    margin: 0;
-    background: #05080c;
-    color: #e6ebef;
-    font-family: Arial, sans-serif;
+html {
+    scroll-behavior: smooth;
 }
 
-header {
-    border-bottom: 1px solid #202b34;
-    padding: 25px 6%;
+body {
+    margin: 0;
+    background: #05080b;
+    color: #e5ebef;
+    font-family: "Courier New", monospace;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 65px;
+
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+
+    padding: 0 35px;
+
+    background: rgba(5, 8, 11, .95);
+    border-bottom: 1px solid #26323c;
+
+    z-index: 1000;
 }
 
 .logo {
-    letter-spacing: 5px;
+    font-size: 18px;
     font-weight: bold;
+    letter-spacing: 4px;
 }
 
-.status {
-    color: #72ce94;
-    font-size: 12px;
-}
-
-main {
-    width: min(1100px, 90%);
-    margin: auto;
-}
-
-.hero {
-    min-height: 75vh;
+.navigation-links {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    gap: 25px;
 }
 
-.classified {
-    color: #788792;
-    letter-spacing: 5px;
-    font-size: 11px;
-}
-
-h1 {
-    font-size: clamp(42px, 8vw, 90px);
-    letter-spacing: 10px;
-    margin: 15px 0;
-}
-
-.hero p {
-    color: #7f8d98;
-    max-width: 650px;
-    line-height: 1.7;
-}
-
-.cards {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-}
-
-.card {
-    border: 1px solid #202b34;
-    background: #090e13;
-    padding: 25px;
+.navigation a {
+    color: #7d8a95;
     text-decoration: none;
-    color: white;
+    font-size: 12px;
+    letter-spacing: 2px;
+
     transition: .25s;
 }
 
-.card:hover {
-    background: #111920;
-    border-color: #71808b;
-    transform: translateY(-3px);
+.navigation a:hover,
+.navigation a.active {
+    color: #fff;
 }
 
-.card strong {
-    display: block;
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 100px 25px 50px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #111a22 0%,
+            #05080b 60%
+        );
+}
+
+.hero-content {
+    width: min(950px, 95%);
+}
+
+.classification {
+    color: #697783;
+    font-size: 12px;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    font-size: clamp(42px, 8vw, 90px);
+    margin: 0;
+
+    letter-spacing: 10px;
+}
+
+.hero p {
+    color: #84919c;
+    max-width: 700px;
+    line-height: 1.8;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.button {
+    display: inline-block;
+
+    padding: 15px 24px;
+
+    border: 1px solid #45525e;
+
+    background: #0b1116;
+
+    color: #dce4e9;
+
+    text-decoration: none;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    letter-spacing: 2px;
+
+    cursor: pointer;
+
+    transition: .25s;
+}
+
+.button:hover {
+    background: #17212a;
+    border-color: #8b99a5;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+
+.page-section {
+    min-height: 100vh;
+    padding: 110px 25px 70px;
+
+    border-top: 1px solid #182129;
+}
+
+.section-container {
+    width: min(1100px, 95%);
+    margin: auto;
+}
+
+.section-title {
+    font-size: 28px;
+    letter-spacing: 5px;
+    margin-bottom: 10px;
+}
+
+.section-subtitle {
+    color: #71808c;
+    font-size: 12px;
+    margin-bottom: 35px;
+}
+
+/* =========================
+   STATUS
+========================= */
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.status-card {
+    padding: 25px;
+
+    background: #080d12;
+
+    border: 1px solid #26323c;
+}
+
+.status-label {
+    color: #667580;
+    font-size: 10px;
     letter-spacing: 2px;
 }
 
-.card span {
+.status-value {
+    margin-top: 12px;
+
+    color: #dfe7ec;
+
+    font-size: 20px;
+}
+
+/* =========================
+   REQUEST FORM
+========================= */
+
+.request-box {
+    padding: 30px;
+
+    background: #080d12;
+
+    border: 1px solid #2b3741;
+}
+
+.form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    margin-bottom: 8px;
+
+    color: #778590;
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+
+    padding: 14px;
+
+    background: #04070a;
+
+    border: 1px solid #293640;
+
+    color: #e5ebef;
+
+    outline: none;
+
+    font-family: inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #7d8b97;
+}
+
+textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+#scpGroup {
+    display: none;
+}
+
+.submit-button {
+    margin-top: 20px;
+
+    width: 100%;
+
+    padding: 16px;
+
+    background: #101820;
+
+    border: 1px solid #52616e;
+
+    color: white;
+
+    font-family: inherit;
+
+    letter-spacing: 3px;
+
+    cursor: pointer;
+}
+
+.submit-button:hover {
+    background: #18232c;
+}
+
+/* =========================
+   RESULT
+========================= */
+
+.result {
+    margin-top: 20px;
+
+    min-height: 20px;
+
+    padding: 15px;
+
+    border: 1px solid transparent;
+
+    font-size: 12px;
+
+    line-height: 1.7;
+}
+
+.result.success {
+    border-color: #31553d;
+    color: #7ec994;
+}
+
+.result.error {
+    border-color: #633536;
+    color: #ff7272;
+}
+
+/* =========================
+   REQUEST CARDS
+========================= */
+
+.requests-list {
+    display: grid;
+    gap: 15px;
+}
+
+.request-card {
+    padding: 22px;
+
+    background: #080d12;
+
+    border: 1px solid #27343e;
+}
+
+.request-card-top {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+.request-id {
+    color: #8d9aa5;
+}
+
+.request-status {
+    padding: 5px 10px;
+
+    border: 1px solid #3b4650;
+
+    font-size: 10px;
+
+    letter-spacing: 1px;
+}
+
+.request-status.pending {
+    color: #d9c777;
+}
+
+.request-status.approved {
+    color: #7ed394;
+}
+
+.request-status.rejected {
+    color: #f16d6d;
+}
+
+.request-details {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 15px;
+}
+
+.request-detail span {
     display: block;
+
+    color: #65737e;
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 7px;
+}
+
+.request-detail strong {
+    font-size: 13px;
+}
+
+.admin-message {
+    margin-top: 20px;
+
+    padding: 15px;
+
+    background: #05090d;
+
+    border-left: 2px solid #53616c;
+
+    color: #aab5bd;
+
+    line-height: 1.7;
+}
+
+.empty-state {
+    padding: 45px;
+
+    text-align: center;
+
+    border: 1px dashed #293640;
+
+    color: #7c8993;
+}
+
+.empty-state span {
+    display: block;
+
     margin-top: 10px;
-    color: #687681;
+
     font-size: 11px;
 }
+
+/* =========================
+   TERMINAL
+========================= */
+
+.terminal {
+    padding: 25px;
+
+    background: #020405;
+
+    border: 1px solid #27333c;
+
+    min-height: 280px;
+}
+
+.terminal-output {
+    height: 190px;
+
+    overflow-y: auto;
+
+    color: #9ba8b1;
+
+    font-size: 12px;
+
+    line-height: 1.7;
+
+    margin-bottom: 15px;
+}
+
+.terminal-form {
+    display: flex;
+}
+
+.terminal-form input {
+    border-right: none;
+}
+
+.terminal-form button {
+    width: 100px;
+
+    border: 1px solid #35434d;
+
+    background: #10171d;
+
+    color: white;
+
+    font-family: inherit;
+
+    cursor: pointer;
+}
+
+/* =========================
+   FOOTER
+========================= */
 
 footer {
-    border-top: 1px solid #202b34;
-    margin-top: 60px;
-    padding: 25px 0;
-    color: #56636d;
-    font-size: 11px;
+    padding: 30px;
+
+    text-align: center;
+
+    color: #4e5b65;
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+
+    border-top: 1px solid #182129;
 }
 
-@media(max-width: 800px) {
-    .cards {
-        grid-template-columns: 1fr 1fr;
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width: 750px) {
+
+    .navigation {
+        padding: 0 15px;
+    }
+
+    .navigation-links {
+        gap: 10px;
+    }
+
+    .navigation a {
+        font-size: 9px;
+    }
+
+    .form-grid,
+    .status-grid,
+    .request-details {
+        grid-template-columns: 1fr;
+    }
+
+    .hero h1 {
+        letter-spacing: 5px;
     }
 }
+
 </style>
+
 </head>
 
 <body>
 
-<header>
 
-<div class="logo">
-SCP FOUNDATION // SITE-64
-</div>
+<!-- =========================
+     NAVIGATION
+========================= -->
 
-<div class="status">
-● SYSTEM ONLINE
-</div>
+<nav class="navigation">
 
-</header>
+    <div class="logo">
+        SITE-64
+    </div>
 
-<main>
+    <div class="navigation-links">
 
-<section class="hero">
+        <a href="#home" class="active">
+            HOME
+        </a>
 
-<div class="classified">
-SECURE CONTAIN PROTECT
-</div>
+        <a href="#request">
+            REQUEST
+        </a>
 
-<h1>SITE-64</h1>
+        <a href="#requests">
+            MY REQUESTS
+        </a>
 
-<p>
-WELCOME TO THE SITE-64 INFORMATION NETWORK.
-ALL AVAILABLE SYSTEMS ARE CLASSIFIED AND
-RESTRICTED TO AUTHORIZED PERSONNEL.
-</p>
+        <a href="/sites">
+            SITES
+        </a>
 
-<div class="cards">
+        <a href="/term">
+            TERM
+        </a>
 
-<a class="card" href="/sites">
-<strong>SITES</strong>
-<span>SITE DATABASE</span>
-</a>
+        <a href="/warhead">
+            WARHEAD
+        </a>
 
-<a class="card" href="/term">
-<strong>TERMINAL</strong>
-<span>SYSTEM TERMINAL</span>
-</a>
+        <a href="/admin">
+            ADMIN
+        </a>
 
-<a class="card" href="/admin">
-<strong>ADMIN</strong>
-<span>ADMINISTRATION</span>
-</a>
+    </div>
 
-<a class="card" href="/warhead">
-<strong>WARHEAD</strong>
-<span>SIMULATION CONTROL</span>
-</a>
+</nav>
+
+
+<!-- =========================
+     HOME
+========================= -->
+
+<section
+    id="home"
+    class="page-section hero"
+>
+
+<div class="hero-content">
+
+    <div class="classification">
+        SECURE CONTAIN PROTECT // CLASSIFIED
+    </div>
+
+    <h1>
+        SITE-64
+    </h1>
+
+    <p>
+        SECURE CONTAIN PROTECT administration
+        and facility management system.
+    </p>
+
+    <p>
+        All requests, incidents and strategic
+        systems are monitored by SITE-64
+        administration.
+    </p>
+
+    <div class="hero-buttons">
+
+        <a
+            href="#request"
+            class="button"
+        >
+            SUBMIT REQUEST
+        </a>
+
+        <a
+            href="/warhead"
+            class="button"
+        >
+            WARHEAD CONTROL
+        </a>
+
+        <a
+            href="/sites"
+            class="button"
+        >
+            SITE STATUS
+        </a>
+
+    </div>
 
 </div>
 
 </section>
 
+
+<!-- =========================
+     SYSTEM STATUS
+========================= -->
+
+<section
+    id="status"
+    class="page-section"
+>
+
+<div class="section-container">
+
+    <div class="section-title">
+        SYSTEM STATUS
+    </div>
+
+    <div class="section-subtitle">
+        CURRENT FACILITY STATUS
+    </div>
+
+
+    <div class="status-grid">
+
+        <div class="status-card">
+
+            <div class="status-label">
+                SERVER
+            </div>
+
+            <div
+                id="serverStatus"
+                class="status-value"
+            >
+                CHECKING...
+            </div>
+
+        </div>
+
+
+        <div class="status-card">
+
+            <div class="status-label">
+                DATABASE
+            </div>
+
+            <div
+                id="databaseStatus"
+                class="status-value"
+            >
+                CHECKING...
+            </div>
+
+        </div>
+
+
+        <div class="status-card">
+
+            <div class="status-label">
+                FACILITY
+            </div>
+
+            <div class="status-value">
+                SITE-64
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     REQUEST
+========================= -->
+
+<section
+    id="request"
+    class="page-section"
+>
+
+<div class="section-container">
+
+    <div class="section-title">
+        REQUEST SYSTEM
+    </div>
+
+    <div class="section-subtitle">
+        SUBMIT A REQUEST TO SITE-64 ADMINISTRATION
+    </div>
+
+
+    <div class="request-box">
+
+        <form id="requestForm">
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label>
+                        FULL NAME
+                    </label>
+
+                    <input
+                        id="name"
+                        type="text"
+                        required
+                        placeholder="ENTER FULL NAME"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        REQUEST TYPE
+                    </label>
+
+                    <select
+                        id="type"
+                        required
+                    >
+
+                        <option value="">
+                            SELECT TYPE
+                        </option>
+
+                        <option value="scp">
+                            SCP ACCESS
+                        </option>
+
+                        <option value="research">
+                            RESEARCH
+                        </option>
+
+                        <option value="personnel">
+                            PERSONNEL
+                        </option>
+
+                        <option value="facility">
+                            FACILITY
+                        </option>
+
+                        <option value="other">
+                            OTHER
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    id="scpGroup"
+                    class="form-group"
+                >
+
+                    <label>
+                        SCP
+                    </label>
+
+                    <input
+                        id="scp"
+                        type="text"
+                        placeholder="SCP-XXX"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        REQUEST TIME
+                    </label>
+
+                    <select
+                        id="time"
+                        required
+                    >
+
+                        <option value="">
+                            SELECT TIME
+                        </option>
+
+                        <option value="00:00">00:00</option>
+                        <option value="00:30">00:30</option>
+                        <option value="01:00">01:00</option>
+                        <option value="01:30">01:30</option>
+                        <option value="02:00">02:00</option>
+                        <option value="02:30">02:30</option>
+                        <option value="03:00">03:00</option>
+                        <option value="03:30">03:30</option>
+                        <option value="04:00">04:00</option>
+                        <option value="04:30">04:30</option>
+                        <option value="05:00">05:00</option>
+                        <option value="05:30">05:30</option>
+                        <option value="06:00">06:00</option>
+                        <option value="06:30">06:30</option>
+                        <option value="07:00">07:00</option>
+                        <option value="07:30">07:30</option>
+                        <option value="08:00">08:00</option>
+                        <option value="08:30">08:30</option>
+                        <option value="09:00">09:00</option>
+                        <option value="09:30">09:30</option>
+                        <option value="10:00">10:00</option>
+                        <option value="10:30">10:30</option>
+                        <option value="11:00">11:00</option>
+                        <option value="11:30">11:30</option>
+                        <option value="12:00">12:00</option>
+                        <option value="12:30">12:30</option>
+                        <option value="13:00">13:00</option>
+                        <option value="13:30">13:30</option>
+                        <option value="14:00">14:00</option>
+                        <option value="14:30">14:30</option>
+                        <option value="15:00">15:00</option>
+                        <option value="15:30">15:30</option>
+                        <option value="16:00">16:00</option>
+                        <option value="16:30">16:30</option>
+                        <option value="17:00">17:00</option>
+                        <option value="17:30">17:30</option>
+                        <option value="18:00">18:00</option>
+                        <option value="18:30">18:30</option>
+                        <option value="19:00">19:00</option>
+                        <option value="19:30">19:30</option>
+                        <option value="20:00">20:00</option>
+                        <option value="20:30">20:30</option>
+                        <option value="21:00">21:00</option>
+                        <option value="21:30">21:30</option>
+                        <option value="22:00">22:00</option>
+                        <option value="22:30">22:30</option>
+                        <option value="23:00">23:00</option>
+                        <option value="23:30">23:30</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        MESSAGE
+                    </label>
+
+                    <textarea
+                        id="message"
+                        placeholder="ENTER REQUEST DETAILS"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="submit-button"
+                type="submit"
+            >
+                SUBMIT REQUEST
+            </button>
+
+
+            <div
+                id="result"
+                class="result"
+            ></div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     MY REQUESTS
+========================= -->
+
+<section
+    id="requests"
+    class="page-section"
+>
+
+<div class="section-container">
+
+    <div class="section-title">
+        MY REQUESTS
+    </div>
+
+    <div class="section-subtitle">
+        REQUESTS SUBMITTED FROM THIS BROWSER
+    </div>
+
+    <div
+        id="myRequestsList"
+        class="requests-list"
+    ></div>
+
+</div>
+
+</section>
+
+
 <footer>
-SITE-64 // CLASSIFICATION LEVEL O5
+
+    SECURE CONTAIN PROTECT // SITE-64
+
 </footer>
 
-</main>
+
+<script>
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+const navigationLinks =
+    document.querySelectorAll(
+        ".navigation a"
+    );
+
+const sections =
+    document.querySelectorAll(
+        ".page-section"
+    );
+
+
+function updateNavigation() {
+
+    let current =
+        "home";
+
+
+    sections.forEach(section => {
+
+        if (
+            section.getBoundingClientRect().top
+            <= 120
+        ) {
+
+            current =
+                section.id;
+
+        }
+
+    });
+
+
+    navigationLinks.forEach(link => {
+
+        const href =
+            link.getAttribute("href");
+
+
+        if (
+            href &&
+            href.startsWith("#")
+        ) {
+
+            link.classList.toggle(
+                "active",
+                href.substring(1) === current
+            );
+
+        }
+
+    });
+
+}
+
+
+window.addEventListener(
+    "scroll",
+    updateNavigation
+);
+
+updateNavigation();
+
+
+/* =====================================================
+   REQUEST TYPE
+===================================================== */
+
+const typeInput =
+    document.getElementById(
+        "type"
+    );
+
+const scpGroup =
+    document.getElementById(
+        "scpGroup"
+    );
+
+const scpInput =
+    document.getElementById(
+        "scp"
+    );
+
+
+typeInput.addEventListener(
+    "change",
+    () => {
+
+        if (
+            typeInput.value === "scp"
+        ) {
+
+            scpGroup.style.display =
+                "flex";
+
+            scpInput.required =
+                true;
+
+        } else {
+
+            scpGroup.style.display =
+                "none";
+
+            scpInput.required =
+                false;
+
+            scpInput.value =
+                "";
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   HTML ESCAPE
+===================================================== */
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =====================================================
+   SAVE REQUEST
+===================================================== */
+
+function saveMyRequest(request) {
+
+    const requests =
+        JSON.parse(
+            localStorage.getItem(
+                "scp_my_requests"
+            ) || "[]"
+        );
+
+
+    if (
+        !requests.some(
+            item =>
+                item.id === request.id
+        )
+    ) {
+
+        requests.push(request);
+
+        localStorage.setItem(
+            "scp_my_requests",
+            JSON.stringify(requests)
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   REQUEST CARD
+===================================================== */
+
+function createRequestCard(request) {
+
+    const status =
+        String(
+            request.status ||
+            "PENDING"
+        ).toLowerCase();
+
+
+    return `
+
+        <article class="request-card">
+
+            <div class="request-card-top">
+
+                <span class="request-id">
+                    ${escapeHtml(request.id)}
+                </span>
+
+                <span class="request-status ${status}">
+                    ${escapeHtml(
+                        request.status ||
+                        "PENDING"
+                    )}
+                </span>
+
+            </div>
+
+
+            <div class="request-details">
+
+                <div class="request-detail">
+
+                    <span>
+                        TYPE
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            request.typeName ||
+                            request.type ||
+                            "UNKNOWN"
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="request-detail">
+
+                    <span>
+                        SCP
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            request.scp ||
+                            "N/A"
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="request-detail">
+
+                    <span>
+                        TIME
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            request.time ||
+                            "N/A"
+                        )}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            ${
+                request.adminMessage
+                ?
+                `
+                <div class="admin-message">
+
+                    <strong>
+                        ADMIN MESSAGE
+                    </strong>
+
+                    <br><br>
+
+                    ${escapeHtml(
+                        request.adminMessage
+                    )}
+
+                </div>
+                `
+                :
+                ""
+            }
+
+        </article>
+
+    `;
+
+}
+
+
+/* =====================================================
+   LOAD REQUESTS
+===================================================== */
+
+function loadMyRequests() {
+
+    const container =
+        document.getElementById(
+            "myRequestsList"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    const requests =
+        JSON.parse(
+            localStorage.getItem(
+                "scp_my_requests"
+            ) || "[]"
+        );
+
+
+    if (!requests.length) {
+
+        container.innerHTML = `
+
+            <div class="empty-state">
+
+                <div>
+                    NO REQUESTS FOUND
+                </div>
+
+                <span>
+                    Submitted requests will appear here.
+                </span>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    container.innerHTML =
+        requests
+            .map(createRequestCard)
+            .join("");
+
+}
+
+
+/* =====================================================
+   REFRESH REQUEST STATUS
+===================================================== */
+
+async function refreshMyRequests() {
+
+    const localRequests =
+        JSON.parse(
+            localStorage.getItem(
+                "scp_my_requests"
+            ) || "[]"
+        );
+
+
+    if (!localRequests.length) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/requests"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.success ||
+            !Array.isArray(
+                data.requests
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        const updated =
+            localRequests.map(local => {
+
+                const serverRequest =
+                    data.requests.find(
+                        item =>
+                            item.id ===
+                            local.id
+                    );
+
+
+                if (serverRequest) {
+
+                    return {
+                        ...local,
+                        ...serverRequest
+                    };
+
+                }
+
+
+                return local;
+
+            });
+
+
+        localStorage.setItem(
+            "scp_my_requests",
+            JSON.stringify(updated)
+        );
+
+
+        loadMyRequests();
+
+    } catch {
+
+        console.log(
+            "REQUEST STATUS REFRESH FAILED."
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   SUBMIT REQUEST
+===================================================== */
+
+document
+    .getElementById(
+        "requestForm"
+    )
+    .addEventListener(
+        "submit",
+        async event => {
+
+            event.preventDefault();
+
+
+            const result =
+                document.getElementById(
+                    "result"
+                );
+
+
+            result.className =
+                "result";
+
+            result.textContent =
+                "SUBMITTING REQUEST...";
+
+
+            const name =
+                document
+                    .getElementById("name")
+                    .value
+                    .trim();
+
+
+            const type =
+                typeInput.value;
+
+
+            const typeName =
+                typeInput
+                    .options[
+                        typeInput.selectedIndex
+                    ]
+                    .text;
+
+
+            const scp =
+                type === "scp"
+                    ? scpInput.value.trim()
+                    : null;
+
+
+            const time =
+                document
+                    .getElementById("time")
+                    .value;
+
+
+            const message =
+                document
+                    .getElementById("message")
+                    .value
+                    .trim();
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/requests",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    name,
+                                    type,
+                                    typeName,
+                                    scp,
+                                    time,
+                                    message
+                                })
+
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    !response.ok
+                ) {
+
+                    throw new Error(
+                        data.message ||
+                        "REQUEST FAILED."
+                    );
+
+                }
+
+
+                result.className =
+                    "result success";
+
+
+                result.innerHTML = `
+
+                    REQUEST SUBMITTED SUCCESSFULLY.
+
+                    <br>
+
+                    REQUEST ID:
+
+                    <strong>
+                        ${escapeHtml(
+                            data.request.id
+                        )}
+                    </strong>
+
+                `;
+
+
+                saveMyRequest(
+                    data.request
+                );
+
+
+                document
+                    .getElementById(
+                        "requestForm"
+                    )
+                    .reset();
+
+
+                scpGroup.style.display =
+                    "none";
+
+
+                scpInput.required =
+                    false;
+
+
+                loadMyRequests();
+
+
+            } catch (error) {
+
+                result.className =
+                    "result error";
+
+
+                result.textContent =
+                    error.message;
+
+            }
+
+        }
+    );
+
+
+/* =====================================================
+   SERVER STATUS
+===================================================== */
+
+async function loadServerStatus() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/status"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        document
+            .getElementById(
+                "serverStatus"
+            )
+            .textContent =
+                data.server ||
+                "ONLINE";
+
+
+        document
+            .getElementById(
+                "databaseStatus"
+            )
+            .textContent =
+                data.database ||
+                "ONLINE";
+
+
+    } catch {
+
+        document
+            .getElementById(
+                "serverStatus"
+            )
+            .textContent =
+                "OFFLINE";
+
+
+        document
+            .getElementById(
+                "databaseStatus"
+            )
+            .textContent =
+                "OFFLINE";
+
+    }
+
+}
+
+
+loadServerStatus();
+
+loadMyRequests();
+
+refreshMyRequests();
+
+</script>
 
 </body>
 </html>
