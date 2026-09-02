@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>O5 COUNCIL // ADMINISTRATION</title>
+<title>SCP-SITE64 // ADMINISTRATION</title>
 
 <style>
 
@@ -15,194 +15,381 @@
 }
 
 :root {
-    --bg: #030405;
-    --panel: #080b0f;
-    --panel2: #0b0f14;
-    --line: rgba(255,255,255,.08);
-    --text: #e7eaed;
-    --muted: #68717a;
-    --red: #c80025;
-    --red2: #ff1742;
-    --green: #68b47f;
-    --yellow: #c7a347;
-    --blue: #4e9cff;
+    --bg: #05070a;
+    --panel: #0a0e13;
+    --panel2: #0e141b;
+    --line: #1d2935;
+    --text: #e6edf3;
+    --muted: #72808c;
+    --blue: #48a9ff;
+    --green: #48d597;
+    --red: #ff465d;
+    --yellow: #ffc857;
+    --purple: #a78bfa;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 }
 
 body {
-    min-height: 100vh;
-    background: var(--bg);
-    color: var(--text);
-    font-family: "Courier New", monospace;
     overflow-x: hidden;
 }
 
-/* =====================================================
+/* =========================================================
    BACKGROUND
-===================================================== */
+========================================================= */
 
 body::before {
     content: "";
     position: fixed;
     inset: 0;
-    pointer-events: none;
-    z-index: -3;
 
     background:
         linear-gradient(
-            rgba(255,255,255,.012) 1px,
+            rgba(255,255,255,0.015) 1px,
             transparent 1px
         ),
         linear-gradient(
             90deg,
-            rgba(255,255,255,.012) 1px,
+            rgba(255,255,255,0.015) 1px,
             transparent 1px
         );
 
-    background-size: 35px 35px;
+    background-size: 45px 45px;
+
+    pointer-events: none;
+
+    z-index: -2;
 }
 
 body::after {
     content: "";
+
     position: fixed;
     inset: 0;
-    pointer-events: none;
-    z-index: -2;
 
     background:
         radial-gradient(
             circle at 50% 0%,
-            rgba(200,0,37,.09),
-            transparent 35%
+            rgba(72,169,255,0.08),
+            transparent 40%
         );
-}
-
-/* =====================================================
-   SCAN
-===================================================== */
-
-.scanline {
-    position: fixed;
-    left: 0;
-    top: -4px;
-
-    width: 100%;
-    height: 2px;
-
-    background: rgba(255,23,66,.65);
-
-    box-shadow:
-        0 0 15px rgba(255,23,66,.6);
 
     pointer-events: none;
+
+    z-index: -1;
+}
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+#loginScreen {
+
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(72,169,255,0.08),
+            transparent 35%
+        ),
+        #030507;
+
     z-index: 9999;
 
-    animation:
-        scan 7s linear infinite;
+    animation: loginIn 0.7s ease;
 }
 
-@keyframes scan {
+.loginBox {
 
-    from {
-        top: -5px;
-    }
+    width: min(430px, calc(100% - 40px));
 
-    to {
-        top: 105%;
-    }
+    padding: 42px;
 
+    border: 1px solid #243442;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,22,29,.98),
+            rgba(5,8,12,.98)
+        );
+
+    box-shadow:
+        0 0 80px rgba(0,0,0,.8),
+        0 0 35px rgba(72,169,255,.04);
+
+    position: relative;
+
+    overflow: hidden;
 }
 
-/* =====================================================
-   HEADER
-===================================================== */
+.loginBox::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -100%;
+
+    width: 100%;
+    height: 1px;
+
+    background: var(--blue);
+
+    animation: scanLine 3s linear infinite;
+}
+
+.loginLogo {
+
+    text-align: center;
+
+    font-size: 42px;
+    font-weight: 900;
+
+    letter-spacing: 7px;
+
+    color: var(--blue);
+
+    text-shadow:
+        0 0 20px rgba(72,169,255,.35);
+
+    margin-bottom: 10px;
+}
+
+.loginTitle {
+
+    text-align: center;
+
+    font-size: 13px;
+
+    letter-spacing: 4px;
+
+    color: var(--muted);
+
+    margin-bottom: 35px;
+}
+
+.inputLabel {
+
+    display: block;
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+
+    color: var(--muted);
+
+    margin-bottom: 8px;
+}
+
+input,
+textarea,
+select {
+
+    width: 100%;
+
+    background: #070a0e;
+
+    color: var(--text);
+
+    border: 1px solid var(--line);
+
+    outline: none;
+
+    padding: 13px;
+
+    font-family: inherit;
+
+    transition:
+        border .2s,
+        box-shadow .2s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+
+    border-color: var(--blue);
+
+    box-shadow:
+        0 0 0 2px
+        rgba(72,169,255,.08);
+}
+
+.loginButton {
+
+    width: 100%;
+
+    margin-top: 18px;
+
+    padding: 14px;
+
+    border: 1px solid var(--blue);
+
+    background:
+        rgba(72,169,255,.08);
+
+    color: var(--blue);
+
+    cursor: pointer;
+
+    letter-spacing: 3px;
+
+    font-weight: 800;
+
+    transition: .25s;
+}
+
+.loginButton:hover {
+
+    background: var(--blue);
+
+    color: #020406;
+
+    box-shadow:
+        0 0 30px
+        rgba(72,169,255,.25);
+}
+
+.loginError {
+
+    min-height: 20px;
+
+    margin-top: 15px;
+
+    color: var(--red);
+
+    font-size: 11px;
+
+    text-align: center;
+
+    letter-spacing: 1px;
+}
+
+/* =========================================================
+   APP
+========================================================= */
+
+#app {
+
+    display: none;
+
+    min-height: 100vh;
+
+    animation: appIn .5s ease;
+}
 
 .topbar {
-
-    position: sticky;
-    top: 0;
 
     height: 72px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
-    padding: 0 35px;
+    padding:
+        0 28px;
+
+    border-bottom: 1px solid var(--line);
 
     background:
-        rgba(3,4,5,.91);
+        rgba(5,8,12,.92);
 
-    border-bottom:
-        1px solid var(--line);
+    backdrop-filter:
+        blur(15px);
 
-    backdrop-filter: blur(15px);
+    position: sticky;
 
-    z-index: 1000;
+    top: 0;
+
+    z-index: 100;
 }
 
 .brand {
 
     display: flex;
-    align-items: center;
-    gap: 14px;
 
+    align-items: center;
+
+    gap: 15px;
 }
 
-.brand-symbol {
+.brandMark {
 
     width: 38px;
     height: 38px;
 
-    display: grid;
-    place-items: center;
+    border: 1px solid var(--blue);
 
-    border:
-        1px solid var(--red);
+    display: flex;
 
-    color:
-        var(--red2);
+    align-items: center;
+    justify-content: center;
 
-    font-size: 18px;
+    color: var(--blue);
+
+    font-weight: 900;
 
     box-shadow:
         0 0 20px
-        rgba(200,0,37,.2);
-
+        rgba(72,169,255,.12);
 }
 
-.brand-title {
+.brandText {
 
     font-size: 13px;
+
     letter-spacing: 3px;
-    font-weight: bold;
 
+    font-weight: 800;
 }
 
-.brand-sub {
+.brandSub {
 
-    margin-top: 4px;
-
-    color: #4e565e;
-
-    font-size: 8px;
-    letter-spacing: 2px;
-
-}
-
-.top-status {
-
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    color: var(--green);
+    color: var(--muted);
 
     font-size: 9px;
+
     letter-spacing: 2px;
 
+    margin-top: 4px;
 }
 
-.status-dot {
+.topStatus {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+
+    color: var(--green);
+}
+
+.statusDot {
 
     width: 7px;
     height: 7px;
@@ -213,28 +400,14 @@ body::after {
 
     box-shadow:
         0 0 12px
-        rgba(104,180,127,.7);
+        var(--green);
 
-    animation:
-        pulse 1.8s infinite;
-
+    animation: pulse 1.6s infinite;
 }
 
-@keyframes pulse {
-
-    0%,100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: .3;
-    }
-
-}
-
-/* =====================================================
+/* =========================================================
    LAYOUT
-===================================================== */
+========================================================= */
 
 .layout {
 
@@ -242,129 +415,1102 @@ body::after {
 
     min-height:
         calc(100vh - 72px);
-
 }
-
-/* =====================================================
-   SIDEBAR
-===================================================== */
 
 .sidebar {
 
-    width: 225px;
+    width: 235px;
 
-    flex-shrink: 0;
+    border-right: 1px solid var(--line);
 
     background:
-        rgba(5,7,9,.8);
+        rgba(7,10,14,.95);
 
-    border-right:
-        1px solid var(--line);
+    padding: 22px 13px;
 
-    padding: 25px 13px;
-
-    position: sticky;
-    top: 72px;
-
-    height:
-        calc(100vh - 72px);
-
+    flex-shrink: 0;
 }
 
-.sidebar-label {
+.navTitle {
 
-    color: #3f464d;
+    color: #46535e;
 
-    font-size: 8px;
+    font-size: 9px;
 
     letter-spacing: 3px;
 
     padding:
-        0 13px 12px;
+        10px 12px;
 
+    margin-bottom: 8px;
 }
 
-.sidebar button {
+.navButton {
 
     width: 100%;
 
-    background: transparent;
-
     border: 1px solid transparent;
 
-    color: #69727a;
+    background: transparent;
 
-    padding: 12px 13px;
+    color: #87949f;
+
+    padding: 13px 12px;
 
     text-align: left;
 
-    font-family: inherit;
-
-    font-size: 9px;
-
-    letter-spacing: 1px;
-
     cursor: pointer;
 
-    transition: .25s;
+    font-size: 10px;
 
+    letter-spacing: 1.5px;
+
+    margin-bottom: 3px;
+
+    transition:
+        .25s;
+
+    position: relative;
 }
 
-.sidebar button:hover {
+.navButton::before {
 
-    color: #fff;
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 2px;
+    height: 100%;
+
+    background: transparent;
+
+    transition: .25s;
+}
+
+.navButton:hover {
 
     background:
-        rgba(255,255,255,.025);
+        rgba(72,169,255,.04);
 
-}
-
-.sidebar button.active {
-
-    color: #fff;
+    color: var(--text);
 
     border-color:
-        rgba(200,0,37,.35);
+        rgba(72,169,255,.08);
+}
+
+.navButton.active {
 
     background:
-        rgba(200,0,37,.055);
+        rgba(72,169,255,.08);
 
-    box-shadow:
-        inset 2px 0 0 var(--red);
+    color: var(--blue);
+
+    border-color:
+        rgba(72,169,255,.15);
 
 }
 
-/* =====================================================
-   CONTENT
-===================================================== */
+.navButton.active::before {
 
-.content {
+    background: var(--blue);
+
+    box-shadow:
+        0 0 15px
+        var(--blue);
+}
+
+.main {
 
     flex: 1;
 
-    padding:
-        38px;
+    padding: 28px;
 
     min-width: 0;
-
 }
 
-.page {
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+.section {
 
     display: none;
 
     animation:
-        pageIn .45s ease;
-
+        sectionIn .35s ease;
 }
 
-.page.active {
+.section.active {
 
     display: block;
+}
+
+.sectionHeader {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    margin-bottom: 25px;
+}
+
+.sectionTitle {
+
+    font-size: 23px;
+
+    font-weight: 800;
+
+    letter-spacing: 3px;
+}
+
+.sectionSubtitle {
+
+    color: var(--muted);
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+
+    margin-top: 7px;
+}
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(220px, 1fr)
+        );
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+.card {
+
+    border: 1px solid var(--line);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(14,20,27,.9),
+            rgba(7,10,14,.9)
+        );
+
+    padding: 20px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    animation:
+        cardIn .45s ease backwards;
+
+    transition:
+        transform .25s,
+        border .25s,
+        box-shadow .25s;
+}
+
+.card:hover {
+
+    transform:
+        translateY(-3px);
+
+    border-color:
+        rgba(72,169,255,.35);
+
+    box-shadow:
+        0 10px 35px
+        rgba(0,0,0,.35);
+}
+
+.card::after {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(72,169,255,.5),
+            transparent
+        );
+
+    transform:
+        translateX(-100%);
+
+    transition: .5s;
+}
+
+.card:hover::after {
+
+    transform:
+        translateX(100%);
+}
+
+.cardLabel {
+
+    color: var(--muted);
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 10px;
+}
+
+.cardValue {
+
+    font-size: 27px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+.blue {
+    color: var(--blue);
+}
+
+.green {
+    color: var(--green);
+}
+
+.red {
+    color: var(--red);
+}
+
+.yellow {
+    color: var(--yellow);
+}
+
+.purple {
+    color: var(--purple);
+}
+
+/* =========================================================
+   PANELS
+========================================================= */
+
+.panel {
+
+    border: 1px solid var(--line);
+
+    background:
+        rgba(8,12,16,.92);
+
+    margin-bottom: 18px;
+
+    animation:
+        cardIn .5s ease backwards;
+}
+
+.panelHeader {
+
+    padding:
+        15px 18px;
+
+    border-bottom: 1px solid var(--line);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+.panelTitle {
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+
+    font-weight: 800;
+}
+
+.panelBody {
+
+    padding: 18px;
+}
+
+/* =========================================================
+   SITES
+========================================================= */
+
+.siteGrid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(270px, 1fr)
+        );
+
+    gap: 18px;
+}
+
+.siteCard {
+
+    position: relative;
+
+    overflow: hidden;
+
+    border: 1px solid var(--line);
+
+    background:
+        linear-gradient(
+            150deg,
+            #0c1218,
+            #06090d
+        );
+
+    padding: 22px;
+
+    cursor: pointer;
+
+    animation:
+        siteAppear .55s ease backwards;
+
+    transition:
+        transform .3s,
+        border .3s,
+        box-shadow .3s;
+}
+
+.siteCard:hover {
+
+    transform:
+        translateY(-6px)
+        scale(1.01);
+
+    border-color:
+        rgba(72,169,255,.45);
+
+    box-shadow:
+        0 15px 45px
+        rgba(0,0,0,.5),
+        0 0 30px
+        rgba(72,169,255,.05);
+}
+
+.siteCard::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 3px;
+    height: 100%;
+
+    background: var(--blue);
+
+    box-shadow:
+        0 0 18px
+        rgba(72,169,255,.4);
+}
+
+.siteUnknown::before {
+
+    background: #59636c;
+
+    box-shadow: none;
+}
+
+.siteTop {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    margin-bottom: 20px;
+}
+
+.siteName {
+
+    font-size: 23px;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+}
+
+.siteId {
+
+    color: var(--muted);
+
+    font-size: 9px;
+
+    margin-top: 5px;
+
+    letter-spacing: 2px;
+}
+
+.siteStatus {
+
+    font-size: 8px;
+
+    letter-spacing: 1.5px;
+
+    padding: 6px 8px;
+
+    border: 1px solid;
 
 }
 
-@keyframes pageIn {
+.statusActive {
+
+    color: var(--green);
+
+    border-color:
+        rgba(72,213,151,.3);
+
+    background:
+        rgba(72,213,151,.04);
+}
+
+.statusUnknown {
+
+    color: #737d85;
+
+    border-color:
+        rgba(115,125,133,.25);
+}
+
+.statusLockdown {
+
+    color: var(--red);
+
+    border-color:
+        rgba(255,70,93,.35);
+
+    background:
+        rgba(255,70,93,.04);
+
+    animation:
+        lockdownPulse 1.5s infinite;
+}
+
+.siteStats {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 12px;
+}
+
+.siteStat {
+
+    border-top: 1px solid #18222c;
+
+    padding-top: 10px;
+}
+
+.siteStatLabel {
+
+    font-size: 8px;
+
+    letter-spacing: 1.5px;
+
+    color: #56636e;
+
+    margin-bottom: 5px;
+}
+
+.siteStatValue {
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+.siteFooter {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: 20px;
+
+    padding-top: 14px;
+
+    border-top: 1px solid #18222c;
+}
+
+.configure {
+
+    color: var(--blue);
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.tableWrap {
+
+    overflow-x: auto;
+}
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 700px;
+}
+
+th {
+
+    text-align: left;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+    color: #65727c;
+
+    padding: 12px;
+
+    border-bottom:
+        1px solid var(--line);
+}
+
+td {
+
+    padding: 13px 12px;
+
+    font-size: 10px;
+
+    border-bottom:
+        1px solid #111a22;
+}
+
+tr {
+
+    transition: .2s;
+}
+
+tr:hover {
+
+    background:
+        rgba(72,169,255,.025);
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.btn {
+
+    border: 1px solid var(--line);
+
+    background: #080c10;
+
+    color: var(--text);
+
+    padding: 9px 13px;
+
+    cursor: pointer;
+
+    font-size: 9px;
+
+    letter-spacing: 1.5px;
+
+    transition: .2s;
+}
+
+.btn:hover {
+
+    border-color:
+        var(--blue);
+
+    color: var(--blue);
+
+    background:
+        rgba(72,169,255,.05);
+}
+
+.btnDanger:hover {
+
+    border-color:
+        var(--red);
+
+    color: var(--red);
+
+    background:
+        rgba(255,70,93,.05);
+}
+
+.btnSuccess:hover {
+
+    border-color:
+        var(--green);
+
+    color: var(--green);
+
+    background:
+        rgba(72,213,151,.05);
+}
+
+/* =========================================================
+   WARHEAD
+========================================================= */
+
+.warheadPanel {
+
+    border:
+        1px solid
+        rgba(255,70,93,.22);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(35,8,13,.55),
+            rgba(10,8,11,.9)
+        );
+}
+
+.warheadDisplay {
+
+    text-align: center;
+
+    padding: 40px 20px;
+}
+
+.warheadIcon {
+
+    font-size: 54px;
+
+    margin-bottom: 20px;
+
+    filter:
+        drop-shadow(
+            0 0 20px
+            rgba(255,70,93,.25)
+        );
+}
+
+.warheadStatus {
+
+    font-size: 24px;
+
+    font-weight: 900;
+
+    letter-spacing: 5px;
+
+    color: var(--green);
+}
+
+.warheadStatus.armed {
+
+    color: var(--yellow);
+
+    animation:
+        pulseText 1s infinite;
+}
+
+.warheadStatus.fired {
+
+    color: var(--red);
+
+    animation:
+        dangerText .5s infinite alternate;
+}
+
+.warheadInfo {
+
+    margin-top: 20px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+
+    line-height: 2;
+}
+
+.warheadControls {
+
+    display: flex;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+    margin-top: 25px;
+
+    justify-content: center;
+}
+
+/* =========================================================
+   AUDIT
+========================================================= */
+
+.auditItem {
+
+    border-bottom:
+        1px solid #151e26;
+
+    padding: 14px 0;
+
+    display: grid;
+
+    grid-template-columns:
+        110px 100px 150px 1fr;
+
+    gap: 12px;
+
+    font-size: 9px;
+
+    animation:
+        auditIn .3s ease backwards;
+}
+
+.auditCategory {
+
+    color: var(--blue);
+
+    letter-spacing: 1px;
+}
+
+.auditAction {
+
+    color: var(--yellow);
+
+    letter-spacing: 1px;
+}
+
+.auditActor {
+
+    color: var(--green);
+}
+
+.auditMessage {
+
+    color: #8c99a3;
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        rgba(0,0,0,.78);
+
+    backdrop-filter:
+        blur(8px);
+
+    z-index: 1000;
+
+    padding: 20px;
+}
+
+.modal.show {
+
+    display: flex;
+
+    animation:
+        modalFade .25s ease;
+}
+
+.modalBox {
+
+    width:
+        min(
+            600px,
+            100%
+        );
+
+    max-height:
+        90vh;
+
+    overflow-y: auto;
+
+    border: 1px solid #273743;
+
+    background:
+        #080c11;
+
+    box-shadow:
+        0 30px 100px
+        rgba(0,0,0,.8);
+
+    animation:
+        modalIn .3s ease;
+}
+
+.modalHeader {
+
+    padding: 18px;
+
+    border-bottom:
+        1px solid var(--line);
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+}
+
+.modalTitle {
+
+    letter-spacing: 2px;
+
+    font-size: 11px;
+
+    font-weight: 800;
+}
+
+.close {
+
+    border: none;
+
+    background: none;
+
+    color: var(--muted);
+
+    font-size: 22px;
+
+    cursor: pointer;
+}
+
+.close:hover {
+
+    color: var(--red);
+}
+
+.modalBody {
+
+    padding: 20px;
+}
+
+.formGroup {
+
+    margin-bottom: 15px;
+}
+
+.formActions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+#toastContainer {
+
+    position: fixed;
+
+    right: 20px;
+
+    bottom: 20px;
+
+    z-index: 5000;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.toast {
+
+    min-width: 260px;
+
+    border: 1px solid var(--line);
+
+    background:
+        rgba(7,10,14,.96);
+
+    padding: 14px 16px;
+
+    font-size: 10px;
+
+    letter-spacing: 1px;
+
+    box-shadow:
+        0 15px 40px
+        rgba(0,0,0,.5);
+
+    animation:
+        toastIn .3s ease;
+}
+
+.toast.success {
+
+    border-color:
+        rgba(72,213,151,.4);
+
+    color: var(--green);
+}
+
+.toast.error {
+
+    border-color:
+        rgba(255,70,93,.4);
+
+    color: var(--red);
+}
+
+/* =========================================================
+   ALARM
+========================================================= */
+
+#alarmOverlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    z-index: 9000;
+
+    pointer-events: none;
+
+    border:
+        5px solid
+        rgba(255,70,93,.75);
+
+    animation:
+        alarmBorder .7s infinite;
+}
+
+#alarmBanner {
+
+    position: fixed;
+
+    top: 72px;
+
+    left: 0;
+
+    width: 100%;
+
+    display: none;
+
+    z-index: 800;
+
+    background:
+        rgba(130,0,15,.95);
+
+    color: white;
+
+    text-align: center;
+
+    padding: 12px;
+
+    letter-spacing: 4px;
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    animation:
+        alarmFlash .7s infinite;
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes loginIn {
+
+    from {
+        opacity: 0;
+        transform: scale(.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+}
+
+@keyframes appIn {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+@keyframes sectionIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+@keyframes cardIn {
 
     from {
         opacity: 0;
@@ -378,789 +1524,102 @@ body::after {
 
 }
 
-/* =====================================================
-   PAGE TITLE
-===================================================== */
-
-.page-heading {
-
-    display: flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        flex-end;
-
-    gap: 20px;
-
-    margin-bottom: 30px;
-
-}
-
-.page-heading h1 {
-
-    font-size: 25px;
-
-    letter-spacing: 4px;
-
-}
-
-.page-heading p {
-
-    margin-top: 8px;
-
-    color: var(--muted);
-
-    font-size: 9px;
-
-    letter-spacing: 2px;
-
-}
-
-.classification {
-
-    color: var(--red2);
-
-    font-size: 8px;
-
-    letter-spacing: 3px;
-
-}
-
-/* =====================================================
-   STAT GRID
-===================================================== */
-
-.stats {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
-    gap: 12px;
-
-    margin-bottom: 22px;
-
-}
-
-.stat {
-
-    position: relative;
-
-    overflow: hidden;
-
-    padding: 23px;
-
-    background: var(--panel);
-
-    border:
-        1px solid var(--line);
-
-}
-
-.stat::before {
-
-    content: "";
-
-    position: absolute;
-
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: 1px;
-
-    background:
-        var(--red);
-
-    transform:
-        scaleX(0);
-
-    transform-origin:
-        left;
-
-    transition: .35s;
-
-}
-
-.stat:hover::before {
-
-    transform:
-        scaleX(1);
-
-}
-
-.stat-label {
-
-    color: #555e66;
-
-    font-size: 8px;
-
-    letter-spacing: 2px;
-
-}
-
-.stat-value {
-
-    margin-top: 13px;
-
-    font-size: 25px;
-
-    letter-spacing: 2px;
-
-}
-
-.stat-value.green {
-
-    color: var(--green);
-
-}
-
-.stat-value.red {
-
-    color: var(--red2);
-
-}
-
-.stat-value.yellow {
-
-    color: var(--yellow);
-
-}
-
-/* =====================================================
-   GRID
-===================================================== */
-
-.grid-2 {
-
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 18px;
-
-}
-
-.grid-3 {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 15px;
-
-}
-
-.panel {
-
-    background: var(--panel);
-
-    border:
-        1px solid var(--line);
-
-    padding: 25px;
-
-}
-
-.panel-title {
-
-    display: flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        center;
-
-    padding-bottom: 17px;
-
-    margin-bottom: 18px;
-
-    border-bottom:
-        1px solid var(--line);
-
-}
-
-.panel-title h2 {
-
-    font-size: 11px;
-
-    letter-spacing: 2px;
-
-}
-
-.panel-title span {
-
-    color: #424950;
-
-    font-size: 8px;
-
-    letter-spacing: 1px;
-
-}
-
-/* =====================================================
-   SYSTEM LIST
-===================================================== */
-
-.system-row {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content:
-        space-between;
-
-    padding: 13px 0;
-
-    border-bottom:
-        1px solid rgba(255,255,255,.035);
-
-}
-
-.system-row:last-child {
-
-    border-bottom: none;
-
-}
-
-.system-name {
-
-    color: #8b949c;
-
-    font-size: 9px;
-
-    letter-spacing: 1px;
-
-}
-
-.system-state {
-
-    font-size: 8px;
-
-    letter-spacing: 2px;
-
-}
-
-.online {
-
-    color: var(--green);
-
-}
-
-.warning {
-
-    color: var(--yellow);
-
-}
-
-.danger {
-
-    color: var(--red2);
-
-}
-
-/* =====================================================
-   SITE CARDS
-===================================================== */
-
-.site-card {
-
-    background: var(--panel);
-
-    border:
-        1px solid var(--line);
-
-    padding: 22px;
-
-    cursor: pointer;
-
-    position: relative;
-
-    overflow: hidden;
-
-    transition: .3s;
-
-}
-
-.site-card:hover {
-
-    transform:
-        translateY(-4px);
-
-    border-color:
-        rgba(200,0,37,.35);
-
-    box-shadow:
-        0 18px 40px
-        rgba(0,0,0,.3);
-
-}
-
-.site-card::after {
-
-    content: "";
-
-    position: absolute;
-
-    left: -100%;
-
-    top: 0;
-
-    width: 70%;
-
-    height: 100%;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(255,255,255,.035),
-            transparent
-        );
-
-    transition: .5s;
-
-}
-
-.site-card:hover::after {
-
-    left: 120%;
-
-}
-
-.site-top {
-
-    display: flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        center;
-
-}
-
-.site-id {
-
-    color: var(--red2);
-
-    font-size: 18px;
-
-    letter-spacing: 2px;
-
-}
-
-.site-state {
-
-    font-size: 7px;
-
-    letter-spacing: 2px;
-
-    padding:
-        5px 8px;
-
-    border:
-        1px solid currentColor;
-
-}
-
-.site-state.active {
-
-    color: var(--green);
-
-}
-
-.site-state.lockdown {
-
-    color: var(--red2);
-
-    animation:
-        dangerPulse 1.2s infinite;
-
-}
-
-.site-state.offline {
-
-    color: #59616a;
-
-}
-
-@keyframes dangerPulse {
-
-    50% {
-
-        opacity: .35;
-
+@keyframes siteAppear {
+
+    from {
+        opacity: 0;
+        transform:
+            translateY(25px)
+            scale(.97);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
     }
 
 }
 
-.site-name {
+@keyframes auditIn {
 
-    margin-top: 14px;
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
 
-    font-size: 11px;
-
-    letter-spacing: 1px;
-
-}
-
-.site-meta {
-
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 10px;
-
-    margin-top: 22px;
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 
 }
 
-.meta {
+@keyframes modalFade {
 
-    padding:
-        11px;
+    from {
+        opacity: 0;
+    }
 
-    background:
-        rgba(0,0,0,.22);
-
-    border:
-        1px solid
-        rgba(255,255,255,.04);
+    to {
+        opacity: 1;
+    }
 
 }
 
-.meta span {
+@keyframes modalIn {
 
-    display: block;
+    from {
+        opacity: 0;
+        transform:
+            translateY(20px)
+            scale(.97);
+    }
 
-    color: #4f575f;
-
-    font-size: 7px;
-
-    letter-spacing: 1px;
-
-}
-
-.meta strong {
-
-    display: block;
-
-    margin-top: 6px;
-
-    font-size: 10px;
+    to {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
 
 }
 
-/* =====================================================
-   SITE DETAIL
-===================================================== */
+@keyframes toastIn {
 
-.detail-overlay {
+    from {
+        opacity: 0;
+        transform:
+            translateX(30px);
+    }
 
-    position: fixed;
-
-    inset: 0;
-
-    background:
-        rgba(0,0,0,.7);
-
-    backdrop-filter:
-        blur(5px);
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    transition: .3s;
-
-    z-index: 3000;
+    to {
+        opacity: 1;
+        transform:
+            translateX(0);
+    }
 
 }
 
-.detail-overlay.open {
-
-    opacity: 1;
-
-    pointer-events:
-        auto;
-
-}
-
-.detail-panel {
-
-    position: absolute;
-
-    right: 0;
-    top: 0;
-
-    height: 100%;
-
-    width:
-        min(560px, 100%);
-
-    background:
-        #070a0d;
-
-    border-left:
-        1px solid
-        rgba(200,0,37,.35);
-
-    padding: 32px;
-
-    overflow-y: auto;
-
-    transform:
-        translateX(100%);
-
-    transition:
-        transform .4s
-        cubic-bezier(.2,.8,.2,1);
-
-}
-
-.detail-overlay.open
-.detail-panel {
-
-    transform:
-        translateX(0);
-
-}
-
-.detail-close {
-
-    float: right;
-
-    border: none;
-
-    background: transparent;
-
-    color: #5c646c;
-
-    font-family: inherit;
-
-    font-size: 20px;
-
-    cursor: pointer;
-
-}
-
-.detail-id {
-
-    color: var(--red2);
-
-    font-size: 26px;
-
-    letter-spacing: 4px;
-
-    margin-top: 40px;
-
-}
-
-.detail-name {
-
-    margin-top: 10px;
-
-    color: #8e969d;
-
-    font-size: 10px;
-
-    letter-spacing: 2px;
-
-}
-
-.detail-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 10px;
-
-    margin-top: 30px;
-
-}
-
-.detail-field {
-
-    padding: 15px;
-
-    background:
-        rgba(255,255,255,.02);
-
-    border:
-        1px solid var(--line);
-
-}
-
-.detail-field label {
-
-    display: block;
-
-    color: #505860;
-
-    font-size: 7px;
-
-    letter-spacing: 2px;
-
-}
-
-.detail-field select,
-.detail-field input,
-.detail-field textarea {
-
-    width: 100%;
-
-    margin-top: 9px;
-
-    padding: 9px;
-
-    background: #030405;
-
-    border:
-        1px solid #20252a;
-
-    color: #fff;
-
-    outline: none;
-
-    font-family: inherit;
-
-    font-size: 9px;
-
-}
-
-.detail-field textarea {
-
-    min-height: 100px;
-
-    resize: vertical;
-
-}
-
-.detail-full {
-
-    grid-column:
-        1 / -1;
-
-}
-
-.primary-btn {
-
-    width: 100%;
-
-    margin-top: 15px;
-
-    padding: 13px;
-
-    border:
-        1px solid var(--red);
-
-    background:
-        rgba(200,0,37,.08);
-
-    color: white;
-
-    font-family: inherit;
-
-    font-size: 9px;
-
-    letter-spacing: 2px;
-
-    cursor: pointer;
-
-    transition: .25s;
-
-}
-
-.primary-btn:hover {
-
-    background:
-        var(--red);
-
-    box-shadow:
-        0 0 25px
-        rgba(200,0,37,.2);
-
-}
-
-.lockdown-btn {
-
-    border-color:
-        var(--red2);
-
-    color:
-        var(--red2);
-
-}
-
-.lockdown-btn:hover {
-
-    background:
-        var(--red2);
-
-}
-
-/* =====================================================
-   WARHEAD
-===================================================== */
-
-.warhead-card {
-
-    padding: 25px;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(200,0,37,.045),
-            transparent
-        ),
-        var(--panel);
-
-    border:
-        1px solid
-        rgba(200,0,37,.2);
-
-    position: relative;
-
-    overflow: hidden;
-
-}
-
-.warhead-card::before {
-
-    content: "";
-
-    position: absolute;
-
-    top: 0;
-    left: 0;
-
-    width: 3px;
-    height: 100%;
-
-    background:
-        var(--red2);
-
-    animation:
-        warheadBar 2s infinite;
-
-}
-
-@keyframes warheadBar {
+@keyframes pulse {
 
     0%,100% {
-        opacity: .4;
+        opacity: .5;
+        transform: scale(.8);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+
+}
+
+@keyframes pulseText {
+
+    0%,100% {
+        opacity: .55;
     }
 
     50% {
@@ -1169,562 +1628,156 @@ body::after {
 
 }
 
-.warhead-id {
-
-    color: var(--red2);
-
-    font-size: 17px;
-
-    letter-spacing: 3px;
-
-}
-
-.warhead-name {
-
-    margin-top: 8px;
-
-    font-size: 10px;
-
-    color: #777f87;
-
-}
-
-.warhead-status {
-
-    margin-top: 22px;
-
-    display: inline-block;
-
-    padding:
-        7px 10px;
-
-    border:
-        1px solid
-        rgba(255,23,66,.3);
-
-    color: var(--red2);
-
-    font-size: 8px;
-
-    letter-spacing: 2px;
-
-}
-
-/* =====================================================
-   SATELLITE
-===================================================== */
-
-.satellite-panel {
-
-    padding: 35px;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(199,163,71,.04),
-            transparent 60%
-        ),
-        var(--panel);
-
-    border:
-        1px solid
-        rgba(199,163,71,.2);
-
-}
-
-.satellite-status {
-
-    display: flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        center;
-
-    gap: 20px;
-
-}
-
-.satellite-status h2 {
-
-    font-size: 18px;
-
-    letter-spacing: 3px;
-
-}
-
-.satellite-badge {
-
-    color: var(--yellow);
-
-    border:
-        1px solid
-        rgba(199,163,71,.4);
-
-    padding:
-        8px 12px;
-
-    font-size: 8px;
-
-    letter-spacing: 2px;
-
-}
-
-.progress {
-
-    margin-top: 25px;
-
-    height: 7px;
-
-    background:
-        #161a1e;
-
-    border:
-        1px solid #20252a;
-
-    overflow: hidden;
-
-}
-
-.progress div {
-
-    width: 8%;
-
-    height: 100%;
-
-    background:
-        var(--yellow);
-
-    box-shadow:
-        0 0 15px
-        rgba(199,163,71,.45);
-
-}
-
-.satellite-info {
-
-    margin-top: 18px;
-
-    color: #727a82;
-
-    font-size: 9px;
-
-    line-height: 1.8;
-
-}
-
-/* =====================================================
-   REQUESTS
-===================================================== */
-
-.request {
-
-    padding: 18px;
-
-    border:
-        1px solid var(--line);
-
-    background:
-        rgba(255,255,255,.012);
-
-    margin-bottom: 10px;
-
-    transition: .25s;
-
-}
-
-.request:hover {
-
-    border-color:
-        rgba(200,0,37,.3);
-
-}
-
-.request-top {
-
-    display: flex;
-
-    justify-content:
-        space-between;
-
-    gap: 15px;
-
-}
-
-.request-id {
-
-    color: var(--red2);
-
-    font-size: 9px;
-
-    letter-spacing: 1px;
-
-}
-
-.request-status {
-
-    font-size: 7px;
-
-    letter-spacing: 2px;
-
-}
-
-.request-status.pending {
-
-    color: var(--yellow);
-
-}
-
-.request-status.approved {
-
-    color: var(--green);
-
-}
-
-.request-status.rejected {
-
-    color: var(--red2);
-
-}
-
-.request-body {
-
-    margin-top: 13px;
-
-    color: #737b83;
-
-    font-size: 9px;
-
-    line-height: 1.7;
-
-}
-
-.request-actions {
-
-    display: flex;
-
-    gap: 8px;
-
-    margin-top: 14px;
-
-}
-
-.small-btn {
-
-    padding:
-        8px 12px;
-
-    border:
-        1px solid #282e34;
-
-    background:
-        #050608;
-
-    color: #aab0b5;
-
-    font-family: inherit;
-
-    font-size: 7px;
-
-    letter-spacing: 1px;
-
-    cursor: pointer;
-
-}
-
-.small-btn:hover {
-
-    border-color:
-        var(--red);
-
-    color: #fff;
-
-}
-
-/* =====================================================
-   LOG
-===================================================== */
-
-.log {
-
-    max-height: 350px;
-
-    overflow-y: auto;
-
-    background: #020304;
-
-    border:
-        1px solid var(--line);
-
-    padding: 15px;
-
-}
-
-.log-line {
-
-    padding:
-        7px 0;
-
-    color: #5f6870;
-
-    font-size: 8px;
-
-    line-height: 1.6;
-
-    border-bottom:
-        1px solid
-        rgba(255,255,255,.025);
-
-}
-
-.log-line strong {
-
-    color: var(--red2);
-
-}
-
-/* =====================================================
-   ALERT
-===================================================== */
-
-.alert {
-
-    padding: 16px;
-
-    border:
-        1px solid
-        rgba(200,0,37,.25);
-
-    background:
-        rgba(200,0,37,.035);
-
-    color: #929aa1;
-
-    font-size: 8px;
-
-    line-height: 1.7;
-
-    margin-bottom: 10px;
-
-}
-
-.alert strong {
-
-    color: var(--red2);
-
-}
-
-/* =====================================================
-   TOAST
-===================================================== */
-
-#toast {
-
-    position: fixed;
-
-    right: 25px;
-    bottom: 25px;
-
-    padding:
-        15px 20px;
-
-    background:
-        #080b0f;
-
-    border:
-        1px solid var(--red);
-
-    color: #fff;
-
-    font-size: 8px;
-
-    letter-spacing: 1px;
-
-    transform:
-        translateY(30px);
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    transition: .3s;
-
-    z-index: 5000;
-
-}
-
-#toast.show {
-
-    opacity: 1;
-
-    transform:
-        translateY(0);
-
-}
-
-/* =====================================================
-   LOCKDOWN FLASH
-===================================================== */
-
-#lockdownFlash {
-
-    position: fixed;
-
-    inset: 0;
-
-    pointer-events: none;
-
-    background:
-        rgba(255,0,35,.15);
-
-    opacity: 0;
-
-    z-index: 4000;
-
-}
-
-#lockdownFlash.active {
-
-    animation:
-        lockdownFlash .8s
-        ease;
-
-}
-
-@keyframes lockdownFlash {
-
-    0% {
-        opacity: 0;
+@keyframes dangerText {
+
+    from {
+        text-shadow:
+            0 0 5px
+            rgba(255,70,93,.3);
     }
 
-    20% {
+    to {
+        text-shadow:
+            0 0 30px
+            rgba(255,70,93,.8);
+    }
+
+}
+
+@keyframes lockdownPulse {
+
+    0%,100% {
+        opacity: .6;
+    }
+
+    50% {
         opacity: 1;
     }
 
-    40% {
-        opacity: .15;
+}
+
+@keyframes alarmBorder {
+
+    0%,100% {
+        opacity: .2;
     }
 
-    60% {
-        opacity: .8;
-    }
-
-    100% {
-        opacity: 0;
+    50% {
+        opacity: 1;
     }
 
 }
 
-/* =====================================================
-   MOBILE
-===================================================== */
+@keyframes alarmFlash {
 
-@media(max-width: 900px) {
+    0%,100% {
+        background:
+            rgba(100,0,10,.95);
+    }
+
+    50% {
+        background:
+            rgba(190,0,20,.98);
+    }
+
+}
+
+@keyframes scanLine {
+
+    from {
+        left: -100%;
+    }
+
+    to {
+        left: 100%;
+    }
+
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 850px) {
 
     .sidebar {
 
-        width: 65px;
-
-        padding:
-            20px 7px;
+        width: 70px;
 
     }
 
-    .sidebar-label {
+    .navTitle {
 
         display: none;
 
     }
 
-    .sidebar button {
+    .navButton span {
 
-        font-size: 0;
+        display: none;
+
+    }
+
+    .navButton {
 
         text-align: center;
 
-        padding: 14px 4px;
+        font-size: 17px;
 
     }
 
-    .sidebar button::first-letter {
+    .main {
 
-        font-size: 15px;
-
-    }
-
-    .content {
-
-        padding: 20px;
+        padding: 18px;
 
     }
 
-    .stats,
-    .grid-3 {
+    .topbar {
+
+        padding:
+            0 15px;
+
+    }
+
+    .auditItem {
 
         grid-template-columns:
             1fr 1fr;
 
     }
 
-    .grid-2 {
-
-        grid-template-columns:
-            1fr;
-
-    }
-
 }
 
-@media(max-width: 600px) {
+@media (max-width: 550px) {
 
-    .topbar {
+    .brandText {
 
-        padding: 0 15px;
+        font-size: 10px;
 
     }
 
-    .top-status {
+    .brandSub {
 
         display: none;
 
     }
 
-    .content {
+    .topStatus {
 
-        padding: 15px;
+        display: none;
 
     }
 
-    .stats,
-    .grid-3 {
+    .main {
+
+        padding: 12px;
+
+    }
+
+    .siteGrid {
 
         grid-template-columns:
             1fr;
-
-    }
-
-    .page-heading {
-
-        align-items:
-            flex-start;
-
-        flex-direction:
-            column;
-
-    }
-
-    .detail-grid {
-
-        grid-template-columns:
-            1fr;
-
-    }
-
-    .detail-full {
-
-        grid-column:
-            auto;
 
     }
 
@@ -1735,1136 +1788,558 @@ body::after {
 
 <body>
 
-<div class="scanline"></div>
+<!-- =========================================================
+     LOGIN
+========================================================= -->
 
-<div id="lockdownFlash"></div>
+<div id="loginScreen">
 
+    <div class="loginBox">
 
-<header class="topbar">
-
-    <div class="brand">
-
-        <div class="brand-symbol">
-            Ω
+        <div class="loginLogo">
+            SCP
         </div>
 
-        <div>
-
-            <div class="brand-title">
-                O5 COUNCIL
-            </div>
-
-            <div class="brand-sub">
-                ADMINISTRATION // [SITE-64]
-            </div>
-
+        <div class="loginTitle">
+            SITE64 FOUNDATION // ADMINISTRATION
         </div>
 
-    </div>
+        <label class="inputLabel">
+            ADMINISTRATIVE ACCESS CODE
+        </label>
 
-
-    <div class="top-status">
-
-        <span class="status-dot"></span>
-
-        COUNCIL SYSTEM ONLINE
-
-    </div>
-
-</header>
-
-
-<div class="layout">
-
-
-<!-- =====================================================
-     SIDEBAR
-====================================================== -->
-
-<aside class="sidebar">
-
-    <div class="sidebar-label">
-        COMMAND
-    </div>
-
-    <button
-        class="active"
-        data-page="dashboard"
-    >
-        ◈ DASHBOARD
-    </button>
-
-    <button
-        data-page="sites"
-    >
-        ◫ SITE CONTROL
-    </button>
-
-    <button
-        data-page="warheads"
-    >
-        ⚠ WARHEAD CONTROL
-    </button>
-
-    <button
-        data-page="council"
-    >
-        Ω O5 COUNCIL
-    </button>
-
-    <button
-        data-page="satellite"
-    >
-        ◉ SATELLITE
-    </button>
-
-    <button
-        data-page="requests"
-    >
-        ▣ REQUEST DATABASE
-    </button>
-
-    <button
-        data-page="logs"
-    >
-        ≡ ACTIVITY LOG
-    </button>
-
-    <div
-        class="sidebar-label"
-        style="margin-top:25px;"
-    >
-        SYSTEM
-    </div>
-
-    <button
-        data-page="diagnostics"
-    >
-        ◌ DIAGNOSTICS
-    </button>
-
-    <button
-        onclick="location.href='/'"
-    >
-        ← RETURN TO LOBBY
-    </button>
-
-</aside>
-
-
-<main class="content">
-
-
-<!-- =====================================================
-     DASHBOARD
-====================================================== -->
-
-<section
-    class="page active"
-    id="page-dashboard"
->
-
-    <div class="page-heading">
-
-        <div>
-
-            <div class="classification">
-                O5 // CLASSIFIED
-            </div>
-
-            <h1>
-                COMMAND DASHBOARD
-            </h1>
-
-            <p>
-                FOUNDATION GLOBAL OPERATIONS MONITOR
-            </p>
-
-        </div>
-
-        <div
-            id="clock"
-            class="classification"
+        <input
+            id="adminCode"
+            type="password"
+            autocomplete="off"
+            placeholder="ENTER ACCESS CODE"
         >
-            00:00:00
-        </div>
 
-    </div>
-
-
-    <div class="stats">
-
-        <div class="stat">
-
-            <div class="stat-label">
-                REGISTERED SITES
-            </div>
-
-            <div
-                class="stat-value"
-                id="statSites"
-            >
-                3
-            </div>
-
-        </div>
-
-
-        <div class="stat">
-
-            <div class="stat-label">
-                ACTIVE SITES
-            </div>
-
-            <div
-                class="stat-value green"
-                id="statActive"
-            >
-                3
-            </div>
-
-        </div>
-
-
-        <div class="stat">
-
-            <div class="stat-label">
-                LOCKDOWN
-            </div>
-
-            <div
-                class="stat-value red"
-                id="statLockdown"
-            >
-                0
-            </div>
-
-        </div>
-
-
-        <div class="stat">
-
-            <div class="stat-label">
-                SYSTEM
-            </div>
-
-            <div
-                class="stat-value green"
-            >
-                ONLINE
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="grid-2">
-
-
-        <div class="panel">
-
-            <div class="panel-title">
-
-                <h2>
-                    LIVE FOUNDATION STATUS
-                </h2>
-
-                <span>
-                    LIVE
-                </span>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <span class="system-name">
-                    FOUNDATION NETWORK
-                </span>
-
-                <span class="system-state online">
-                    ONLINE
-                </span>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <span class="system-name">
-                    REQUEST DATABASE
-                </span>
-
-                <span
-                    class="system-state online"
-                    id="dashRequestState"
-                >
-                    ONLINE
-                </span>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <span class="system-name">
-                    WARHEAD NETWORK
-                </span>
-
-                <span class="system-state danger">
-                    ARMED
-                </span>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <span class="system-name">
-                    ORBITAL SATELLITE
-                </span>
-
-                <span class="system-state warning">
-                    UNAVAILABLE
-                </span>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <span class="system-name">
-                    O5 COUNCIL
-                </span>
-
-                <span class="system-state online">
-                    ACTIVE
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <div class="panel">
-
-            <div class="panel-title">
-
-                <h2>
-                    SECURITY ALERTS
-                </h2>
-
-                <span>
-                    PRIORITY
-                </span>
-
-            </div>
-
-
-            <div class="alert">
-
-                <strong>
-                    [CRITICAL]
-                </strong>
-
-                External orbital warhead
-                deactivation system unavailable.
-
-            </div>
-
-
-            <div class="alert">
-
-                <strong>
-                    [WARNING]
-                </strong>
-
-                All Foundation facilities report
-                insufficient satellite construction materials.
-
-            </div>
-
-
-            <div class="alert">
-
-                <strong>
-                    [NOTICE]
-                </strong>
-
-                O5 Council departure requests require
-                final Council authorization.
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div
-        class="panel"
-        style="margin-top:18px;"
-    >
-
-        <div class="panel-title">
-
-            <h2>
-                FACILITY OVERVIEW
-            </h2>
-
-            <span>
-                SELECT FACILITY FOR CONTROL
-            </span>
-
-        </div>
-
+        <button
+            class="loginButton"
+            onclick="login()"
+        >
+            AUTHENTICATE
+        </button>
 
         <div
-            class="grid-3"
-            id="dashboardSites"
+            id="loginError"
+            class="loginError"
         ></div>
 
     </div>
-
-</section>
-
-
-<!-- =====================================================
-     SITES
-====================================================== -->
-
-<section
-    class="page"
-    id="page-sites"
->
-
-    <div class="page-heading">
-
-        <div>
-
-            <div class="classification">
-                FOUNDATION FACILITIES
-            </div>
-
-            <h1>
-                SITE CONTROL
-            </h1>
-
-            <p>
-                FACILITY STATUS AND CONTAINMENT MANAGEMENT
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div
-        class="grid-3"
-        id="siteGrid"
-    ></div>
-
-</section>
-
-
-<!-- =====================================================
-     WARHEAD
-====================================================== -->
-
-<section
-    class="page"
-    id="page-warheads"
->
-
-    <div class="page-heading">
-
-        <div>
-
-            <div class="classification">
-                STRATEGIC SYSTEMS
-            </div>
-
-            <h1>
-                WARHEAD CONTROL
-            </h1>
-
-            <p>
-                O5 AUTHORIZATION REQUIRED
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="alert">
-
-        <strong>
-            [WARNING]
-        </strong>
-
-        Warhead systems are fictional Foundation
-        systems and remain under O5 Council authority.
-        Deactivation requires the external orbital
-        satellite system.
-
-    </div>
-
-
-    <div class="grid-2">
-
-
-        <div class="warhead-card">
-
-            <div class="warhead-id">
-                GAMMA
-            </div>
-
-            <div class="warhead-name">
-                GLOBAL TERMINATION
-            </div>
-
-            <div class="warhead-status">
-                ARMED
-            </div>
-
-        </div>
-
-
-        <div class="warhead-card">
-
-            <div class="warhead-id">
-                DELTA
-            </div>
-
-            <div class="warhead-name">
-                DEATH RAY
-            </div>
-
-            <div class="warhead-status">
-                ARMED
-            </div>
-
-        </div>
-
-
-        <div class="warhead-card">
-
-            <div class="warhead-id">
-                ALPHA
-            </div>
-
-            <div class="warhead-name">
-                FACILITY TERMINATION
-            </div>
-
-            <div class="warhead-status">
-                ARMED
-            </div>
-
-        </div>
-
-
-        <div class="warhead-card">
-
-            <div class="warhead-id">
-                BETA
-            </div>
-
-            <div class="warhead-name">
-                RADIATION BOMB
-            </div>
-
-            <div class="warhead-status">
-                ARMED
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div
-        class="panel"
-        style="margin-top:18px;"
-    >
-
-        <div class="panel-title">
-
-            <h2>
-                DEACTIVATION REQUIREMENTS
-            </h2>
-
-            <span>
-                SYSTEM LOCKED
-            </span>
-
-        </div>
-
-
-        <div class="system-row">
-
-            <span class="system-name">
-                O5 AUTHORIZATION
-            </span>
-
-            <span class="system-state online">
-                REQUIRED
-            </span>
-
-        </div>
-
-
-        <div class="system-row">
-
-            <span class="system-name">
-                TARGET VERIFICATION
-            </span>
-
-            <span class="system-state online">
-                REQUIRED
-            </span>
-
-        </div>
-
-
-        <div class="system-row">
-
-            <span class="system-name">
-                EXTERNAL SATELLITE
-            </span>
-
-            <span class="system-state danger">
-                UNAVAILABLE
-            </span>
-
-        </div>
-
-
-        <div class="system-row">
-
-            <span class="system-name">
-                MATERIAL SUPPLY
-            </span>
-
-            <span class="system-state danger">
-                INSUFFICIENT
-            </span>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     COUNCIL
-====================================================== -->
-
-<section
-    class="page"
-    id="page-council"
->
-
-    <div class="page-heading">
-
-        <div>
-
-            <div class="classification">
-                COUNCIL ADMINISTRATION
-            </div>
-
-            <h1>
-                O5 COUNCIL
-            </h1>
-
-            <p>
-                DEPARTURE PERMIT REQUESTS
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="alert">
-
-        <strong>
-            [COUNCIL NOTICE]
-        </strong>
-
-        Leaving the O5 Council requires formal
-        authorization and final Council approval.
-
-    </div>
-
-
-    <div
-        class="panel"
-    >
-
-        <div class="panel-title">
-
-            <h2>
-                DEPARTURE REQUESTS
-            </h2>
-
-            <span id="councilCount">
-                0 REQUESTS
-            </span>
-
-        </div>
-
-
-        <div id="councilRequests">
-
-            <div
-                style="
-                    color:#555e66;
-                    font-size:9px;
-                    padding:20px 0;
-                "
-            >
-                NO DEPARTURE REQUESTS FOUND.
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     SATELLITE
-====================================================== -->
-
-<section
-    class="page"
-    id="page-satellite"
->
-
-    <div class="page-heading">
-
-        <div>
-
-            <div class="classification">
-                PROJECT ORBITAL
-            </div>
-
-            <h1>
-                EXTERNAL SATELLITE
-            </h1>
-
-            <p>
-                WARHEAD DEACTIVATION SUPPORT SYSTEM
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="satellite-panel">
-
-        <div class="satellite-status">
-
-            <h2>
-                EXTERNAL ORBITAL PLATFORM
-            </h2>
-
-            <div class="satellite-badge">
-                CONSTRUCTION UNAVAILABLE
-            </div>
-
-        </div>
-
-
-        <div class="progress">
-            <div></div>
-        </div>
-
-
-        <div class="satellite-info">
-
-            PROJECT COMPLETION: 8%
-
-            <br>
-
-            CURRENT STATUS:
-            CONSTRUCTION SUSPENDED
-
-            <br>
-
-            REASON:
-            INSUFFICIENT MATERIALS ACROSS ALL
-            FOUNDATION FACILITIES.
-
-            <br>
-
-            PURPOSE:
-            AUTHORIZED WARHEAD DEACTIVATION.
-
-            <br><br>
-
-            SITE-19:
-            MATERIALS INSUFFICIENT.
-
-            <br>
-
-            SITE-51:
-            MATERIALS INSUFFICIENT.
-
-            <br>
-
-            SITE-64:
-            MATERIALS INSUFFICIENT.
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     REQUESTS
-====================================================== -->
-
-<section
-    class="page"
-    id="page-requests"
->
-
-    <div class="page-heading">
-
-        <div>
-
-            <div class="classification">
-                FOUNDATION DATABASE
-            </div>
-
-            <h1>
-                REQUEST DATABASE
-            </h1>
-
-            <p>
-                PERSONNEL REQUEST MANAGEMENT
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="panel">
-
-        <div class="panel-title">
-
-            <h2>
-                SUBMITTED REQUESTS
-            </h2>
-
-            <span id="requestCount">
-                0 REQUESTS
-            </span>
-
-        </div>
-
-
-        <div id="requestList">
-
-            <div
-                style="
-                    color:#555e66;
-                    font-size:9px;
-                    padding:20px 0;
-                "
-            >
-                LOADING REQUEST DATABASE...
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     LOGS
-====================================================== -->
-
-<section
-    class="page"
-    id="page-logs"
->
-
-    <div class="page-heading">
-
-        <div>
-
-            <div class="classification">
-                FOUNDATION SECURITY
-            </div>
-
-            <h1>
-                ACTIVITY LOG
-            </h1>
-
-            <p>
-                SYSTEM EVENTS AND ADMINISTRATION ACTIONS
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="panel">
-
-        <div class="panel-title">
-
-            <h2>
-                LIVE ACTIVITY
-            </h2>
-
-            <span>
-                TERMINAL
-            </span>
-
-        </div>
-
-
-        <div
-            class="log"
-            id="activityLog"
-        ></div>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     DIAGNOSTICS
-====================================================== -->
-
-<section
-    class="page"
-    id="page-diagnostics"
->
-
-    <div class="page-heading">
-
-        <div>
-
-            <div class="classification">
-                SYSTEM INTERNALS
-            </div>
-
-            <h1>
-                SYSTEM DIAGNOSTICS
-            </h1>
-
-            <p>
-                FOUNDATION NETWORK DIAGNOSTIC INFORMATION
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="grid-2">
-
-
-        <div class="panel">
-
-            <div class="panel-title">
-
-                <h2>
-                    CORE SERVICES
-                </h2>
-
-                <span>
-                    STATUS
-                </span>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <span class="system-name">
-                    WEB SERVER
-                </span>
-
-                <span class="system-state online">
-                    ONLINE
-                </span>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <span class="system-name">
-                    REQUEST API
-                </span>
-
-                <span
-                    class="system-state online"
-                    id="apiStatus"
-                >
-                    ONLINE
-                </span>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <span class="system-name">
-                    DATABASE
-                </span>
-
-                <span
-                    class="system-state online"
-                    id="databaseStatus"
-                >
-                    ONLINE
-                </span>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <span class="system-name">
-                    COUNCIL DATABASE
-                </span>
-
-                <span class="system-state warning">
-                    OPTIONAL API
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <div class="panel">
-
-            <div class="panel-title">
-
-                <h2>
-                    SECURITY
-                </h2>
-
-                <span>
-                    O5
-                </span>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <span class="system-name">
-                    ACCESS LEVEL
-                </span>
-
-                <span class="system-state danger">
-                    O5
-                </span>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <span class="system-name">
-                    COUNCIL LOCK
-                </span>
-
-                <span class="system-state online">
-                    ACTIVE
-                </span>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <span class="system-name">
-                    WARHEAD ACCESS
-                </span>
-
-                <span class="system-state warning">
-                    RESTRICTED
-                </span>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-</main>
 
 </div>
 
 
-<!-- =====================================================
-     SITE DETAIL PANEL
-====================================================== -->
+<!-- =========================================================
+     ALARM
+========================================================= -->
+
+<div id="alarmOverlay"></div>
+
+<div id="alarmBanner">
+    ⚠ WARHEAD FIRING DETECTED // FOUNDATION EMERGENCY PROTOCOL ⚠
+</div>
+
+
+<!-- =========================================================
+     APPLICATION
+========================================================= -->
+
+<div id="app">
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brandMark">
+                S
+            </div>
+
+            <div>
+
+                <div class="brandText">
+                    SCP-SITE64
+                </div>
+
+                <div class="brandSub">
+                    FOUNDATION ADMINISTRATION NETWORK
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="topStatus">
+
+            <div class="statusDot"></div>
+
+            SYSTEM ONLINE
+
+        </div>
+
+    </header>
+
+
+    <div class="layout">
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside class="sidebar">
+
+            <div class="navTitle">
+                ADMINISTRATION
+            </div>
+
+            <button
+                class="navButton active"
+                data-section="dashboard"
+            >
+                <span>▣ &nbsp; DASHBOARD</span>
+            </button>
+
+            <button
+                class="navButton"
+                data-section="sites"
+            >
+                <span>◈ &nbsp; SITE CONTROL</span>
+            </button>
+
+            <button
+                class="navButton"
+                data-section="requests"
+            >
+                <span>▤ &nbsp; REQUESTS</span>
+            </button>
+
+            <button
+                class="navButton"
+                data-section="council"
+            >
+                <span>◇ &nbsp; O5 COUNCIL</span>
+            </button>
+
+            <button
+                class="navButton"
+                data-section="warhead"
+            >
+                <span>⚠ &nbsp; WARHEAD</span>
+            </button>
+
+            <button
+                class="navButton"
+                data-section="audit"
+            >
+                <span>◌ &nbsp; AUDIT LOG</span>
+            </button>
+
+        </aside>
+
+
+        <!-- =================================================
+             MAIN
+        ================================================== -->
+
+        <main class="main">
+
+            <!-- DASHBOARD -->
+
+            <section
+                id="dashboard"
+                class="section active"
+            >
+
+                <div class="sectionHeader">
+
+                    <div>
+
+                        <div class="sectionTitle">
+                            COMMAND DASHBOARD
+                        </div>
+
+                        <div class="sectionSubtitle">
+                            FOUNDATION SYSTEM OVERVIEW
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="grid"
+                    id="dashboardCards"
+                ></div>
+
+
+                <div class="panel">
+
+                    <div class="panelHeader">
+
+                        <div class="panelTitle">
+                            WARHEAD MONITOR
+                        </div>
+
+                        <div
+                            id="dashboardWarhead"
+                            class="green"
+                        >
+                            STANDBY
+                        </div>
+
+                    </div>
+
+                    <div class="panelBody">
+
+                        <div
+                            id="dashboardWarheadInfo"
+                            style="
+                                color:#697780;
+                                font-size:10px;
+                                letter-spacing:1px;
+                            "
+                        >
+                            WARHEAD SYSTEM NOMINAL.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panelHeader">
+
+                        <div class="panelTitle">
+                            FOUNDATION SITES
+                        </div>
+
+                    </div>
+
+                    <div class="panelBody">
+
+                        <div
+                            class="siteGrid"
+                            id="dashboardSites"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- SITES -->
+
+            <section
+                id="sites"
+                class="section"
+            >
+
+                <div class="sectionHeader">
+
+                    <div>
+
+                        <div class="sectionTitle">
+                            FOUNDATION SITES
+                        </div>
+
+                        <div class="sectionSubtitle">
+                            SECURE FACILITY CONTROL NETWORK
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="siteGrid"
+                    class="siteGrid"
+                ></div>
+
+            </section>
+
+
+            <!-- REQUESTS -->
+
+            <section
+                id="requests"
+                class="section"
+            >
+
+                <div class="sectionHeader">
+
+                    <div>
+
+                        <div class="sectionTitle">
+                            REQUEST CONTROL
+                        </div>
+
+                        <div class="sectionSubtitle">
+                            PERSONNEL REQUEST AUTHORIZATION
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panelBody">
+
+                        <div
+                            class="tableWrap"
+                            id="requestsTable"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- COUNCIL -->
+
+            <section
+                id="council"
+                class="section"
+            >
+
+                <div class="sectionHeader">
+
+                    <div>
+
+                        <div class="sectionTitle">
+                            O5 COUNCIL
+                        </div>
+
+                        <div class="sectionSubtitle">
+                            COUNCIL REQUEST AUTHORIZATION
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panelBody">
+
+                        <div
+                            class="tableWrap"
+                            id="councilTable"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- WARHEAD -->
+
+            <section
+                id="warhead"
+                class="section"
+            >
+
+                <div class="sectionHeader">
+
+                    <div>
+
+                        <div class="sectionTitle">
+                            WARHEAD CONTROL
+                        </div>
+
+                        <div class="sectionSubtitle">
+                            STRATEGIC FOUNDATION DEFENSE SYSTEM
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel warheadPanel">
+
+                    <div class="panelBody">
+
+                        <div class="warheadDisplay">
+
+                            <div class="warheadIcon">
+                                ⚠
+                            </div>
+
+                            <div
+                                id="warheadStatus"
+                                class="warheadStatus"
+                            >
+                                STANDBY
+                            </div>
+
+                            <div
+                                id="warheadInfo"
+                                class="warheadInfo"
+                            >
+                                SYSTEM READY
+                            </div>
+
+
+                            <div class="warheadControls">
+
+                                <button
+                                    class="btn"
+                                    onclick="armWarhead('GAMMA')"
+                                >
+                                    ARM GAMMA
+                                </button>
+
+                                <button
+                                    class="btn"
+                                    onclick="armWarhead('DELTA')"
+                                >
+                                    ARM DELTA
+                                </button>
+
+                                <button
+                                    class="btn"
+                                    onclick="armWarhead('ALPHA')"
+                                >
+                                    ARM ALPHA
+                                </button>
+
+                                <button
+                                    class="btn"
+                                    onclick="armWarhead('BETA')"
+                                >
+                                    ARM BETA
+                                </button>
+
+                                <button
+                                    class="btn btnDanger"
+                                    onclick="fireWarhead()"
+                                >
+                                    FIRE
+                                </button>
+
+                                <button
+                                    class="btn"
+                                    onclick="resetWarhead()"
+                                >
+                                    RESET
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- AUDIT -->
+
+            <section
+                id="audit"
+                class="section"
+            >
+
+                <div class="sectionHeader">
+
+                    <div>
+
+                        <div class="sectionTitle">
+                            AUDIT LOG
+                        </div>
+
+                        <div class="sectionSubtitle">
+                            FOUNDATION SYSTEM ACTIVITY
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panelBody">
+
+                        <div
+                            id="auditList"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     SITE MODAL
+========================================================= -->
 
 <div
-    class="detail-overlay"
-    id="detailOverlay"
+    id="siteModal"
+    class="modal"
 >
 
-    <div class="detail-panel">
+    <div class="modalBox">
 
-        <button
-            class="detail-close"
-            onclick="closeSite()"
-        >
-            ×
-        </button>
+        <div class="modalHeader">
 
+            <div
+                id="siteModalTitle"
+                class="modalTitle"
+            >
+                SITE CONFIGURATION
+            </div>
 
-        <div
-            class="detail-id"
-            id="detailId"
-        >
-            SITE-64
-        </div>
+            <button
+                class="close"
+                onclick="closeModal('siteModal')"
+            >
+                ×
+            </button>
 
-        <div
-            class="detail-name"
-            id="detailName"
-        >
-            UNKNOWN FACILITY
         </div>
 
 
-        <div class="detail-grid">
+        <div class="modalBody">
+
+            <input
+                type="hidden"
+                id="editingSiteId"
+            >
 
 
-            <div class="detail-field">
+            <div class="formGroup">
 
-                <label>
-                    FACILITY STATUS
+                <label class="inputLabel">
+                    STATUS
                 </label>
 
-                <select id="editStatus">
+                <select id="siteStatus">
 
                     <option value="ACTIVE">
                         ACTIVE
@@ -2878,399 +2353,1893 @@ body::after {
                         OFFLINE
                     </option>
 
+                    <option value="UNKNOWN">
+                        UNKNOWN
+                    </option>
+
                 </select>
 
             </div>
 
 
-            <div class="detail-field">
+            <div class="formGroup">
 
-                <label>
+                <label class="inputLabel">
                     SECURITY LEVEL
                 </label>
 
-                <select id="editLevel">
+                <select id="siteSecurity">
 
-                    <option>
-                        LEVEL 1
-                    </option>
-
-                    <option>
-                        LEVEL 2
-                    </option>
-
-                    <option>
-                        LEVEL 3
-                    </option>
-
-                    <option>
-                        LEVEL 4
-                    </option>
-
-                    <option>
-                        LEVEL 5
-                    </option>
+                    <option>LEVEL 1</option>
+                    <option>LEVEL 2</option>
+                    <option>LEVEL 3</option>
+                    <option>LEVEL 4</option>
+                    <option>LEVEL 5</option>
+                    <option>UNKNOWN</option>
 
                 </select>
 
             </div>
 
 
-            <div class="detail-field">
+            <div class="formGroup">
 
-                <label>
+                <label class="inputLabel">
                     PERSONNEL
                 </label>
 
                 <input
-                    id="editPersonnel"
-                    type="number"
+                    id="sitePersonnel"
+                    type="text"
                 >
 
             </div>
 
 
-            <div class="detail-field">
+            <div class="formGroup">
 
-                <label>
-                    ACTIVE INCIDENTS
+                <label class="inputLabel">
+                    INCIDENTS
                 </label>
 
                 <input
-                    id="editIncidents"
-                    type="number"
+                    id="siteIncidents"
+                    type="text"
                 >
 
             </div>
 
 
-            <div class="detail-field">
+            <div class="formGroup">
 
-                <label>
+                <label class="inputLabel">
                     CONTAINMENT
                 </label>
 
-                <select id="editContainment">
+                <select id="siteContainment">
 
-                    <option>
-                        STABLE
-                    </option>
-
-                    <option>
-                        MONITORED
-                    </option>
-
-                    <option>
-                        UNSTABLE
-                    </option>
-
-                    <option>
-                        CRITICAL
-                    </option>
+                    <option>STABLE</option>
+                    <option>MONITORED</option>
+                    <option>UNSTABLE</option>
+                    <option>CRITICAL</option>
+                    <option>UNKNOWN</option>
 
                 </select>
 
             </div>
 
 
-            <div class="detail-field">
+            <div class="formGroup">
 
-                <label>
-                    SATELLITE MATERIAL
+                <label class="inputLabel">
+                    SATELLITE MATERIALS
                 </label>
 
-                <select id="editMaterials">
-
-                    <option>
-                        INSUFFICIENT
-                    </option>
-
-                    <option>
-                        LIMITED
-                    </option>
-
-                    <option>
-                        AVAILABLE
-                    </option>
-
-                </select>
+                <input
+                    id="siteSatellite"
+                    type="text"
+                >
 
             </div>
 
 
-            <div class="detail-field detail-full">
+            <div class="formGroup">
 
-                <label>
-                    FACILITY DETAILS
+                <label class="inputLabel">
+                    DESCRIPTION
                 </label>
 
                 <textarea
-                    id="editDetails"
+                    id="siteDescription"
+                    rows="5"
                 ></textarea>
 
             </div>
 
+
+            <div class="formActions">
+
+                <button
+                    class="btn"
+                    onclick="closeModal('siteModal')"
+                >
+                    CANCEL
+                </button>
+
+                <button
+                    id="saveSiteButton"
+                    class="btn btnSuccess"
+                    onclick="saveSite()"
+                >
+                    SAVE CONFIGURATION
+                </button>
+
+            </div>
+
         </div>
-
-
-        <button
-            class="primary-btn"
-            onclick="saveSite()"
-        >
-            SAVE FACILITY CONFIGURATION
-        </button>
-
-
-        <button
-            class="primary-btn lockdown-btn"
-            onclick="toggleLockdown()"
-        >
-            TOGGLE LOCKDOWN
-        </button>
 
     </div>
 
 </div>
 
 
-<div id="toast"></div>
+<!-- =========================================================
+     REQUEST MODAL
+========================================================= -->
+
+<div
+    id="requestModal"
+    class="modal"
+>
+
+    <div class="modalBox">
+
+        <div class="modalHeader">
+
+            <div class="modalTitle">
+                REQUEST AUTHORIZATION
+            </div>
+
+            <button
+                class="close"
+                onclick="closeModal('requestModal')"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div class="modalBody">
+
+            <input
+                type="hidden"
+                id="requestId"
+            >
+
+            <div
+                id="requestDetails"
+                style="
+                    color:#8a969f;
+                    font-size:10px;
+                    line-height:2;
+                    margin-bottom:18px;
+                "
+            ></div>
+
+            <div class="formGroup">
+
+                <label class="inputLabel">
+                    ADMINISTRATIVE MESSAGE
+                </label>
+
+                <textarea
+                    id="requestMessage"
+                    rows="6"
+                    placeholder="ENTER RESPONSE..."
+                ></textarea>
+
+            </div>
+
+            <div class="formActions">
+
+                <button
+                    class="btn btnDanger"
+                    onclick="rejectRequest()"
+                >
+                    REJECT
+                </button>
+
+                <button
+                    class="btn btnSuccess"
+                    onclick="approveRequest()"
+                >
+                    APPROVE
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div id="toastContainer"></div>
 
 
 <script>
 
-/* =====================================================
-   DATA
-===================================================== */
+/* =========================================================
+   STATE
+========================================================= */
 
-const defaultSites = [
+let sites = [];
+let requests = [];
+let councilRequests = [];
+let audit = [];
 
-    {
-        id: "SITE-19",
-        name: "MAIN CONTAINMENT FACILITY",
-        status: "ACTIVE",
-        level: "LEVEL 4",
-        personnel: 1284,
-        containment: "STABLE",
-        incidents: 0,
-        materials: "INSUFFICIENT",
-        details:
-            "Primary containment and research facility."
-    },
+let currentWarhead = null;
 
-    {
-        id: "SITE-51",
-        name: "CARLSON FACILITY",
-        status: "ACTIVE",
-        level: "LEVEL 5",
-        personnel: 436,
-        containment: "MONITORED",
-        incidents: 1,
-        materials: "INSUFFICIENT",
-        details:
-            "Classified facility connected to Carlson research."
-    },
 
-    {
-        id: "SITE-64",
-        name: "UNKNOWN FACILITY",
-        status: "ACTIVE",
-        level: "LEVEL 5",
-        personnel: 64,
-        containment: "STABLE",
-        incidents: 0,
-        materials: "INSUFFICIENT",
-        details:
-            "Exact location and operational purpose restricted."
+/* =========================================================
+   API
+========================================================= */
+
+async function api(
+    url,
+    options = {}
+) {
+
+    const response =
+        await fetch(
+            url,
+            {
+                headers: {
+                    "Content-Type":
+                        "application/json",
+                    ...(options.headers || {})
+                },
+                ...options
+            }
+        );
+
+
+    const data =
+        await response
+            .json()
+            .catch(
+                () => ({})
+            );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.message ||
+            "REQUEST FAILED"
+        );
+
     }
 
-];
+
+    return data;
+
+}
 
 
-let sites =
-    JSON.parse(
-        localStorage.getItem(
-            "o5_sites"
-        ) || "null"
-    ) || defaultSites;
+/* =========================================================
+   LOGIN
+========================================================= */
+
+async function login() {
+
+    const input =
+        document.getElementById(
+            "adminCode"
+        );
+
+    const error =
+        document.getElementById(
+            "loginError"
+        );
 
 
-let selectedSite = null;
+    error.textContent =
+        "";
 
 
-/* =====================================================
+    const code =
+        input.value.trim();
+
+
+    if (!code) {
+
+        error.textContent =
+            "ACCESS CODE REQUIRED";
+
+        return;
+
+    }
+
+
+    try {
+
+        const result =
+            await api(
+                "/api/admin/login",
+                {
+                    method: "POST",
+
+                    body:
+                        JSON.stringify({
+                            code
+                        })
+                }
+            );
+
+
+        if (
+            result.success
+        ) {
+
+            sessionStorage.setItem(
+                "scp64_admin",
+                "authenticated"
+            );
+
+
+            document
+                .getElementById(
+                    "loginScreen"
+                )
+                .style.display =
+                "none";
+
+
+            document
+                .getElementById(
+                    "app"
+                )
+                .style.display =
+                "block";
+
+
+            loadEverything();
+
+        }
+
+    } catch (error) {
+
+        error.textContent =
+            error.message;
+
+        input.value = "";
+
+        input.focus();
+
+    }
+
+}
+
+
+document
+    .getElementById(
+        "adminCode"
+    )
+    .addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                login();
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
    NAVIGATION
-===================================================== */
+========================================================= */
 
 document
     .querySelectorAll(
-        ".sidebar button[data-page]"
+        ".navButton"
     )
-    .forEach(button => {
+    .forEach(
+        button => {
 
-        button.addEventListener(
-            "click",
-            () => {
+            button.addEventListener(
+                "click",
+                () => {
 
-                const page =
-                    button.dataset.page;
+                    const section =
+                        button.dataset.section;
 
-                document
-                    .querySelectorAll(
-                        ".sidebar button"
-                    )
-                    .forEach(item => {
 
-                        item.classList.remove(
-                            "active"
+                    document
+                        .querySelectorAll(
+                            ".navButton"
+                        )
+                        .forEach(
+                            item =>
+                                item.classList
+                                    .remove(
+                                        "active"
+                                    )
                         );
 
-                    });
 
-                button.classList.add(
-                    "active"
-                );
-
-
-                document
-                    .querySelectorAll(
-                        ".page"
-                    )
-                    .forEach(section => {
-
-                        section.classList.remove(
-                            "active"
-                        );
-
-                    });
-
-
-                const target =
-                    document.getElementById(
-                        "page-" + page
-                    );
-
-                if (target) {
-
-                    target.classList.add(
+                    button.classList.add(
                         "active"
                     );
 
-                }
+
+                    document
+                        .querySelectorAll(
+                            ".section"
+                        )
+                        .forEach(
+                            item =>
+                                item.classList
+                                    .remove(
+                                        "active"
+                                    )
+                        );
 
 
-                if (page === "requests") {
-                    loadRequests();
-                }
+                    const target =
+                        document.getElementById(
+                            section
+                        );
 
-                if (page === "council") {
-                    loadCouncilRequests();
-                }
 
-                if (page === "logs") {
-                    renderLogs();
+                    if (target) {
+
+                        target.classList.add(
+                            "active"
+                        );
+
+                    }
+
                 }
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   LOAD EVERYTHING
+========================================================= */
+
+async function loadEverything() {
+
+    await Promise.all([
+        loadSites(),
+        loadRequests(),
+        loadCouncil(),
+        loadWarhead(),
+        loadAudit(),
+        loadStatus()
+    ]);
+
+}
+
+
+/* =========================================================
+   SITES
+========================================================= */
+
+async function loadSites() {
+
+    try {
+
+        const data =
+            await api(
+                "/api/sites"
+            );
+
+
+        sites =
+            Array.isArray(
+                data.sites
+            )
+                ? data.sites
+                : [];
+
+
+        renderSites();
+
+    } catch (error) {
+
+        showToast(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+function renderSites() {
+
+    const containers = [
+        document.getElementById(
+            "siteGrid"
+        ),
+        document.getElementById(
+            "dashboardSites"
+        )
+    ];
+
+
+    containers.forEach(
+        container => {
+
+            if (!container) return;
+
+
+            container.innerHTML = "";
+
+
+            sites.forEach(
+                (site, index) => {
+
+                    const card =
+                        createSiteCard(
+                            site,
+                            index
+                        );
+
+
+                    container.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+
+            if (!sites.length) {
+
+                container.innerHTML = `
+                    <div class="card">
+                        <div class="cardValue red">
+                            NO SITES
+                        </div>
+                        <div class="cardLabel">
+                            SITE DATA UNAVAILABLE
+                        </div>
+                    </div>
+                `;
+
+            }
+
+        }
+    );
+
+}
+
+
+function createSiteCard(
+    site,
+    index = 0
+) {
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    const unknown =
+        site.id === "SITE-64";
+
+
+    card.className =
+        "siteCard " +
+        (unknown
+            ? "siteUnknown"
+            : "");
+
+
+    card.style.animationDelay =
+        `${index * 80}ms`;
+
+
+    let statusClass =
+        "statusUnknown";
+
+
+    if (
+        site.status ===
+        "ACTIVE"
+    ) {
+
+        statusClass =
+            "statusActive";
+
+    }
+
+    else if (
+        site.status ===
+        "LOCKDOWN"
+    ) {
+
+        statusClass =
+            "statusLockdown";
+
+    }
+
+
+    card.innerHTML = `
+
+        <div class="siteTop">
+
+            <div>
+
+                <div class="siteName">
+                    ${escapeHTML(
+                        site.name ||
+                        "UNKNOWN"
+                    )}
+                </div>
+
+                <div class="siteId">
+                    ${escapeHTML(
+                        site.id
+                    )}
+                </div>
+
+            </div>
+
+            <div
+                class="siteStatus ${statusClass}"
+            >
+                ${escapeHTML(
+                    site.status ||
+                    "UNKNOWN"
+                )}
+            </div>
+
+        </div>
+
+
+        <div class="siteStats">
+
+            <div class="siteStat">
+
+                <div class="siteStatLabel">
+                    SECURITY
+                </div>
+
+                <div class="siteStatValue">
+                    ${escapeHTML(
+                        site.security ||
+                        "UNKNOWN"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="siteStat">
+
+                <div class="siteStatLabel">
+                    PERSONNEL
+                </div>
+
+                <div class="siteStatValue">
+                    ${escapeHTML(
+                        site.personnel ||
+                        "UNKNOWN"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="siteStat">
+
+                <div class="siteStatLabel">
+                    CONTAINMENT
+                </div>
+
+                <div class="siteStatValue">
+                    ${escapeHTML(
+                        site.containment ||
+                        "UNKNOWN"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="siteStat">
+
+                <div class="siteStatLabel">
+                    INCIDENTS
+                </div>
+
+                <div class="siteStatValue">
+                    ${escapeHTML(
+                        site.incidents ||
+                        "UNKNOWN"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="siteStat">
+
+                <div class="siteStatLabel">
+                    SATELLITE
+                </div>
+
+                <div class="siteStatValue">
+                    ${escapeHTML(
+                        site.satelliteMaterials ||
+                        "UNKNOWN"
+                    )}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="siteFooter">
+
+            <div class="configure">
+                ${unknown
+                    ? "ACCESS RESTRICTED"
+                    : "CONFIGURE SITE"}
+            </div>
+
+            <div>
+                →
+            </div>
+
+        </div>
+
+    `;
+
+
+    card.addEventListener(
+        "click",
+        () => {
+
+            if (
+                site.id ===
+                "SITE-64"
+            ) {
+
+                showToast(
+                    "SITE-64 ACCESS RESTRICTED",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            openSiteModal(
+                site.id
+            );
+
+        }
+    );
+
+
+    return card;
+
+}
+
+
+/* =========================================================
+   SITE MODAL
+========================================================= */
+
+function openSiteModal(
+    id
+) {
+
+    const site =
+        sites.find(
+            item =>
+                item.id === id
+        );
+
+
+    if (!site) return;
+
+
+    document.getElementById(
+        "editingSiteId"
+    ).value = id;
+
+
+    document.getElementById(
+        "siteModalTitle"
+    ).textContent =
+        `${id} // CONFIGURATION`;
+
+
+    document.getElementById(
+        "siteStatus"
+    ).value =
+        site.status ||
+        "ACTIVE";
+
+
+    document.getElementById(
+        "siteSecurity"
+    ).value =
+        site.security ||
+        "UNKNOWN";
+
+
+    document.getElementById(
+        "sitePersonnel"
+    ).value =
+        site.personnel ||
+        "";
+
+
+    document.getElementById(
+        "siteIncidents"
+    ).value =
+        site.incidents ||
+        "";
+
+
+    document.getElementById(
+        "siteContainment"
+    ).value =
+        site.containment ||
+        "UNKNOWN";
+
+
+    document.getElementById(
+        "siteSatellite"
+    ).value =
+        site.satelliteMaterials ||
+        "";
+
+
+    document.getElementById(
+        "siteDescription"
+    ).value =
+        site.description ||
+        "";
+
+
+    document
+        .getElementById(
+            "siteModal"
+        )
+        .classList.add(
+            "show"
+        );
+
+}
+
+
+async function saveSite() {
+
+    const id =
+        document.getElementById(
+            "editingSiteId"
+        ).value;
+
+
+    if (!id) return;
+
+
+    try {
+
+        await api(
+            `/api/sites/${encodeURIComponent(id)}`,
+            {
+
+                method: "PUT",
+
+                body:
+                    JSON.stringify({
+
+                        status:
+                            document
+                                .getElementById(
+                                    "siteStatus"
+                                )
+                                .value,
+
+                        security:
+                            document
+                                .getElementById(
+                                    "siteSecurity"
+                                )
+                                .value,
+
+                        personnel:
+                            document
+                                .getElementById(
+                                    "sitePersonnel"
+                                )
+                                .value,
+
+                        incidents:
+                            document
+                                .getElementById(
+                                    "siteIncidents"
+                                )
+                                .value,
+
+                        containment:
+                            document
+                                .getElementById(
+                                    "siteContainment"
+                                )
+                                .value,
+
+                        satelliteMaterials:
+                            document
+                                .getElementById(
+                                    "siteSatellite"
+                                )
+                                .value,
+
+                        description:
+                            document
+                                .getElementById(
+                                    "siteDescription"
+                                )
+                                .value,
+
+                        actor:
+                            "O5 ADMINISTRATOR"
+
+                    })
 
             }
         );
 
-    });
 
-
-/* =====================================================
-   TOAST
-===================================================== */
-
-function toast(message) {
-
-    const element =
-        document.getElementById(
-            "toast"
+        closeModal(
+            "siteModal"
         );
 
-    element.textContent =
-        message;
 
-    element.classList.add(
-        "show"
-    );
-
-    setTimeout(() => {
-
-        element.classList.remove(
-            "show"
+        showToast(
+            `${id} CONFIGURATION UPDATED`,
+            "success"
         );
 
-    }, 3500);
+
+        await loadSites();
+
+    } catch (error) {
+
+        showToast(
+            error.message,
+            "error"
+        );
+
+    }
 
 }
 
 
-/* =====================================================
-   LOGGING
-===================================================== */
+/* =========================================================
+   REQUESTS
+========================================================= */
 
-function addLog(message) {
+async function loadRequests() {
 
-    const logs =
-        JSON.parse(
-            localStorage.getItem(
-                "o5_activity"
-            ) || "[]"
+    try {
+
+        const data =
+            await api(
+                "/api/requests"
+            );
+
+
+        requests =
+            data.requests ||
+            [];
+
+
+        renderRequests();
+
+    } catch (error) {
+
+        showToast(
+            error.message,
+            "error"
         );
 
-
-    logs.unshift({
-
-        message,
-
-        time:
-            new Date().toLocaleTimeString()
-
-    });
-
-
-    localStorage.setItem(
-        "o5_activity",
-        JSON.stringify(
-            logs.slice(0, 100)
-        )
-    );
-
-
-    renderLogs();
+    }
 
 }
 
 
-function renderLogs() {
+function renderRequests() {
 
     const container =
         document.getElementById(
-            "activityLog"
+            "requestsTable"
         );
 
-    if (!container) {
+
+    if (!requests.length) {
+
+        container.innerHTML = `
+            <div
+                style="
+                    padding:30px;
+                    text-align:center;
+                    color:#59656f;
+                    font-size:10px;
+                    letter-spacing:2px;
+                "
+            >
+                NO REQUESTS
+            </div>
+        `;
+
         return;
+
     }
 
 
-    const logs =
-        JSON.parse(
-            localStorage.getItem(
-                "o5_activity"
-            ) || "[]"
+    container.innerHTML = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>NAME</th>
+                    <th>TYPE</th>
+                    <th>STATUS</th>
+                    <th>ACTION</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                ${requests.map(
+                    request => `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHTML(
+                                request.id
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                request.name
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                request.typeName ||
+                                request.type ||
+                                "UNKNOWN"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                request.status
+                            )}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn"
+                                onclick="openRequestModal('${escapeJS(
+                                    request.id
+                                )}')"
+                            >
+                                REVIEW
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `
+                ).join("")}
+
+            </tbody>
+
+        </table>
+
+    `;
+
+}
+
+
+function openRequestModal(
+    id
+) {
+
+    const request =
+        requests.find(
+            item =>
+                item.id === id
         );
 
 
-    if (!logs.length) {
+    if (!request) return;
 
-        container.innerHTML =
-            `
-            <div class="log-line">
-                <strong>[SYSTEM]</strong>
-                No activity recorded.
+
+    document.getElementById(
+        "requestId"
+    ).value = id;
+
+
+    document.getElementById(
+        "requestDetails"
+    ).innerHTML = `
+
+        <strong>ID:</strong>
+        ${escapeHTML(request.id)}
+        <br>
+
+        <strong>NAME:</strong>
+        ${escapeHTML(request.name)}
+        <br>
+
+        <strong>TYPE:</strong>
+        ${escapeHTML(
+            request.typeName ||
+            request.type
+        )}
+        <br>
+
+        <strong>SCP:</strong>
+        ${escapeHTML(
+            request.scp ||
+            "N/A"
+        )}
+        <br>
+
+        <strong>MESSAGE:</strong>
+        ${escapeHTML(
+            request.message
+        )}
+
+    `;
+
+
+    document.getElementById(
+        "requestMessage"
+    ).value =
+        request.adminMessage ||
+        "";
+
+
+    document
+        .getElementById(
+            "requestModal"
+        )
+        .classList.add(
+            "show"
+        );
+
+}
+
+
+async function approveRequest() {
+
+    await changeRequest(
+        "approve"
+    );
+
+}
+
+
+async function rejectRequest() {
+
+    await changeRequest(
+        "reject"
+    );
+
+}
+
+
+async function changeRequest(
+    action
+) {
+
+    const id =
+        document.getElementById(
+            "requestId"
+        ).value;
+
+
+    const message =
+        document.getElementById(
+            "requestMessage"
+        ).value;
+
+
+    try {
+
+        await api(
+            `/api/requests/${encodeURIComponent(id)}/${action}`,
+            {
+
+                method: "POST",
+
+                body:
+                    JSON.stringify({
+
+                        message,
+
+                        actor:
+                            "O5 ADMINISTRATOR"
+
+                    })
+
+            }
+        );
+
+
+        closeModal(
+            "requestModal"
+        );
+
+
+        showToast(
+            `REQUEST ${action.toUpperCase()}ED`,
+            "success"
+        );
+
+
+        await loadRequests();
+        await loadStatus();
+
+    } catch (error) {
+
+        showToast(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   COUNCIL
+========================================================= */
+
+async function loadCouncil() {
+
+    try {
+
+        const data =
+            await api(
+                "/api/council/departure"
+            );
+
+
+        councilRequests =
+            data.requests ||
+            [];
+
+
+        renderCouncil();
+
+    } catch (error) {
+
+        showToast(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+function renderCouncil() {
+
+    const container =
+        document.getElementById(
+            "councilTable"
+        );
+
+
+    if (!councilRequests.length) {
+
+        container.innerHTML = `
+            <div
+                style="
+                    padding:30px;
+                    text-align:center;
+                    color:#59656f;
+                    font-size:10px;
+                    letter-spacing:2px;
+                "
+            >
+                NO O5 COUNCIL REQUESTS
             </div>
-            `;
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>NAME</th>
+                    <th>RANK</th>
+                    <th>STATUS</th>
+                    <th>ACTION</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                ${councilRequests.map(
+                    request => `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHTML(
+                                request.id
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                request.name
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                request.rank
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                request.status
+                            )}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn"
+                                onclick="reviewCouncil('${escapeJS(
+                                    request.id
+                                )}')"
+                            >
+                                APPROVE
+                            </button>
+
+                            <button
+                                class="btn btnDanger"
+                                onclick="rejectCouncil('${escapeJS(
+                                    request.id
+                                )}')"
+                            >
+                                REJECT
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `
+                ).join("")}
+
+            </tbody>
+
+        </table>
+
+    `;
+
+}
+
+
+async function reviewCouncil(
+    id
+) {
+
+    await councilAction(
+        id,
+        "approve"
+    );
+
+}
+
+
+async function rejectCouncil(
+    id
+) {
+
+    await councilAction(
+        id,
+        "reject"
+    );
+
+}
+
+
+async function councilAction(
+    id,
+    action
+) {
+
+    try {
+
+        await api(
+            `/api/council/departure/${encodeURIComponent(id)}/${action}`,
+            {
+
+                method: "POST",
+
+                body:
+                    JSON.stringify({
+
+                        message:
+                            action ===
+                            "approve"
+                                ? "AUTHORIZED BY O5 ADMINISTRATOR."
+                                : "REQUEST REJECTED BY O5 ADMINISTRATOR.",
+
+                        actor:
+                            "O5 ADMINISTRATOR"
+
+                    })
+
+            }
+        );
+
+
+        showToast(
+            `O5 REQUEST ${action.toUpperCase()}ED`,
+            "success"
+        );
+
+
+        await loadCouncil();
+        await loadStatus();
+
+    } catch (error) {
+
+        showToast(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   WARHEAD
+========================================================= */
+
+async function loadWarhead() {
+
+    try {
+
+        const data =
+            await api(
+                "/api/warhead"
+            );
+
+
+        currentWarhead =
+            data.warhead;
+
+
+        renderWarhead();
+
+    } catch (error) {
+
+        showToast(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+function renderWarhead() {
+
+    if (!currentWarhead)
+        return;
+
+
+    const status =
+        currentWarhead.status ||
+        "STANDBY";
+
+
+    const statusElement =
+        document.getElementById(
+            "warheadStatus"
+        );
+
+
+    statusElement.textContent =
+        status;
+
+
+    statusElement.className =
+        "warheadStatus";
+
+
+    if (
+        status === "ARMED"
+    ) {
+
+        statusElement.classList.add(
+            "armed"
+        );
+
+    }
+
+
+    if (
+        status === "FIRED"
+    ) {
+
+        statusElement.classList.add(
+            "fired"
+        );
+
+        triggerAlarm();
+
+    }
+
+
+    document.getElementById(
+        "warheadInfo"
+    ).innerHTML = `
+
+        TYPE:
+        ${escapeHTML(
+            currentWarhead.type ||
+            "NONE"
+        )}
+        <br>
+
+        SITE:
+        ${escapeHTML(
+            currentWarhead.site ||
+            "NONE"
+        )}
+        <br>
+
+        TARGET:
+        ${escapeHTML(
+            currentWarhead.target ||
+            "NONE"
+        )}
+        <br>
+
+        MESSAGE:
+        ${escapeHTML(
+            currentWarhead.message ||
+            "SYSTEM READY"
+        )}
+
+    `;
+
+
+    const dash =
+        document.getElementById(
+            "dashboardWarhead"
+        );
+
+
+    dash.textContent =
+        status;
+
+
+    dash.className =
+        status === "FIRED"
+            ? "red"
+            : status === "ARMED"
+                ? "yellow"
+                : "green";
+
+
+    document.getElementById(
+        "dashboardWarheadInfo"
+    ).textContent =
+        currentWarhead.message ||
+        "WARHEAD SYSTEM NOMINAL.";
+
+}
+
+
+async function armWarhead(
+    type
+) {
+
+    try {
+
+        await api(
+            "/api/warhead/arm",
+            {
+
+                method: "POST",
+
+                body:
+                    JSON.stringify({
+
+                        type,
+
+                        site:
+                            type ===
+                            "GAMMA"
+                                ? "GLOBAL"
+                                : "SITE-19",
+
+                        actor:
+                            "O5 ADMINISTRATOR"
+
+                    })
+
+            }
+        );
+
+
+        showToast(
+            `WARHEAD ${type} ARMED`,
+            "success"
+        );
+
+
+        await loadWarhead();
+        await loadStatus();
+
+    } catch (error) {
+
+        showToast(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+async function fireWarhead() {
+
+    if (
+        !confirm(
+            "CONFIRM WARHEAD FIRING?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        await api(
+            "/api/warhead/fire",
+            {
+
+                method: "POST",
+
+                body:
+                    JSON.stringify({
+
+                        actor:
+                            "O5 ADMINISTRATOR"
+
+                    })
+
+            }
+        );
+
+
+        triggerAlarm();
+
+
+        showToast(
+            "WARHEAD FIRED",
+            "error"
+        );
+
+
+        await loadWarhead();
+        await loadStatus();
+
+    } catch (error) {
+
+        showToast(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+async function resetWarhead() {
+
+    try {
+
+        await api(
+            "/api/warhead/reset",
+            {
+
+                method: "POST",
+
+                body:
+                    JSON.stringify({
+
+                        actor:
+                            "O5 ADMINISTRATOR"
+
+                    })
+
+            }
+        );
+
+
+        stopAlarm();
+
+
+        showToast(
+            "WARHEAD SYSTEM RESET",
+            "success"
+        );
+
+
+        await loadWarhead();
+        await loadStatus();
+
+    } catch (error) {
+
+        showToast(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ALARM
+========================================================= */
+
+function triggerAlarm() {
+
+    document.getElementById(
+        "alarmOverlay"
+    ).style.display =
+        "block";
+
+
+    document.getElementById(
+        "alarmBanner"
+    ).style.display =
+        "block";
+
+}
+
+
+function stopAlarm() {
+
+    document.getElementById(
+        "alarmOverlay"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "alarmBanner"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   AUDIT
+========================================================= */
+
+async function loadAudit() {
+
+    try {
+
+        const data =
+            await api(
+                "/api/audit?limit=100"
+            );
+
+
+        audit =
+            data.audit ||
+            [];
+
+
+        renderAudit();
+
+    } catch (error) {
+
+        showToast(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+function renderAudit() {
+
+    const container =
+        document.getElementById(
+            "auditList"
+        );
+
+
+    if (!audit.length) {
+
+        container.innerHTML = `
+            <div
+                style="
+                    text-align:center;
+                    padding:30px;
+                    color:#59656f;
+                    font-size:10px;
+                "
+            >
+                NO AUDIT RECORDS
+            </div>
+        `;
 
         return;
 
@@ -3278,1095 +4247,372 @@ function renderLogs() {
 
 
     container.innerHTML =
-        logs
-            .map(
-                log =>
-                    `
-                    <div class="log-line">
-                        <strong>
-                            [${escapeHtml(
-                                log.time
-                            )}]
-                        </strong>
-                        ${escapeHtml(
-                            log.message
-                        )}
-                    </div>
-                    `
-            )
-            .join("");
+        audit.map(
+            item => `
+
+            <div class="auditItem">
+
+                <div class="auditCategory">
+                    ${escapeHTML(
+                        item.category
+                    )}
+                </div>
+
+                <div class="auditAction">
+                    ${escapeHTML(
+                        item.action
+                    )}
+                </div>
+
+                <div class="auditActor">
+                    ${escapeHTML(
+                        item.actor
+                    )}
+                </div>
+
+                <div class="auditMessage">
+                    ${escapeHTML(
+                        item.message
+                    )}
+                </div>
+
+            </div>
+
+        `
+        ).join("");
 
 }
 
 
-/* =====================================================
-   ESCAPE
-===================================================== */
+/* =========================================================
+   STATUS
+========================================================= */
 
-function escapeHtml(value) {
+async function loadStatus() {
 
-    return String(value ?? "")
-        .replace(
-            /&/g,
+    try {
+
+        const data =
+            await api(
+                "/api/status"
+            );
+
+
+        renderDashboard(
+            data
+        );
+
+    } catch (error) {
+
+        showToast(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+function renderDashboard(
+    data
+) {
+
+    const cards =
+        document.getElementById(
+            "dashboardCards"
+        );
+
+
+    cards.innerHTML = `
+
+        <div class="card">
+
+            <div class="cardLabel">
+                TOTAL REQUESTS
+            </div>
+
+            <div class="cardValue blue">
+                ${data.requests?.total || 0}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="cardLabel">
+                PENDING REQUESTS
+            </div>
+
+            <div class="cardValue yellow">
+                ${data.requests?.pending || 0}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="cardLabel">
+                O5 REQUESTS
+            </div>
+
+            <div class="cardValue purple">
+                ${data.council?.total || 0}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="cardLabel">
+                ACTIVE SITES
+            </div>
+
+            <div class="cardValue green">
+                ${data.sites?.active || 0}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="cardLabel">
+                AUDIT ENTRIES
+            </div>
+
+            <div class="cardValue">
+                ${data.auditCount || 0}
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function closeModal(
+    id
+) {
+
+    document
+        .getElementById(id)
+        .classList.remove(
+            "show"
+        );
+
+}
+
+
+document
+    .querySelectorAll(
+        ".modal"
+    )
+    .forEach(
+        modal => {
+
+            modal.addEventListener(
+                "click",
+                event => {
+
+                    if (
+                        event.target ===
+                        modal
+                    ) {
+
+                        modal.classList
+                            .remove(
+                                "show"
+                            );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function showToast(
+    message,
+    type = "success"
+) {
+
+    const container =
+        document.getElementById(
+            "toastContainer"
+        );
+
+
+    const toast =
+        document.createElement(
+            "div"
+        );
+
+
+    toast.className =
+        `toast ${type}`;
+
+
+    toast.textContent =
+        message;
+
+
+    container.appendChild(
+        toast
+    );
+
+
+    setTimeout(
+        () => {
+
+            toast.style.opacity =
+                "0";
+
+            toast.style.transform =
+                "translateX(30px)";
+
+            setTimeout(
+                () =>
+                    toast.remove(),
+                300
+            );
+
+        },
+        3500
+    );
+
+}
+
+
+/* =========================================================
+   SECURITY
+========================================================= */
+
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+        .replaceAll(
+            "&",
             "&amp;"
         )
-        .replace(
-            /</g,
+        .replaceAll(
+            "<",
             "&lt;"
         )
-        .replace(
-            />/g,
+        .replaceAll(
+            ">",
             "&gt;"
         )
-        .replace(
-            /"/g,
+        .replaceAll(
+            '"',
             "&quot;"
         )
-        .replace(
-            /'/g,
+        .replaceAll(
+            "'",
             "&#039;"
         );
 
 }
 
 
-/* =====================================================
-   SITE RENDER
-===================================================== */
-
-function renderSites() {
-
-    const grid =
-        document.getElementById(
-            "siteGrid"
-        );
-
-    const dashboard =
-        document.getElementById(
-            "dashboardSites"
-        );
-
-
-    const html =
-        sites
-            .map(site => {
-
-                const state =
-                    site.status
-                        .toLowerCase();
-
-                return `
-
-                    <article
-                        class="site-card"
-                        onclick="openSite('${site.id}')"
-                    >
-
-                        <div class="site-top">
-
-                            <div class="site-id">
-                                ${escapeHtml(
-                                    site.id
-                                )}
-                            </div>
-
-                            <div
-                                class="site-state ${state}"
-                            >
-                                ${escapeHtml(
-                                    site.status
-                                )}
-                            </div>
-
-                        </div>
-
-                        <div class="site-name">
-                            ${escapeHtml(
-                                site.name
-                            )}
-                        </div>
-
-                        <div class="site-meta">
-
-                            <div class="meta">
-
-                                <span>
-                                    SECURITY
-                                </span>
-
-                                <strong>
-                                    ${escapeHtml(
-                                        site.level
-                                    )}
-                                </strong>
-
-                            </div>
-
-                            <div class="meta">
-
-                                <span>
-                                    PERSONNEL
-                                </span>
-
-                                <strong>
-                                    ${escapeHtml(
-                                        site.personnel
-                                    )}
-                                </strong>
-
-                            </div>
-
-                            <div class="meta">
-
-                                <span>
-                                    CONTAINMENT
-                                </span>
-
-                                <strong>
-                                    ${escapeHtml(
-                                        site.containment
-                                    )}
-                                </strong>
-
-                            </div>
-
-                            <div class="meta">
-
-                                <span>
-                                    INCIDENTS
-                                </span>
-
-                                <strong>
-                                    ${escapeHtml(
-                                        site.incidents
-                                    )}
-                                </strong>
-
-                            </div>
-
-                        </div>
-
-                    </article>
-
-                `;
-
-            })
-            .join("");
-
-
-    if (grid) {
-        grid.innerHTML = html;
-    }
-
-    if (dashboard) {
-        dashboard.innerHTML = html;
-    }
-
-
-    updateStats();
-
-}
-
-
-function updateStats() {
-
-    const active =
-        sites.filter(
-            site =>
-                site.status === "ACTIVE"
-        ).length;
-
-
-    const lockdown =
-        sites.filter(
-            site =>
-                site.status === "LOCKDOWN"
-        ).length;
-
-
-    document.getElementById(
-        "statSites"
-    ).textContent =
-        sites.length;
-
-
-    document.getElementById(
-        "statActive"
-    ).textContent =
-        active;
-
-
-    document.getElementById(
-        "statLockdown"
-    ).textContent =
-        lockdown;
-
-}
-
-
-/* =====================================================
-   OPEN SITE
-===================================================== */
-
-function openSite(id) {
-
-    selectedSite =
-        sites.find(
-            site =>
-                site.id === id
-        );
-
-
-    if (!selectedSite) {
-        return;
-    }
-
-
-    document.getElementById(
-        "detailId"
-    ).textContent =
-        selectedSite.id;
-
-
-    document.getElementById(
-        "detailName"
-    ).textContent =
-        selectedSite.name;
-
-
-    document.getElementById(
-        "editStatus"
-    ).value =
-        selectedSite.status;
-
-
-    document.getElementById(
-        "editLevel"
-    ).value =
-        selectedSite.level;
-
-
-    document.getElementById(
-        "editPersonnel"
-    ).value =
-        selectedSite.personnel;
-
-
-    document.getElementById(
-        "editIncidents"
-    ).value =
-        selectedSite.incidents;
-
-
-    document.getElementById(
-        "editContainment"
-    ).value =
-        selectedSite.containment;
-
-
-    document.getElementById(
-        "editMaterials"
-    ).value =
-        selectedSite.materials;
-
-
-    document.getElementById(
-        "editDetails"
-    ).value =
-        selectedSite.details;
-
-
-    document
-        .getElementById(
-            "detailOverlay"
-        )
-        .classList.add(
-            "open"
-        );
-
-}
-
-
-function closeSite() {
-
-    document
-        .getElementById(
-            "detailOverlay"
-        )
-        .classList.remove(
-            "open"
-        );
-
-}
-
-
-/* =====================================================
-   SAVE SITE
-===================================================== */
-
-function saveSite() {
-
-    if (!selectedSite) {
-        return;
-    }
-
-
-    selectedSite.status =
-        document.getElementById(
-            "editStatus"
-        ).value;
-
-
-    selectedSite.level =
-        document.getElementById(
-            "editLevel"
-        ).value;
-
-
-    selectedSite.personnel =
-        Number(
-            document.getElementById(
-                "editPersonnel"
-            ).value
-        ) || 0;
-
-
-    selectedSite.incidents =
-        Number(
-            document.getElementById(
-                "editIncidents"
-            ).value
-        ) || 0;
-
-
-    selectedSite.containment =
-        document.getElementById(
-            "editContainment"
-        ).value;
-
-
-    selectedSite.materials =
-        document.getElementById(
-            "editMaterials"
-        ).value;
-
-
-    selectedSite.details =
-        document.getElementById(
-            "editDetails"
-        ).value;
-
-
-    localStorage.setItem(
-        "o5_sites",
-        JSON.stringify(
-            sites
-        )
-    );
-
-
-    addLog(
-        `${selectedSite.id} configuration updated.`
-    );
-
-
-    renderSites();
-
-    closeSite();
-
-    toast(
-        "FACILITY CONFIGURATION SAVED."
-    );
-
-}
-
-
-/* =====================================================
-   LOCKDOWN
-===================================================== */
-
-function toggleLockdown() {
-
-    if (!selectedSite) {
-        return;
-    }
-
-
-    if (
-        selectedSite.status ===
-        "LOCKDOWN"
-    ) {
-
-        selectedSite.status =
-            "ACTIVE";
-
-        addLog(
-            `${selectedSite.id} lockdown lifted.`
-        );
-
-        toast(
-            `${selectedSite.id} LOCKDOWN LIFTED.`
-        );
-
-    } else {
-
-        selectedSite.status =
-            "LOCKDOWN";
-
-
-        const flash =
-            document.getElementById(
-                "lockdownFlash"
-            );
-
-
-        flash.classList.remove(
-            "active"
-        );
-
-        void flash.offsetWidth;
-
-        flash.classList.add(
-            "active"
-        );
-
-
-        addLog(
-            `${selectedSite.id} placed into lockdown.`
-        );
-
-        toast(
-            `${selectedSite.id} LOCKDOWN ACTIVATED.`
-        );
-
-    }
-
-
-    localStorage.setItem(
-        "o5_sites",
-        JSON.stringify(
-            sites
-        )
-    );
-
-
-    renderSites();
-
-}
-
-
-/* =====================================================
-   REQUEST DATABASE
-===================================================== */
-
-async function loadRequests() {
-
-    const list =
-        document.getElementById(
-            "requestList"
-        );
-
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/requests"
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !data.success ||
-            !Array.isArray(
-                data.requests
-            )
-        ) {
-
-            throw new Error(
-                "Invalid request response."
-            );
-
-        }
-
-
-        document.getElementById(
-            "requestCount"
-        ).textContent =
-            `${data.requests.length} REQUESTS`;
-
-
-        if (!data.requests.length) {
-
-            list.innerHTML =
-                `
-                <div
-                    style="
-                        color:#555e66;
-                        font-size:9px;
-                        padding:20px 0;
-                    "
-                >
-                    NO REQUESTS FOUND.
-                </div>
-                `;
-
-            return;
-
-        }
-
-
-        list.innerHTML =
-            data.requests
-                .slice()
-                .reverse()
-                .map(
-                    request =>
-                        `
-                        <article class="request">
-
-                            <div class="request-top">
-
-                                <span class="request-id">
-                                    ${escapeHtml(
-                                        request.id
-                                    )}
-                                </span>
-
-                                <span
-                                    class="request-status ${String(
-                                        request.status ||
-                                        "PENDING"
-                                    ).toLowerCase()}"
-                                >
-                                    ${escapeHtml(
-                                        request.status ||
-                                        "PENDING"
-                                    )}
-                                </span>
-
-                            </div>
-
-                            <div class="request-body">
-
-                                PERSONNEL:
-                                ${escapeHtml(
-                                    request.name
-                                )}
-
-                                <br>
-
-                                TYPE:
-                                ${escapeHtml(
-                                    request.typeName ||
-                                    request.type ||
-                                    "UNKNOWN"
-                                )}
-
-                                <br>
-
-                                TIME:
-                                ${escapeHtml(
-                                    request.time ||
-                                    "N/A"
-                                )}
-
-                                ${
-                                    request.scp
-                                        ? `
-                                        <br>
-                                        SCP:
-                                        ${escapeHtml(
-                                            request.scp
-                                        )}
-                                        `
-                                        : ""
-                                }
-
-                                ${
-                                    request.message
-                                        ? `
-                                        <br><br>
-                                        MESSAGE:
-                                        ${escapeHtml(
-                                            request.message
-                                        )}
-                                        `
-                                        : ""
-                                }
-
-                            </div>
-
-
-                            <div class="request-actions">
-
-                                <button
-                                    class="small-btn"
-                                    onclick="updateRequest('${escapeHtml(
-                                        request.id
-                                    )}','APPROVED')"
-                                >
-                                    APPROVE
-                                </button>
-
-                                <button
-                                    class="small-btn"
-                                    onclick="updateRequest('${escapeHtml(
-                                        request.id
-                                    )}','REJECTED')"
-                                >
-                                    REJECT
-                                </button>
-
-                            </div>
-
-                        </article>
-                        `
-                )
-                .join("");
-
-
-    } catch (error) {
-
-        list.innerHTML =
-            `
-            <div class="alert">
-                <strong>
-                    [ERROR]
-                </strong>
-                Request database could not be loaded.
-            </div>
-            `;
-
-        document.getElementById(
-            "dashRequestState"
-        ).textContent =
-            "OFFLINE";
-
-    }
-
-}
-
-
-async function updateRequest(
-    id,
-    status
+function escapeJS(
+    value
 ) {
 
-    try {
-
-        const response =
-            await fetch(
-                "/api/requests/" +
-                encodeURIComponent(id),
-                {
-                    method: "PATCH",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify({
-                            status
-                        })
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.message ||
-                "REQUEST UPDATE FAILED."
-            );
-
-        }
-
-
-        addLog(
-            `Request ${id} marked ${status}.`
-        );
-
-
-        toast(
-            `REQUEST ${status}.`
-        );
-
-
-        loadRequests();
-
-
-    } catch (error) {
-
-        toast(
-            "REQUEST UPDATE FAILED."
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   COUNCIL REQUESTS
-===================================================== */
-
-async function loadCouncilRequests() {
-
-    const container =
-        document.getElementById(
-            "councilRequests"
-        );
-
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/council/departure"
-            );
-
-
-        if (!response.ok) {
-            throw new Error(
-                "Council API unavailable."
-            );
-        }
-
-
-        const data =
-            await response.json();
-
-
-        const requests =
-            Array.isArray(
-                data.requests
-            )
-                ? data.requests
-                : [];
-
-
-        renderCouncilRequests(
-            requests
-        );
-
-
-    } catch {
-
-        /*
-         * Frontend fallback for the Lobby
-         * if the backend route has not yet
-         * been installed.
-         */
-
-        const local =
-            JSON.parse(
-                localStorage.getItem(
-                    "o5_departure_requests"
-                ) || "[]"
-            );
-
-
-        renderCouncilRequests(
-            local
-        );
-
-    }
-
-}
-
-
-function renderCouncilRequests(
-    requests
-) {
-
-    const container =
-        document.getElementById(
-            "councilRequests"
-        );
-
-
-    document.getElementById(
-        "councilCount"
-    ).textContent =
-        `${requests.length} REQUESTS`;
-
-
-    if (!requests.length) {
-
-        container.innerHTML =
-            `
-            <div
-                style="
-                    color:#555e66;
-                    font-size:9px;
-                    padding:20px 0;
-                "
-            >
-                NO DEPARTURE REQUESTS FOUND.
-            </div>
-            `;
-
-        return;
-
-    }
-
-
-    container.innerHTML =
-        requests
-            .slice()
-            .reverse()
-            .map(
-                (request, index) =>
-                    `
-                    <article class="request">
-
-                        <div class="request-top">
-
-                            <span class="request-id">
-                                COUNCIL-${String(
-                                    index + 1
-                                ).padStart(4,"0")}
-                            </span>
-
-                            <span class="request-status pending">
-                                ${escapeHtml(
-                                    request.status ||
-                                    "PENDING"
-                                )}
-                            </span>
-
-                        </div>
-
-                        <div class="request-body">
-
-                            NAME:
-                            ${escapeHtml(
-                                request.name
-                            )}
-
-                            <br>
-
-                            POSITION:
-                            ${escapeHtml(
-                                request.rank
-                            )}
-
-                            <br>
-
-                            COUNCIL ID:
-                            ${escapeHtml(
-                                request.councilId
-                            )}
-
-                            <br><br>
-
-                            REASON:
-
-                            <br>
-
-                            ${escapeHtml(
-                                request.reason
-                            )}
-
-                        </div>
-
-                        <div class="request-actions">
-
-                            <button
-                                class="small-btn"
-                                onclick="approveCouncil(${index})"
-                            >
-                                AUTHORIZE
-                            </button>
-
-                            <button
-                                class="small-btn"
-                                onclick="rejectCouncil(${index})"
-                            >
-                                REJECT
-                            </button>
-
-                        </div>
-
-                    </article>
-                    `
-            )
-            .join("");
-
-}
-
-
-/* =====================================================
-   COUNCIL LOCAL ACTIONS
-===================================================== */
-
-function approveCouncil(index) {
-
-    const requests =
-        JSON.parse(
-            localStorage.getItem(
-                "o5_departure_requests"
-            ) || "[]"
-        );
-
-
-    if (!requests[index]) {
-        return;
-    }
-
-
-    requests[index].status =
-        "APPROVED";
-
-
-    localStorage.setItem(
-        "o5_departure_requests",
-        JSON.stringify(
-            requests
+    return String(
+        value ?? ""
+    )
+        .replaceAll(
+            "\\",
+            "\\\\"
         )
-    );
-
-
-    addLog(
-        "O5 Council departure request authorized."
-    );
-
-
-    toast(
-        "DEPARTURE REQUEST AUTHORIZED."
-    );
-
-
-    loadCouncilRequests();
-
-}
-
-
-function rejectCouncil(index) {
-
-    const requests =
-        JSON.parse(
-            localStorage.getItem(
-                "o5_departure_requests"
-            ) || "[]"
-        );
-
-
-    if (!requests[index]) {
-        return;
-    }
-
-
-    requests[index].status =
-        "REJECTED";
-
-
-    localStorage.setItem(
-        "o5_departure_requests",
-        JSON.stringify(
-            requests
+        .replaceAll(
+            "'",
+            "\\'"
         )
-    );
-
-
-    addLog(
-        "O5 Council departure request rejected."
-    );
-
-
-    toast(
-        "DEPARTURE REQUEST REJECTED."
-    );
-
-
-    loadCouncilRequests();
-
-}
-
-
-/* =====================================================
-   CLOCK
-===================================================== */
-
-function updateClock() {
-
-    const now =
-        new Date();
-
-
-    const time =
-        now.toLocaleTimeString(
-            "en-GB"
+        .replaceAll(
+            "\n",
+            "\\n"
+        )
+        .replaceAll(
+            "\r",
+            "\\r"
         );
 
-
-    document.getElementById(
-        "clock"
-    ).textContent =
-        time;
-
 }
 
+
+/* =========================================================
+   AUTO REFRESH
+========================================================= */
 
 setInterval(
-    updateClock,
-    1000
-);
+    async () => {
 
-updateClock();
+        if (
+            document.getElementById(
+                "app"
+            ).style.display !==
+            "none"
+        ) {
 
-
-/* =====================================================
-   INITIALIZE
-===================================================== */
-
-renderSites();
-
-renderLogs();
-
-loadRequests();
-
-loadCouncilRequests();
-
-
-addLog(
-    "O5 Administration interface initialized."
-);
-
-
-/* =====================================================
-   CLOSE PANEL BY BACKDROP
-===================================================== */
-
-document
-    .getElementById(
-        "detailOverlay"
-    )
-    .addEventListener(
-        "click",
-        event => {
-
-            if (
-                event.target.id ===
-                "detailOverlay"
-            ) {
-
-                closeSite();
-
-            }
+            await Promise.all([
+                loadSites(),
+                loadWarhead(),
+                loadStatus()
+            ]);
 
         }
-    );
+
+    },
+    5000
+);
+
+
+/* =========================================================
+   SESSION
+========================================================= */
+
+if (
+    sessionStorage.getItem(
+        "scp64_admin"
+    ) ===
+    "authenticated"
+) {
+
+    document.getElementById(
+        "loginScreen"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "app"
+    ).style.display =
+        "block";
+
+
+    loadEverything();
+
+}
 
 </script>
 
