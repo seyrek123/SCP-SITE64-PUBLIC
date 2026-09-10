@@ -34,6 +34,10 @@ const DEFAULT_DATABASE = {
 
     sites: [
 
+        // ====================================================
+        // SITE-19
+        // ====================================================
+
         {
             id: "SITE-19",
             name: "SITE-19",
@@ -43,9 +47,17 @@ const DEFAULT_DATABASE = {
             incidents: "0",
             containment: "STABLE",
             satelliteMaterials: "AVAILABLE",
+            location: "UNKNOWN",
             description:
-                "STANDARD FOUNDATION CONTAINMENT FACILITY."
+                "STANDARD FOUNDATION CONTAINMENT FACILITY.",
+            lore:
+                "SITE-19 is a standard Foundation containment facility."
         },
+
+
+        // ====================================================
+        // SITE-51
+        // ====================================================
 
         {
             id: "SITE-51",
@@ -56,9 +68,76 @@ const DEFAULT_DATABASE = {
             incidents: "0",
             containment: "MONITORED",
             satelliteMaterials: "AVAILABLE",
+            location: "UNKNOWN",
             description:
-                "HIGH SECURITY FOUNDATION FACILITY."
+                "HIGH SECURITY FOUNDATION FACILITY.",
+            lore:
+                "SITE-51 is a high-security Foundation facility."
         },
+
+
+        // ====================================================
+        // SITE-O5
+        // ====================================================
+
+        {
+            id: "SITE-O5",
+            name: "SITE-O5",
+            status: "ACTIVE",
+            security: "LEVEL 4",
+            personnel: "257",
+            incidents: "UNKNOWN",
+            containment: "STABLE",
+            satelliteMaterials: "UNKNOWN",
+            location: "Montana, USA",
+
+            description:
+                "FOUNDATION LEVEL 4 FACILITY SPECIALIZING IN ANOMALOUS OBJECT CONTAINMENT, FIELD INVESTIGATIONS, AND THE STUDY OF UNEXPLAINED UNDERGROUND STRUCTURES.",
+
+            lore:
+`SITE-O5 was established in 1986 following a series of unexplained disappearances in the remote mountain regions of Montana.
+
+Foundation reconnaissance teams initially believed the incidents were caused by an unidentified anomalous entity. However, investigations revealed that the missing individuals had all visited the same abandoned mining settlement approximately two weeks before disappearing.
+
+The settlement was subsequently designated AREA-O5 and placed under Foundation control.
+
+During the construction of SITE-O5, workers discovered a network of tunnels beneath the original mining facilities. The tunnels contained several abandoned rooms, outdated electrical equipment, and hundreds of handwritten records belonging to an unknown organization.
+
+No records contained the name of the organization.
+
+In 1991, a sealed door located deep within the underground tunnel network opened by itself for exactly 43 seconds.
+
+Nothing emerged from the chamber.
+
+However, every active radio inside SITE-O5 simultaneously transmitted the same unidentified signal.
+
+The signal lasted exactly 43 seconds and has never been reproduced.
+
+Following the incident, the lower tunnel network was sealed and classified as SUBLEVEL-O5.
+
+SITE-O5 was subsequently converted into a permanent Level 4 Foundation facility specializing in anomalous object containment, field investigations, and the study of unexplained underground structures.
+
+The original mining settlement remains under Foundation control.
+
+Officially, SITE-O5 has no connection to the O5 Council. The designation "O5" was retained because it was the original identification assigned to the mining operation during the Foundation's first investigation.
+
+CURRENT FOUNDATION RECORD
+
+Personnel: 257
+Contained Anomalies: CLASSIFIED
+Sublevel Access: LEVEL 4 AUTHORIZATION REQUIRED
+SUBLEVEL-O5: RESTRICTED
+AREA-O5: FOUNDATION CONTROLLED
+
+FOUNDATION NOTE:
+
+"The door has remained closed since 1991. Personnel are reminded that the absence of activity does not constitute proof of containment."`
+        },
+
+
+        // ====================================================
+        // SITE-64
+        // ====================================================
 
         {
             id: "SITE-64",
@@ -69,10 +148,17 @@ const DEFAULT_DATABASE = {
             incidents: "UNKNOWN",
             containment: "UNKNOWN",
             satelliteMaterials: "UNKNOWN",
-            description: "UNKNOWN"
+            location: "UNKNOWN",
+            description: "UNKNOWN",
+            lore: "UNKNOWN"
         }
 
     ],
+
+
+    // ========================================================
+    // SATELLITE
+    // ========================================================
 
     satellite: {
 
@@ -84,6 +170,11 @@ const DEFAULT_DATABASE = {
         purpose: "UNKNOWN"
 
     },
+
+
+    // ========================================================
+    // WARHEAD
+    // ========================================================
 
     warhead: {
 
@@ -134,6 +225,7 @@ function readDatabase() {
             return structuredClone(
                 DEFAULT_DATABASE
             );
+
         }
 
         const raw =
@@ -157,7 +249,9 @@ function readDatabase() {
         return structuredClone(
             DEFAULT_DATABASE
         );
+
     }
+
 }
 
 
@@ -171,11 +265,12 @@ function saveDatabase(database) {
             4
         )
     );
+
 }
 
 
 // ============================================================
-// DATABASE MIGRATION
+// DATABASE MIGRATION / SITE INITIALIZATION
 // ============================================================
 
 function initializeSites(database) {
@@ -185,6 +280,7 @@ function initializeSites(database) {
         database.sites = [];
 
     }
+
 
     for (
         const defaultSite
@@ -197,6 +293,7 @@ function initializeSites(database) {
                     site.id === defaultSite.id
             );
 
+
         if (!existing) {
 
             database.sites.push(
@@ -205,16 +302,42 @@ function initializeSites(database) {
                 )
             );
 
+        } else {
+
+            // Eksik yeni alanları ekle
+            if (
+                existing.location === undefined
+            ) {
+
+                existing.location =
+                    defaultSite.location;
+
+            }
+
+            if (
+                existing.lore === undefined
+            ) {
+
+                existing.lore =
+                    defaultSite.lore;
+
+            }
+
         }
 
     }
 
+
+    // ========================================================
+    // SITE-19
+    // ========================================================
 
     const site19 =
         database.sites.find(
             site =>
                 site.id === "SITE-19"
         );
+
 
     if (site19) {
 
@@ -224,11 +347,16 @@ function initializeSites(database) {
     }
 
 
+    // ========================================================
+    // SITE-51
+    // ========================================================
+
     const site51 =
         database.sites.find(
             site =>
                 site.id === "SITE-51"
         );
+
 
     if (site51) {
 
@@ -238,27 +366,131 @@ function initializeSites(database) {
     }
 
 
+    // ========================================================
+    // SITE-O5
+    // ========================================================
+
+    const siteO5 =
+        database.sites.find(
+            site =>
+                site.id === "SITE-O5"
+        );
+
+
+    if (siteO5) {
+
+        siteO5.id = "SITE-O5";
+        siteO5.name = "SITE-O5";
+
+        siteO5.status = "ACTIVE";
+
+        siteO5.security = "LEVEL 4";
+
+        siteO5.personnel = "257";
+
+        siteO5.containment = "STABLE";
+
+        siteO5.location =
+            "Montana, USA";
+
+        siteO5.satelliteMaterials =
+            siteO5.satelliteMaterials ||
+            "UNKNOWN";
+
+        siteO5.incidents =
+            siteO5.incidents ||
+            "UNKNOWN";
+
+        siteO5.description =
+            "FOUNDATION LEVEL 4 FACILITY SPECIALIZING IN ANOMALOUS OBJECT CONTAINMENT, FIELD INVESTIGATIONS, AND THE STUDY OF UNEXPLAINED UNDERGROUND STRUCTURES.";
+
+        siteO5.lore =
+`SITE-O5 was established in 1986 following a series of unexplained disappearances in the remote mountain regions of Montana.
+
+Foundation reconnaissance teams initially believed the incidents were caused by an unidentified anomalous entity. However, investigations revealed that the missing individuals had all visited the same abandoned mining settlement approximately two weeks before disappearing.
+
+The settlement was subsequently designated AREA-O5 and placed under Foundation control.
+
+During the construction of SITE-O5, workers discovered a network of tunnels beneath the original mining facilities. The tunnels contained several abandoned rooms, outdated electrical equipment, and hundreds of handwritten records belonging to an unknown organization.
+
+No records contained the name of the organization.
+
+In 1991, a sealed door located deep within the underground tunnel network opened by itself for exactly 43 seconds.
+
+Nothing emerged from the chamber.
+
+However, every active radio inside SITE-O5 simultaneously transmitted the same unidentified signal.
+
+The signal lasted exactly 43 seconds and has never been reproduced.
+
+Following the incident, the lower tunnel network was sealed and classified as SUBLEVEL-O5.
+
+SITE-O5 was subsequently converted into a permanent Level 4 Foundation facility specializing in anomalous object containment, field investigations, and the study of unexplained underground structures.
+
+The original mining settlement remains under Foundation control.
+
+Officially, SITE-O5 has no connection to the O5 Council. The designation "O5" was retained because it was the original identification assigned to the mining operation during the Foundation's first investigation.
+
+CURRENT FOUNDATION RECORD
+
+Personnel: 257
+Contained Anomalies: CLASSIFIED
+Sublevel Access: LEVEL 4 AUTHORIZATION REQUIRED
+SUBLEVEL-O5: RESTRICTED
+AREA-O5: FOUNDATION CONTROLLED
+
+FOUNDATION NOTE:
+
+"The door has remained closed since 1991. Personnel are reminded that the absence of activity does not constitute proof of containment."`;
+
+    }
+
+
+    // ========================================================
+    // SITE-64
+    // ========================================================
+
     const site64 =
         database.sites.find(
             site =>
                 site.id === "SITE-64"
         );
 
+
     if (site64) {
 
         site64.name = "UNKNOWN";
+
         site64.status = "UNKNOWN";
+
         site64.security = "UNKNOWN";
+
         site64.personnel = "UNKNOWN";
+
         site64.incidents = "UNKNOWN";
+
         site64.containment = "UNKNOWN";
-        site64.satelliteMaterials = "UNKNOWN";
-        site64.description = "UNKNOWN";
+
+        site64.satelliteMaterials =
+            "UNKNOWN";
+
+        site64.location =
+            "UNKNOWN";
+
+        site64.description =
+            "UNKNOWN";
+
+        site64.lore =
+            "UNKNOWN";
 
     }
 
 }
 
+
+// ============================================================
+// DATABASE INITIALIZATION
+// ============================================================
 
 function initializeDatabase() {
 
@@ -266,7 +498,11 @@ function initializeDatabase() {
         readDatabase();
 
 
-    if (!Array.isArray(database.requests)) {
+    if (
+        !Array.isArray(
+            database.requests
+        )
+    ) {
 
         database.requests = [];
 
@@ -284,7 +520,11 @@ function initializeDatabase() {
     }
 
 
-    if (!Array.isArray(database.auditLog)) {
+    if (
+        !Array.isArray(
+            database.auditLog
+        )
+    ) {
 
         database.auditLog = [];
 
@@ -328,9 +568,14 @@ function initializeDatabase() {
     }
 
 
-    initializeSites(database);
+    initializeSites(
+        database
+    );
 
-    saveDatabase(database);
+
+    saveDatabase(
+        database
+    );
 
 }
 
@@ -349,6 +594,7 @@ function getActor(
         req.headers["x-admin-user"] ||
         req.query?.actor;
 
+
     if (
         actor &&
         String(actor).trim()
@@ -359,6 +605,7 @@ function getActor(
             .slice(0, 100);
 
     }
+
 
     return fallback;
 
@@ -453,6 +700,7 @@ function generateRequestId() {
 
     let id;
 
+
     do {
 
         id =
@@ -469,6 +717,7 @@ function generateRequestId() {
         )
     );
 
+
     return id;
 
 }
@@ -480,6 +729,7 @@ function generateCouncilRequestId() {
         readDatabase();
 
     let id;
+
 
     do {
 
@@ -496,6 +746,7 @@ function generateCouncilRequestId() {
                 request.id === id
         )
     );
+
 
     return id;
 
@@ -583,6 +834,7 @@ app.post(
             const database =
                 readDatabase();
 
+
             addAuditLog(
                 database,
                 "ADMIN",
@@ -593,6 +845,7 @@ app.post(
                 },
                 "UNKNOWN"
             );
+
 
             saveDatabase(
                 database
@@ -657,7 +910,10 @@ app.get(
         const database =
             readDatabase();
 
-        initializeSites(database);
+
+        initializeSites(
+            database
+        );
 
 
         res.json({
@@ -692,23 +948,21 @@ app.get(
 
             },
 
+
             council: {
 
                 total:
-                    database
-                        .councilRequests
-                        .length,
+                    database.councilRequests.length,
 
                 pending:
-                    database
-                        .councilRequests
-                        .filter(
-                            r =>
-                                r.status ===
-                                "PENDING"
-                        ).length
+                    database.councilRequests.filter(
+                        r =>
+                            r.status ===
+                            "PENDING"
+                    ).length
 
             },
+
 
             sites: {
 
@@ -731,6 +985,7 @@ app.get(
 
             },
 
+
             warhead: {
 
                 active:
@@ -746,6 +1001,7 @@ app.get(
                     database.warhead.target
 
             },
+
 
             satellite:
                 database.satellite,
@@ -773,6 +1029,7 @@ app.get(
         const database =
             readDatabase();
 
+
         res.json({
 
             success: true,
@@ -799,21 +1056,26 @@ app.post(
                 req.body?.name || ""
             ).trim();
 
+
         const type =
             String(
                 req.body?.type || ""
-            ).trim()
-            .toLowerCase();
+            )
+                .trim()
+                .toLowerCase();
+
 
         const typeName =
             String(
                 req.body?.typeName || ""
             ).trim();
 
+
         const scp =
             String(
                 req.body?.scp || ""
             ).trim();
+
 
         const message =
             String(
@@ -896,8 +1158,7 @@ app.post(
                 type.slice(0, 50),
 
             typeName:
-                typeName
-                    .slice(0, 100),
+                typeName.slice(0, 100),
 
             scp:
                 type === "scp"
@@ -942,6 +1203,7 @@ app.post(
 
                 type:
                     request.type
+
             },
             request.name
         );
@@ -1007,11 +1269,13 @@ app.post(
         request.status =
             "APPROVED";
 
+
         request.adminMessage =
             message.slice(
                 0,
                 3000
             );
+
 
         request.updatedAt =
             new Date().toISOString();
@@ -1090,11 +1354,13 @@ app.post(
         request.status =
             "REJECTED";
 
+
         request.adminMessage =
             message.slice(
                 0,
                 3000
             );
+
 
         request.updatedAt =
             new Date().toISOString();
@@ -1168,20 +1434,24 @@ app.post(
                 req.body?.name || ""
             ).trim();
 
+
         const rank =
             String(
                 req.body?.rank || ""
             ).trim();
+
 
         const councilId =
             String(
                 req.body?.councilId || ""
             ).trim();
 
+
         const reason =
             String(
                 req.body?.reason || ""
             ).trim();
+
 
         const acknowledgement =
             req.body?.acknowledgement;
@@ -1333,12 +1603,14 @@ app.post(
         request.status =
             "APPROVED";
 
+
         request.adminMessage =
             String(
                 req.body?.message || ""
             )
                 .trim()
                 .slice(0, 3000);
+
 
         request.updatedAt =
             new Date().toISOString();
@@ -1407,12 +1679,14 @@ app.post(
         request.status =
             "REJECTED";
 
+
         request.adminMessage =
             String(
                 req.body?.message || ""
             )
                 .trim()
                 .slice(0, 3000);
+
 
         request.updatedAt =
             new Date().toISOString();
@@ -1464,6 +1738,7 @@ app.get(
             database
         );
 
+
         saveDatabase(
             database
         );
@@ -1488,6 +1763,7 @@ app.get(
 
         const database =
             readDatabase();
+
 
         initializeSites(
             database
@@ -1612,8 +1888,13 @@ app.put(
         }
 
 
-        // SITE-64 tamamen UNKNOWN
-        if (siteId === "SITE-64") {
+        // ====================================================
+        // SITE-64 FULL UNKNOWN
+        // ====================================================
+
+        if (
+            siteId === "SITE-64"
+        ) {
 
             Object.assign(
                 site,
@@ -1625,7 +1906,9 @@ app.put(
                     incidents: "UNKNOWN",
                     containment: "UNKNOWN",
                     satelliteMaterials: "UNKNOWN",
-                    description: "UNKNOWN"
+                    location: "UNKNOWN",
+                    description: "UNKNOWN",
+                    lore: "UNKNOWN"
                 }
             );
 
@@ -1645,6 +1928,10 @@ app.put(
 
         }
 
+
+        // ====================================================
+        // ALLOWED VALUES
+        // ====================================================
 
         const statuses = [
             "ACTIVE",
@@ -1672,6 +1959,10 @@ app.put(
         ];
 
 
+        // ====================================================
+        // STATUS
+        // ====================================================
+
         if (
             req.body.status &&
             statuses.includes(
@@ -1688,6 +1979,10 @@ app.put(
 
         }
 
+
+        // ====================================================
+        // SECURITY
+        // ====================================================
 
         if (
             req.body.security &&
@@ -1706,6 +2001,10 @@ app.put(
         }
 
 
+        // ====================================================
+        // CONTAINMENT
+        // ====================================================
+
         if (
             req.body.containment &&
             containmentLevels.includes(
@@ -1723,11 +2022,17 @@ app.put(
         }
 
 
+        // ====================================================
+        // TEXT FIELDS
+        // ====================================================
+
         const fields = [
             "personnel",
             "incidents",
             "satelliteMaterials",
-            "description"
+            "description",
+            "location",
+            "lore"
         ];
 
 
@@ -1748,10 +2053,11 @@ app.put(
                         .trim()
                         .slice(
                             0,
-                            field ===
-                            "description"
-                                ? 2000
-                                : 500
+                            field === "lore"
+                                ? 10000
+                                : field === "description"
+                                    ? 2000
+                                    : 500
                         );
 
             }
@@ -2065,11 +2371,14 @@ app.post(
         database.warhead.status =
             "FIRED";
 
+
         database.warhead.message =
             "WARHEAD FIRED";
 
+
         database.warhead.firedAt =
             now;
+
 
         database.warhead.lastFire =
             now;
@@ -2342,9 +2651,12 @@ app.post(
         let output = "";
 
 
+        // ====================================================
+        // CLEAR
+        // ====================================================
+
         if (
-            lower ===
-            "clear"
+            lower === "clear"
         ) {
 
             return res.json({
@@ -2359,11 +2671,13 @@ app.post(
         }
 
 
+        // ====================================================
+        // EXIT
+        // ====================================================
+
         if (
-            lower ===
-            "exit" ||
-            lower ===
-            "close"
+            lower === "exit" ||
+            lower === "close"
         ) {
 
             addAuditLog(
@@ -2374,6 +2688,7 @@ app.post(
                 {},
                 getActor(req)
             );
+
 
             saveDatabase(
                 database
@@ -2392,9 +2707,12 @@ app.post(
         }
 
 
+        // ====================================================
+        // HELP
+        // ====================================================
+
         if (
-            lower ===
-            "help"
+            lower === "help"
         ) {
 
             output =
@@ -2416,9 +2734,12 @@ exit`;
         }
 
 
+        // ====================================================
+        // STATUS
+        // ====================================================
+
         else if (
-            lower ===
-            "status"
+            lower === "status"
         ) {
 
             output =
@@ -2438,9 +2759,12 @@ ${database.satellite.status}`;
         }
 
 
+        // ====================================================
+        // REQUESTS
+        // ====================================================
+
         else if (
-            lower ===
-            "requests"
+            lower === "requests"
         ) {
 
             if (
@@ -2466,9 +2790,12 @@ ${database.satellite.status}`;
         }
 
 
+        // ====================================================
+        // COUNCIL
+        // ====================================================
+
         else if (
-            lower ===
-            "council"
+            lower === "council"
         ) {
 
             if (
@@ -2494,10 +2821,18 @@ ${database.satellite.status}`;
         }
 
 
+        // ====================================================
+        // SITES
+        // ====================================================
+
         else if (
-            lower ===
-            "sites"
+            lower === "sites"
         ) {
+
+            initializeSites(
+                database
+            );
+
 
             output =
                 database.sites
@@ -2510,9 +2845,12 @@ ${database.satellite.status}`;
         }
 
 
+        // ====================================================
+        // SATELLITE
+        // ====================================================
+
         else if (
-            lower ===
-            "satellite"
+            lower === "satellite"
         ) {
 
             output =
@@ -2526,9 +2864,12 @@ PURPOSE: ${database.satellite.purpose}`;
         }
 
 
+        // ====================================================
+        // WARHEAD
+        // ====================================================
+
         else if (
-            lower ===
-            "warhead"
+            lower === "warhead"
         ) {
 
             output =
@@ -2543,9 +2884,12 @@ MESSAGE: ${database.warhead.message || "NONE"}`;
         }
 
 
+        // ====================================================
+        // AUDIT
+        // ====================================================
+
         else if (
-            lower ===
-            "audit"
+            lower === "audit"
         ) {
 
             output =
@@ -2560,9 +2904,12 @@ MESSAGE: ${database.warhead.message || "NONE"}`;
         }
 
 
+        // ====================================================
+        // ACTIVITY
+        // ====================================================
+
         else if (
-            lower ===
-            "activity"
+            lower === "activity"
         ) {
 
             output =
@@ -2577,9 +2924,12 @@ MESSAGE: ${database.warhead.message || "NONE"}`;
         }
 
 
+        // ====================================================
+        // ABOUT
+        // ====================================================
+
         else if (
-            lower ===
-            "about"
+            lower === "about"
         ) {
 
             output =
@@ -2591,6 +2941,10 @@ SYSTEM STATUS: ONLINE`;
 
         }
 
+
+        // ====================================================
+        // UNKNOWN
+        // ====================================================
 
         else {
 
@@ -2783,6 +3137,7 @@ app.listen(
     () => {
 
         console.log("");
+
         console.log(
             "========================================"
         );
