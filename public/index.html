@@ -50,14 +50,10 @@ body {
 ===================================================== */
 
 body::before {
-
     content: "";
-
     position: fixed;
     inset: 0;
-
     pointer-events: none;
-
     opacity: .35;
 
     background:
@@ -72,18 +68,13 @@ body::before {
         );
 
     background-size: 40px 40px;
-
     z-index: -3;
 }
 
-
 body::after {
-
     content: "";
-
     position: fixed;
     inset: 0;
-
     pointer-events: none;
 
     background:
@@ -107,9 +98,7 @@ body::after {
 ===================================================== */
 
 .scanline {
-
     position: fixed;
-
     top: -5px;
     left: 0;
 
@@ -122,13 +111,11 @@ body::after {
         0 0 18px rgba(255,23,62,.65);
 
     z-index: 9999;
-
     pointer-events: none;
 
     animation:
         scan 8s linear infinite;
 }
-
 
 @keyframes scan {
 
@@ -148,9 +135,7 @@ body::after {
 ===================================================== */
 
 header {
-
     position: fixed;
-
     top: 0;
     left: 0;
 
@@ -158,7 +143,6 @@ header {
     height: 70px;
 
     display: flex;
-
     align-items: center;
     justify-content: space-between;
 
@@ -176,25 +160,17 @@ header {
     z-index: 1000;
 }
 
-
 .logo {
-
     display: flex;
-
     align-items: center;
-
     gap: 15px;
 
     font-size: 13px;
-
     font-weight: bold;
-
     letter-spacing: 3px;
 }
 
-
 .logo-symbol {
-
     width: 34px;
     height: 34px;
 
@@ -202,7 +178,6 @@ header {
         1px solid var(--red);
 
     display: grid;
-
     place-items: center;
 
     color: var(--red2);
@@ -212,25 +187,18 @@ header {
         rgba(201,0,36,.18);
 }
 
-
 .header-status {
-
     display: flex;
-
     align-items: center;
-
     gap: 12px;
 
     color: var(--muted);
 
     font-size: 10px;
-
     letter-spacing: 2px;
 }
 
-
 .status-dot {
-
     width: 7px;
     height: 7px;
 
@@ -245,7 +213,6 @@ header {
     animation:
         statusPulse 2s infinite;
 }
-
 
 @keyframes statusPulse {
 
@@ -265,7 +232,6 @@ header {
 ===================================================== */
 
 nav {
-
     position: fixed;
 
     top: 70px;
@@ -293,27 +259,21 @@ nav {
     z-index: 999;
 }
 
-
 nav a {
-
     color: #626a72;
 
     text-decoration: none;
 
     font-size: 9px;
-
     letter-spacing: 2px;
 
     transition: .25s;
 
     position: relative;
-
     white-space: nowrap;
 }
 
-
 nav a::after {
-
     content: "";
 
     position: absolute;
@@ -333,17 +293,13 @@ nav a::after {
     transition: .25s;
 }
 
-
 nav a:hover,
 nav a.active {
-
     color: #fff;
 }
 
-
 nav a:hover::after,
 nav a.active::after {
-
     transform:
         scaleX(1);
 }
@@ -354,7 +310,6 @@ nav a.active::after {
 ===================================================== */
 
 main {
-
     width:
         min(
             1200px,
@@ -370,7 +325,6 @@ main {
 ===================================================== */
 
 .hero {
-
     min-height: 820px;
 
     display: flex;
@@ -385,9 +339,7 @@ main {
     position: relative;
 }
 
-
 .hero::before {
-
     content: "";
 
     position: absolute;
@@ -405,7 +357,6 @@ main {
         radar 12s linear infinite;
 }
 
-
 @keyframes radar {
 
     from {
@@ -418,47 +369,34 @@ main {
 
 }
 
-
 .hero-content {
-
     position: relative;
-
     z-index: 2;
 
     animation:
         heroIn 1s ease both;
 }
 
-
 @keyframes heroIn {
 
     from {
-
         opacity: 0;
-
         transform:
             translateY(35px);
-
     }
 
     to {
-
         opacity: 1;
-
         transform:
             translateY(0);
-
     }
 
 }
 
-
 .classification {
-
     color: var(--red2);
 
     font-size: 10px;
-
     letter-spacing: 5px;
 
     margin-bottom: 25px;
@@ -466,7 +404,6 @@ main {
     animation:
         flicker 4s infinite;
 }
-
 
 @keyframes flicker {
 
@@ -480,9 +417,7 @@ main {
 
 }
 
-
 .hero h1 {
-
     font-size:
         clamp(
             45px,
@@ -491,28 +426,21 @@ main {
         );
 
     letter-spacing: 8px;
-
     line-height: .95;
-
     font-weight: 700;
 }
 
-
 .hero-site {
-
     margin-top: 22px;
 
     color:
         rgba(255,255,255,.24);
 
     font-size: 14px;
-
     letter-spacing: 7px;
 }
 
-
 .hero-line {
-
     width: 170px;
     height: 1px;
 
@@ -527,14 +455,11 @@ main {
         rgba(201,0,36,.45);
 }
 
-
 .hero-sub {
-
     color:
         var(--muted);
 
     font-size: 11px;
-
     letter-spacing: 3px;
 }
 
@@ -544,16 +469,12 @@ main {
 ===================================================== */
 
 section {
-
     padding:
         100px 0;
 }
 
-
 .section-header {
-
     display: flex;
-
     align-items: center;
 
     gap: 20px;
@@ -561,10 +482,8 @@ section {
     margin-bottom: 35px;
 }
 
-
 .section-header::before,
 .section-header::after {
-
     content: "";
 
     height: 1px;
@@ -575,24 +494,18 @@ section {
     flex: 1;
 }
 
-
 .section-header h2 {
-
     font-size: 14px;
-
     letter-spacing: 4px;
 
     white-space: nowrap;
 }
 
-
 .section-class {
-
     color:
         var(--red2);
 
     font-size: 9px;
-
     letter-spacing: 2px;
 
     margin-bottom: 8px;
@@ -604,7 +517,6 @@ section {
 ===================================================== */
 
 .council-status {
-
     display: grid;
 
     grid-template-columns:
@@ -613,9 +525,7 @@ section {
     gap: 12px;
 }
 
-
 .status-card {
-
     background:
         var(--panel);
 
@@ -625,13 +535,10 @@ section {
     padding: 24px;
 
     position: relative;
-
     overflow: hidden;
 }
 
-
 .status-card::before {
-
     content: "";
 
     position: absolute;
@@ -651,44 +558,32 @@ section {
     transition: .35s;
 }
 
-
 .status-card:hover::before {
-
     transform:
         scaleY(1);
 }
 
-
 .status-label {
-
     color:
         #596169;
 
     font-size: 8px;
-
     letter-spacing: 2px;
 }
 
-
 .status-value {
-
     margin-top: 13px;
 
     font-size: 18px;
-
     letter-spacing: 2px;
 }
 
-
 .status-value.online {
-
     color:
         var(--green);
 }
 
-
 .status-value.warning {
-
     color:
         var(--yellow);
 }
@@ -699,7 +594,6 @@ section {
 ===================================================== */
 
 .requirements-grid {
-
     display: grid;
 
     grid-template-columns:
@@ -708,9 +602,7 @@ section {
     gap: 18px;
 }
 
-
 .requirement {
-
     background:
         var(--panel);
 
@@ -722,9 +614,7 @@ section {
     transition: .3s;
 }
 
-
 .requirement:hover {
-
     transform:
         translateY(-4px);
 
@@ -732,51 +622,37 @@ section {
         rgba(201,0,36,.35);
 }
 
-
 .requirement-number {
-
     color:
         var(--red);
 
     font-size: 10px;
-
     letter-spacing: 3px;
 }
 
-
 .requirement h3 {
-
     margin-top: 12px;
 
     font-size: 17px;
-
     letter-spacing: 2px;
 }
 
-
 .requirement p {
-
     margin-top: 13px;
 
     color:
         var(--muted);
 
     font-size: 11px;
-
     line-height: 1.8;
 }
 
-
 .requirement ul {
-
     margin-top: 20px;
-
     padding-left: 20px;
 }
 
-
 .requirement li {
-
     color:
         #a6adb4;
 
@@ -787,9 +663,7 @@ section {
     line-height: 1.6;
 }
 
-
 .requirement li::marker {
-
     color:
         var(--red);
 }
@@ -800,7 +674,6 @@ section {
 ===================================================== */
 
 .satellite {
-
     background:
         linear-gradient(
             135deg,
@@ -816,33 +689,24 @@ section {
     padding: 45px;
 
     position: relative;
-
     overflow: hidden;
 }
 
-
 .satellite-top {
-
     display: flex;
 
     align-items: center;
-
     justify-content: space-between;
 
     gap: 20px;
 }
 
-
 .satellite-title {
-
     font-size: 21px;
-
     letter-spacing: 3px;
 }
 
-
 .satellite-status {
-
     padding:
         9px 14px;
 
@@ -854,13 +718,10 @@ section {
         var(--yellow);
 
     font-size: 9px;
-
     letter-spacing: 2px;
 }
 
-
 .satellite-description {
-
     max-width: 800px;
 
     margin-top: 20px;
@@ -869,13 +730,10 @@ section {
         #8b939b;
 
     font-size: 11px;
-
     line-height: 1.9;
 }
 
-
 .material-grid {
-
     margin-top: 30px;
 
     display: grid;
@@ -886,9 +744,7 @@ section {
     gap: 10px;
 }
 
-
 .material {
-
     padding: 18px;
 
     border:
@@ -899,27 +755,21 @@ section {
         rgba(0,0,0,.18);
 }
 
-
 .material-name {
-
     color:
         #777f87;
 
     font-size: 8px;
-
     letter-spacing: 2px;
 }
 
-
 .material-value {
-
     margin-top: 10px;
 
     color:
         var(--red2);
 
     font-size: 12px;
-
     letter-spacing: 1px;
 }
 
@@ -929,7 +779,6 @@ section {
 ===================================================== */
 
 .request-grid {
-
     display: grid;
 
     grid-template-columns:
@@ -938,9 +787,7 @@ section {
     gap: 20px;
 }
 
-
 .request-card {
-
     background:
         var(--panel);
 
@@ -952,23 +799,17 @@ section {
     position: relative;
 }
 
-
 .request-card.normal {
-
     border-top:
         2px solid var(--blue);
 }
 
-
 .request-card.o5 {
-
     border-top:
         2px solid var(--purple);
 }
 
-
 .request-title {
-
     font-size: 18px;
 
     letter-spacing: 3px;
@@ -976,22 +817,17 @@ section {
     margin-bottom: 8px;
 }
 
-
 .request-description {
-
     color:
         var(--muted);
 
     font-size: 10px;
-
     line-height: 1.8;
 
     margin-bottom: 25px;
 }
 
-
 .request-badge {
-
     display: inline-block;
 
     margin-bottom: 20px;
@@ -1003,14 +839,10 @@ section {
         1px solid;
 
     font-size: 8px;
-
     letter-spacing: 2px;
 }
 
-
-.request-card.normal
-.request-badge {
-
+.request-card.normal .request-badge {
     color:
         var(--blue);
 
@@ -1018,10 +850,7 @@ section {
         rgba(79,140,255,.4);
 }
 
-
-.request-card.o5
-.request-badge {
-
+.request-card.o5 .request-badge {
     color:
         var(--purple);
 
@@ -1029,32 +858,25 @@ section {
         rgba(155,108,255,.4);
 }
 
-
 .form-row {
-
     margin-bottom: 18px;
 }
 
-
 .form-row label {
-
     display: block;
 
     color:
         #686f77;
 
     font-size: 8px;
-
     letter-spacing: 2px;
 
     margin-bottom: 8px;
 }
 
-
 .form-row input,
 .form-row textarea,
 .form-row select {
-
     width: 100%;
 
     background:
@@ -1079,19 +901,14 @@ section {
         .25s;
 }
 
-
 .form-row textarea {
-
     min-height: 120px;
-
     resize: vertical;
 }
-
 
 .form-row input:focus,
 .form-row textarea:focus,
 .form-row select:focus {
-
     border-color:
         var(--red);
 
@@ -1100,9 +917,7 @@ section {
         rgba(201,0,36,.08);
 }
 
-
 .request-submit {
-
     width: 100%;
 
     padding: 15px;
@@ -1119,7 +934,6 @@ section {
         inherit;
 
     font-size: 10px;
-
     letter-spacing: 3px;
 
     cursor: pointer;
@@ -1128,9 +942,7 @@ section {
         .25s;
 }
 
-
 .normal .request-submit {
-
     border-color:
         var(--blue);
 
@@ -1138,16 +950,12 @@ section {
         rgba(79,140,255,.07);
 }
 
-
 .normal .request-submit:hover {
-
     background:
         var(--blue);
 }
 
-
 .o5 .request-submit {
-
     border-color:
         var(--purple);
 
@@ -1155,22 +963,16 @@ section {
         rgba(155,108,255,.07);
 }
 
-
 .o5 .request-submit:hover {
-
     background:
         var(--purple);
 }
 
-
 .scp-field {
-
     display: none;
 }
 
-
 .ack-row {
-
     display: flex;
 
     align-items: center;
@@ -1181,22 +983,17 @@ section {
         #858d95;
 
     font-size: 9px;
-
     line-height: 1.6;
 }
 
-
 .ack-row input {
-
     width: auto;
 
     accent-color:
         var(--purple);
 }
 
-
 .request-result {
-
     margin-top: 15px;
 
     padding: 13px;
@@ -1207,13 +1004,10 @@ section {
         1px solid;
 
     font-size: 9px;
-
     line-height: 1.7;
 }
 
-
 .request-result.success {
-
     display: block;
 
     border-color:
@@ -1223,9 +1017,7 @@ section {
         var(--green);
 }
 
-
 .request-result.error {
-
     display: block;
 
     border-color:
@@ -1235,9 +1027,7 @@ section {
         #ff7b91;
 }
 
-
 .request-id {
-
     color:
         white;
 
@@ -1254,7 +1044,6 @@ section {
 ===================================================== */
 
 .permit-layout {
-
     display: grid;
 
     grid-template-columns:
@@ -1263,9 +1052,7 @@ section {
     gap: 20px;
 }
 
-
 .permit-form {
-
     background:
         var(--panel);
 
@@ -1275,9 +1062,7 @@ section {
     padding: 35px;
 }
 
-
 .permit-info {
-
     background:
         var(--panel2);
 
@@ -1287,30 +1072,22 @@ section {
     padding: 35px;
 }
 
-
 .permit-info h3 {
-
     font-size: 15px;
-
     letter-spacing: 2px;
 }
 
-
 .permit-info p {
-
     margin-top: 18px;
 
     color:
         var(--muted);
 
     font-size: 10px;
-
     line-height: 1.8;
 }
 
-
 .permit-rule {
-
     display: flex;
 
     gap: 12px;
@@ -1321,13 +1098,10 @@ section {
         #8f979e;
 
     font-size: 9px;
-
     line-height: 1.7;
 }
 
-
 .permit-rule span {
-
     color:
         var(--red2);
 }
@@ -1338,18 +1112,15 @@ section {
 ===================================================== */
 
 .site-grid {
-
     display: grid;
 
     grid-template-columns:
-        repeat(3,1fr);
+        repeat(4,1fr);
 
     gap: 15px;
 }
 
-
 .site-card {
-
     background:
         var(--panel);
 
@@ -1361,9 +1132,7 @@ section {
     transition: .3s;
 }
 
-
 .site-card:hover {
-
     transform:
         translateY(-5px);
 
@@ -1371,43 +1140,32 @@ section {
         rgba(201,0,36,.4);
 }
 
-
 .site-number {
-
     color:
         var(--red2);
 
     font-size: 18px;
-
     letter-spacing: 3px;
 }
 
-
 .site-card h3 {
-
     margin-top: 14px;
 
     font-size: 13px;
-
     letter-spacing: 1px;
 }
 
-
 .site-card p {
-
     margin-top: 13px;
 
     color:
         var(--muted);
 
     font-size: 10px;
-
     line-height: 1.7;
 }
 
-
 .site-status {
-
     display: inline-block;
 
     margin-top: 20px;
@@ -1423,7 +1181,6 @@ section {
         var(--green);
 
     font-size: 8px;
-
     letter-spacing: 2px;
 }
 
@@ -1433,7 +1190,6 @@ section {
 ===================================================== */
 
 .warning-panel {
-
     border:
         1px solid
         rgba(201,0,36,.3);
@@ -1446,28 +1202,21 @@ section {
     text-align: center;
 }
 
-
 .warning-symbol {
-
     color:
         var(--red2);
 
     font-size: 28px;
 }
 
-
 .warning-panel h3 {
-
     margin-top: 14px;
 
     font-size: 15px;
-
     letter-spacing: 3px;
 }
 
-
 .warning-panel p {
-
     margin: 15px auto 0;
 
     max-width: 800px;
@@ -1476,7 +1225,6 @@ section {
         #858d95;
 
     font-size: 10px;
-
     line-height: 1.8;
 }
 
@@ -1486,7 +1234,6 @@ section {
 ===================================================== */
 
 .about {
-
     max-width: 850px;
 
     margin: auto;
@@ -1494,29 +1241,23 @@ section {
     text-align: center;
 }
 
-
 .about p {
-
     color:
         var(--muted);
 
     font-size: 11px;
-
     line-height: 2;
 
     margin-top: 15px;
 }
 
-
 .classified {
-
     margin-top: 25px;
 
     color:
         rgba(255,255,255,.18);
 
     font-size: 9px;
-
     letter-spacing: 3px;
 }
 
@@ -1526,7 +1267,6 @@ section {
 ===================================================== */
 
 footer {
-
     border-top:
         1px solid var(--line);
 
@@ -1540,7 +1280,6 @@ footer {
         #3e454c;
 
     font-size: 8px;
-
     letter-spacing: 2px;
 }
 
@@ -1550,7 +1289,6 @@ footer {
 ===================================================== */
 
 #toast {
-
     position: fixed;
 
     right: 25px;
@@ -1568,7 +1306,6 @@ footer {
     color: white;
 
     font-size: 9px;
-
     letter-spacing: 1px;
 
     transform:
@@ -1584,9 +1321,7 @@ footer {
     z-index: 5000;
 }
 
-
 #toast.show {
-
     transform:
         translateY(0);
 
@@ -1598,16 +1333,23 @@ footer {
    RESPONSIVE
 ===================================================== */
 
+@media (max-width: 1050px) {
+
+    .site-grid {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+}
+
 @media (max-width: 850px) {
 
     header {
-
         padding:
             0 18px;
     }
 
     nav {
-
         justify-content:
             flex-start;
 
@@ -1621,7 +1363,6 @@ footer {
     }
 
     .header-status {
-
         display:
             none;
     }
@@ -1632,25 +1373,21 @@ footer {
     .permit-layout,
     .site-grid,
     .material-grid {
-
         grid-template-columns:
             1fr;
     }
 
     section {
-
         padding:
             70px 0;
     }
 
     .hero {
-
         min-height:
             700px;
     }
 
     .hero::before {
-
         width:
             350px;
 
@@ -1659,13 +1396,11 @@ footer {
     }
 
     .satellite {
-
         padding:
             28px 20px;
     }
 
     .satellite-top {
-
         align-items:
             flex-start;
 
@@ -1674,7 +1409,6 @@ footer {
     }
 
     footer {
-
         flex-direction:
             column;
 
@@ -1689,7 +1423,6 @@ footer {
 </head>
 
 <body>
-
 
 <div class="scanline"></div>
 
@@ -2338,7 +2071,6 @@ footer {
         </div>
 
 
-
         <!-- O5 REQUEST -->
 
         <div class="request-card o5">
@@ -2692,6 +2424,8 @@ footer {
     <div class="site-grid">
 
 
+        <!-- SITE-19 -->
+
         <article class="site-card">
 
             <div class="site-number">
@@ -2714,6 +2448,8 @@ footer {
         </article>
 
 
+        <!-- SITE-51 -->
+
         <article class="site-card">
 
             <div class="site-number">
@@ -2735,6 +2471,34 @@ footer {
 
         </article>
 
+
+        <!-- SITE-O5 -->
+
+        <article class="site-card">
+
+            <div class="site-number">
+                SITE-O5
+            </div>
+
+            <h3>
+                MONTANA FOUNDATION FACILITY
+            </h3>
+
+            <p>
+                Level 4 Foundation facility specializing in
+                anomalous object containment, field
+                investigations, and unexplained underground
+                structures.
+            </p>
+
+            <span class="site-status">
+                STATUS: ACTIVE
+            </span>
+
+        </article>
+
+
+        <!-- SITE-64 -->
 
         <article class="site-card">
 
@@ -2843,17 +2607,14 @@ const sections =
         "section[id]"
     );
 
-
 const navLinks =
     document.querySelectorAll(
         "nav a[href^='#']"
     );
 
-
 function updateNavigation() {
 
     let current = "home";
-
 
     sections.forEach(section => {
 
@@ -2861,7 +2622,6 @@ function updateNavigation() {
             section
                 .getBoundingClientRect()
                 .top;
-
 
         if (top <= 160) {
 
@@ -2872,14 +2632,12 @@ function updateNavigation() {
 
     });
 
-
     navLinks.forEach(link => {
 
         const target =
             link
                 .getAttribute("href")
                 .substring(1);
-
 
         link.classList.toggle(
             "active",
@@ -2890,12 +2648,10 @@ function updateNavigation() {
 
 }
 
-
 window.addEventListener(
     "scroll",
     updateNavigation
 );
-
 
 updateNavigation();
 
@@ -2909,17 +2665,14 @@ const toast =
         "toast"
     );
 
-
 function showToast(message) {
 
     toast.textContent =
         message;
 
-
     toast.classList.add(
         "show"
     );
-
 
     setTimeout(() => {
 
@@ -2941,12 +2694,10 @@ const normalType =
         "normalType"
     );
 
-
 const scpField =
     document.getElementById(
         "scpField"
     );
-
 
 normalType.addEventListener(
     "change",
@@ -3027,19 +2778,16 @@ const normalRequestForm =
         "normalRequestForm"
     );
 
-
 const normalResult =
     document.getElementById(
         "normalResult"
     );
-
 
 normalRequestForm.addEventListener(
     "submit",
     async event => {
 
         event.preventDefault();
-
 
         const name =
             document
@@ -3049,14 +2797,12 @@ normalRequestForm.addEventListener(
                 .value
                 .trim();
 
-
         const type =
             document
                 .getElementById(
                     "normalType"
                 )
                 .value;
-
 
         const scp =
             document
@@ -3066,7 +2812,6 @@ normalRequestForm.addEventListener(
                 .value
                 .trim();
 
-
         const message =
             document
                 .getElementById(
@@ -3075,10 +2820,8 @@ normalRequestForm.addEventListener(
                 .value
                 .trim();
 
-
         normalResult.className =
             "request-result";
-
 
         try {
 
@@ -3124,10 +2867,8 @@ normalRequestForm.addEventListener(
                     }
                 );
 
-
             const data =
                 await response.json();
-
 
             if (
                 !response.ok ||
@@ -3141,10 +2882,8 @@ normalRequestForm.addEventListener(
 
             }
 
-
             normalResult.className =
                 "request-result success";
-
 
             normalResult.innerHTML =
 
@@ -3162,18 +2901,14 @@ normalRequestForm.addEventListener(
 
                 "STATUS: PENDING";
 
-
             showToast(
                 "NORMAL REQUEST SUBMITTED"
             );
 
-
             normalRequestForm.reset();
-
 
             scpField.style.display =
                 "none";
-
 
         }
 
@@ -3182,10 +2917,8 @@ normalRequestForm.addEventListener(
             normalResult.className =
                 "request-result error";
 
-
             normalResult.textContent =
                 error.message;
-
 
             showToast(
                 "REQUEST FAILED"
@@ -3206,19 +2939,16 @@ const o5RequestForm =
         "o5RequestForm"
     );
 
-
 const o5Result =
     document.getElementById(
         "o5Result"
     );
-
 
 o5RequestForm.addEventListener(
     "submit",
     async event => {
 
         event.preventDefault();
-
 
         const name =
             document
@@ -3228,7 +2958,6 @@ o5RequestForm.addEventListener(
                 .value
                 .trim();
 
-
         const rank =
             document
                 .getElementById(
@@ -3236,7 +2965,6 @@ o5RequestForm.addEventListener(
                 )
                 .value
                 .trim();
-
 
         const councilId =
             document
@@ -3246,7 +2974,6 @@ o5RequestForm.addEventListener(
                 .value
                 .trim();
 
-
         const reason =
             document
                 .getElementById(
@@ -3255,7 +2982,6 @@ o5RequestForm.addEventListener(
                 .value
                 .trim();
 
-
         const acknowledgement =
             document
                 .getElementById(
@@ -3263,10 +2989,8 @@ o5RequestForm.addEventListener(
                 )
                 .checked;
 
-
         o5Result.className =
             "request-result";
-
 
         try {
 
@@ -3303,10 +3027,8 @@ o5RequestForm.addEventListener(
                     }
                 );
 
-
             const data =
                 await response.json();
-
 
             if (
                 !response.ok ||
@@ -3320,10 +3042,8 @@ o5RequestForm.addEventListener(
 
             }
 
-
             o5Result.className =
                 "request-result success";
-
 
             o5Result.innerHTML =
 
@@ -3341,11 +3061,9 @@ o5RequestForm.addEventListener(
 
                 "STATUS: PENDING";
 
-
             showToast(
                 "O5 COUNCIL REQUEST SUBMITTED"
             );
-
 
             o5RequestForm.reset();
 
@@ -3356,10 +3074,8 @@ o5RequestForm.addEventListener(
             o5Result.className =
                 "request-result error";
 
-
             o5Result.textContent =
                 error.message;
-
 
             showToast(
                 "O5 REQUEST FAILED"
@@ -3380,13 +3096,11 @@ const departureForm =
         "departureForm"
     );
 
-
 departureForm.addEventListener(
     "submit",
     async event => {
 
         event.preventDefault();
-
 
         const name =
             document
@@ -3396,7 +3110,6 @@ departureForm.addEventListener(
                 .value
                 .trim();
 
-
         const rank =
             document
                 .getElementById(
@@ -3404,7 +3117,6 @@ departureForm.addEventListener(
                 )
                 .value
                 .trim();
-
 
         const councilId =
             document
@@ -3414,7 +3126,6 @@ departureForm.addEventListener(
                 .value
                 .trim();
 
-
         const reason =
             document
                 .getElementById(
@@ -3422,7 +3133,6 @@ departureForm.addEventListener(
                 )
                 .value
                 .trim();
-
 
         try {
 
@@ -3460,10 +3170,8 @@ departureForm.addEventListener(
                     }
                 );
 
-
             const data =
                 await response.json();
-
 
             if (
                 !response.ok ||
@@ -3477,11 +3185,9 @@ departureForm.addEventListener(
 
             }
 
-
             showToast(
                 "DEPARTURE REQUEST SUBMITTED"
             );
-
 
             departureForm.reset();
 
@@ -3529,7 +3235,6 @@ const observer =
             threshold: .12
         }
     );
-
 
 document
     .querySelectorAll(
